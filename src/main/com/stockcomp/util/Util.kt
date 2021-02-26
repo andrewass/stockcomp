@@ -1,6 +1,5 @@
 package com.stockcomp.util
 
-
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -10,12 +9,10 @@ import java.util.*
 private const val SECRET_KEY = "secret"
 private const val TOKEN_DURATION = 6000000
 
-/*
 fun generateToken(userDetails: UserDetails): String {
     val claims: HashMap<String, Any> = hashMapOf("sub" to userDetails.username)
     return createToken(claims)
 }
- */
 
 fun tokenIsValid(token: String, userDetails: UserDetails): Boolean {
     val username = extractUsername(token)
@@ -25,7 +22,6 @@ fun tokenIsValid(token: String, userDetails: UserDetails): Boolean {
 fun extractUsername(token: String): String = extractClaimFromToken(token, Claims::getSubject)
 
 private fun isTokenExpired(token: String) = extractExpiration(token).before(Date())
-
 
 private fun extractExpiration(token: String) = extractClaimFromToken(token, Claims::getExpiration)
 

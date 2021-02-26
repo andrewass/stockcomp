@@ -1,22 +1,27 @@
 package com.stockcomp.consumer;
 
-import com.stockcomp.entity.Exchange;
+import com.stockcomp.response.RealTimePriceResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Collections;
-import java.util.List;
 
 @Component
 public class StockConsumer {
 
-    private final WebClient.Builder webClientBuilder;
+    private final String finnhubToken = System.getenv("FINNHUB_API_KEY");
 
-    public StockConsumer(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    private final WebClient webClient;
+
+    public StockConsumer(WebClient webClient) {
+        this.webClient = webClient;
     }
 
-    public List<Exchange> getExchanges(String exchangeUrl){
-        return Collections.emptyList();
+    public RealTimePriceResponse findRealTimePrice(String symbol) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/quote")
+                        .queryParam("symbol", symbol)
+                        .queryParam("token", finnhubToken).build())
+                .retrieve()
+                .bodyToMono(RealTimePriceResponse.class)
+                .block();
     }
 }
