@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class StockService @Autowired constructor(
     private val stockConsumer: StockConsumer
-){
+) {
 
     fun getRealTimePrice(symbol: String): RealTimePriceResponse {
         return stockConsumer.findRealTimePrice(symbol)
