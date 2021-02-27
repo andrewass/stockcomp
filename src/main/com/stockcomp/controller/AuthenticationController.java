@@ -13,6 +13,5 @@ public class AuthenticationController {
     @PostMapping("/sign-up")
     public static void signUp(@RequestBody SignUpRequest request){
 
-
     }
 }
