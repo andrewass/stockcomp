@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
@@ -39,5 +40,10 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactory());
 
         return factory;
+    }
+
+    @Bean
+    public KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry() {
+        return new KafkaListenerEndpointRegistry();
     }
 }
