@@ -9,9 +9,13 @@ import javax.persistence.*
 class User(
 
     @Id
-    @Column(name = "T_CONTEST")
+    @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val startTime: LocalDate?
+    val username: String,
+
+    val password: String,
+
+    val email: String
 )
