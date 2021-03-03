@@ -1,6 +1,5 @@
 package com.stockcomp.entity.contest
 
-import com.stockcomp.entity.Portfolio
 import com.stockcomp.entity.User
 import javax.persistence.*
 
@@ -20,6 +19,10 @@ class Participant(
     @OneToOne
     @JoinColumn(name = "PORTFOLIO_ID")
     val portfolio: Portfolio,
+
+    @ManyToOne
+    @JoinColumn(name = "CONTEST_ID")
+    val contest: Contest,
 
     var score: Int
 )

@@ -1,7 +1,6 @@
-package com.stockcomp.entity
+package com.stockcomp.entity.contest
 
 import javax.persistence.*
-
 
 @Entity
 @Table(name = "T_PORTFOLIO")
