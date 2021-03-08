@@ -16,6 +16,12 @@ public class KafkaTopicConfig {
     @Value(value = "${kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
+    @Value(value = "${kafka.partitions}")
+    private Integer partitions;
+
+    @Value(value = "${kafka.replication.factor}")
+    private Short replicationFactor;
+
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
@@ -26,6 +32,11 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic signUpTopic() {
-        return new NewTopic("contest-sign-up", 1, (short) 1);
+        return new NewTopic("contest-sign-up", partitions, replicationFactor);
+    }
+
+    @Bean
+    public NewTopic contestPurchaseTopic() {
+        return new NewTopic("contest-purchase", partitions, replicationFactor);
     }
 }

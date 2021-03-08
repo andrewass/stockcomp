@@ -16,13 +16,17 @@ class Participant(
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "PORTFOLIO_ID")
-    val portfolio: Portfolio,
+    val portfolio : Portfolio = Portfolio(),
 
     @ManyToOne
     @JoinColumn(name = "CONTEST_ID")
-    val contest: Contest,
+    val contest: Contest
 
-    var score: Int
+    /*
+    var rank: Int? = null,
+
+    var score: Int = 0
+     */
 )

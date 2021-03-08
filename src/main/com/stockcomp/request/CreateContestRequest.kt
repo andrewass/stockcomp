@@ -4,5 +4,5 @@ import java.time.LocalDateTime
 
 class CreateContestRequest(
     val startTime: LocalDateTime,
-    val sequenceNumber: Int
+    val contestNumber: Int
 )

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ContestRepository extends JpaRepository<Contest, Long> {
 
-    Optional<Contest> findByInPreStartModeIsTrue();
+    Optional<Contest> findContestByContestNumberAndInRunningModeIsTrue(Integer contestNumber);
 
-    Optional<Contest> findByInRunningModeIsTrue();
+    Optional<Contest> findContestByContestNumberAndInPreStartModeIsTrue(Integer contestNumber);
 }

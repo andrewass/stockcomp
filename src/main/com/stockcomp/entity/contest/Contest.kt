@@ -1,6 +1,5 @@
 package com.stockcomp.entity.contest
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -15,12 +14,12 @@ class Contest(
 
     val startTime: LocalDateTime?,
 
-    val sequenceNumber : Int,
+    val contestNumber: Int,
 
-    var inPreStartMode : Boolean = true,
+    var inPreStartMode: Boolean = true,
 
     var inRunningMode: Boolean = false,
 
-    @OneToMany(mappedBy = "contest")
-    val participants : List<Participant> = mutableListOf()
+    @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
+    val participants: MutableList<Participant> = mutableListOf()
 )
