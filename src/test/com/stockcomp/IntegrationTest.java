@@ -36,5 +36,6 @@ public abstract class IntegrationTest {
     @DynamicPropertySource
     static void setKafkaProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.properties.bootstrap.servers", KAFKA_CONTAINER::getBootstrapServers);
+        registry.add("spring.kafka.consumer.properties.auto.offset.reset",() -> "earliest");
     }
 }

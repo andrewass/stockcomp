@@ -1,27 +1,21 @@
 package com.stockcomp.controller;
 
+import com.stockcomp.configuration.kafka.producer.ContestProducer;
+import com.stockcomp.request.InvestmentTransactionRequest;
 import com.stockcomp.service.ContestService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/contest")
-public class ContestController {
+public class ContestController extends CustomExceptionHandler {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
     private final ContestService contestService;
+    private final ContestProducer contestProducer;
 
-    @Value("${kafka.contest.sign.up.topic}")
-    private String contestSignUpTopic;
-
-    public ContestController(KafkaTemplate<String, String> kafkaTemplate, ContestService contestService) {
-        this.kafkaTemplate = kafkaTemplate;
+    public ContestController(ContestProducer contestProducer, ContestService contestService) {
+        this.contestProducer = contestProducer;
         this.contestService = contestService;
     }
 
@@ -31,6 +25,21 @@ public class ContestController {
             @RequestParam("contestNumber") Integer contestNumber
     ) {
         contestService.signUpUser(username, contestNumber);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/buy-investment")
+    public ResponseEntity<HttpStatus> buyInvestment(@RequestBody InvestmentTransactionRequest request) {
+        contestProducer.buyInvestment(request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/sell-investment")
+    public ResponseEntity<HttpStatus> sellInvestment(@RequestBody InvestmentTransactionRequest request) {
+        contestProducer.sellInvestment(request);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

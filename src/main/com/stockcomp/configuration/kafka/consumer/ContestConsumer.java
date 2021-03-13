@@ -10,8 +10,13 @@ public class ContestConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(ContestConsumer.class);
 
-    @KafkaListener(id = "contest-id", topics = "contest-sign-up", groupId = "groupId", autoStartup = "false")
-    public void consumeMessage(String message) {
-        logger.info("Consumed message : " + message);
+    @KafkaListener(topics = "buy-investment", groupId = "groupId")
+    public void consumeBuyInvestment(String message) {
+        logger.info("Consumed buy-investment : " + message);
+    }
+
+    @KafkaListener(topics = "sell-investment", groupId = "groupId")
+    public void consumeSellInvestment(String message){
+        logger.info("Consumed sell-investment : "+ message);
     }
 }

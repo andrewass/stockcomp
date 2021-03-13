@@ -30,13 +30,15 @@ public class KafkaTopicConfig {
         return new KafkaAdmin(configs);
     }
 
-    @Bean
+    @Bean(name = "sell-investment")
     public NewTopic signUpTopic() {
-        return new NewTopic("contest-sign-up", partitions, replicationFactor);
+
+        return new NewTopic("sell-investment", partitions, replicationFactor);
     }
 
-    @Bean
+    @Bean(name = "buy-investment")
     public NewTopic contestPurchaseTopic() {
-        return new NewTopic("contest-purchase", partitions, replicationFactor);
+
+        return new NewTopic("buy-investment", partitions, replicationFactor);
     }
 }

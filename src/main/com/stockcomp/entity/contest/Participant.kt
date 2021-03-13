@@ -12,7 +12,7 @@ class Participant(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
@@ -25,6 +25,8 @@ class Participant(
     val contest: Contest
 
     /*
+    var fund: Int = 200000
+
     var rank: Int? = null,
 
     var score: Int = 0

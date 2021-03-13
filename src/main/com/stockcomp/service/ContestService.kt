@@ -29,6 +29,7 @@ class ContestService @Autowired constructor(
 
     fun startContest(contestNumber: Int) {
         val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber)
+
         try {
             contest.get().apply {
                 inPreStartMode = false
@@ -58,15 +59,12 @@ class ContestService @Autowired constructor(
     }
 
     fun signUpUser(username: String, contestNumber: Int) {
-        try {
-            val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber).get()
-            val user = userRepository.findByUsername(username).get()
-            val participant = Participant(user = user, contest = contest)
-            contest.participants.add(participant)
-            contestRepository.save(contest)
-        } catch (e: NoSuchElementException) {
-            throw IllegalStateException("Unable to sign up user for contest")
-        }
+        val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber).get()
+        val user = userRepository.findByUsername(username).get()
+        val participant = Participant(user = user, contest = contest)
+
+        contest.participants.add(participant)
+        contestRepository.save(contest)
     }
 
     private fun startKafkaConsumersForContest() {
