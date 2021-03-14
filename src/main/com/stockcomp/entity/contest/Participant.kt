@@ -22,13 +22,13 @@ class Participant(
 
     @ManyToOne
     @JoinColumn(name = "CONTEST_ID")
-    val contest: Contest
+    val contest: Contest,
 
-    /*
-    var fund: Int = 200000
+    var remainingFund: Double = 20000.00,
 
+    @Column(name = "participant_rank")
     var rank: Int? = null,
 
-    var score: Int = 0
-     */
+    @Column(name = "participant_score")
+    var score: Int? = null
 )

@@ -7,19 +7,16 @@ import com.stockcomp.entity.contest.Contest
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.InvestmentTransactionRequest
-import org.apache.kafka.clients.consumer.Consumer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.http.MediaType
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.std.StringDeserializer
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import javax.transaction.Transactional
 
 @Transactional
 @AutoConfigureMockMvc
@@ -45,7 +42,7 @@ internal class ContestControllerIT : IntegrationTest() {
     private val buyInvestmentTopic = "buy-investment"
 
     @Test
-    fun `should return status 200 when signing up for contest`(){
+    fun `should return status 200 when signing up for contest`() {
         createTestData()
 
         mockMvc.perform(
@@ -58,7 +55,7 @@ internal class ContestControllerIT : IntegrationTest() {
     }
 
     @Test
-    fun `should return status 404 when necessary objects not found`(){
+    fun `should return status 404 when necessary objects not found`() {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/sign-up")
                 .param("username", username)
@@ -69,7 +66,7 @@ internal class ContestControllerIT : IntegrationTest() {
     }
 
     @Test
-    fun `should return status 200 when buying investment`(){
+    fun `should return status 200 when buying investment`() {
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/buy-investment")
