@@ -20,6 +20,16 @@ create table t_portfolio(
 	primary key (portfolio_id)
 );
 
+create table t_investment(
+    investment_id       bigint(20) not null auto_increment,
+    investment_name     varchar(100),
+    symbol              varchar(20),
+    portfolio_id        bigint(20)  not null,
+    amount              int,
+    primary key (investment_id),
+    foreign key (portfolio_id) references t_portfolio(portfolio_id)
+);
+
 create table t_participant(
     participant_id      bigint(20) not null auto_increment,
     contest_id          bigint(20) not null,
@@ -32,4 +42,15 @@ create table t_participant(
     foreign key (contest_id) references t_contest(contest_id),
     foreign key (user_id) references t_user(user_id),
     foreign key (portfolio_id) references t_portfolio(portfolio_id)
+);
+
+create table t_transaction(
+    transaction_id          bigint(20) not null auto_increment,
+    participant_id          bigint(20) not null,
+    symbol                  varchar(20) not null,
+    date_time_processed     datetime not null,
+    transaction_type        varchar(10) not null,
+    amount                  int,
+    primary key (transaction_id),
+    foreign key (participant_id) references t_participant(participant_id)
 );

@@ -1,6 +1,6 @@
 package com.stockcomp.controller;
 
-import com.stockcomp.configuration.kafka.producer.ContestProducer;
+import com.stockcomp.kafka.producer.ContestProducer;
 import com.stockcomp.request.InvestmentTransactionRequest;
 import com.stockcomp.service.ContestService;
 import org.springframework.http.HttpStatus;

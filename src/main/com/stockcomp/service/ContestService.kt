@@ -7,14 +7,12 @@ import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
 class ContestService @Autowired constructor(
-    private val endpointRegistry: KafkaListenerEndpointRegistry,
     private val contestRepository: ContestRepository,
     private val userRepository: UserRepository
 ) {
@@ -69,21 +67,20 @@ class ContestService @Autowired constructor(
         contestRepository.save(contest)
     }
 
+
     private fun startKafkaConsumersForContest() {
-        endpointRegistry.allListenerContainers.forEach { it.start() }
+        //endpointRegistry.allListenerContainers.forEach { it.start() }
     }
 
     private fun stopKafkaConsumersForContest() {
-        endpointRegistry.allListenerContainers.forEach { it.stop() }
+        //endpointRegistry.allListenerContainers.forEach { it.stop() }
     }
-
 
     private inner class Task : Runnable {
         override fun run() {
             while (contestIsActive) {
                 try {
-                    Thread.sleep(10000)
-                    logger.info("Running the contest")
+
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }

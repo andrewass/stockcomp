@@ -80,8 +80,9 @@ internal class ContestControllerIT : IntegrationTest() {
         val request = InvestmentTransactionRequest(
             username = "testUser",
             contestNumber = 150,
-            investment = "Apple",
-            amount = 100
+            symbol = "Apple",
+            amount = 100,
+            isBuying = true
         )
 
         return objectMapper.writeValueAsString(request)

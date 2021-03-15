@@ -20,6 +20,9 @@ class Participant(
     @JoinColumn(name = "PORTFOLIO_ID")
     val portfolio : Portfolio = Portfolio(),
 
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    val transactions : MutableList<Transaction> = mutableListOf(),
+
     @ManyToOne
     @JoinColumn(name = "CONTEST_ID")
     val contest: Contest,

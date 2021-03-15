@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Object> tester(NoSuchElementException exception) {
+    public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

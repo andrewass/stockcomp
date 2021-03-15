@@ -9,5 +9,8 @@ class Portfolio (
     @Id
     @Column(name = "PORTFOLIO_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    val id: Long? = null,
+
+    @OneToMany(mappedBy = "portfolio", cascade = [CascadeType.ALL])
+    val investments : MutableList<Investment> = mutableListOf()
 )
