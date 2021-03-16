@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.IntegrationTest
 import com.stockcomp.entity.User
 import com.stockcomp.entity.contest.Contest
+import com.stockcomp.entity.contest.TransactionType
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.InvestmentTransactionRequest
@@ -82,12 +83,11 @@ internal class ContestControllerIT : IntegrationTest() {
             contestNumber = 150,
             symbol = "Apple",
             amount = 100,
-            isBuying = true
+            transactionType = TransactionType.BUY
         )
 
         return objectMapper.writeValueAsString(request)
     }
-
 
     private fun createTestData() {
         val contest = Contest(contestNumber = contestNumber.toInt(), startTime = LocalDateTime.now())

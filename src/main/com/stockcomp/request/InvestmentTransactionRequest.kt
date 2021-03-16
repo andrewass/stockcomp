@@ -1,7 +1,9 @@
 package com.stockcomp.request
 
+import com.stockcomp.entity.contest.TransactionType
+
 class InvestmentTransactionRequest(
-    val isBuying: Boolean,
+    val transactionType: TransactionType,
     val username: String,
     val contestNumber: Int,
     val symbol: String,
