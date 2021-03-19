@@ -51,6 +51,15 @@ create table t_transaction(
     date_time_processed     datetime not null,
     transaction_type        varchar(10) not null,
     amount                  int,
+    current_price           double,
     primary key (transaction_id),
     foreign key (participant_id) references t_participant(participant_id)
+);
+
+create table t_investment_unit(
+    investment_unit_id      bigint(20) not null auto_increment,
+    symbol                  varchar(20),
+    investment_name         varchar(100),
+    transactions            int,
+    primary key (investment_unit_id)
 );

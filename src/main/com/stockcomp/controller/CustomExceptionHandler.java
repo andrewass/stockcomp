@@ -18,7 +18,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InsufficientFundsException.class)
-    public ResponseEntity<Object> handleInsufficentFundsException(InsufficientFundsException exception){
+    public ResponseEntity<Object> handleInsufficientFundsException(InsufficientFundsException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
 }

@@ -17,7 +17,6 @@ class ContestService @Autowired constructor(
     private val userRepository: UserRepository
 ) {
     private val logger = LoggerFactory.getLogger(ContestService::class.java)
-    private var contestIsActive = false
 
     fun createContest(request: CreateContestRequest): Contest {
         val contest = Contest(
@@ -36,9 +35,7 @@ class ContestService @Autowired constructor(
                 inRunningMode = true
             }
             contestRepository.save(contest.get())
-            contestIsActive = true
             logger.info("Starting contest")
-            Thread(Task()).start()
             startKafkaConsumersForContest()
         } catch (e: NoSuchElementException) {
             throw IllegalStateException("Unable to start the contest at the given state")
@@ -50,7 +47,6 @@ class ContestService @Autowired constructor(
         try {
             contest.get().inRunningMode = false
             contestRepository.save(contest.get())
-            contestIsActive = false
             logger.info("Stopping contest")
             stopKafkaConsumersForContest()
         } catch (e: NoSuchElementException) {
@@ -67,6 +63,9 @@ class ContestService @Autowired constructor(
         contestRepository.save(contest)
     }
 
+    fun getUpcomingContests() : List<Contest> {
+        return emptyList()
+    }
 
     private fun startKafkaConsumersForContest() {
         //endpointRegistry.allListenerContainers.forEach { it.start() }
@@ -74,17 +73,5 @@ class ContestService @Autowired constructor(
 
     private fun stopKafkaConsumersForContest() {
         //endpointRegistry.allListenerContainers.forEach { it.stop() }
-    }
-
-    private inner class Task : Runnable {
-        override fun run() {
-            while (contestIsActive) {
-                try {
-
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
-            }
-        }
     }
 }

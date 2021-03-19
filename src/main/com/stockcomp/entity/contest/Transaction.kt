@@ -23,5 +23,7 @@ class Transaction(
 
     val amount: Int,
 
+    val currentPrice: Double,
+
     val dateTimeProcessed : LocalDateTime
 )

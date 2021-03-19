@@ -1,11 +1,14 @@
 package com.stockcomp.controller;
 
+import com.stockcomp.entity.contest.Contest;
 import com.stockcomp.kafka.producer.ContestProducer;
 import com.stockcomp.request.InvestmentTransactionRequest;
 import com.stockcomp.service.ContestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/contest")
@@ -17,6 +20,13 @@ public class ContestController extends CustomExceptionHandler {
     public ContestController(ContestProducer contestProducer, ContestService contestService) {
         this.contestProducer = contestProducer;
         this.contestService = contestService;
+    }
+
+    @GetMapping("/upcoming-contests")
+    public ResponseEntity<List<Contest>> getUpcomingContests(){
+        var contests = contestService.getUpcomingContests();
+
+        return ResponseEntity.ok(contests);
     }
 
     @PostMapping("/sign-up")
