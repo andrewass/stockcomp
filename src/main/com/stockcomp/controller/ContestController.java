@@ -1,9 +1,9 @@
 package com.stockcomp.controller;
 
 import com.stockcomp.entity.contest.Contest;
-import com.stockcomp.kafka.producer.ContestProducer;
 import com.stockcomp.request.InvestmentTransactionRequest;
 import com.stockcomp.service.ContestService;
+import com.stockcomp.service.InvestmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +15,11 @@ import java.util.List;
 public class ContestController extends CustomExceptionHandler {
 
     private final ContestService contestService;
-    private final ContestProducer contestProducer;
+    private final InvestmentService investmentService;
 
-    public ContestController(ContestProducer contestProducer, ContestService contestService) {
-        this.contestProducer = contestProducer;
+    public ContestController(ContestService contestService, InvestmentService investmentService) {
         this.contestService = contestService;
+        this.investmentService = investmentService;
     }
 
     @GetMapping("/upcoming-contests")
@@ -41,14 +41,14 @@ public class ContestController extends CustomExceptionHandler {
 
     @PostMapping("/buy-investment")
     public ResponseEntity<HttpStatus> buyInvestment(@RequestBody InvestmentTransactionRequest request) {
-        contestProducer.buyInvestment(request);
+        investmentService.buyInvestment(request);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/sell-investment")
     public ResponseEntity<HttpStatus> sellInvestment(@RequestBody InvestmentTransactionRequest request) {
-        contestProducer.sellInvestment(request);
+        investmentService.sellInvestment(request);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

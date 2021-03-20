@@ -36,7 +36,6 @@ class ContestService @Autowired constructor(
             }
             contestRepository.save(contest.get())
             logger.info("Starting contest")
-            startKafkaConsumersForContest()
         } catch (e: NoSuchElementException) {
             throw IllegalStateException("Unable to start the contest at the given state")
         }
@@ -48,7 +47,6 @@ class ContestService @Autowired constructor(
             contest.get().inRunningMode = false
             contestRepository.save(contest.get())
             logger.info("Stopping contest")
-            stopKafkaConsumersForContest()
         } catch (e: NoSuchElementException) {
             throw IllegalStateException("Unable to stop the contest at the given state")
         }
@@ -65,13 +63,5 @@ class ContestService @Autowired constructor(
 
     fun getUpcomingContests() : List<Contest> {
         return emptyList()
-    }
-
-    private fun startKafkaConsumersForContest() {
-        //endpointRegistry.allListenerContainers.forEach { it.start() }
-    }
-
-    private fun stopKafkaConsumersForContest() {
-        //endpointRegistry.allListenerContainers.forEach { it.stop() }
     }
 }

@@ -10,7 +10,6 @@ import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -34,9 +33,6 @@ internal class ContestControllerIT : IntegrationTest() {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var kafkaProperties: KafkaProperties
 
     private val username = "testUser"
     private val contestNumber = "100"

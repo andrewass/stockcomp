@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import java.time.LocalDateTime
 import java.util.*
 
@@ -26,9 +25,6 @@ internal class ContestServiceTest {
     @MockK
     private lateinit var userRepository: UserRepository
 
-    @MockK
-    private lateinit var endpointRegistry: KafkaListenerEndpointRegistry
-
     @InjectMockKs
     private lateinit var contestService: ContestService
 
@@ -38,10 +34,6 @@ internal class ContestServiceTest {
     @BeforeAll
     private fun setUp() {
         MockKAnnotations.init(this)
-
-        every {
-            endpointRegistry.allListenerContainers
-        } returns emptyList()
 
         every {
             contestRepository.save(any<Contest>())
