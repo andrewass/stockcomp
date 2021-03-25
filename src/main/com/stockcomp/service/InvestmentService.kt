@@ -26,25 +26,29 @@ class InvestmentService @Autowired constructor(
     private val stockConsumer: StockConsumer
 ) {
 
-    fun buyInvestment(request: InvestmentTransactionRequest) {
+    fun buyInvestment(request: InvestmentTransactionRequest): Transaction {
         val participant = getParticipant(request.username, request.contestNumber)
         val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
 
         verifySufficientFunds(participant, realTimePrice, request.amount)
-        updateTransactionHistory(participant, realTimePrice, request)
         val investment = updatePortfolioAndFundsWhenBuying(participant, realTimePrice, request)
         updateInvestmentUnit(investment)
+        val transaction = updateTransactionHistory(participant, realTimePrice, request)
         participantRepository.save(participant)
+
+        return transaction
     }
 
-    fun sellInvestment(request: InvestmentTransactionRequest) {
+    fun sellInvestment(request: InvestmentTransactionRequest): Transaction {
         val participant = getParticipant(request.username, request.contestNumber)
         val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
 
         verifyExistingInvestment(participant, request)
-        updateTransactionHistory(participant, realTimePrice, request)
         updatePortfolioAndFundsWhenSelling(participant, realTimePrice, request)
+        val transaction = updateTransactionHistory(participant, realTimePrice, request)
         participantRepository.save(participant)
+
+        return transaction
     }
 
     private fun verifySufficientFunds(participant: Participant, realTimePrice: RealTimePriceResponse, amount: Int) {
@@ -92,7 +96,7 @@ class InvestmentService @Autowired constructor(
     private fun updateTransactionHistory(
         participant: Participant, realTimePrice: RealTimePriceResponse,
         request: InvestmentTransactionRequest
-    ) {
+    ): Transaction {
         val transaction = Transaction(
             participant = participant,
             symbol = request.symbol,
@@ -102,6 +106,8 @@ class InvestmentService @Autowired constructor(
             currentPrice = realTimePrice.currentPrice!!
         )
         participant.transactions.add(transaction)
+
+        return transaction
     }
 
     private fun updateInvestmentUnit(investment: Investment) {

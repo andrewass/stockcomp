@@ -11,11 +11,13 @@ private const val TOKEN_DURATION = 6000000
 
 fun generateToken(userDetails: UserDetails): String {
     val claims: HashMap<String, Any> = hashMapOf("sub" to userDetails.username)
+
     return createToken(claims)
 }
 
 fun tokenIsValid(token: String, userDetails: UserDetails): Boolean {
     val username = extractUsername(token)
+
     return username == userDetails.username && !isTokenExpired(token)
 }
 
@@ -27,6 +29,7 @@ private fun extractExpiration(token: String) = extractClaimFromToken(token, Clai
 
 private fun <T> extractClaimFromToken(token: String, lambda: (Claims) -> T): T {
     val claims = getAllClaims(token)
+
     return lambda(claims)
 }
 
