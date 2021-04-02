@@ -1,7 +1,6 @@
 package com.stockcomp.service
 
 import com.stockcomp.repository.UserRepository
-import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
@@ -34,7 +33,7 @@ class CustomUserService @Autowired constructor(
         return userRepository.save(user)
     }
 
-    fun getPersistedUser(request: AuthenticationRequest): com.stockcomp.entity.User {
-        return userRepository.findByUsername(request.username).get()
+    fun getPersistedUser(username: String): com.stockcomp.entity.User {
+        return userRepository.findByUsername(username).get()
     }
 }
