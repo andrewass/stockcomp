@@ -12,5 +12,4 @@ public class Metrics {
     private Metrics(MeterRegistry meterRegistry) {
         SIGN_UP_USER = meterRegistry.counter("signed.up.user");
     }
-
 }

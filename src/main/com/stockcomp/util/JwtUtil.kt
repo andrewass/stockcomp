@@ -9,8 +9,8 @@ import java.util.*
 private const val SECRET_KEY = "secret"
 private const val TOKEN_DURATION = 6000000
 
-fun generateToken(userDetails: UserDetails): String {
-    val claims: HashMap<String, Any> = hashMapOf("sub" to userDetails.username)
+fun generateToken(username : String): String {
+    val claims: HashMap<String, Any> = hashMapOf("sub" to username)
 
     return createToken(claims)
 }

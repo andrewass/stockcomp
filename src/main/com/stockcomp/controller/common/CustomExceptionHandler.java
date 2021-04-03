@@ -1,4 +1,4 @@
-package com.stockcomp.controller;
+package com.stockcomp.controller.common;
 
 import com.stockcomp.exception.InsufficientFundsException;
 import org.springframework.http.HttpStatus;

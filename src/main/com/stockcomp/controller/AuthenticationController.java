@@ -4,7 +4,7 @@ import com.stockcomp.request.AuthenticationRequest;
 import com.stockcomp.request.SignUpRequest;
 import com.stockcomp.response.AuthenticationResponse;
 import com.stockcomp.service.CustomUserService;
-import com.stockcomp.util.TokenUtilKt;
+import com.stockcomp.util.JwtUtilKt;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,7 +26,7 @@ public class AuthenticationController {
 
     private final CustomUserService userService;
 
-    @Value("${cookie.duration}")
+    @Value("${token.expiration}")
     private String cookieDuration;
 
     private Counter signUpCounter;
@@ -37,19 +38,11 @@ public class AuthenticationController {
         setupMetrics(meterRegistry);
     }
 
-    @PostMapping("/authenticate")
-    @ApiOperation(value = "Authenticate and create jwt token for user", response = AuthenticationResponse.class)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest request) {
-        var response = authenticateAndGenerateJwt(request.getUsername(), request.getPassword());
-
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sign up a new user", response = AuthenticationResponse.class)
     public ResponseEntity<?> signUpUser(@RequestBody SignUpRequest request) {
         userService.addNewUser(request);
-        var jwt = authenticateAndGenerateJwt(request.getUsername(), request.getPassword());
+        var jwt = JwtUtilKt.generateToken(request.getUsername());
         var cookie = createCookie(jwt, (Integer.parseInt(cookieDuration)));
         signUpCounter.increment();
 
@@ -59,27 +52,25 @@ public class AuthenticationController {
     @PostMapping("/sign-in")
     @ApiOperation(value = "Sign in existing user", response = AuthenticationResponse.class)
     public ResponseEntity<?> signInUser(@RequestBody AuthenticationRequest request) {
-        userService.getPersistedUser(request.getUsername());
-        var response = authenticateAndGenerateJwt(request.getUsername(), request.getPassword());
+        authenticateUser(request.getUsername(), request.getPassword());
+        var jwt = JwtUtilKt.generateToken(request.getUsername());
+        var cookie = createCookie(jwt, (Integer.parseInt(cookieDuration)));
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
     @PostMapping("/sign-out")
     @ApiOperation(value = "Sign out signed in user")
     public ResponseEntity<?> signOutUser(@RequestParam String username) {
-        userService.getPersistedUser(username);
         var cookie = createCookie("", 0);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
-    private String authenticateAndGenerateJwt(String username, String password) {
+    private Authentication authenticateUser(String username, String password){
         var token = new UsernamePasswordAuthenticationToken(username, password);
-        authenticationManager.authenticate(token);
-        var userDetails = userService.loadUserByUsername(username);
 
-        return TokenUtilKt.generateToken(userDetails);
+        return authenticationManager.authenticate(token);
     }
 
     private ResponseCookie createCookie(String jwt, int maxAge) {

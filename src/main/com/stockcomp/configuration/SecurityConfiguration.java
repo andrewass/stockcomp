@@ -1,6 +1,6 @@
 package com.stockcomp.configuration;
 
-import com.stockcomp.controller.filter.JwtRequestFilter;
+import com.stockcomp.controller.common.TokenAuthenticationFilter;
 import com.stockcomp.service.CustomUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CustomUserService customUserService;
-    private final JwtRequestFilter requestFilter;
+    private final TokenAuthenticationFilter requestFilter;
     private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfiguration(PasswordEncoder passwordEncoder, JwtRequestFilter requestFilter,
+    public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter requestFilter,
                                  CustomUserService customUserService) {
         this.passwordEncoder = passwordEncoder;
         this.requestFilter = requestFilter;
@@ -46,12 +46,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity.cors()
                 .and()
                 .csrf().disable()
-                //TODO: Update permissions
-                //.authorizeRequests()
-                //.antMatchers("/*","/*/*","/auth/*", "/contest/*", "/stock/*", "/scheduler/*","/actuator/*")
-                //.permitAll()
-                //.anyRequest().authenticated()
-                //.and()
+                .authorizeRequests()
+                .antMatchers("/auth/*", "/contest/*", "/stock/*", "/scheduler/*", "/actuator/*")
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
