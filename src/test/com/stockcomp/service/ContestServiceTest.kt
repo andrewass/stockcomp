@@ -1,8 +1,8 @@
 package com.stockcomp.service
 
 import com.stockcomp.entity.contest.Contest
-import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.UserRepository
+import com.stockcomp.repository.jpa.ContestRepository
+import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import io.mockk.MockKAnnotations
 import io.mockk.every

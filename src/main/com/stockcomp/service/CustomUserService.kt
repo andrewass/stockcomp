@@ -1,6 +1,6 @@
 package com.stockcomp.service
 
-import com.stockcomp.repository.UserRepository
+import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.SignUpRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User

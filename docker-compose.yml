@@ -61,6 +61,7 @@ services:
     build: .
     depends_on:
       - stock-comp-mysql
+      - es01
     restart: on-failure
     environment:
       - FINNHUB_API_KEY=${FINNHUB_API_KEY}

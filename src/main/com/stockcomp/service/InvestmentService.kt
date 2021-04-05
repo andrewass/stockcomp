@@ -6,8 +6,8 @@ import com.stockcomp.entity.contest.Participant
 import com.stockcomp.entity.contest.Portfolio
 import com.stockcomp.entity.contest.Transaction
 import com.stockcomp.exception.InsufficientFundsException
-import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.repository.jpa.ContestRepository
+import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.RealTimePriceResponse
 import org.springframework.beans.factory.annotation.Autowired

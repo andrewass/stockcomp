@@ -1,16 +1,21 @@
 package com.stockcomp.document;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "investment")
-public class InvestmentDoc {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Document(indexName = "symbol")
+public class SymbolDocument {
 
     @Id
     private String id;
 
+    @JsonProperty("symbol")
     private String symbol;
 
+    @JsonProperty("description")
     private String description;
 
     public String getSymbol() {

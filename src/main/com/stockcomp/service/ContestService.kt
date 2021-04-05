@@ -2,8 +2,8 @@ package com.stockcomp.service
 
 import com.stockcomp.entity.contest.Contest
 import com.stockcomp.entity.contest.Participant
-import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.UserRepository
+import com.stockcomp.repository.jpa.ContestRepository
+import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

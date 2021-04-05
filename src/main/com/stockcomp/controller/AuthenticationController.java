@@ -28,13 +28,13 @@ public class AuthenticationController {
     @Value("${token.expiration}")
     private String cookieDuration;
 
-    private Counter signUpCounter;
+    private final Counter signUpCounter;
 
     AuthenticationController(AuthenticationManager authenticationManager, CustomUserService userService,
                              MeterRegistry meterRegistry) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
-        setupMetrics(meterRegistry);
+        signUpCounter = setupMetrics(meterRegistry);
     }
 
     @PostMapping("/sign-up")
@@ -81,7 +81,7 @@ public class AuthenticationController {
                 .build();
     }
 
-    private void setupMetrics(MeterRegistry meterRegistry) {
-        signUpCounter = meterRegistry.counter("sign.up.counter");
+    private Counter setupMetrics(MeterRegistry meterRegistry) {
+        return meterRegistry.counter("sign.up.counter");
     }
 }

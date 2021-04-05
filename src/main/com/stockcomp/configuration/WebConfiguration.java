@@ -17,7 +17,11 @@ public class WebConfiguration {
 
     @Bean
     public WebClient webClient() {
-        return WebClient.builder().baseUrl(finnhubBaseUrl).build();
+        return WebClient.builder()
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(20 * 1024 * 1024))
+                .baseUrl(finnhubBaseUrl).build();
     }
 
     @Bean

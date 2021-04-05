@@ -5,8 +5,8 @@ import com.stockcomp.IntegrationTest
 import com.stockcomp.entity.User
 import com.stockcomp.entity.contest.Contest
 import com.stockcomp.entity.contest.TransactionType
-import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.UserRepository
+import com.stockcomp.repository.jpa.ContestRepository
+import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

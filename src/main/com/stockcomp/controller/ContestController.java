@@ -18,6 +18,7 @@ import java.util.List;
 public class ContestController extends CustomExceptionHandler {
 
     private final ContestService contestService;
+
     private final InvestmentService investmentService;
 
     public ContestController(ContestService contestService, InvestmentService investmentService) {

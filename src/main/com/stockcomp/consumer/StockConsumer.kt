@@ -3,6 +3,7 @@ package com.stockcomp.consumer
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.stockcomp.document.SymbolDocument
 import com.stockcomp.response.RealTimePriceResponse
 import com.stockcomp.response.SymbolSearchResponse
 import org.springframework.stereotype.Component
@@ -39,10 +40,28 @@ class StockConsumer(private val webClient: WebClient) {
             .map { node -> node.path("result") }
             .block()!!
 
-        return convertToList(result)
+        return convertToSymbolSearchResponseList(result)
     }
 
-    private fun convertToList(result: JsonNode): List<SymbolSearchResponse> {
+    fun findAllSymbolsForExchange(exchange: String): List<SymbolDocument> {
+        val result = webClient.get()
+            .uri { uriBuilder: UriBuilder ->
+                uriBuilder.path("/stock/symbol")
+                    .queryParam("exchange", exchange)
+                    .queryParam("token", finnhubToken).build()
+            }
+            .retrieve()
+            .bodyToMono(JsonNode::class.java)
+            .block()!!
+
+        return convertToSymbolDocuments(result)
+    }
+
+    private fun convertToSymbolDocuments(result: JsonNode): List<SymbolDocument> {
+        return mapper.readerFor(object : TypeReference<List<SymbolDocument>>() {}).readValue(result)
+    }
+
+    private fun convertToSymbolSearchResponseList(result: JsonNode): List<SymbolSearchResponse> {
         return mapper.readerFor(object : TypeReference<List<SymbolSearchResponse>>() {}).readValue(result)
     }
 }
