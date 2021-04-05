@@ -2,7 +2,6 @@ package com.stockcomp.controller;
 
 import com.stockcomp.request.AuthenticationRequest;
 import com.stockcomp.request.SignUpRequest;
-import com.stockcomp.response.AuthenticationResponse;
 import com.stockcomp.service.CustomUserService;
 import com.stockcomp.util.JwtUtilKt;
 import io.micrometer.core.instrument.Counter;
@@ -39,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/sign-up")
-    @ApiOperation(value = "Sign up a new user", response = AuthenticationResponse.class)
+    @ApiOperation(value = "Sign up a new user")
     public ResponseEntity<?> signUpUser(@RequestBody SignUpRequest request) {
         userService.addNewUser(request);
         var jwt = JwtUtilKt.generateToken(request.getUsername());
@@ -50,7 +49,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/sign-in")
-    @ApiOperation(value = "Sign in existing user", response = AuthenticationResponse.class)
+    @ApiOperation(value = "Sign in existing user")
     public ResponseEntity<?> signInUser(@RequestBody AuthenticationRequest request) {
         authenticateUser(request.getUsername(), request.getPassword());
         var jwt = JwtUtilKt.generateToken(request.getUsername());
@@ -67,7 +66,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
-    private Authentication authenticateUser(String username, String password){
+    private Authentication authenticateUser(String username, String password) {
         var token = new UsernamePasswordAuthenticationToken(username, password);
 
         return authenticationManager.authenticate(token);

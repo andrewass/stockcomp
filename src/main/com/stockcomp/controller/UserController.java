@@ -13,5 +13,4 @@ public class UserController {
     public UserController(CustomUserService userService) {
         this.userService = userService;
     }
-
 }
