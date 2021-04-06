@@ -68,6 +68,7 @@ services:
       - SPRING_DATASOURCER_URL=jdbc:mysql://stock-comp-mysql:3306/stockcompdb?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
+      - ELASTIC_SEARCH_URL=http://es01:9200/
     ports:
       - "8080:8080"
       - "5005:5005"

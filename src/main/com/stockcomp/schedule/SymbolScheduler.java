@@ -44,7 +44,7 @@ public class SymbolScheduler {
         for (String exchange : stockExchanges){
             symbols.addAll(stockConsumer.findAllSymbolsForExchange(exchange));
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -73,5 +73,6 @@ public class SymbolScheduler {
     private void updatePersistedSymbolDocuments(ArrayList<SymbolDocument> symbols) {
         repository.deleteAll();
         repository.saveAll(symbols);
+        logger.info("Number of SymbolDocument fetched and persisted : "+repository.count());
     }
 }
