@@ -1,20 +1,19 @@
 package com.stockcomp.consumer
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.document.SymbolDocument
+import com.stockcomp.response.HistoricPriceResponse
 import com.stockcomp.response.RealTimePriceResponse
 import com.stockcomp.response.SymbolSearchResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriBuilder
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Component
 class StockConsumer(private val webClient: WebClient) {
     private val finnhubToken = System.getenv("FINNHUB_API_KEY")
-
-    private val mapper: ObjectMapper = ObjectMapper()
 
     fun findRealTimePrice(symbol: String?): RealTimePriceResponse {
         return webClient.get()
@@ -40,7 +39,7 @@ class StockConsumer(private val webClient: WebClient) {
             .map { node -> node.path("result") }
             .block()!!
 
-        return convertToSymbolSearchResponseList(result)
+        return ConsumerMapper.mapToSymbolSearchResponseList(result)
     }
 
     fun findAllSymbolsForExchange(exchange: String): List<SymbolDocument> {
@@ -54,14 +53,26 @@ class StockConsumer(private val webClient: WebClient) {
             .bodyToMono(JsonNode::class.java)
             .block()!!
 
-        return convertToSymbolDocuments(result)
+        return ConsumerMapper.mapToSymbolDocuments(result).filter { !it.symbol.contains('.') }
     }
 
-    private fun convertToSymbolDocuments(result: JsonNode): List<SymbolDocument> {
-        return mapper.readerFor(object : TypeReference<List<SymbolDocument>>() {}).readValue(result)
-    }
+    fun getHistoricPriceList(symbol: String): List<HistoricPriceResponse> {
+        val currentTimeEpoch = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+        val lastYearEpoch = LocalDateTime.now().minusYears(1).toEpochSecond(ZoneOffset.UTC)
 
-    private fun convertToSymbolSearchResponseList(result: JsonNode): List<SymbolSearchResponse> {
-        return mapper.readerFor(object : TypeReference<List<SymbolSearchResponse>>() {}).readValue(result)
+        val result = webClient.get()
+            .uri { uriBuilder: UriBuilder ->
+                uriBuilder.path("/stock/candle")
+                    .queryParam("symbol", symbol)
+                    .queryParam("from", lastYearEpoch)
+                    .queryParam("to", currentTimeEpoch)
+                    .queryParam("resolution", "D")
+                    .queryParam("token", finnhubToken).build()
+            }
+            .retrieve()
+            .bodyToMono(JsonNode::class.java)
+            .block()!!
+
+        return ConsumerMapper.mapToHistoricPrices(result)
     }
 }

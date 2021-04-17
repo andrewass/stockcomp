@@ -13,7 +13,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 public class ElasticSearchConfiguration extends ElasticsearchConfigurationSupport {
 
     @Bean
-    public RestHighLevelClient client(){
+    public RestHighLevelClient elasticSearchClient(){
         ClientConfiguration configuration = ClientConfiguration.builder()
                 .connectedTo("es01:9200")
                 .withConnectTimeout(1000*60)
@@ -25,6 +25,6 @@ public class ElasticSearchConfiguration extends ElasticsearchConfigurationSuppor
 
     @Bean
     public ElasticsearchOperations elasticsearchTemplate(){
-        return new ElasticsearchRestTemplate(client());
+        return new ElasticsearchRestTemplate(elasticSearchClient());
     }
 }

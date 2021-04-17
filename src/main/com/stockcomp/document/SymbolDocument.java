@@ -4,18 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+@Document(indexName = "stock")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Document(indexName = "symbol")
 public class SymbolDocument {
 
     @Id
     private String id;
 
     @JsonProperty("symbol")
+    @Field(type = FieldType.Text, name = "symbol")
     private String symbol;
 
     @JsonProperty("description")
+    @Field(type = FieldType.Text, name = "description")
     private String description;
 
     public String getSymbol() {
@@ -42,4 +46,3 @@ public class SymbolDocument {
         this.description = description;
     }
 }
-

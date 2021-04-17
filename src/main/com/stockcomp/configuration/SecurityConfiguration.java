@@ -28,9 +28,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.customUserService = customUserService;
     }
 
-    /**
-     * Configuring the authentication process
-     */
     @Override
     public void configure(AuthenticationManagerBuilder authentication) throws Exception {
         authentication
@@ -38,9 +35,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder);
     }
 
-    /**
-     * Configuring the authorization process
-     */
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors()

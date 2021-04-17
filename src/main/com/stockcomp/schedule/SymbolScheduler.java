@@ -2,7 +2,7 @@ package com.stockcomp.schedule;
 
 import com.stockcomp.consumer.StockConsumer;
 import com.stockcomp.document.SymbolDocument;
-import com.stockcomp.repository.document.InvestmentDocumentRepository;
+import com.stockcomp.repository.document.SymbolDocumentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,11 +17,11 @@ public class SymbolScheduler {
 
     private final StockConsumer stockConsumer;
 
-    private final InvestmentDocumentRepository repository;
+    private final SymbolDocumentRepository repository;
 
     private final Logger logger = LoggerFactory.getLogger(SymbolScheduler.class);
 
-    public SymbolScheduler(StockConsumer stockConsumer, InvestmentDocumentRepository repository) {
+    public SymbolScheduler(StockConsumer stockConsumer, SymbolDocumentRepository repository) {
         this.stockConsumer = stockConsumer;
         this.repository = repository;
     }
@@ -44,7 +44,7 @@ public class SymbolScheduler {
         for (String exchange : stockExchanges){
             symbols.addAll(stockConsumer.findAllSymbolsForExchange(exchange));
             try {
-                Thread.sleep(200);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
