@@ -16,15 +16,17 @@ class StockConsumer(private val webClient: WebClient) {
     private val finnhubToken = System.getenv("FINNHUB_API_KEY")
 
     fun findRealTimePrice(symbol: String?): RealTimePriceResponse {
-        return webClient.get()
+        val result = webClient.get()
             .uri { uriBuilder: UriBuilder ->
                 uriBuilder.path("/quote")
                     .queryParam("symbol", symbol)
                     .queryParam("token", finnhubToken).build()
             }
             .retrieve()
-            .bodyToMono(RealTimePriceResponse::class.java)
+            .bodyToMono(JsonNode::class.java)
             .block()!!
+
+        return ConsumerMapper.mapToRealTimePriceResponse(result)
     }
 
     fun searchSymbol(symbol: String): List<SymbolSearchResponse> {

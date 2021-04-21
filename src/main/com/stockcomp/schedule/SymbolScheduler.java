@@ -37,7 +37,6 @@ public class SymbolScheduler {
         updatePersistedSymbolDocuments(symbols);
     }
 
-
     private List<SymbolDocument> populateSymbolsFromStockExchanges(List<String> stockExchanges){
         var symbols = new ArrayList<SymbolDocument>();
 

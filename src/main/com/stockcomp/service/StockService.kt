@@ -6,7 +6,6 @@ import com.stockcomp.response.HistoricPriceResponse
 import com.stockcomp.response.RealTimePriceResponse
 import com.stockcomp.response.SymbolSearchResponse
 import org.elasticsearch.index.query.QueryBuilders
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
-class StockService @Autowired constructor(
+class StockService(
     private val stockConsumer: StockConsumer,
     private val operations: ElasticsearchOperations
 ) {
