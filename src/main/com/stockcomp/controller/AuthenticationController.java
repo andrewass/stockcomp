@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
-public class AuthenticationController {
+public class    AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
 

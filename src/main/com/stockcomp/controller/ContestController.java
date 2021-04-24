@@ -1,16 +1,19 @@
 package com.stockcomp.controller;
 
+import com.stockcomp.controller.common.CookieUtilKt;
 import com.stockcomp.controller.common.CustomExceptionHandler;
 import com.stockcomp.entity.contest.Contest;
 import com.stockcomp.entity.contest.Transaction;
 import com.stockcomp.request.InvestmentTransactionRequest;
 import com.stockcomp.service.ContestService;
 import com.stockcomp.service.InvestmentService;
+import com.stockcomp.util.JwtUtilKt;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -43,6 +46,15 @@ public class ContestController extends CustomExceptionHandler {
         contestService.signUpUser(username, contestNumber);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/user-participating")
+    @ApiOperation(value = "Verify if user is participating in a given contest")
+    public ResponseEntity<Boolean> isParticipating(HttpServletRequest request, @RequestParam Integer contesteNumber) {
+        var jwt = CookieUtilKt.getJwtFromCookie(request);
+        var username = JwtUtilKt.extractUsername(jwt);
+
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/buy-investment")

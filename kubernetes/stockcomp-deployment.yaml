@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockcomp-deployment
+  labels:
+    app: stockcomp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stockcomp
+  template:
+    metadata:
+      name: stockcomp-app
+      labels:
+        app: stockcomp
+    spec:
+      containers:
+        - name: stockcomp-service
+          image: stockcomp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCER_URL
+              value: jdbc:jdbc:mysql://stock-comp-mysql:3306/stockcompdb?useSSL=false&allowPublicKeyRetrieval=true
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: password
+            - name: SPRING_DATASOURCE_USERNAME
+              value: user

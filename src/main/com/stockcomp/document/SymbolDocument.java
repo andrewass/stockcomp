@@ -22,6 +22,8 @@ public class SymbolDocument {
     @Field(type = FieldType.Text, name = "description")
     private String description;
 
+    private Exchange exchange;
+
     public String getSymbol() {
         return symbol;
     }
@@ -44,5 +46,13 @@ public class SymbolDocument {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Exchange getExchange() {
+        return exchange;
+    }
+
+    public void setExchange(Exchange exchange) {
+        this.exchange = exchange;
     }
 }

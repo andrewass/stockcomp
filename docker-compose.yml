@@ -1,4 +1,4 @@
-version: '3'
+version: "3.8"
 
 services:
   #ElasticSearch
@@ -56,7 +56,7 @@ services:
 
   #Spring Boot app
   stock-comp-server:
-    image: stock-comp-server
+    image: andrewass/stockcomp:latest
     container_name: stock-comp
     build: .
     depends_on:

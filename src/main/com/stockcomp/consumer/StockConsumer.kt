@@ -1,6 +1,7 @@
 package com.stockcomp.consumer
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.stockcomp.document.Exchange
 import com.stockcomp.document.SymbolDocument
 import com.stockcomp.response.HistoricPriceResponse
 import com.stockcomp.response.RealTimePriceResponse
