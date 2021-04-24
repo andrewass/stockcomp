@@ -2,9 +2,9 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getJwtFromCookie
-import com.stockcomp.entity.contest.Contest
 import com.stockcomp.entity.contest.Transaction
 import com.stockcomp.request.InvestmentTransactionRequest
+import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.InvestmentService
 import com.stockcomp.util.extractUsername
@@ -24,7 +24,7 @@ class ContestController(
 
     @ApiOperation(value = "Return a list of upcoming contests")
     @GetMapping("/upcoming-contests")
-    fun upcomingContests(): ResponseEntity<List<Contest>> {
+    fun upcomingContests(): ResponseEntity<List<UpcomingContest>> {
         val contests = contestService.getUpcomingContests()
 
         return ResponseEntity.ok(contests)
@@ -33,35 +33,36 @@ class ContestController(
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sing up user for a given contest")
     fun signUpForContest(
-        @RequestParam username: String?,
-        @RequestParam contestNumber: Int?
+        @RequestParam username: String,
+        @RequestParam contestNumber: Int
     ): ResponseEntity<HttpStatus> {
-        contestService.signUpUser(username!!, contestNumber!!)
+        contestService.signUpUser(username, contestNumber)
 
         return ResponseEntity(HttpStatus.OK)
     }
 
     @GetMapping("/user-participating")
     @ApiOperation(value = "Verify if user is participating in a given contest")
-    fun isParticipating(request: HttpServletRequest?, @RequestParam contesteNumber: Int?): ResponseEntity<Boolean> {
-        val jwt = getJwtFromCookie(request!!)
-        val username = extractUsername(jwt!!)
+    fun isParticipating(request: HttpServletRequest, @RequestParam contestNumber: Int): ResponseEntity<Boolean> {
+        val jwt = getJwtFromCookie(request)
+        val username = extractUsername(jwt)
+        val isParticipating = contestService.userIsParticipating(username, contestNumber)
 
-        return ResponseEntity.ok(true)
+        return ResponseEntity.ok(isParticipating)
     }
 
     @PostMapping("/buy-investment")
     @ApiOperation(value = "Buy investment for a given participant")
-    fun buyInvestment(@RequestBody request: InvestmentTransactionRequest?): ResponseEntity<Transaction> {
-        val transaction = investmentService.buyInvestment(request!!)
+    fun buyInvestment(@RequestBody request: InvestmentTransactionRequest): ResponseEntity<Transaction> {
+        val transaction = investmentService.buyInvestment(request)
 
         return ResponseEntity.ok(transaction)
     }
 
     @PostMapping("/sell-investment")
     @ApiOperation(value = "Sell investment for a given participant")
-    fun sellInvestment(@RequestBody request: InvestmentTransactionRequest?): ResponseEntity<Transaction> {
-        val transaction = investmentService.sellInvestment(request!!)
+    fun sellInvestment(@RequestBody request: InvestmentTransactionRequest): ResponseEntity<Transaction> {
+        val transaction = investmentService.sellInvestment(request)
 
         return ResponseEntity.ok(transaction)
     }

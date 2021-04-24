@@ -1,5 +1,6 @@
 package com.stockcomp.controller
 
+import com.stockcomp.controller.common.createCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import com.stockcomp.service.CustomUserService
@@ -9,7 +10,6 @@ import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
-import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -55,7 +55,7 @@ class AuthenticationController internal constructor(
 
     @PostMapping("/sign-out")
     @ApiOperation(value = "Sign out signed in user")
-    fun signOutUser(@RequestParam username: String?): ResponseEntity<*> {
+    fun signOutUser(@RequestParam username: String): ResponseEntity<*> {
         val cookie = createCookie("", 0)
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<Any>()
@@ -65,15 +65,6 @@ class AuthenticationController internal constructor(
         val token = UsernamePasswordAuthenticationToken(username, password)
 
         return authenticationManager.authenticate(token)
-    }
-
-    private fun createCookie(jwt: String, maxAge: Int): ResponseCookie {
-        return ResponseCookie.from("jwt", jwt)
-            .httpOnly(true)
-            .secure(false)
-            .path("/")
-            .maxAge(maxAge.toLong())
-            .build()
     }
 
     private fun setupMetrics(meterRegistry: MeterRegistry): Counter {

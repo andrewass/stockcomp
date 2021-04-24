@@ -10,14 +10,13 @@ import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.RealTimePriceResponse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
 @Transactional
-class InvestmentService @Autowired constructor(
+class InvestmentService(
     private val contestRepository: ContestRepository,
     private val participantRepository: ParticipantRepository,
     private val stockConsumer: StockConsumer
@@ -111,6 +110,7 @@ class InvestmentService @Autowired constructor(
     private fun getParticipant(username: String, contestNumber: Int): Participant {
         val contest = contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)
 
-        return participantRepository.findParticipantFromUsername(username, contest.get()).stream().findFirst().get()
+        return participantRepository.findParticipantFromUsernameAndContest(username, contest.get()).stream().findFirst()
+            .get()
     }
 }

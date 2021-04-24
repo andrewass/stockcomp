@@ -56,7 +56,7 @@ services:
 
   #Spring Boot app
   stock-comp-server:
-    image: andrewass/stockcomp:latest
+    image: stock-comp-server
     container_name: stock-comp
     build: .
     depends_on:

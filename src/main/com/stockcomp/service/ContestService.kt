@@ -3,18 +3,20 @@ package com.stockcomp.service
 import com.stockcomp.entity.contest.Contest
 import com.stockcomp.entity.contest.Participant
 import com.stockcomp.repository.jpa.ContestRepository
+import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.response.UpcomingContest
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class ContestService @Autowired constructor(
+class ContestService(
     private val contestRepository: ContestRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val participantRepository: ParticipantRepository
 ) {
     private val logger = LoggerFactory.getLogger(ContestService::class.java)
 
@@ -28,7 +30,6 @@ class ContestService @Autowired constructor(
 
     fun startContest(contestNumber: Int) {
         val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber)
-
         try {
             contest.get().apply {
                 inPreStartMode = false
@@ -56,12 +57,25 @@ class ContestService @Autowired constructor(
         val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber).get()
         val user = userRepository.findByUsername(username).get()
         val participant = Participant(user = user, contest = contest)
-
         contest.participants.add(participant)
         contestRepository.save(contest)
     }
 
-    fun getUpcomingContests() : List<Contest> {
-        return emptyList()
+    fun getUpcomingContests(): List<UpcomingContest> {
+        val upcomingContests = contestRepository.findAllByInRunningModeIsTrueOrInPreStartModeIsTrue()
+
+        return upcomingContests.map {
+            UpcomingContest(
+                startTime = it.startTime, contestNumber = it.contestNumber,
+                inPreStartMode = it.inPreStartMode, inRunningMode = it.inRunningMode
+            )
+        }
+    }
+
+    fun userIsParticipating(username: String, contestNumber: Int): Boolean {
+        val contest = contestRepository.findContestByContestNumber(contestNumber)
+        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest.get())
+
+        return participant.isNotEmpty()
     }
 }

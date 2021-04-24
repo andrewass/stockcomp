@@ -2,6 +2,7 @@ package com.stockcomp.service
 
 import com.stockcomp.entity.contest.Contest
 import com.stockcomp.repository.jpa.ContestRepository
+import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import io.mockk.MockKAnnotations
@@ -24,6 +25,9 @@ internal class ContestServiceTest {
 
     @MockK
     private lateinit var userRepository: UserRepository
+
+    @MockK
+    private lateinit var participantRepository: ParticipantRepository
 
     @InjectMockKs
     private lateinit var contestService: ContestService

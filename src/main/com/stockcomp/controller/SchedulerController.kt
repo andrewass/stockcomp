@@ -12,22 +12,22 @@ import org.springframework.web.bind.annotation.*
 class SchedulerController(private val contestService: ContestService) {
 
     @PostMapping("/create-contest")
-    fun createContest(@RequestBody request: CreateContestRequest?): ResponseEntity<Contest> {
-        val contest = contestService.createContest(request!!)
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<Contest> {
+        val contest = contestService.createContest(request)
 
         return ResponseEntity.ok(contest)
     }
 
     @PostMapping("/start-contest")
-    fun startContest(@RequestParam("contestNumber") contestNumber: Int?): ResponseEntity<HttpStatus> {
-        contestService.startContest(contestNumber!!)
+    fun startContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> {
+        contestService.startContest(contestNumber)
 
         return ResponseEntity(HttpStatus.OK)
     }
 
     @PostMapping("/stop-contest")
-    fun stopContest(@RequestParam("contestNumber") contestNumber: Int?): ResponseEntity<HttpStatus> {
-        contestService.stopContest(contestNumber!!)
+    fun stopContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> {
+        contestService.stopContest(contestNumber)
 
         return ResponseEntity(HttpStatus.OK)
     }

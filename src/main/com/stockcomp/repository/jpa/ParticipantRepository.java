@@ -12,6 +12,6 @@ import java.util.List;
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
     @Query("SELECT p FROM Participant p inner join p.user u where u.username = ?1 and p.contest = ?2")
-    List<Participant> findParticipantFromUsername(String username, Contest contest);
+    List<Participant> findParticipantFromUsernameAndContest(String username, Contest contest);
 
 }
