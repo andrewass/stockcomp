@@ -75,11 +75,9 @@ internal class ContestControllerIT : IntegrationTest() {
 
     private fun createInvestmentTransactionRequest(): String {
         val request = InvestmentTransactionRequest(
-            username = "testUser",
             contestNumber = 150,
             symbol = "Apple",
-            amount = 100,
-            transactionType = TransactionType.BUY
+            amount = 100
         )
 
         return objectMapper.writeValueAsString(request)

@@ -9,7 +9,7 @@ import java.util.*
 private const val SECRET_KEY = "secret"
 private const val TOKEN_DURATION = 6000000
 
-fun generateToken(username : String): String {
+fun generateToken(username: String): String {
     val claims: HashMap<String, Any> = hashMapOf("sub" to username)
 
     return createToken(claims)
@@ -35,10 +35,9 @@ private fun <T> extractClaimFromToken(token: String, lambda: (Claims) -> T): T {
 
 private fun getAllClaims(token: String) = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).body
 
-private fun createToken(claims: HashMap<String, Any>): String {
-    return Jwts.builder()
+private fun createToken(claims: HashMap<String, Any>): String =
+    Jwts.builder()
         .setClaims(claims)
         .setIssuedAt(Date())
         .setExpiration(Date(System.currentTimeMillis() + TOKEN_DURATION))
         .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact()
-}

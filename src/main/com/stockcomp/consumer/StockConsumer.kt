@@ -27,7 +27,7 @@ class StockConsumer(private val webClient: WebClient) {
             .bodyToMono(JsonNode::class.java)
             .block()!!
 
-        return ConsumerMapper.mapToRealTimePriceResponse(result)
+        return mapToRealTimePriceResponse(result)
     }
 
     fun searchSymbol(symbol: String): List<SymbolSearchResponse> {
@@ -42,7 +42,7 @@ class StockConsumer(private val webClient: WebClient) {
             .map { node -> node.path("result") }
             .block()!!
 
-        return ConsumerMapper.mapToSymbolSearchResponseList(result)
+        return mapToSymbolSearchResponseList(result)
     }
 
     fun findAllSymbolsForExchange(exchange: String): List<SymbolDocument> {
@@ -56,7 +56,7 @@ class StockConsumer(private val webClient: WebClient) {
             .bodyToMono(JsonNode::class.java)
             .block()!!
 
-        return ConsumerMapper.mapToSymbolDocuments(result).filter { !it.symbol.contains('.') }
+        return mapToSymbolDocuments(result).filter { !it.symbol.contains('.') }
     }
 
     fun getHistoricPriceList(symbol: String): List<HistoricPriceResponse> {
@@ -76,6 +76,6 @@ class StockConsumer(private val webClient: WebClient) {
             .bodyToMono(JsonNode::class.java)
             .block()!!
 
-        return ConsumerMapper.mapToHistoricPrices(result)
+        return mapToHistoricPrices(result)
     }
 }

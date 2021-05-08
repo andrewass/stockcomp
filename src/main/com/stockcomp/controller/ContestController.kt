@@ -16,26 +16,27 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/contest")
+@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class ContestController(
     private val contestService: ContestService,
     private val investmentService: InvestmentService
-) :
-    CustomExceptionHandler() {
+) : CustomExceptionHandler() {
 
     @ApiOperation(value = "Return a list of upcoming contests")
     @GetMapping("/upcoming-contests")
-    fun upcomingContests(): ResponseEntity<List<UpcomingContest>> {
-        val contests = contestService.getUpcomingContests()
+    fun upcomingContests(request: HttpServletRequest): ResponseEntity<List<UpcomingContest>> {
+        val jwt = getJwtFromCookie(request)
+        val username = jwt?.let { extractUsername(jwt) }
+        val contests = contestService.getUpcomingContests(username)
 
         return ResponseEntity.ok(contests)
     }
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sing up user for a given contest")
-    fun signUpForContest(
-        @RequestParam username: String,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<HttpStatus> {
+    fun signUpForContest(request: HttpServletRequest, @RequestParam contestNumber: Int): ResponseEntity<HttpStatus> {
+        val jwt = getJwtFromCookie(request)
+        val username = extractUsername(jwt!!)
         contestService.signUpUser(username, contestNumber)
 
         return ResponseEntity(HttpStatus.OK)
@@ -45,7 +46,7 @@ class ContestController(
     @ApiOperation(value = "Verify if user is participating in a given contest")
     fun isParticipating(request: HttpServletRequest, @RequestParam contestNumber: Int): ResponseEntity<Boolean> {
         val jwt = getJwtFromCookie(request)
-        val username = extractUsername(jwt)
+        val username = extractUsername(jwt!!)
         val isParticipating = contestService.userIsParticipating(username, contestNumber)
 
         return ResponseEntity.ok(isParticipating)
@@ -53,16 +54,22 @@ class ContestController(
 
     @PostMapping("/buy-investment")
     @ApiOperation(value = "Buy investment for a given participant")
-    fun buyInvestment(@RequestBody request: InvestmentTransactionRequest): ResponseEntity<Transaction> {
-        val transaction = investmentService.buyInvestment(request)
+    fun buyInvestment(httpServletRequest: HttpServletRequest,
+                      @RequestBody investmentRequest: InvestmentTransactionRequest): ResponseEntity<Transaction> {
+        val jwt = getJwtFromCookie(httpServletRequest)
+        val username = extractUsername(jwt!!)
+        val transaction = investmentService.buyInvestment(investmentRequest, username)
 
         return ResponseEntity.ok(transaction)
     }
 
     @PostMapping("/sell-investment")
     @ApiOperation(value = "Sell investment for a given participant")
-    fun sellInvestment(@RequestBody request: InvestmentTransactionRequest): ResponseEntity<Transaction> {
-        val transaction = investmentService.sellInvestment(request)
+    fun sellInvestment(httpServletRequest: HttpServletRequest,
+        @RequestBody investmentRequest: InvestmentTransactionRequest): ResponseEntity<Transaction> {
+        val jwt = getJwtFromCookie(httpServletRequest)
+        val username = extractUsername(jwt!!)
+        val transaction = investmentService.sellInvestment(investmentRequest, username)
 
         return ResponseEntity.ok(transaction)
     }

@@ -9,5 +9,7 @@ data class UpcomingContest(
 
     val inPreStartMode: Boolean,
 
-    val inRunningMode: Boolean
+    val inRunningMode: Boolean,
+
+    val userIsParticipating : Boolean?
 )

@@ -1,10 +1,7 @@
 package com.stockcomp.service
 
 import com.stockcomp.consumer.StockConsumer
-import com.stockcomp.entity.contest.Investment
-import com.stockcomp.entity.contest.Participant
-import com.stockcomp.entity.contest.Portfolio
-import com.stockcomp.entity.contest.Transaction
+import com.stockcomp.entity.contest.*
 import com.stockcomp.exception.InsufficientFundsException
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
@@ -22,25 +19,25 @@ class InvestmentService(
     private val stockConsumer: StockConsumer
 ) {
 
-    fun buyInvestment(request: InvestmentTransactionRequest): Transaction {
-        val participant = getParticipant(request.username, request.contestNumber)
+    fun buyInvestment(request: InvestmentTransactionRequest, username: String): Transaction {
+        val participant = getParticipant(username, request.contestNumber)
         val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
 
         verifySufficientFunds(participant, realTimePrice, request.amount)
         updatePortfolioAndFundsWhenBuying(participant, realTimePrice, request)
-        val transaction = updateTransactionHistory(participant, realTimePrice, request)
+        val transaction = updateTransactionHistory(participant, realTimePrice, request, TransactionType.BUY)
         participantRepository.save(participant)
 
         return transaction
     }
 
-    fun sellInvestment(request: InvestmentTransactionRequest): Transaction {
-        val participant = getParticipant(request.username, request.contestNumber)
+    fun sellInvestment(request: InvestmentTransactionRequest, username: String): Transaction {
+        val participant = getParticipant(username, request.contestNumber)
         val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
 
         verifyExistingInvestment(participant, request)
         updatePortfolioAndFundsWhenSelling(participant, realTimePrice, request)
-        val transaction = updateTransactionHistory(participant, realTimePrice, request)
+        val transaction = updateTransactionHistory(participant, realTimePrice, request, TransactionType.SELL)
         participantRepository.save(participant)
 
         return transaction
@@ -88,13 +85,13 @@ class InvestmentService(
 
     private fun updateTransactionHistory(
         participant: Participant, realTimePrice: RealTimePriceResponse,
-        request: InvestmentTransactionRequest
+        request: InvestmentTransactionRequest, transactionType: TransactionType
     ): Transaction {
         val transaction = Transaction(
             participant = participant,
             symbol = request.symbol,
             dateTimeProcessed = LocalDateTime.now(),
-            transactionType = request.transactionType,
+            transactionType = transactionType,
             amount = request.amount,
             currentPrice = realTimePrice.currentPrice
         )

@@ -61,14 +61,14 @@ class ContestService(
         contestRepository.save(contest)
     }
 
-    fun getUpcomingContests(): List<UpcomingContest> {
+    fun getUpcomingContests(username: String?): List<UpcomingContest> {
         val upcomingContests = contestRepository.findAllByInRunningModeIsTrueOrInPreStartModeIsTrue()
 
         return upcomingContests.map {
             UpcomingContest(
                 startTime = it.startTime, contestNumber = it.contestNumber,
-                inPreStartMode = it.inPreStartMode, inRunningMode = it.inRunningMode
-            )
+                inPreStartMode = it.inPreStartMode, inRunningMode = it.inRunningMode,
+                userIsParticipating = username?.let { user -> userIsParticipating(user, it.contestNumber) })
         }
     }
 

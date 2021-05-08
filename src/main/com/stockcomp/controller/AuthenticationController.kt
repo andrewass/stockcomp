@@ -10,11 +10,13 @@ import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/auth")
@@ -29,18 +31,18 @@ class AuthenticationController internal constructor(
     private val signUpCounter: Counter
 
     init {
-        signUpCounter = setupMetrics(meterRegistry)
+        signUpCounter = meterRegistry.counter("sign.up.counter")
     }
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sign up a new user")
-    fun signUpUser(@RequestBody request: SignUpRequest): ResponseEntity<*> {
+    fun signUpUser(@RequestBody request: SignUpRequest): ResponseEntity<HttpStatus> {
         userService.addNewUser(request)
         val jwt = generateToken(request.username)
         val cookie = createCookie(jwt, cookieDuration!!.toInt())
         signUpCounter.increment()
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<Any>()
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }
 
     @PostMapping("/sign-in")
@@ -55,19 +57,14 @@ class AuthenticationController internal constructor(
 
     @PostMapping("/sign-out")
     @ApiOperation(value = "Sign out signed in user")
-    fun signOutUser(@RequestParam username: String): ResponseEntity<*> {
+    fun signOutUser(request: HttpServletRequest): ResponseEntity<HttpStatus> {
         val cookie = createCookie("", 0)
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<Any>()
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }
 
     private fun authenticateUser(username: String, password: String): Authentication {
         val token = UsernamePasswordAuthenticationToken(username, password)
 
         return authenticationManager.authenticate(token)
-    }
-
-    private fun setupMetrics(meterRegistry: MeterRegistry): Counter {
-        return meterRegistry.counter("sign.up.counter")
     }
 }
