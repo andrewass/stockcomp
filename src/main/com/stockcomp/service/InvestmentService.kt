@@ -6,7 +6,9 @@ import com.stockcomp.exception.InsufficientFundsException
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
+import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.RealTimePriceResponse
+import com.stockcomp.service.util.mapToInvestmentDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -43,6 +45,16 @@ class InvestmentService(
         return transaction
     }
 
+    fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto {
+        val portfolio = getParticipant(username, contestNumber).portfolio
+        val investment = portfolio.investments.firstOrNull { it.symbol == symbol }
+
+        return mapToInvestmentDto(investment, symbol)
+    }
+
+    fun getRemaingFunds(username: String, contestNumber: Int): Double =
+        getParticipant(username, contestNumber).remainingFund
+
     private fun verifySufficientFunds(participant: Participant, realTimePrice: RealTimePriceResponse, amount: Int) {
         if ((realTimePrice.currentPrice * amount) > participant.remainingFund) {
             throw InsufficientFundsException("Remaining funds ${participant.remainingFund}")
@@ -57,8 +69,7 @@ class InvestmentService(
     }
 
     private fun updatePortfolioAndFundsWhenBuying(
-        participant: Participant, realTimePrice: RealTimePriceResponse,
-        request: InvestmentTransactionRequest
+        participant: Participant, realTimePrice: RealTimePriceResponse, request: InvestmentTransactionRequest
     ) {
         val portfolio = participant.portfolio
         var investment = portfolio.investments.firstOrNull { it.symbol == request.symbol }
