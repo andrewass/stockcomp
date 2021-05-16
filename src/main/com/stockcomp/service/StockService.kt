@@ -29,8 +29,8 @@ class StockService(
         return searchHits.get().map { it.content }.collect(Collectors.toList())
     }
 
-    fun searchSymbol(symbol: String): List<SymbolSearchResponse> {
-        return stockConsumer.searchSymbol(symbol)
+    fun searchSymbol(query: String): List<SymbolSearchResponse> {
+        return stockConsumer.searchSymbol(query)
     }
 
     fun getHistoricPriceList(symbol: String): List<HistoricPriceResponse> {

@@ -1,7 +1,6 @@
 package com.stockcomp.consumer
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.stockcomp.document.Exchange
 import com.stockcomp.document.SymbolDocument
 import com.stockcomp.response.HistoricPriceResponse
 import com.stockcomp.response.RealTimePriceResponse
@@ -30,11 +29,11 @@ class StockConsumer(private val webClient: WebClient) {
         return mapToRealTimePriceResponse(result)
     }
 
-    fun searchSymbol(symbol: String): List<SymbolSearchResponse> {
+    fun searchSymbol(query: String): List<SymbolSearchResponse> {
         val result = webClient.get()
             .uri { uriBuilder: UriBuilder ->
                 uriBuilder.path("/search")
-                    .queryParam("q", symbol)
+                    .queryParam("q", query)
                     .queryParam("token", finnhubToken).build()
             }
             .retrieve()
