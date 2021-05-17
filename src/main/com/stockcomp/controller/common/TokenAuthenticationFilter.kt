@@ -1,8 +1,6 @@
 package com.stockcomp.controller.common
 
 import com.stockcomp.service.CustomUserService
-import com.stockcomp.util.extractUsername
-import com.stockcomp.util.tokenIsValid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder

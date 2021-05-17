@@ -22,4 +22,13 @@ class Contest(
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val participants: MutableList<Participant> = mutableListOf()
-)
+){
+    fun startContest(){
+        inPreStartMode = false
+        inRunningMode = true
+    }
+
+    fun stopContest(){
+        inRunningMode = false
+    }
+}

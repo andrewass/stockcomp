@@ -4,7 +4,7 @@ import com.stockcomp.controller.common.createCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import com.stockcomp.service.CustomUserService
-import com.stockcomp.util.generateToken
+import com.stockcomp.controller.common.generateToken
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.ApiOperation

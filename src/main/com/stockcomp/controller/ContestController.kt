@@ -8,7 +8,7 @@ import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.InvestmentService
-import com.stockcomp.util.extractUsername
+import com.stockcomp.controller.common.extractUsername
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package com.stockcomp.util
+package com.stockcomp.controller.common
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
