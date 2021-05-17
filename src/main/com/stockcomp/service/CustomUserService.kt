@@ -1,5 +1,6 @@
 package com.stockcomp.service
 
+import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.SignUpRequest
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,9 +22,9 @@ class CustomUserService @Autowired constructor(
         return User(persistedUser.username, persistedUser.password, emptyList())
     }
 
-    fun addNewUser(request: SignUpRequest): com.stockcomp.entity.User? {
+    fun addNewUser(request: SignUpRequest): com.stockcomp.entity.User {
         if (userRepository.existsByUsername(request.username)) {
-            return null
+            throw DuplicateCredentialException("Existing username : ${request.username}")
         }
         val user = com.stockcomp.entity.User(
             username = request.username,
