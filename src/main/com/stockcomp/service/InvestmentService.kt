@@ -8,7 +8,9 @@ import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.RealTimePriceResponse
+import com.stockcomp.response.TransactionDto
 import com.stockcomp.service.util.mapToInvestmentDto
+import com.stockcomp.service.util.mapToTransactionDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -21,7 +23,7 @@ class InvestmentService(
     private val stockConsumer: StockConsumer
 ) {
 
-    fun buyInvestment(request: InvestmentTransactionRequest, username: String): Transaction {
+    fun buyInvestment(request: InvestmentTransactionRequest, username: String): TransactionDto {
         val participant = getParticipant(username, request.contestNumber)
         val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
 
@@ -30,10 +32,10 @@ class InvestmentService(
         val transaction = updateTransactionHistory(participant, realTimePrice, request, TransactionType.BUY)
         participantRepository.save(participant)
 
-        return transaction
+        return mapToTransactionDto(transaction)
     }
 
-    fun sellInvestment(request: InvestmentTransactionRequest, username: String): Transaction {
+    fun sellInvestment(request: InvestmentTransactionRequest, username: String): TransactionDto {
         val participant = getParticipant(username, request.contestNumber)
         val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
 
@@ -42,7 +44,7 @@ class InvestmentService(
         val transaction = updateTransactionHistory(participant, realTimePrice, request, TransactionType.SELL)
         participantRepository.save(participant)
 
-        return transaction
+        return mapToTransactionDto(transaction)
     }
 
     fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto {

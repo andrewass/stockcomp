@@ -4,7 +4,6 @@ import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.entity.User
 import com.stockcomp.entity.contest.Contest
 import com.stockcomp.entity.contest.Participant
-import com.stockcomp.entity.contest.TransactionType
 import com.stockcomp.exception.InsufficientFundsException
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
@@ -76,16 +75,16 @@ internal class InvestmentServiceTest {
     fun `should buy investment and update portfolio`() {
         val request = InvestmentTransactionRequest(contestNumber, symbol, 20)
 
-        val transaction = investmentService.buyInvestment(request, username)
+        val transactionDto = investmentService.buyInvestment(request, username)
         val investment = participant.portfolio.investments[0]
 
-        assertEquals(symbol, transaction.symbol)
-        assertEquals(20, transaction.amount)
-        assertEquals(participant, transaction.participant)
-        assertEquals(transaction.currentPrice, 120.00)
-        assertEquals(TransactionType.BUY, transaction.transactionType)
+        assertEquals(symbol, transactionDto.symbol)
+        assertEquals(20, transactionDto.amount)
+        assertEquals(transactionDto.currentPrice, 120.00)
         assertEquals(participant.transactions.size, 1)
-        assertEquals(participant.transactions[0], transaction)
+        assertEquals(participant.transactions[0].symbol, transactionDto.symbol)
+        assertEquals(participant.transactions[0].amount, transactionDto.amount)
+        assertEquals(participant.transactions[0].currentPrice, transactionDto.currentPrice)
         assertEquals(participant.portfolio.investments.size, 1)
         assertEquals(investment.amount, 20)
         assertEquals(investment.symbol, symbol)
@@ -106,16 +105,16 @@ internal class InvestmentServiceTest {
         investmentService.buyInvestment(buyRequest, username)
         val sellRequest = InvestmentTransactionRequest(contestNumber, symbol, 10)
 
-        val transaction = investmentService.sellInvestment(sellRequest, username)
+        val transactionDto = investmentService.sellInvestment(sellRequest, username)
         val investment = participant.portfolio.investments[0]
 
-        assertEquals(symbol, transaction.symbol)
-        assertEquals(10, transaction.amount)
-        assertEquals(participant, transaction.participant)
-        assertEquals(transaction.currentPrice, 120.00)
-        assertEquals(TransactionType.SELL, transaction.transactionType)
+        assertEquals(symbol, transactionDto.symbol)
+        assertEquals(10, transactionDto.amount)
+        assertEquals(transactionDto.currentPrice, 120.00)
         assertEquals(participant.transactions.size, 2)
-        assertEquals(participant.transactions[1], transaction)
+        assertEquals(participant.transactions[1].symbol, transactionDto.symbol)
+        assertEquals(participant.transactions[1].amount, transactionDto.amount)
+        assertEquals(participant.transactions[1].currentPrice, transactionDto.currentPrice)
         assertEquals(participant.portfolio.investments.size, 1)
         assertEquals(investment.amount, 6)
         assertEquals(investment.symbol, symbol)
@@ -133,7 +132,7 @@ internal class InvestmentServiceTest {
     }
 
     @Test
-    fun `should throw exception when selling non existing investment`(){
+    fun `should throw exception when selling non existing investment`() {
         val request = InvestmentTransactionRequest(contestNumber, symbol, 20)
 
         assertThrows(InsufficientFundsException::class.java) {

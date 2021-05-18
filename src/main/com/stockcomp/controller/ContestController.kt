@@ -1,14 +1,14 @@
 package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
+import com.stockcomp.controller.common.extractUsername
 import com.stockcomp.controller.common.getJwtFromCookie
-import com.stockcomp.entity.contest.Transaction
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
+import com.stockcomp.response.TransactionDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.InvestmentService
-import com.stockcomp.controller.common.extractUsername
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -62,7 +62,7 @@ class ContestController(
     fun buyInvestment(
         httpServletRequest: HttpServletRequest,
         @RequestBody investmentRequest: InvestmentTransactionRequest
-    ): ResponseEntity<Transaction> {
+    ): ResponseEntity<TransactionDto> {
         val username = extractUsernameFromRequest(httpServletRequest)
         val transaction = investmentService.buyInvestment(investmentRequest, username)
 
@@ -74,7 +74,7 @@ class ContestController(
     fun sellInvestment(
         httpServletRequest: HttpServletRequest,
         @RequestBody investmentRequest: InvestmentTransactionRequest
-    ): ResponseEntity<Transaction> {
+    ): ResponseEntity<TransactionDto> {
         val username = extractUsernameFromRequest(httpServletRequest)
         val transaction = investmentService.sellInvestment(investmentRequest, username)
 
@@ -96,10 +96,10 @@ class ContestController(
     @GetMapping("/remaining-funds")
     @ApiOperation(value = "Get participants remaining funds")
     fun getRemainingFunds(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int)
-    : ResponseEntity<Double> {
+        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
+    ): ResponseEntity<Double> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val remainingFunds =  investmentService.getRemaingFunds(username, contestNumber)
+        val remainingFunds = investmentService.getRemaingFunds(username, contestNumber)
 
         return ResponseEntity.ok(remainingFunds)
     }
