@@ -23,6 +23,9 @@ class Participant(
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
     val transactions : MutableList<Transaction> = mutableListOf(),
 
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    val awaitingOrders : MutableList<AwaitingOrder> = mutableListOf(),
+
     @ManyToOne
     @JoinColumn(name = "CONTEST_ID")
     val contest: Contest,

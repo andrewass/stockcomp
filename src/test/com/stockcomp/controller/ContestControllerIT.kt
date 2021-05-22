@@ -144,7 +144,9 @@ internal class ContestControllerIT : IntegrationTest() {
         val request = InvestmentTransactionRequest(
             contestNumber = contestNumber.toInt(),
             symbol = symbol,
-            amount = 100
+            amount = 100,
+            acceptedPrice = 100.00,
+            expirationTime = LocalDateTime.now()
         )
         return objectMapper.writeValueAsString(request)
     }

@@ -1,7 +1,7 @@
 package com.stockcomp.service.util
 
-import com.stockcomp.entity.contest.Investment
-import com.stockcomp.entity.contest.Transaction
+import com.stockcomp.entity.contest.*
+import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.TransactionDto
 
@@ -16,4 +16,17 @@ fun mapToTransactionDto(transaction: Transaction) =
         symbol = transaction.symbol,
         amount = transaction.amount,
         currentPrice = transaction.currentPrice
+    )
+
+fun mapToAwaitingOrder(
+    participant: Participant, request: InvestmentTransactionRequest,
+    transactionType: TransactionType
+) =
+    AwaitingOrder(
+        symbol = request.symbol,
+        acceptedPrice = request.acceptedPrice,
+        expirationTime = request.expirationTime,
+        totalAmount = request.amount,
+        transactionType = transactionType,
+        participant = participant
     )
