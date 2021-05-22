@@ -2,73 +2,18 @@ package com.stockcomp.service
 
 import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.entity.contest.*
-import com.stockcomp.exception.InsufficientFundsException
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
-import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.RealTimePriceResponse
-import com.stockcomp.response.TransactionDto
-import com.stockcomp.service.util.mapToInvestmentDto
-import com.stockcomp.service.util.mapToTransactionDto
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
-@Service
-@Transactional
-class InvestmentService(
+//TODO: Delete class when relevant code is moved to new service
+class OldInvestmentService(
     private val contestRepository: ContestRepository,
     private val participantRepository: ParticipantRepository,
     private val stockConsumer: StockConsumer
 ) {
-
-    fun buyInvestment(request: InvestmentTransactionRequest, username: String): TransactionDto {
-        val participant = getParticipant(username, request.contestNumber)
-        val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
-
-        verifySufficientFunds(participant, realTimePrice, request.amount)
-        updatePortfolioAndFundsWhenBuying(participant, realTimePrice, request)
-        val transaction = updateTransactionHistory(participant, realTimePrice, request, TransactionType.BUY)
-        participantRepository.save(participant)
-
-        return mapToTransactionDto(transaction)
-    }
-
-    fun sellInvestment(request: InvestmentTransactionRequest, username: String): TransactionDto {
-        val participant = getParticipant(username, request.contestNumber)
-        val realTimePrice = stockConsumer.findRealTimePrice(request.symbol)
-
-        verifyExistingInvestment(participant, request)
-        updatePortfolioAndFundsWhenSelling(participant, realTimePrice, request)
-        val transaction = updateTransactionHistory(participant, realTimePrice, request, TransactionType.SELL)
-        participantRepository.save(participant)
-
-        return mapToTransactionDto(transaction)
-    }
-
-    fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto {
-        val portfolio = getParticipant(username, contestNumber).portfolio
-        val investment = portfolio.investments.firstOrNull { it.symbol == symbol }
-
-        return mapToInvestmentDto(investment, symbol)
-    }
-
-    fun getRemaingFunds(username: String, contestNumber: Int): Double =
-        getParticipant(username, contestNumber).remainingFund
-
-    private fun verifySufficientFunds(participant: Participant, realTimePrice: RealTimePriceResponse, amount: Int) {
-        if ((realTimePrice.currentPrice * amount) > participant.remainingFund) {
-            throw InsufficientFundsException("Remaining funds ${participant.remainingFund}")
-        }
-    }
-
-    private fun verifyExistingInvestment(participant: Participant, request: InvestmentTransactionRequest) {
-        participant.portfolio.investments
-            .filter { it.symbol == request.symbol }
-            .find { it.amount >= request.amount }
-            ?: throw InsufficientFundsException("Unable to sell requested amount of investments")
-    }
 
     private fun updatePortfolioAndFundsWhenBuying(
         participant: Participant, realTimePrice: RealTimePriceResponse, request: InvestmentTransactionRequest

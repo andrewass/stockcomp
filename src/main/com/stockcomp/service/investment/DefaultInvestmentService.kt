@@ -1,6 +1,5 @@
 package com.stockcomp.service.investment
 
-import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.entity.contest.Participant
 import com.stockcomp.entity.contest.TransactionType
 import com.stockcomp.repository.jpa.ContestRepository
@@ -10,12 +9,13 @@ import com.stockcomp.response.InvestmentDto
 import com.stockcomp.service.util.mapToAwaitingOrder
 import com.stockcomp.service.util.mapToInvestmentDto
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class DefaultInvestmentService(
     private val contestRepository: ContestRepository,
-    private val participantRepository: ParticipantRepository,
-    private val stockConsumer: StockConsumer
+    private val participantRepository: ParticipantRepository
 ) : InvestmentService {
 
     override fun placeBuyOrder(request: InvestmentTransactionRequest, username: String) {
@@ -27,7 +27,7 @@ class DefaultInvestmentService(
 
     override fun placeSellOrder(request: InvestmentTransactionRequest, username: String) {
         val participant = getParticipant(username, request.contestNumber)
-        val order = mapToAwaitingOrder(participant, request, TransactionType.BUY)
+        val order = mapToAwaitingOrder(participant, request, TransactionType.SELL)
         participant.awaitingOrders.add(order)
         participantRepository.save(participant)
     }
@@ -39,9 +39,8 @@ class DefaultInvestmentService(
         return mapToInvestmentDto(investment, symbol)
     }
 
-    override fun getRemainingFunds(username: String, contestNumber: Int): Double {
-        TODO("Not yet implemented")
-    }
+    override fun getRemainingFunds(username: String, contestNumber: Int) =
+        getParticipant(username, contestNumber).remainingFund
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {
         val contest = contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)

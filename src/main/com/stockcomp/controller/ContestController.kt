@@ -5,10 +5,9 @@ import com.stockcomp.controller.common.extractUsername
 import com.stockcomp.controller.common.getJwtFromCookie
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
-import com.stockcomp.response.TransactionDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
-import com.stockcomp.service.InvestmentService
+import com.stockcomp.service.investment.InvestmentService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -58,27 +57,27 @@ class ContestController(
     }
 
     @PostMapping("/buy-investment")
-    @ApiOperation(value = "Buy investment for a given participant")
+    @ApiOperation(value = "Place a buy order for a given participant")
     fun buyInvestment(
         httpServletRequest: HttpServletRequest,
         @RequestBody investmentRequest: InvestmentTransactionRequest
-    ): ResponseEntity<TransactionDto> {
+    ): ResponseEntity<HttpStatus> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val transaction = investmentService.buyInvestment(investmentRequest, username)
+        investmentService.placeBuyOrder(investmentRequest, username)
 
-        return ResponseEntity.ok(transaction)
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @PostMapping("/sell-investment")
-    @ApiOperation(value = "Sell investment for a given participant")
+    @ApiOperation(value = "Place a sell order for a given participant")
     fun sellInvestment(
         httpServletRequest: HttpServletRequest,
         @RequestBody investmentRequest: InvestmentTransactionRequest
-    ): ResponseEntity<TransactionDto> {
+    ): ResponseEntity<HttpStatus> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val transaction = investmentService.sellInvestment(investmentRequest, username)
+        investmentService.placeSellOrder(investmentRequest, username)
 
-        return ResponseEntity.ok(transaction)
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @GetMapping("/symbol-investment")
@@ -99,13 +98,14 @@ class ContestController(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<Double> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val remainingFunds = investmentService.getRemaingFunds(username, contestNumber)
+        val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
 
         return ResponseEntity.ok(remainingFunds)
     }
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String {
         val jwt = getJwtFromCookie(request)
+
         return extractUsername(jwt!!)
     }
 }

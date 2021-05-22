@@ -1,18 +1,17 @@
 package com.stockcomp.service
 
-import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.entity.User
-import com.stockcomp.entity.contest.Contest
-import com.stockcomp.entity.contest.Participant
+import com.stockcomp.entity.contest.*
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
-import com.stockcomp.response.RealTimePriceResponse
+import com.stockcomp.service.investment.DefaultInvestmentService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,18 +28,17 @@ internal class InvestmentServiceTest {
     @MockK
     private lateinit var participantRepository: ParticipantRepository
 
-    @MockK
-    private lateinit var stockConsumer: StockConsumer
-
     @InjectMockKs
-    private lateinit var investmentService: InvestmentService
+    private lateinit var investmentService: DefaultInvestmentService
 
     private val username = "testUser"
     private val contestNumber = 100
+    private val acceptedPrice = 150.00
+    private val totalAmount  = 120
+    private val expirationTime = LocalDateTime.now().plusDays(10L)
     private val symbol = "AAPL"
     private val contest = createContest()
     private val participant = createParticipant()
-    private val realTimePriceResponse = createRealTimePriceResponse()
 
     @BeforeAll
     private fun setUp() {
@@ -48,53 +46,84 @@ internal class InvestmentServiceTest {
         every {
             contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)
         } returns Optional.of(contest)
-
         every {
             participantRepository.findParticipantFromUsernameAndContest(username, contest)
         } returns listOf(participant)
-
-        every {
-            stockConsumer.findRealTimePrice(symbol)
-        } returns realTimePriceResponse
-
         every {
             participantRepository.save(participant)
         } returns participant
     }
 
     @BeforeEach
-    private fun resetParticipant() {
+    private fun resetData(){
+        participant.awaitingOrders.clear()
         participant.remainingFund = 20000.00
-        participant.transactions.clear()
-        participant.portfolio.investments.clear()
+    }
+
+    @Test
+    fun `should place buy order for participant`() {
+        val request = createInvestmentTransactionRequest()
+
+        investmentService.placeBuyOrder(request, username)
+
+        val awaitingOrder = participant.awaitingOrders[0]
+
+        verifyCommonFields(awaitingOrder)
+        assertEquals(TransactionType.BUY, awaitingOrder.transactionType)
+        verify { participantRepository.save(participant) }
+    }
+
+    @Test
+    fun `should place sell order for participant`(){
+        val request = createInvestmentTransactionRequest()
+
+        investmentService.placeSellOrder(request, username)
+
+        val awaitingOrder = participant.awaitingOrders[0]
+
+        verifyCommonFields(awaitingOrder)
+        assertEquals(TransactionType.SELL, awaitingOrder.transactionType)
+        verify { participantRepository.save(participant) }
     }
 
     @Test
     fun `should get investment for a given symbol`() {
-        val request = InvestmentTransactionRequest(
-            contestNumber, symbol, 16,
-            expirationTime = LocalDateTime.now(), acceptedPrice = 100.00
+        participant.portfolio.investments.add(
+            Investment(name = "APPLE INC", symbol = symbol,
+                amount = totalAmount, portfolio = participant.portfolio)
         )
-        investmentService.buyInvestment(request, username)
+        val investment = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
 
-        val investmentDto = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
-
-        assertEquals(symbol, investmentDto.symbol)
-        assertEquals(16, investmentDto.amount)
+        assertEquals(symbol, investment.symbol)
+        assertEquals(totalAmount, investment.amount)
     }
 
     @Test
     fun `should get remaining funds`() {
-        val request = InvestmentTransactionRequest(
-            contestNumber, symbol, 100,
-            expirationTime = LocalDateTime.now(), acceptedPrice = 100.00
-        )
-        investmentService.buyInvestment(request, username)
+        participant.remainingFund = 1400.00
+        val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
 
-        val remainingFunds = investmentService.getRemaingFunds(username, contestNumber)
-
-        assertEquals(8000.00, remainingFunds)
+        assertEquals(1400.00, remainingFunds)
     }
+
+    private fun verifyCommonFields(awaitingOrder : AwaitingOrder){
+        assertTrue(participant.awaitingOrders.size == 1)
+        assertEquals(symbol, awaitingOrder.symbol)
+        assertEquals(acceptedPrice, awaitingOrder.acceptedPrice)
+        assertEquals(expirationTime, awaitingOrder.expirationTime)
+        assertEquals(totalAmount, awaitingOrder.totalAmount)
+        assertEquals(totalAmount, awaitingOrder.remainingAmount)
+        assertTrue(awaitingOrder.activeOrder)
+    }
+
+    private fun createInvestmentTransactionRequest() =
+        InvestmentTransactionRequest(
+            contestNumber = contestNumber,
+            symbol = symbol,
+            amount = totalAmount,
+            expirationTime = expirationTime,
+            acceptedPrice = acceptedPrice
+        )
 
     private fun createContest() =
         Contest(
@@ -108,15 +137,5 @@ internal class InvestmentServiceTest {
         Participant(
             user = User(username = username, password = "testPassword", email = "testEmail"),
             contest = contest
-        )
-
-    private fun createRealTimePriceResponse() =
-        RealTimePriceResponse(
-            highPrice = 150.00,
-            lowPrice = 50.00,
-            openPrice = 90.00,
-            previousClosePrice = 90.00,
-            currentPrice = 120.00,
-            time = LocalDateTime.now()
         )
 }
