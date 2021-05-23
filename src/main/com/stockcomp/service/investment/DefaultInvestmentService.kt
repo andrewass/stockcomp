@@ -6,8 +6,8 @@ import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
-import com.stockcomp.service.util.mapToAwaitingOrder
 import com.stockcomp.service.util.mapToInvestmentDto
+import com.stockcomp.service.util.mapToInvestmentOrder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,14 +20,14 @@ class DefaultInvestmentService(
 
     override fun placeBuyOrder(request: InvestmentTransactionRequest, username: String) {
         val participant = getParticipant(username, request.contestNumber)
-        val order = mapToAwaitingOrder(participant, request, TransactionType.BUY)
+        val order = mapToInvestmentOrder(participant, request, TransactionType.BUY)
         participant.investmentOrders.add(order)
         participantRepository.save(participant)
     }
 
     override fun placeSellOrder(request: InvestmentTransactionRequest, username: String) {
         val participant = getParticipant(username, request.contestNumber)
-        val order = mapToAwaitingOrder(participant, request, TransactionType.SELL)
+        val order = mapToInvestmentOrder(participant, request, TransactionType.SELL)
         participant.investmentOrders.add(order)
         participantRepository.save(participant)
     }

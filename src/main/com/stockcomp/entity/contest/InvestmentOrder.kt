@@ -22,13 +22,13 @@ class InvestmentOrder(
 
     val expirationTime: LocalDateTime,
 
-    val activeOrder: Boolean = true,
-
     @Enumerated(EnumType.STRING)
     val transactionType: TransactionType,
 
     @Enumerated(EnumType.STRING)
     var orderStatus: OrderStatus = OrderStatus.ACTIVE,
+
+    var errorMessage : String? = null,
 
     @ManyToOne
     @JoinColumn(name = "PARTICIPANT_ID", nullable = false)

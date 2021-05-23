@@ -114,7 +114,6 @@ internal class InvestmentServiceTest {
         assertEquals(totalAmount, investmentOrder.totalAmount)
         assertEquals(totalAmount, investmentOrder.remainingAmount)
         assertSame(participant, investmentOrder.participant)
-        assertTrue(investmentOrder.activeOrder)
     }
 
     private fun createInvestmentTransactionRequest() =
