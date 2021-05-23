@@ -5,6 +5,7 @@ import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.service.order.OrderProcessingService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -29,6 +30,9 @@ internal class ContestServiceTest {
     @MockK
     private lateinit var participantRepository: ParticipantRepository
 
+    @MockK
+    private lateinit var orderProcessingService: OrderProcessingService
+
     @InjectMockKs
     private lateinit var contestService: ContestService
 
@@ -42,6 +46,14 @@ internal class ContestServiceTest {
         every {
             contestRepository.save(any<Contest>())
         } returns contest
+
+        every {
+            orderProcessingService.startOrderProcessing()
+        } returns Unit
+
+        every {
+            orderProcessingService.stopOrderProcessing()
+        } returns Unit
     }
 
     @Test

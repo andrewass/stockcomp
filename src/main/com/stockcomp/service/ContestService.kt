@@ -7,6 +7,7 @@ import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.response.UpcomingContest
+import com.stockcomp.service.order.OrderProcessingService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 class ContestService(
     private val contestRepository: ContestRepository,
     private val userRepository: UserRepository,
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val orderProcessingService: OrderProcessingService
 ) {
     private val logger = LoggerFactory.getLogger(ContestService::class.java)
 
@@ -36,6 +38,7 @@ class ContestService(
                 inRunningMode = true
             }
             contestRepository.save(contest.get())
+            orderProcessingService.startOrderProcessing()
             logger.info("Starting contest")
         } catch (e: NoSuchElementException) {
             throw IllegalStateException("Unable to start the contest at the given state")
@@ -47,6 +50,7 @@ class ContestService(
         try {
             contest.get().inRunningMode = false
             contestRepository.save(contest.get())
+            orderProcessingService.stopOrderProcessing()
             logger.info("Stopping contest")
         } catch (e: NoSuchElementException) {
             throw IllegalStateException("Unable to stop the contest at the given state")

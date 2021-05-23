@@ -2,21 +2,53 @@ package com.stockcomp.service.order
 
 import com.stockcomp.entity.contest.Investment
 import com.stockcomp.entity.contest.InvestmentOrder
+import com.stockcomp.entity.contest.OrderStatus
 import com.stockcomp.entity.contest.OrderStatus.COMPLETED
 import com.stockcomp.entity.contest.OrderStatus.FAILED
 import com.stockcomp.entity.contest.Participant
 import com.stockcomp.entity.contest.TransactionType.BUY
 import com.stockcomp.entity.contest.TransactionType.SELL
+import com.stockcomp.repository.jpa.InvestmentOrderRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
+import com.stockcomp.service.StockService
 import org.springframework.stereotype.Service
 import java.lang.Integer.min
 
 @Service
 class DefaultOrderProcessingService(
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val investmentOrderRepository: InvestmentOrderRepository,
+    private val stockService: StockService
 ) : OrderProcessingService {
 
-    override fun processOrder(investmentOrder: InvestmentOrder, currentPrice: Double) {
+    private var processOrders = false
+
+    override fun startOrderProcessing() {
+        processOrders = true
+        while (processOrders) {
+            val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
+            val orderMap = orders.groupBy { it.symbol }
+            orderMap.forEach { (symbol, orders) ->
+                run {
+                    processOrdersForSymbol(symbol, orders)
+                    Thread.sleep(1500L)
+                }
+            }
+        }
+    }
+
+    override fun stopOrderProcessing() {
+        processOrders = false
+    }
+
+    private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
+        val symbolPrice = stockService.getRealTimePrice(symbol)
+        orders.forEach {
+            processOrder(it, symbolPrice.currentPrice)
+        }
+    }
+
+    private fun processOrder(investmentOrder: InvestmentOrder, currentPrice: Double) {
         val participant = investmentOrder.participant
         if (investmentOrder.transactionType == BUY && participant.remainingFund >= currentPrice) {
             processBuyOrder(participant, currentPrice, investmentOrder)
