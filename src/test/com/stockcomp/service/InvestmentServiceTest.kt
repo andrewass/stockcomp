@@ -56,7 +56,7 @@ internal class InvestmentServiceTest {
 
     @BeforeEach
     private fun resetData(){
-        participant.awaitingOrders.clear()
+        participant.investmentOrders.clear()
         participant.remainingFund = 20000.00
     }
 
@@ -66,7 +66,7 @@ internal class InvestmentServiceTest {
 
         investmentService.placeBuyOrder(request, username)
 
-        val awaitingOrder = participant.awaitingOrders[0]
+        val awaitingOrder = participant.investmentOrders[0]
 
         verifyCommonFields(awaitingOrder)
         assertEquals(TransactionType.BUY, awaitingOrder.transactionType)
@@ -79,7 +79,7 @@ internal class InvestmentServiceTest {
 
         investmentService.placeSellOrder(request, username)
 
-        val awaitingOrder = participant.awaitingOrders[0]
+        val awaitingOrder = participant.investmentOrders[0]
 
         verifyCommonFields(awaitingOrder)
         assertEquals(TransactionType.SELL, awaitingOrder.transactionType)
@@ -106,14 +106,15 @@ internal class InvestmentServiceTest {
         assertEquals(1400.00, remainingFunds)
     }
 
-    private fun verifyCommonFields(awaitingOrder : AwaitingOrder){
-        assertTrue(participant.awaitingOrders.size == 1)
-        assertEquals(symbol, awaitingOrder.symbol)
-        assertEquals(acceptedPrice, awaitingOrder.acceptedPrice)
-        assertEquals(expirationTime, awaitingOrder.expirationTime)
-        assertEquals(totalAmount, awaitingOrder.totalAmount)
-        assertEquals(totalAmount, awaitingOrder.remainingAmount)
-        assertTrue(awaitingOrder.activeOrder)
+    private fun verifyCommonFields(investmentOrder : InvestmentOrder){
+        assertTrue(participant.investmentOrders.size == 1)
+        assertEquals(symbol, investmentOrder.symbol)
+        assertEquals(acceptedPrice, investmentOrder.acceptedPrice)
+        assertEquals(expirationTime, investmentOrder.expirationTime)
+        assertEquals(totalAmount, investmentOrder.totalAmount)
+        assertEquals(totalAmount, investmentOrder.remainingAmount)
+        assertSame(participant, investmentOrder.participant)
+        assertTrue(investmentOrder.activeOrder)
     }
 
     private fun createInvestmentTransactionRequest() =

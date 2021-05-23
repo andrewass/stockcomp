@@ -21,14 +21,14 @@ class DefaultInvestmentService(
     override fun placeBuyOrder(request: InvestmentTransactionRequest, username: String) {
         val participant = getParticipant(username, request.contestNumber)
         val order = mapToAwaitingOrder(participant, request, TransactionType.BUY)
-        participant.awaitingOrders.add(order)
+        participant.investmentOrders.add(order)
         participantRepository.save(participant)
     }
 
     override fun placeSellOrder(request: InvestmentTransactionRequest, username: String) {
         val participant = getParticipant(username, request.contestNumber)
         val order = mapToAwaitingOrder(participant, request, TransactionType.SELL)
-        participant.awaitingOrders.add(order)
+        participant.investmentOrders.add(order)
         participantRepository.save(participant)
     }
 

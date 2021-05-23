@@ -43,15 +43,3 @@ create table t_participant(
     foreign key (user_id) references t_user(user_id),
     foreign key (portfolio_id) references t_portfolio(portfolio_id)
 );
-
-create table t_transaction(
-    transaction_id          bigint(20) not null auto_increment,
-    participant_id          bigint(20) not null,
-    symbol                  varchar(20) not null,
-    date_time_processed     datetime not null,
-    transaction_type        varchar(10) not null,
-    amount                  int,
-    current_price           double,
-    primary key (transaction_id),
-    foreign key (participant_id) references t_participant(participant_id)
-);

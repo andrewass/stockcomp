@@ -21,10 +21,7 @@ class Participant(
     val portfolio : Portfolio = Portfolio(),
 
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
-    val transactions : MutableList<Transaction> = mutableListOf(),
-
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
-    val awaitingOrders : MutableList<AwaitingOrder> = mutableListOf(),
+    val investmentOrders : MutableList<InvestmentOrder> = mutableListOf(),
 
     @ManyToOne
     @JoinColumn(name = "CONTEST_ID")
