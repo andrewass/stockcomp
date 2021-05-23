@@ -1,9 +1,9 @@
 package com.stockcomp.service.util
 
-import com.stockcomp.entity.contest.Investment
-import com.stockcomp.entity.contest.InvestmentOrder
-import com.stockcomp.entity.contest.Participant
-import com.stockcomp.entity.contest.TransactionType
+import com.stockcomp.domain.contest.Investment
+import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.TransactionType
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 

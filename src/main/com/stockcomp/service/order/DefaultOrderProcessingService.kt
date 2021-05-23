@@ -1,16 +1,20 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.entity.contest.Investment
-import com.stockcomp.entity.contest.InvestmentOrder
-import com.stockcomp.entity.contest.OrderStatus
-import com.stockcomp.entity.contest.OrderStatus.COMPLETED
-import com.stockcomp.entity.contest.OrderStatus.FAILED
-import com.stockcomp.entity.contest.Participant
-import com.stockcomp.entity.contest.TransactionType.BUY
-import com.stockcomp.entity.contest.TransactionType.SELL
+import com.stockcomp.domain.contest.Investment
+import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.domain.contest.OrderStatus
+import com.stockcomp.domain.contest.OrderStatus.COMPLETED
+import com.stockcomp.domain.contest.OrderStatus.FAILED
+import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.TransactionType.BUY
+import com.stockcomp.domain.contest.TransactionType.SELL
 import com.stockcomp.repository.jpa.InvestmentOrderRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.service.StockService
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.lang.Integer.min
 
@@ -21,24 +25,28 @@ class DefaultOrderProcessingService(
     private val stockService: StockService
 ) : OrderProcessingService {
 
-    private var processOrders = false
+    private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
+    private var processingJob: Job? = null
 
     override fun startOrderProcessing() {
-        processOrders = true
-        while (processOrders) {
-            val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
-            val orderMap = orders.groupBy { it.symbol }
-            orderMap.forEach { (symbol, orders) ->
-                run {
-                    processOrdersForSymbol(symbol, orders)
-                    Thread.sleep(1500L)
+        logger.info("Launching order processing")
+        processingJob = GlobalScope.launch {
+            while (true) {
+                val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
+                val orderMap = orders.groupBy { it.symbol }
+                orderMap.forEach { (symbol, orders) ->
+                    run {
+                        processOrdersForSymbol(symbol, orders)
+                        Thread.sleep(1500L)
+                    }
                 }
             }
         }
     }
 
     override fun stopOrderProcessing() {
-        processOrders = false
+        processingJob?.cancel()
+        logger.info("Cancelling order processing")
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {

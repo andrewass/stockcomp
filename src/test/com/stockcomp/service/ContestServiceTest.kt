@@ -1,6 +1,6 @@
 package com.stockcomp.service
 
-import com.stockcomp.entity.contest.Contest
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository

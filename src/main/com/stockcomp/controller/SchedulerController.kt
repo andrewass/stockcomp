@@ -1,6 +1,6 @@
 package com.stockcomp.controller
 
-import com.stockcomp.entity.contest.Contest
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.ContestService
 import org.springframework.http.HttpStatus

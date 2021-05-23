@@ -1,7 +1,7 @@
 package com.stockcomp.service
 
-import com.stockcomp.entity.User
-import com.stockcomp.entity.contest.*
+import com.stockcomp.domain.User
+import com.stockcomp.domain.contest.*
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest

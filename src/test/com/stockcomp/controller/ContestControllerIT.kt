@@ -3,10 +3,10 @@ package com.stockcomp.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.IntegrationTest
 import com.stockcomp.controller.common.generateToken
-import com.stockcomp.entity.User
-import com.stockcomp.entity.contest.Contest
-import com.stockcomp.entity.contest.Investment
-import com.stockcomp.entity.contest.Participant
+import com.stockcomp.domain.User
+import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.Investment
+import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository

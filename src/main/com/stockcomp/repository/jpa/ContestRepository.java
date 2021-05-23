@@ -1,6 +1,6 @@
 package com.stockcomp.repository.jpa;
 
-import com.stockcomp.entity.contest.Contest;
+import com.stockcomp.domain.contest.Contest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
-package com.stockcomp.entity.contest
+package com.stockcomp.domain.contest
 
-import com.stockcomp.entity.User
+import com.stockcomp.domain.User
 import javax.persistence.*
 
 @Entity

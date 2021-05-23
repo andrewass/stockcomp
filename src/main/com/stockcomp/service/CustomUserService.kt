@@ -22,11 +22,11 @@ class CustomUserService @Autowired constructor(
         return User(persistedUser.username, persistedUser.password, emptyList())
     }
 
-    fun addNewUser(request: SignUpRequest): com.stockcomp.entity.User {
+    fun addNewUser(request: SignUpRequest): com.stockcomp.domain.User {
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateCredentialException("Existing username : ${request.username}")
         }
-        val user = com.stockcomp.entity.User(
+        val user = com.stockcomp.domain.User(
             username = request.username,
             password = passwordEncoder.encode(request.password),
             email = request.email
@@ -34,7 +34,7 @@ class CustomUserService @Autowired constructor(
         return userRepository.save(user)
     }
 
-    fun getPersistedUser(username: String): com.stockcomp.entity.User {
+    fun getPersistedUser(username: String): com.stockcomp.domain.User {
         return userRepository.findByUsername(username).get()
     }
 }

@@ -1,4 +1,4 @@
-package com.stockcomp.entity.contest
+package com.stockcomp.domain.contest
 
 import javax.persistence.*
 

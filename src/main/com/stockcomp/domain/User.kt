@@ -1,6 +1,5 @@
-package com.stockcomp.entity
+package com.stockcomp.domain
 
-import java.time.LocalDate
 import javax.persistence.*
 
 

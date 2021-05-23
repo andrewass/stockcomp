@@ -1,7 +1,7 @@
 package com.stockcomp.repository.jpa;
 
-import com.stockcomp.entity.contest.InvestmentOrder;
-import com.stockcomp.entity.contest.OrderStatus;
+import com.stockcomp.domain.contest.InvestmentOrder;
+import com.stockcomp.domain.contest.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
