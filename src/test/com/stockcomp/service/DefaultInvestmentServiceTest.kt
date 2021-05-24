@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class InvestmentServiceTest {
+internal class DefaultInvestmentServiceTest {
 
     @MockK
     private lateinit var contestRepository: ContestRepository

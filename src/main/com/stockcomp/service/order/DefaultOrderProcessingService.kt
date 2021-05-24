@@ -11,9 +11,7 @@ import com.stockcomp.domain.contest.TransactionType.SELL
 import com.stockcomp.repository.jpa.InvestmentOrderRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.service.StockService
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.lang.Integer.min
@@ -26,27 +24,35 @@ class DefaultOrderProcessingService(
 ) : OrderProcessingService {
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
-    private var processingJob: Job? = null
+    private var launchedJob: Job? = null
 
     override fun startOrderProcessing() {
+        if (launchedJob?.isActive == true) {
+            logger.warn("Unable to start order processing. Previous order processing still running")
+            return
+        }
         logger.info("Launching order processing")
-        processingJob = GlobalScope.launch {
-            while (true) {
-                val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
-                val orderMap = orders.groupBy { it.symbol }
-                orderMap.forEach { (symbol, orders) ->
-                    run {
-                        processOrdersForSymbol(symbol, orders)
-                        Thread.sleep(1500L)
-                    }
-                }
-            }
+        launchedJob = GlobalScope.launch {
+            iterateProcessingOrders()
         }
     }
 
     override fun stopOrderProcessing() {
-        processingJob?.cancel()
-        logger.info("Cancelling order processing")
+        launchedJob?.cancel()
+        logger.info("Stopping order processing")
+    }
+
+    private suspend fun iterateProcessingOrders() {
+        while (true) {
+            val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
+            val orderMap = orders.groupBy { it.symbol }
+            orderMap.forEach { (symbol, orders) ->
+                run {
+                    processOrdersForSymbol(symbol, orders)
+                    delay(1500L)
+                }
+            }
+        }
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
@@ -70,21 +76,17 @@ class DefaultOrderProcessingService(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
     ) {
         val portfolio = participant.portfolio
-        var investment = portfolio.investments.firstOrNull { it.symbol == order.symbol }
-        if (investment == null) {
-            investment = Investment(
-                symbol = order.symbol,
-                portfolio = participant.portfolio,
-                name = order.symbol
-            )
-            portfolio.investments.add(investment)
-        }
+        val investment = portfolio.investments.firstOrNull { it.symbol == order.symbol } ?: Investment(
+            symbol = order.symbol,
+            portfolio = participant.portfolio,
+            name = order.symbol
+        ).also { portfolio.investments.add(it) }
+
         val amountBought = getAvailableAmountToBuy(participant, currentPrice, order)
         investment.amount += amountBought
         participant.remainingFund -= amountBought * currentPrice
         postProcessOrder(order, amountBought)
     }
-
 
     private fun processSellOrder(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
