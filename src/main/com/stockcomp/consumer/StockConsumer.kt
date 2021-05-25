@@ -2,9 +2,9 @@ package com.stockcomp.consumer
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.stockcomp.document.SymbolDocument
-import com.stockcomp.response.HistoricPriceResponse
-import com.stockcomp.response.RealTimePriceResponse
-import com.stockcomp.response.SymbolSearchResponse
+import com.stockcomp.response.HistoricPrice
+import com.stockcomp.response.RealTimePrice
+import com.stockcomp.response.SymbolSearch
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriBuilder
@@ -15,7 +15,7 @@ import java.time.ZoneOffset
 class StockConsumer(private val webClient: WebClient) {
     private val finnhubToken = System.getenv("FINNHUB_API_KEY")
 
-    fun findRealTimePrice(symbol: String?): RealTimePriceResponse {
+    fun findRealTimePrice(symbol: String?): RealTimePrice {
         val result = webClient.get()
             .uri { uriBuilder: UriBuilder ->
                 uriBuilder.path("/quote")
@@ -26,10 +26,10 @@ class StockConsumer(private val webClient: WebClient) {
             .bodyToMono(JsonNode::class.java)
             .block()!!
 
-        return mapToRealTimePriceResponse(result)
+        return mapToRealTimePrice(result)
     }
 
-    fun searchSymbol(query: String): List<SymbolSearchResponse> {
+    fun searchSymbol(query: String): List<SymbolSearch> {
         val result = webClient.get()
             .uri { uriBuilder: UriBuilder ->
                 uriBuilder.path("/search")
@@ -41,7 +41,7 @@ class StockConsumer(private val webClient: WebClient) {
             .map { node -> node.path("result") }
             .block()!!
 
-        return mapToSymbolSearchResponseList(result)
+        return mapToSymbolSearchList(result)
     }
 
     fun findAllSymbolsForExchange(exchange: String): List<SymbolDocument> {
@@ -58,7 +58,7 @@ class StockConsumer(private val webClient: WebClient) {
         return mapToSymbolDocuments(result).filter { !it.symbol.contains('.') }
     }
 
-    fun getHistoricPriceList(symbol: String): List<HistoricPriceResponse> {
+    fun getHistoricPriceList(symbol: String): List<HistoricPrice> {
         val currentTimeEpoch = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
         val lastYearEpoch = LocalDateTime.now().minusYears(1).toEpochSecond(ZoneOffset.UTC)
 

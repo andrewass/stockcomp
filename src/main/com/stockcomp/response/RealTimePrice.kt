@@ -2,7 +2,7 @@ package com.stockcomp.response
 
 import java.time.LocalDateTime
 
-data class RealTimePriceResponse(
+data class RealTimePrice(
     val currentPrice: Double,
     val highPrice: Double,
     val lowPrice: Double,

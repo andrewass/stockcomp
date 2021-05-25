@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.document.SymbolDocument
-import com.stockcomp.response.HistoricPriceResponse
-import com.stockcomp.response.RealTimePriceResponse
-import com.stockcomp.response.SymbolSearchResponse
+import com.stockcomp.response.HistoricPrice
+import com.stockcomp.response.RealTimePrice
+import com.stockcomp.response.SymbolSearch
 import java.time.Instant
 import java.time.ZoneOffset
 import kotlin.math.min
@@ -14,7 +14,7 @@ import kotlin.math.min
 
 private val mapper = ObjectMapper()
 
-fun mapToHistoricPrices(result: JsonNode): List<HistoricPriceResponse> {
+fun mapToHistoricPrices(result: JsonNode): List<HistoricPrice> {
     val closingPrices = result.get("c").toString()
     val dates = result.get("t").toString()
 
@@ -23,16 +23,16 @@ fun mapToHistoricPrices(result: JsonNode): List<HistoricPriceResponse> {
         .map { Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate() }
 
     val length = min(mappedPrices.size, mappedDates.size)
-    val results = mutableListOf<HistoricPriceResponse>()
+    val results = mutableListOf<HistoricPrice>()
 
     for (i in 0 until length) {
-        results.add(HistoricPriceResponse(date = mappedDates[i], price = mappedPrices[i]))
+        results.add(HistoricPrice(date = mappedDates[i], price = mappedPrices[i]))
     }
     return results
 }
 
-fun mapToRealTimePriceResponse(result: JsonNode): RealTimePriceResponse =
-    RealTimePriceResponse(
+fun mapToRealTimePrice(result: JsonNode): RealTimePrice =
+    RealTimePrice(
         currentPrice = result.get("c").doubleValue(),
         previousClosePrice = result.get("pc").doubleValue(),
         openPrice = result.get("o").doubleValue(),
@@ -44,5 +44,5 @@ fun mapToRealTimePriceResponse(result: JsonNode): RealTimePriceResponse =
 fun mapToSymbolDocuments(result: JsonNode): List<SymbolDocument> =
     mapper.readerFor(object : TypeReference<List<SymbolDocument>>() {}).readValue(result)
 
-fun mapToSymbolSearchResponseList(result: JsonNode): List<SymbolSearchResponse> =
-    mapper.readerFor(object : TypeReference<List<SymbolSearchResponse>>() {}).readValue(result)
+fun mapToSymbolSearchList(result: JsonNode): List<SymbolSearch> =
+    mapper.readerFor(object : TypeReference<List<SymbolSearch>>() {}).readValue(result)

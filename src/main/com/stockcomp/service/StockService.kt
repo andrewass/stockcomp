@@ -2,9 +2,9 @@ package com.stockcomp.service
 
 import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.document.SymbolDocument
-import com.stockcomp.response.HistoricPriceResponse
-import com.stockcomp.response.RealTimePriceResponse
-import com.stockcomp.response.SymbolSearchResponse
+import com.stockcomp.response.HistoricPrice
+import com.stockcomp.response.RealTimePrice
+import com.stockcomp.response.SymbolSearch
 import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
@@ -29,15 +29,15 @@ class StockService(
         return searchHits.get().map { it.content }.collect(Collectors.toList())
     }
 
-    fun searchSymbol(query: String): List<SymbolSearchResponse> {
+    fun searchSymbol(query: String): List<SymbolSearch> {
         return stockConsumer.searchSymbol(query)
     }
 
-    fun getHistoricPriceList(symbol: String): List<HistoricPriceResponse> {
+    fun getHistoricPriceList(symbol: String): List<HistoricPrice> {
         return stockConsumer.getHistoricPriceList(symbol)
     }
 
-    fun getRealTimePrice(symbol: String): RealTimePriceResponse {
+    fun getRealTimePrice(symbol: String): RealTimePrice {
         return stockConsumer.findRealTimePrice(symbol)
     }
 }

@@ -2,9 +2,9 @@ package com.stockcomp.service
 
 import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.document.SymbolDocument
-import com.stockcomp.response.HistoricPriceResponse
-import com.stockcomp.response.RealTimePriceResponse
-import com.stockcomp.response.SymbolSearchResponse
+import com.stockcomp.response.HistoricPrice
+import com.stockcomp.response.RealTimePrice
+import com.stockcomp.response.SymbolSearch
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -48,7 +48,7 @@ internal class StockServiceTest {
 
     @Test
     fun `should get real time prices for given symbol`() {
-        val consumerResponse = createRealTimePriceResponse()
+        val consumerResponse = createRealTimePrice()
         every {
             stockConsumer.findRealTimePrice(symbol1)
         } returns consumerResponse
@@ -173,18 +173,18 @@ internal class StockServiceTest {
 
     private fun createSymbolSearchList() =
         listOf(
-            SymbolSearchResponse(symbol = symbol1, description = description1),
-            SymbolSearchResponse(symbol = symbol2, description = description2)
+            SymbolSearch(symbol = symbol1, description = description1),
+            SymbolSearch(symbol = symbol2, description = description2)
         )
 
     private fun createHistoricPriceList() =
         listOf(
-            HistoricPriceResponse(price = 124.00, date = LocalDate.now()),
-            HistoricPriceResponse(price = 122.00, date = LocalDate.now().minusDays(1))
+            HistoricPrice(price = 124.00, date = LocalDate.now()),
+            HistoricPrice(price = 122.00, date = LocalDate.now().minusDays(1))
         )
 
-    private fun createRealTimePriceResponse() =
-        RealTimePriceResponse(
+    private fun createRealTimePrice() =
+        RealTimePrice(
             currentPrice = 155.00,
             previousClosePrice = 140.00,
             openPrice = 140.00,
