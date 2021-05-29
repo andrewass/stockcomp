@@ -9,9 +9,13 @@ import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType.BUY
 import com.stockcomp.domain.contest.TransactionType.SELL
 import com.stockcomp.repository.jpa.InvestmentOrderRepository
+import com.stockcomp.repository.jpa.InvestmentRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.service.StockService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.lang.Integer.min
@@ -20,6 +24,7 @@ import java.lang.Integer.min
 class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
+    private val investmentRepository: InvestmentRepository,
     private val stockService: StockService
 ) : OrderProcessingService {
 
@@ -31,7 +36,6 @@ class DefaultOrderProcessingService(
             logger.warn("Unable to start order processing. Previous order processing still running")
             return
         }
-        logger.info("Launching order processing")
         launchedJob = GlobalScope.launch {
             iterateProcessingOrders()
         }
@@ -43,6 +47,7 @@ class DefaultOrderProcessingService(
     }
 
     private suspend fun iterateProcessingOrders() {
+        logger.info("Launching order processing")
         while (true) {
             val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
             val orderMap = orders.groupBy { it.symbol }
@@ -75,17 +80,19 @@ class DefaultOrderProcessingService(
     private fun processBuyOrder(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
     ) {
-        val portfolio = participant.portfolio
-        val investment = portfolio.investments.firstOrNull { it.symbol == order.symbol } ?: Investment(
-            symbol = order.symbol,
-            portfolio = participant.portfolio,
-            name = order.symbol
-        ).also { portfolio.investments.add(it) }
+        val investment = investmentRepository.findBySymbol(order.symbol) ?: investmentRepository.save(
+            Investment(
+                symbol = order.symbol,
+                portfolio = participant.portfolio,
+                name = order.symbol
+            )
+        )
+        logger.info("fetched investment ok")
 
         val amountBought = getAvailableAmountToBuy(participant, currentPrice, order)
         investment.amount += amountBought
         participant.remainingFund -= amountBought * currentPrice
-        postProcessOrder(order, amountBought)
+        postProcessOrder(order, amountBought, investment)
     }
 
     private fun processSellOrder(
@@ -98,7 +105,7 @@ class DefaultOrderProcessingService(
         if (investment.amount == 0) {
             participant.portfolio.investments.remove(investment)
         }
-        postProcessOrder(order, amountSold)
+        postProcessOrder(order, amountSold, investment)
     }
 
     private fun getAvailableAmountToBuy(participant: Participant, currentPrice: Double, order: InvestmentOrder): Int {
@@ -107,7 +114,7 @@ class DefaultOrderProcessingService(
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }
 
-    private fun postProcessOrder(order: InvestmentOrder, amountProcessed: Int) {
+    private fun postProcessOrder(order: InvestmentOrder, amountProcessed: Int, investment: Investment) {
         order.remainingAmount -= amountProcessed
         if (order.remainingAmount == 0) {
             order.orderStatus = COMPLETED
@@ -118,5 +125,7 @@ class DefaultOrderProcessingService(
                         "shares not found in portfolio"
             }
         }
+        investmentOrderRepository.save(order)
+        investmentRepository.save(investment)
     }
 }

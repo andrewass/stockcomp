@@ -78,7 +78,7 @@ internal class ContestControllerIT : IntegrationTest() {
     }
 
     @Test
-    fun `should return status ok when buying investment`() {
+    fun `should return status ok when placing buy order`() {
         val (user, contest) = createTestData()
         contest.startContest()
         signUpUserForContest(user, contest)
@@ -90,12 +90,10 @@ internal class ContestControllerIT : IntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("symbol").value(symbol))
-            .andExpect(jsonPath("amount").value("100"))
     }
 
     @Test
-    fun `should return status ok when selling investment`() {
+    fun `should return status ok when placing sell order`() {
         val (user, contest) = createTestData()
         contest.startContest()
         signUpUserForContest(user, contest)
@@ -108,8 +106,6 @@ internal class ContestControllerIT : IntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("symbol").value(symbol))
-            .andExpect(jsonPath("amount").value("100"))
     }
 
     @Test

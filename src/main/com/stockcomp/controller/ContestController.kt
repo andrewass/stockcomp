@@ -8,6 +8,7 @@ import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.investment.InvestmentService
+import com.stockcomp.service.order.OrderProcessingService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,7 +20,8 @@ import javax.servlet.http.HttpServletRequest
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class ContestController(
     private val contestService: ContestService,
-    private val investmentService: InvestmentService
+    private val investmentService: InvestmentService,
+    private val orderProcessingService: OrderProcessingService
 ) : CustomExceptionHandler() {
 
     @ApiOperation(value = "Return a list of upcoming contests")
@@ -58,7 +60,7 @@ class ContestController(
 
     @PostMapping("/place-buy-order")
     @ApiOperation(value = "Place a buy order for a given participant")
-    fun buyInvestment(
+    fun placeBuyOrder(
         httpServletRequest: HttpServletRequest,
         @RequestBody investmentRequest: InvestmentTransactionRequest
     ): ResponseEntity<HttpStatus> {
@@ -70,7 +72,7 @@ class ContestController(
 
     @PostMapping("/place-sell-order")
     @ApiOperation(value = "Place a sell order for a given participant")
-    fun sellInvestment(
+    fun placeSellOrder(
         httpServletRequest: HttpServletRequest,
         @RequestBody investmentRequest: InvestmentTransactionRequest
     ): ResponseEntity<HttpStatus> {
@@ -101,6 +103,22 @@ class ContestController(
         val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
 
         return ResponseEntity.ok(remainingFunds)
+    }
+
+    @PostMapping("/start-order-process")
+    @ApiOperation(value = "Start processing of investment orders")
+    fun startOrderProcessing(): ResponseEntity<HttpStatus> {
+        orderProcessingService.startOrderProcessing()
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @PostMapping("/stop-order-process")
+    @ApiOperation(value = "Sttop processing of investment orders")
+    fun stopOrderProcessing(): ResponseEntity<HttpStatus> {
+        orderProcessingService.stopOrderProcessing()
+
+        return ResponseEntity(HttpStatus.OK)
     }
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String {
