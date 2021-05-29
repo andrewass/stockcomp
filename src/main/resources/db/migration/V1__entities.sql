@@ -45,16 +45,16 @@ create table t_participant(
 );
 
 create table t_investment_order(
-  investment_order_id   bigint(20) not null auto_increment,
-  symbol                varchar(20) not null,
-  total_amount          int not null,
-  remaining_amount      int not null,
-  accepted_price        double not null,
-  expiration_time       datetime not null,
-  transaction_type      varchar(20) not null,
-  order_status          varchar(20) not null,
-  error_message         varchar(200),
-  participant_id        bigint(20)  not null,
-  primary key (investment_order_id),
-  foreign key (participant_id) references t_participant(participant_id)
+    investment_order_id   bigint(20) not null auto_increment,
+    symbol                varchar(20) not null,
+    total_amount          int not null,
+    remaining_amount      int not null,
+    accepted_price        double not null,
+    expiration_time       datetime not null,
+    transaction_type      varchar(20) not null,
+    order_status          varchar(20) not null,
+    error_message         varchar(200),
+    participant_id        bigint(20)  not null,
+    primary key (investment_order_id),
+    foreign key (participant_id) references t_participant(participant_id)
 );

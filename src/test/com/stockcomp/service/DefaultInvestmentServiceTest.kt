@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -34,8 +35,8 @@ internal class DefaultInvestmentServiceTest {
     private val username = "testUser"
     private val contestNumber = 100
     private val acceptedPrice = 150.00
-    private val totalAmount  = 120
-    private val expirationTime = LocalDateTime.now().plusDays(10L)
+    private val totalAmount = 120
+    private val expirationTime = LocalDate.now().plusDays(10L)
     private val symbol = "AAPL"
     private val contest = createContest()
     private val participant = createParticipant()
@@ -55,7 +56,7 @@ internal class DefaultInvestmentServiceTest {
     }
 
     @BeforeEach
-    private fun resetData(){
+    private fun resetData() {
         participant.investmentOrders.clear()
         participant.remainingFund = 20000.00
     }
@@ -74,7 +75,7 @@ internal class DefaultInvestmentServiceTest {
     }
 
     @Test
-    fun `should place sell order for participant`(){
+    fun `should place sell order for participant`() {
         val request = createInvestmentTransactionRequest()
 
         investmentService.placeSellOrder(request, username)
@@ -89,8 +90,10 @@ internal class DefaultInvestmentServiceTest {
     @Test
     fun `should get investment for a given symbol`() {
         participant.portfolio.investments.add(
-            Investment(name = "APPLE INC", symbol = symbol,
-                amount = totalAmount, portfolio = participant.portfolio)
+            Investment(
+                name = "APPLE INC", symbol = symbol,
+                amount = totalAmount, portfolio = participant.portfolio
+            )
         )
         val investment = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
 
@@ -106,11 +109,11 @@ internal class DefaultInvestmentServiceTest {
         assertEquals(1400.00, remainingFunds)
     }
 
-    private fun verifyCommonFields(investmentOrder : InvestmentOrder){
+    private fun verifyCommonFields(investmentOrder: InvestmentOrder) {
         assertTrue(participant.investmentOrders.size == 1)
         assertEquals(symbol, investmentOrder.symbol)
         assertEquals(acceptedPrice, investmentOrder.acceptedPrice)
-        assertEquals(expirationTime, investmentOrder.expirationTime)
+        assertEquals(expirationTime.atStartOfDay(), investmentOrder.expirationTime)
         assertEquals(totalAmount, investmentOrder.totalAmount)
         assertEquals(totalAmount, investmentOrder.remainingAmount)
         assertSame(participant, investmentOrder.participant)

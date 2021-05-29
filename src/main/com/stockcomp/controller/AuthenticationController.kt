@@ -28,11 +28,7 @@ class AuthenticationController internal constructor(
     @Value("\${token.expiration}")
     private val cookieDuration: String? = null
 
-    private val signUpCounter: Counter
-
-    init {
-        signUpCounter = meterRegistry.counter("sign.up.counter")
-    }
+    private val signUpCounter: Counter = meterRegistry.counter("sign.up.counter")
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sign up a new user")
@@ -47,18 +43,19 @@ class AuthenticationController internal constructor(
 
     @PostMapping("/sign-in")
     @ApiOperation(value = "Sign in existing user")
-    fun signInUser(@RequestBody request: AuthenticationRequest): ResponseEntity<*> {
+    fun signInUser(@RequestBody request: AuthenticationRequest): ResponseEntity<HttpStatus> {
         authenticateUser(request.username, request.password)
         val jwt = generateToken(request.username)
         val cookie = createCookie(jwt, cookieDuration!!.toInt())
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<Any>()
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }
 
     @PostMapping("/sign-out")
     @ApiOperation(value = "Sign out signed in user")
     fun signOutUser(request: HttpServletRequest): ResponseEntity<HttpStatus> {
         val cookie = createCookie("", 0)
+
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }
 

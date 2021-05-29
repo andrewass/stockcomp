@@ -19,7 +19,7 @@ fun mapToInvestmentOrder(
     InvestmentOrder(
         symbol = request.symbol,
         acceptedPrice = request.acceptedPrice,
-        expirationTime = request.expirationTime,
+        expirationTime = request.expirationTime.atStartOfDay(),
         totalAmount = request.amount,
         transactionType = transactionType,
         participant = participant

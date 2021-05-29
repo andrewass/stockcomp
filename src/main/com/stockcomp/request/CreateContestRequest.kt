@@ -2,7 +2,7 @@ package com.stockcomp.request
 
 import java.time.LocalDateTime
 
-class CreateContestRequest(
+data class CreateContestRequest(
     val startTime: LocalDateTime,
     val contestNumber: Int
 )

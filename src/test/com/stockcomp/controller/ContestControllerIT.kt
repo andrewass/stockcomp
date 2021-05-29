@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.servlet.http.Cookie
 
@@ -83,7 +84,7 @@ internal class ContestControllerIT : IntegrationTest() {
         signUpUserForContest(user, contest)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/contest/buy-investment")
+            MockMvcRequestBuilders.post("/contest/place-buy-order")
                 .content(createInvestmentTransactionRequest())
                 .cookie(Cookie("jwt", jwt))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +102,7 @@ internal class ContestControllerIT : IntegrationTest() {
         buyInvestment(contest)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/contest/sell-investment")
+            MockMvcRequestBuilders.post("/contest/place-sell-order")
                 .content(createInvestmentTransactionRequest())
                 .cookie(Cookie("jwt", jwt))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -146,7 +147,7 @@ internal class ContestControllerIT : IntegrationTest() {
             symbol = symbol,
             amount = 100,
             acceptedPrice = 100.00,
-            expirationTime = LocalDateTime.now()
+            expirationTime = LocalDate.now()
         )
         return objectMapper.writeValueAsString(request)
     }

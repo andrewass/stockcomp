@@ -56,7 +56,7 @@ class ContestController(
         return ResponseEntity.ok(isParticipating)
     }
 
-    @PostMapping("/buy-investment")
+    @PostMapping("/place-buy-order")
     @ApiOperation(value = "Place a buy order for a given participant")
     fun buyInvestment(
         httpServletRequest: HttpServletRequest,
@@ -68,7 +68,7 @@ class ContestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PostMapping("/sell-investment")
+    @PostMapping("/place-sell-order")
     @ApiOperation(value = "Place a sell order for a given participant")
     fun sellInvestment(
         httpServletRequest: HttpServletRequest,
