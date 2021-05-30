@@ -1,5 +1,9 @@
 package com.stockcomp.response
 
 data class InvestmentOrderDto(
-    val status: String
+    val orderId: Long,
+    val status: String,
+    val amount: Int,
+    val transactionType: String,
+    val symbol: String
 )

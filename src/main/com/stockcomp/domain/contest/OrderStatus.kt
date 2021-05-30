@@ -1,7 +1,7 @@
 package com.stockcomp.domain.contest
 
-enum class OrderStatus{
-    ACTIVE,
-    COMPLETED,
-    FAILED
+enum class OrderStatus(val decode : String){
+    ACTIVE("Active"),
+    COMPLETED("Completed"),
+    FAILED("Failed")
 }

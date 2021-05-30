@@ -2,13 +2,17 @@ package com.stockcomp.service.order
 
 import com.stockcomp.response.InvestmentOrderDto
 
-interface InvestmentOrderService{
+interface InvestmentOrderService {
 
-    fun getAllCompletedOrdersForParticipant(): List<InvestmentOrderDto>
+    fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto>
 
-    fun getAllCompletedOrdersForSymbolForParticipant() : List<InvestmentOrderDto>
+    fun getAllCompletedOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
+            : List<InvestmentOrderDto>
 
-    fun getAllActiveOrders() : List<InvestmentOrderDto>
+    fun getAllActiveOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto>
 
-    fun getAllActiveOrdersForSymbol() : List<InvestmentOrderDto>
+    fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
+            : List<InvestmentOrderDto>
+
+    fun deleteActiveInvestmentOrder(username: String, orderId: Long)
 }
