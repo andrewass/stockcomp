@@ -80,8 +80,8 @@ class DefaultOrderProcessingService(
     private fun processBuyOrder(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
     ) {
-        val investment = investmentRepository.findBySymbol(order.symbol) ?: investmentRepository.save(
-            Investment(
+        val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
+            ?: investmentRepository.save(Investment(
                 symbol = order.symbol,
                 portfolio = participant.portfolio,
                 name = order.symbol
@@ -98,12 +98,12 @@ class DefaultOrderProcessingService(
     private fun processSellOrder(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
     ) {
-        val investment = participant.portfolio.investments.first { it.symbol == order.symbol }
+        val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
         val amountSold = min(investment.amount, order.totalAmount)
         investment.amount -= amountSold
         participant.remainingFund += amountSold * currentPrice
         if (investment.amount == 0) {
-            participant.portfolio.investments.remove(investment)
+            investmentRepository.delete(investment)
         }
         postProcessOrder(order, amountSold, investment)
     }

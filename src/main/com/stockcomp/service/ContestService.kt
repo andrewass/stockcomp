@@ -58,7 +58,8 @@ class ContestService(
     }
 
     fun signUpUser(username: String, contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber).get()
+        val contest = contestRepository
+            .findContestByContestNumberAndInPreStartModeIsTrueOrInRunningModeIsTrue(contestNumber)
         val user = userRepository.findByUsername(username).get()
         val participant = Participant(user = user, contest = contest)
         contest.participants.add(participant)

@@ -16,5 +16,7 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
 
     Optional<Contest> findContestByContestNumberAndInPreStartModeIsTrue(Integer contestNumber);
 
+    Contest findContestByContestNumberAndInPreStartModeIsTrueOrInRunningModeIsTrue(Integer contestNumber);
+
     List<Contest> findAllByInRunningModeIsTrueOrInPreStartModeIsTrue();
 }
