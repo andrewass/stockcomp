@@ -1,6 +1,8 @@
 package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.OrderStatus
+import com.stockcomp.domain.contest.OrderStatus.*
+import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.InvestmentOrderRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
@@ -17,31 +19,30 @@ class DefaultInvestmentOrderService(
 
     override fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int)
             : List<InvestmentOrderDto> {
-        return findOrdersByParticipant(username, contestNumber, listOf(OrderStatus.COMPLETED, OrderStatus.FAILED))
+        return findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
     }
 
     override fun getAllCompletedOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
             : List<InvestmentOrderDto> {
-        val contest = contestRepository.findContestByContestNumber(contestNumber).get()
-        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest).first()
-
-        val investmentOrders = investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(
-            participant, symbol, listOf(OrderStatus.ACTIVE, OrderStatus.FAILED)
-        )
-        return investmentOrders.map { mapToInvestmentOrderDto(it) }
+        return findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(COMPLETED, FAILED))
     }
 
     override fun getAllActiveOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> {
-        TODO("Not yet implemented")
+        return findOrdersByParticipant(username, contestNumber, listOf(ACTIVE))
     }
 
     override fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
             : List<InvestmentOrderDto> {
-        TODO("Not yet implemented")
+        return findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
     }
 
     override fun deleteActiveInvestmentOrder(username: String, orderId: Long) {
-        TODO("Not yet implemented")
+        val order = investmentOrderRepository.findById(orderId).get()
+        if (order.participant.user.username == username) {
+            investmentOrderRepository.delete(order)
+        } else {
+            throw InvalidStateException("Attempting to delete order not tied to user $orderId")
+        }
     }
 
     private fun findOrdersByParticipant(
@@ -63,7 +64,7 @@ class DefaultInvestmentOrderService(
         val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest).first()
 
         val investmentOrders = investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(
-            participant, symbol, listOf(OrderStatus.ACTIVE, OrderStatus.FAILED)
+            participant, symbol, orderStatus
         )
         return investmentOrders.map { mapToInvestmentOrderDto(it) }
     }
