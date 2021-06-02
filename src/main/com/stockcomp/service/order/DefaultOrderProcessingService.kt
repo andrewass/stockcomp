@@ -8,6 +8,7 @@ import com.stockcomp.domain.contest.OrderStatus.FAILED
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType.BUY
 import com.stockcomp.domain.contest.TransactionType.SELL
+import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.InvestmentOrderRepository
 import com.stockcomp.repository.jpa.InvestmentRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
@@ -25,13 +26,20 @@ class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
-    private val stockService: StockService
+    private val stockService: StockService,
+    contestRepository: ContestRepository
 ) : OrderProcessingService {
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
     private var launchedJob: Job? = null
 
-    override fun startOrderProcessing() {
+    init {
+        if (contestRepository.findAllByInRunningModeIsTrue().isNotEmpty()) {
+            startOrderProcessing()
+        }
+    }
+
+    final override fun startOrderProcessing() {
         if (launchedJob?.isActive == true) {
             logger.warn("Unable to start order processing. Previous order processing still running")
             return
@@ -74,38 +82,40 @@ class DefaultOrderProcessingService(
         } else {
             processSellOrder(participant, currentPrice, investmentOrder)
         }
-        participantRepository.save(participant)
     }
 
     private fun processBuyOrder(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
     ) {
-        val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
-            ?: investmentRepository.save(Investment(
-                symbol = order.symbol,
-                portfolio = participant.portfolio,
-                name = order.symbol
-            )
-        )
-        logger.info("fetched investment ok")
-
-        val amountBought = getAvailableAmountToBuy(participant, currentPrice, order)
-        investment.amount += amountBought
-        participant.remainingFund -= amountBought * currentPrice
-        postProcessOrder(order, amountBought, investment)
+        if (currentPrice <= order.acceptedPrice) {
+            val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
+                ?: investmentRepository.save(
+                    Investment(
+                        symbol = order.symbol,
+                        portfolio = participant.portfolio,
+                        name = order.symbol
+                    )
+                )
+            val amountBought = getAvailableAmountToBuy(participant, currentPrice, order)
+            investment.amount += amountBought
+            participant.remainingFund -= amountBought * currentPrice
+            postProcessOrder(order, amountBought, investment, participant)
+        }
     }
 
     private fun processSellOrder(
         participant: Participant, currentPrice: Double, order: InvestmentOrder
     ) {
-        val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
-        val amountSold = min(investment.amount, order.totalAmount)
-        investment.amount -= amountSold
-        participant.remainingFund += amountSold * currentPrice
-        if (investment.amount == 0) {
-            investmentRepository.delete(investment)
+        if (currentPrice >= order.acceptedPrice) {
+            val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
+            val amountSold = min(investment.amount, order.totalAmount)
+            investment.amount -= amountSold
+            participant.remainingFund += amountSold * currentPrice
+            if (investment.amount == 0) {
+                investmentRepository.delete(investment)
+            }
+            postProcessOrder(order, amountSold, investment, participant)
         }
-        postProcessOrder(order, amountSold, investment)
     }
 
     private fun getAvailableAmountToBuy(participant: Participant, currentPrice: Double, order: InvestmentOrder): Int {
@@ -114,7 +124,10 @@ class DefaultOrderProcessingService(
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }
 
-    private fun postProcessOrder(order: InvestmentOrder, amountProcessed: Int, investment: Investment) {
+    private fun postProcessOrder(
+        order: InvestmentOrder, amountProcessed: Int,
+        investment: Investment, participant: Participant
+    ) {
         order.remainingAmount -= amountProcessed
         if (order.remainingAmount == 0) {
             order.orderStatus = COMPLETED
@@ -127,5 +140,6 @@ class DefaultOrderProcessingService(
         }
         investmentOrderRepository.save(order)
         investmentRepository.save(investment)
+        participantRepository.save(participant)
     }
 }

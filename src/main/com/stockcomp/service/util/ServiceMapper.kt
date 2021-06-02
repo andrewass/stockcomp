@@ -30,7 +30,9 @@ fun mapToInvestmentOrderDto(order: InvestmentOrder) =
     InvestmentOrderDto(
         orderId = order.id!!,
         symbol = order.symbol,
-        amount = order.totalAmount,
+        totalAmount = order.totalAmount,
+        remainingAmount = order.remainingAmount,
         status= order.orderStatus.decode,
-        transactionType = order.transactionType.decode
+        transactionType = order.transactionType.decode,
+        acceptedPrice = order.acceptedPrice
     )
