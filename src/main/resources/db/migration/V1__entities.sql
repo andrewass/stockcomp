@@ -26,6 +26,7 @@ create table t_investment(
     symbol              varchar(20),
     portfolio_id        bigint(20)  not null,
     amount              int,
+    sum_paid            double,
     primary key (investment_id),
     foreign key (portfolio_id) references t_portfolio(portfolio_id)
 );

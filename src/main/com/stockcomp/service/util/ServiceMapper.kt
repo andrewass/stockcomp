@@ -11,7 +11,8 @@ import com.stockcomp.response.InvestmentOrderDto
 fun mapToInvestmentDto(investment: Investment?, symbol: String) =
     InvestmentDto(
         symbol = symbol,
-        amount = investment?.amount ?: 0
+        amount = investment?.amount ?: 0,
+        sumPaid = investment?.sumPaid ?: 0.00
     )
 
 fun mapToInvestmentOrder(
