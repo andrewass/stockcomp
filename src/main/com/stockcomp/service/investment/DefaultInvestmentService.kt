@@ -39,8 +39,14 @@ class DefaultInvestmentService(
         return mapToInvestmentDto(investment, symbol)
     }
 
+
     override fun getRemainingFunds(username: String, contestNumber: Int) =
         getParticipant(username, contestNumber).remainingFund
+
+    override fun getTotalInvestmentReturns(username: String, contestNumber: Int): Double =
+        getParticipant(username, contestNumber).portfolio.investments
+            .map { it.investmentReturns }
+            .sum()
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {
         val contest = contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)

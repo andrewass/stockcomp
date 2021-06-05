@@ -11,4 +11,6 @@ interface InvestmentService {
     fun getInvestmentForSymbol(username: String, contestNumber : Int, symbol: String) : InvestmentDto
 
     fun getRemainingFunds(username: String, contestNumber: Int) : Double
+
+    fun getTotalInvestmentReturns(username: String, contestNumber: Int): Double
 }

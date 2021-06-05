@@ -98,6 +98,7 @@ class DefaultOrderProcessingService(
                 )
             val amountBought = getAvailableAmountToBuy(participant, currentPrice, order)
             investment.amount += amountBought
+            investment.totalAmountBought += amountBought
             investment.sumPaid += amountBought * currentPrice
             participant.remainingFund -= amountBought * currentPrice
             postProcessOrder(order, amountBought, investment, participant)
@@ -111,7 +112,6 @@ class DefaultOrderProcessingService(
             val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
             val amountSold = min(investment.amount, order.totalAmount)
             investment.amount -= amountSold
-            investment.sumPaid -= amountSold * currentPrice
             participant.remainingFund += amountSold * currentPrice
             if (investment.amount == 0) {
                 investmentRepository.delete(investment)

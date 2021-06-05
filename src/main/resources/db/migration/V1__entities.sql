@@ -21,12 +21,14 @@ create table t_portfolio(
 );
 
 create table t_investment(
-    investment_id       bigint(20) not null auto_increment,
-    investment_name     varchar(100),
-    symbol              varchar(20),
-    portfolio_id        bigint(20)  not null,
-    amount              int,
-    sum_paid            double,
+    investment_id           bigint(20) not null auto_increment,
+    investment_name         varchar(100),
+    symbol                  varchar(20),
+    portfolio_id            bigint(20)  not null,
+    amount                  int,
+    total_amount_bought     int,
+    sum_paid                double,
+    investment_returns      double,
     primary key (investment_id),
     foreign key (portfolio_id) references t_portfolio(portfolio_id)
 );

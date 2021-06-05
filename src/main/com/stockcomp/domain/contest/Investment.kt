@@ -20,7 +20,11 @@ class Investment(
     @JoinColumn(name = "PORTFOLIO_ID", nullable = false)
     val portfolio: Portfolio,
 
-    var amount : Int = 0,
+    var amount: Int = 0,
 
-    var sumPaid : Double = 0.00
+    var totalAmountBought : Int = 0,
+
+    var sumPaid: Double = 0.00,
+
+    var investmentReturns : Double = 0.00
 )
