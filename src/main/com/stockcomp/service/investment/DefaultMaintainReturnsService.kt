@@ -42,13 +42,14 @@ class DefaultMaintainReturnsService(
         logger.info("Stopping returns maintenance")
     }
 
-
     private fun maintainReturns() {
-        val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
-        investmentMap.forEach { (symbol, investment) ->
-            run {
-                val realTimePrice = stockService.getRealTimePrice(symbol)
-                investment.forEach { updateInvestment(it, realTimePrice) }
+        while(true) {
+            val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
+            investmentMap.forEach { (symbol, investment) ->
+                run {
+                    val realTimePrice = stockService.getRealTimePrice(symbol)
+                    investment.forEach { updateInvestment(it, realTimePrice) }
+                }
             }
         }
     }
@@ -56,7 +57,10 @@ class DefaultMaintainReturnsService(
     private fun updateInvestment(investment: Investment, realTimePrice: RealTimePrice) {
         val averagePrice = investment.sumPaid / investment.totalAmountBought
         val averageExpenses = averagePrice * investment.amount
-        investment.investmentReturns = realTimePrice.currentPrice * investment.amount - averageExpenses
+        investment.apply {
+            investmentReturns = realTimePrice.currentPrice * amount - averageExpenses
+            totalValue = investmentReturns + amount * realTimePrice.currentPrice
+        }
         investmentRepository.save(investment)
     }
 }

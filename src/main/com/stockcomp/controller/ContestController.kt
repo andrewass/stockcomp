@@ -95,16 +95,26 @@ class ContestController(
     }
 
     @GetMapping("/total-investment-returns")
-    @ApiOperation(value = "Get total investment returns")
+    @ApiOperation(value = "Get total investment returns for participant")
     fun getTotalInvestmentReturns(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ) : ResponseEntity<Double> {
+    ): ResponseEntity<Double> {
         val username = extractUsernameFromRequest(httpServletRequest)
         val totalInvestmentReturns = investmentService.getTotalInvestmentReturns(username, contestNumber)
 
         return ResponseEntity.ok(totalInvestmentReturns)
     }
 
+    @GetMapping("/total-value-investments")
+    @ApiOperation(value = "Get total value of all investments for participant")
+    fun getTotalValueInvestments(
+        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
+    ): ResponseEntity<Double> {
+        val username = extractUsernameFromRequest(httpServletRequest)
+        val totalInvestmentReturns = investmentService.getTotalValueOfInvestments(username, contestNumber)
+
+        return ResponseEntity.ok(totalInvestmentReturns)
+    }
 
     @GetMapping("/remaining-funds")
     @ApiOperation(value = "Get participants remaining funds")
@@ -115,22 +125,6 @@ class ContestController(
         val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
 
         return ResponseEntity.ok(remainingFunds)
-    }
-
-    @PostMapping("/start-order-process")
-    @ApiOperation(value = "Start processing of investment orders")
-    fun startOrderProcessing(): ResponseEntity<HttpStatus> {
-        orderProcessingService.startOrderProcessing()
-
-        return ResponseEntity(HttpStatus.OK)
-    }
-
-    @PostMapping("/stop-order-process")
-    @ApiOperation(value = "Sttop processing of investment orders")
-    fun stopOrderProcessing(): ResponseEntity<HttpStatus> {
-        orderProcessingService.stopOrderProcessing()
-
-        return ResponseEntity(HttpStatus.OK)
     }
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String {

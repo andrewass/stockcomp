@@ -13,4 +13,6 @@ interface InvestmentService {
     fun getRemainingFunds(username: String, contestNumber: Int) : Double
 
     fun getTotalInvestmentReturns(username: String, contestNumber: Int): Double
+
+    fun getTotalValueOfInvestments(username: String, contestNumber: Int) : Double
 }

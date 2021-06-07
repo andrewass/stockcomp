@@ -29,6 +29,7 @@ create table t_investment(
     total_amount_bought     int,
     sum_paid                double,
     investment_returns      double,
+    total_value             double,
     primary key (investment_id),
     foreign key (portfolio_id) references t_portfolio(portfolio_id)
 );

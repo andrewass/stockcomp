@@ -39,13 +39,17 @@ class DefaultInvestmentService(
         return mapToInvestmentDto(investment, symbol)
     }
 
-
     override fun getRemainingFunds(username: String, contestNumber: Int) =
         getParticipant(username, contestNumber).remainingFund
 
     override fun getTotalInvestmentReturns(username: String, contestNumber: Int): Double =
         getParticipant(username, contestNumber).portfolio.investments
             .map { it.investmentReturns }
+            .sum()
+
+    override fun getTotalValueOfInvestments(username: String, contestNumber: Int): Double =
+        getParticipant(username, contestNumber).portfolio.investments
+            .map { it.totalValue }
             .sum()
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {

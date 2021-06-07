@@ -26,5 +26,7 @@ class Investment(
 
     var sumPaid: Double = 0.00,
 
-    var investmentReturns : Double = 0.00
+    var investmentReturns : Double = 0.00,
+
+    var totalValue : Double = 0.00
 )
