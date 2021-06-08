@@ -8,7 +8,6 @@ import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.investment.InvestmentService
-import com.stockcomp.service.order.OrderProcessingService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,8 +19,7 @@ import javax.servlet.http.HttpServletRequest
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class ContestController(
     private val contestService: ContestService,
-    private val investmentService: InvestmentService,
-    private val orderProcessingService: OrderProcessingService
+    private val investmentService: InvestmentService
 ) : CustomExceptionHandler() {
 
     @ApiOperation(value = "Return a list of upcoming contests")

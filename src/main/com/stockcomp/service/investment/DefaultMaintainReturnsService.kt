@@ -7,6 +7,7 @@ import com.stockcomp.response.RealTimePrice
 import com.stockcomp.service.StockService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -33,7 +34,10 @@ class DefaultMaintainReturnsService(
             return
         }
         launchedJob = GlobalScope.launch {
-            maintainReturns()
+            while (true) {
+                maintainReturns()
+                delay(30000L)
+            }
         }
     }
 
@@ -43,13 +47,11 @@ class DefaultMaintainReturnsService(
     }
 
     private fun maintainReturns() {
-        while(true) {
-            val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
-            investmentMap.forEach { (symbol, investment) ->
-                run {
-                    val realTimePrice = stockService.getRealTimePrice(symbol)
-                    investment.forEach { updateInvestment(it, realTimePrice) }
-                }
+        val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
+        investmentMap.forEach { (symbol, investment) ->
+            run {
+                val realTimePrice = stockService.getRealTimePrice(symbol)
+                investment.forEach { updateInvestment(it, realTimePrice) }
             }
         }
     }
@@ -58,8 +60,8 @@ class DefaultMaintainReturnsService(
         val averagePrice = investment.sumPaid / investment.totalAmountBought
         val averageExpenses = averagePrice * investment.amount
         investment.apply {
-            investmentReturns = realTimePrice.currentPrice * amount - averageExpenses
-            totalValue = investmentReturns + amount * realTimePrice.currentPrice
+            totalValue = amount * realTimePrice.currentPrice
+            investmentReturns = totalValue - averageExpenses
         }
         investmentRepository.save(investment)
     }
