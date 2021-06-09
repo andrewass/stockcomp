@@ -22,11 +22,12 @@ import javax.servlet.http.HttpServletRequest
 @RequestMapping("/auth")
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class AuthenticationController internal constructor(
-    private val authenticationManager: AuthenticationManager, private val userService: CustomUserService,
+    private val authenticationManager: AuthenticationManager,
+    private val userService: CustomUserService,
     meterRegistry: MeterRegistry
 ) {
     @Value("\${token.expiration}")
-    private val cookieDuration: String? = null
+    private val cookieDuration: Int = 0
 
     private val signUpCounter: Counter = meterRegistry.counter("sign.up.counter")
 
@@ -35,7 +36,7 @@ class AuthenticationController internal constructor(
     fun signUpUser(@RequestBody request: SignUpRequest): ResponseEntity<HttpStatus> {
         userService.addNewUser(request)
         val jwt = generateToken(request.username)
-        val cookie = createCookie(jwt, cookieDuration!!.toInt())
+        val cookie = createCookie(jwt, cookieDuration)
         signUpCounter.increment()
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
@@ -46,7 +47,7 @@ class AuthenticationController internal constructor(
     fun signInUser(@RequestBody request: AuthenticationRequest): ResponseEntity<HttpStatus> {
         authenticateUser(request.username, request.password)
         val jwt = generateToken(request.username)
-        val cookie = createCookie(jwt, cookieDuration!!.toInt())
+        val cookie = createCookie(jwt, cookieDuration)
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }

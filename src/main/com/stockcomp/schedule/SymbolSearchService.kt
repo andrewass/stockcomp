@@ -4,22 +4,32 @@ import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.document.Exchange
 import com.stockcomp.document.SymbolDocument
 import com.stockcomp.repository.document.SymbolDocumentRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
-class SymbolScheduler(
+@Service
+class SymbolSearchService(
     private val stockConsumer: StockConsumer,
     private val repository: SymbolDocumentRepository
 ) {
-    private val logger = LoggerFactory.getLogger(SymbolScheduler::class.java)
+    private val logger = LoggerFactory.getLogger(SymbolSearchService::class.java)
 
-    @Scheduled(fixedRateString = "\${schedule.rate}")
-    fun populateSymbols() {
-        logger.info("Populating symbols for ElasticSearch")
-        val stockExchanges = findStockExchanges()
-        updatePersistedSymbolDocuments(fetchSymbolsFromStockExchanges(stockExchanges))
+    init {
+        GlobalScope.launch {
+            populateSymbols()
+        }
+    }
+
+    suspend fun populateSymbols() {
+        while (true) {
+            logger.info("Populating symbols for ElasticSearch")
+            val stockExchanges = findStockExchanges()
+            updatePersistedSymbolDocuments(fetchSymbolsFromStockExchanges(stockExchanges))
+            delay(60000 * 60)
+        }
     }
 
     private fun findStockExchanges(): List<Exchange> {
@@ -35,7 +45,7 @@ class SymbolScheduler(
         return Exchange(values[0], values[1])
     }
 
-    private fun fetchSymbolsFromStockExchanges(stockExchanges: List<Exchange>): List<SymbolDocument> {
+    private suspend fun fetchSymbolsFromStockExchanges(stockExchanges: List<Exchange>): List<SymbolDocument> {
         val symbols = ArrayList<SymbolDocument>()
         for (exchange in stockExchanges) {
             val exchangeSymbols = stockConsumer.findAllSymbolsForExchange(exchange.exchangeCode)
@@ -43,7 +53,7 @@ class SymbolScheduler(
                 symbol.exchange = exchange
                 symbols.add(symbol)
             }
-            Thread.sleep(1500L)
+            delay(1500L)
         }
         return symbols
     }

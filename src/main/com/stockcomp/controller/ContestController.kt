@@ -22,8 +22,8 @@ class ContestController(
     private val investmentService: InvestmentService
 ) : CustomExceptionHandler() {
 
-    @ApiOperation(value = "Return a list of upcoming contests")
     @GetMapping("/upcoming-contests")
+    @ApiOperation(value = "Return a list of upcoming contests")
     fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContest>> {
         val jwt = getJwtFromCookie(httpServletRequest)
         val username = jwt?.let { extractUsername(jwt) }

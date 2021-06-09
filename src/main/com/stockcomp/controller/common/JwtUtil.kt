@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
 
-private const val SECRET_KEY = "secret"
+private val SECRET_KEY = System.getenv("JWT_SECRET")
 private const val TOKEN_DURATION = 6000000
 
 fun generateToken(username: String): String {

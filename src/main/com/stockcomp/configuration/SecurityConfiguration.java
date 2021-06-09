@@ -18,13 +18,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CustomUserService customUserService;
-    private final TokenAuthenticationFilter requestFilter;
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter requestFilter,
+    public SecurityConfiguration(PasswordEncoder passwordEncoder,
+                                 TokenAuthenticationFilter tokenAuthenticationFilter,
                                  CustomUserService customUserService) {
         this.passwordEncoder = passwordEncoder;
-        this.requestFilter = requestFilter;
+        this.tokenAuthenticationFilter = tokenAuthenticationFilter;
         this.customUserService = customUserService;
     }
 
@@ -41,14 +42,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/*", "/stock/*", "/task/*", "/actuator/*", "/contest/*"
-                        ,"/investment-order/*","/swagger-ui.html")
+                .antMatchers("/auth/*", "/stock/*", "/actuator/*", "/contest/*"
+                        , "/investment-order/*", "/swagger-ui.html")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        httpSecurity.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
