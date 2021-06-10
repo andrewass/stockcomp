@@ -6,7 +6,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest
+@SpringBootTest(properties = { "jwt.secret=testSecret" })
 public abstract class IntegrationTest {
 
     public static final MySQLContainer MY_SQL_CONTAINER;

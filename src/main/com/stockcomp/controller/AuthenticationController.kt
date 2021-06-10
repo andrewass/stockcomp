@@ -1,10 +1,10 @@
 package com.stockcomp.controller
 
+import com.stockcomp.controller.common.JwtUtil
 import com.stockcomp.controller.common.createCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import com.stockcomp.service.CustomUserService
-import com.stockcomp.controller.common.generateToken
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.ApiOperation
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest
 class AuthenticationController internal constructor(
     private val authenticationManager: AuthenticationManager,
     private val userService: CustomUserService,
+    private val jwtUtil: JwtUtil,
     meterRegistry: MeterRegistry
 ) {
     @Value("\${token.expiration}")
@@ -35,7 +36,7 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign up a new user")
     fun signUpUser(@RequestBody request: SignUpRequest): ResponseEntity<HttpStatus> {
         userService.addNewUser(request)
-        val jwt = generateToken(request.username)
+        val jwt = jwtUtil.generateToken(request.username)
         val cookie = createCookie(jwt, cookieDuration)
         signUpCounter.increment()
 
@@ -46,7 +47,7 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign in existing user")
     fun signInUser(@RequestBody request: AuthenticationRequest): ResponseEntity<HttpStatus> {
         authenticateUser(request.username, request.password)
-        val jwt = generateToken(request.username)
+        val jwt = jwtUtil.generateToken(request.username)
         val cookie = createCookie(jwt, cookieDuration)
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()

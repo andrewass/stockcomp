@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse
  */
 @Component
 class TokenAuthenticationFilter(
-    private val userService: CustomUserService
+    private val userService: CustomUserService,
+    private val jwtUtil: JwtUtil
 ) : OncePerRequestFilter() {
 
     @Value("\${token.name}")
@@ -30,9 +31,9 @@ class TokenAuthenticationFilter(
     ) {
         val token = getTokenFromCookie(request)
         if (token != null && SecurityContextHolder.getContext().authentication == null) {
-            val username = extractUsername(token)
+            val username = jwtUtil.extractUsername(token)
             val userDetails = userService.loadUserByUsername(username)
-            if (tokenIsValid(token, userDetails)) {
+            if (jwtUtil.tokenIsValid(token, userDetails)) {
                 val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken

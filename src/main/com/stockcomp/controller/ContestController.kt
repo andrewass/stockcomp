@@ -1,7 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
-import com.stockcomp.controller.common.extractUsername
+import com.stockcomp.controller.common.JwtUtil
 import com.stockcomp.controller.common.getJwtFromCookie
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
@@ -19,14 +19,15 @@ import javax.servlet.http.HttpServletRequest
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class ContestController(
     private val contestService: ContestService,
-    private val investmentService: InvestmentService
+    private val investmentService: InvestmentService,
+    private val jwtUtil: JwtUtil
 ) : CustomExceptionHandler() {
 
     @GetMapping("/upcoming-contests")
     @ApiOperation(value = "Return a list of upcoming contests")
     fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContest>> {
         val jwt = getJwtFromCookie(httpServletRequest)
-        val username = jwt?.let { extractUsername(jwt) }
+        val username = jwt?.let { jwtUtil.extractUsername(jwt) }
         val contests = contestService.getUpcomingContests(username)
 
         return ResponseEntity.ok(contests)
@@ -128,6 +129,6 @@ class ContestController(
     private fun extractUsernameFromRequest(request: HttpServletRequest): String {
         val jwt = getJwtFromCookie(request)
 
-        return extractUsername(jwt!!)
+        return jwtUtil.extractUsername(jwt!!)
     }
 }
