@@ -64,7 +64,7 @@ internal class ContestControllerIT : IntegrationTest() {
             MockMvcRequestBuilders.post("/contest/sign-up")
                 .param("username", username)
                 .param("contestNumber", contestNumber)
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username)))
+                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
     }
@@ -75,7 +75,7 @@ internal class ContestControllerIT : IntegrationTest() {
             MockMvcRequestBuilders.post("/contest/sign-up")
                 .param("username", username)
                 .param("contestNumber", contestNumber)
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username)))
+                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNotFound)
     }
@@ -89,7 +89,7 @@ internal class ContestControllerIT : IntegrationTest() {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/place-buy-order")
                 .content(createInvestmentTransactionRequest())
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username)))
+                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
@@ -105,7 +105,7 @@ internal class ContestControllerIT : IntegrationTest() {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/place-sell-order")
                 .content(createInvestmentTransactionRequest())
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username)))
+                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
@@ -122,7 +122,7 @@ internal class ContestControllerIT : IntegrationTest() {
             MockMvcRequestBuilders.get("/contest/symbol-investment")
                 .param("symbol", symbol)
                 .param("contestNumber", contestNumber)
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username)))
+                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)

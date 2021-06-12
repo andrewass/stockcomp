@@ -1,31 +1,53 @@
 package com.stockcomp.service.security
 
+import com.stockcomp.domain.user.RefreshToken
+import com.stockcomp.domain.user.User
+import com.stockcomp.exception.TokenRefreshException
+import com.stockcomp.repository.jpa.RefreshTokenRepository
+import com.stockcomp.repository.jpa.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
+import java.util.stream.Stream
 
 @Service
-class DefaultJwtService : JwtService {
+class DefaultJwtService(
+    private val userRepository: UserRepository,
+    private val refreshTokenRepository: RefreshTokenRepository
+) : JwtService {
 
     @Value("\${jwt.secret}")
     private lateinit var secretKey: String
 
-    @Value("\${jwt.token.duration}")
-    private val tokenDuration: Int = 0
+    @Value("\${jwt.access.token.duration}")
+    private val accessTokenDuration: Int = 0
 
-    override fun generateTokenPair(username: String): String {
+    @Value("\${jwt.refresh.token.duration}")
+    private val refreshTokenDuration: Long = 0
+
+    override fun refreshTokenPair(username: String, currentRefreshToken: String): Pair<String, String> {
+        if (currentRefreshTokenIsValid(currentRefreshToken)) {
+            return generateTokenPair(username)
+        } else {
+            throw TokenRefreshException("Expired or non-existing refresh token")
+        }
+    }
+
+    override fun generateTokenPair(username: String): Pair<String, String> {
+        val user = userRepository.findByUsername(username).get()
+        deleteRefreshToken(user)
         val claims: HashMap<String, Any> = hashMapOf("sub" to username)
+        val accessToken = createAccessToken(claims)
+        val refreshToken = createRefreshToken(user)
 
-        return createAccessToken(claims)
+        return Pair(accessToken, refreshToken)
     }
 
-    override fun refreshTokenPair(username: String): String {
-        TODO("Not yet implemented")
-    }
 
     override fun accessTokenIsValid(token: String, userDetails: UserDetails): Boolean {
         val username = extractUsername(token)
@@ -35,7 +57,7 @@ class DefaultJwtService : JwtService {
 
     override fun extractUsername(token: String): String = extractClaimFromAccessToken(token, Claims::getSubject)
 
-    override fun deleteRefreshToken(refreshToken: String): String {
+    override fun deleteRefreshToken(user: User) {
         TODO("Not yet implemented")
     }
 
@@ -55,6 +77,24 @@ class DefaultJwtService : JwtService {
         Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + tokenDuration))
+            .setExpiration(Date(System.currentTimeMillis() + accessTokenDuration))
             .signWith(SignatureAlgorithm.HS256, secretKey).compact()
+
+    private fun createRefreshToken(user: User): String {
+        val refreshToken = RefreshToken(
+            token = UUID.randomUUID().toString(),
+            user = user,
+            expirationTime = LocalDateTime.now().plusDays(refreshTokenDuration)
+        )
+        refreshTokenRepository.save(refreshToken)
+
+        return refreshToken.token
+    }
+
+    private fun currentRefreshTokenIsValid(currentRefreshToken: String): Boolean {
+        val refreshToken = refreshTokenRepository.findRefreshTokenByToken(currentRefreshToken)
+
+        return Stream.ofNullable(refreshToken)
+            .anyMatch { it.expirationTime.isAfter(LocalDateTime.now()) }
+    }
 }

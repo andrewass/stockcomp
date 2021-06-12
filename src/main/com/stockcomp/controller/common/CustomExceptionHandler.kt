@@ -4,12 +4,11 @@ import com.stockcomp.exception.InsufficientFundsException
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import java.util.*
 
-@ControllerAdvice
+@RestControllerAdvice
 class CustomExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(NoSuchElementException::class)

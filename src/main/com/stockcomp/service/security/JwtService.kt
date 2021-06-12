@@ -1,16 +1,17 @@
 package com.stockcomp.service.security
 
+import com.stockcomp.domain.user.User
 import org.springframework.security.core.userdetails.UserDetails
 
 interface JwtService {
 
-    fun generateTokenPair(username: String): String
+    fun generateTokenPair(username: String): Pair<String, String>
 
-    fun refreshTokenPair(username: String): String
+    fun refreshTokenPair(username: String, currentRefreshToken : String): Pair<String, String>
 
     fun accessTokenIsValid(token: String, userDetails: UserDetails): Boolean
 
     fun extractUsername(token: String): String
 
-    fun deleteRefreshToken(refreshToken: String): String
+    fun deleteRefreshToken(user: User)
 }

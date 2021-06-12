@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
     RefreshToken findRefreshTokenByUser(User user);
+
+    RefreshToken findRefreshTokenByToken(String token);
+
+    void deleteRefreshTokenByUser(User user);
 }

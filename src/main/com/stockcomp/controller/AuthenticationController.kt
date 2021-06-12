@@ -37,8 +37,8 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign up a new user")
     fun signUpUser(@RequestBody request: SignUpRequest): ResponseEntity<HttpStatus> {
         userService.addNewUser(request)
-        val accessToken = jwtService.generateTokenPair(request.username)
-        val cookie = createCookie(accessToken, cookieDuration)
+        val tokenPair = jwtService.generateTokenPair(request.username)
+        val cookie = createCookie(tokenPair.first, cookieDuration)
         signUpCounter.increment()
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
@@ -48,8 +48,8 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign in existing user")
     fun signInUser(@RequestBody request: AuthenticationRequest): ResponseEntity<HttpStatus> {
         authenticateUser(request.username, request.password)
-        val accessToken = jwtService.generateTokenPair(request.username)
-        val cookie = createCookie(accessToken, cookieDuration)
+        val tokenPair = jwtService.generateTokenPair(request.username)
+        val cookie = createCookie(tokenPair.first, cookieDuration)
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }
@@ -66,7 +66,7 @@ class AuthenticationController internal constructor(
     @ApiOperation("Refresh the access token")
     fun refreshToken(request: HttpServletRequest, response : HttpServletResponse,
                      @RequestParam username : String) : ResponseEntity<HttpStatus> {
-        val tokenpair = jwtService.refreshTokenPair(username)
+        val tokenpair = jwtService.refreshTokenPair(username, "temptoken")
 
         return  ResponseEntity(HttpStatus.OK)
     }
