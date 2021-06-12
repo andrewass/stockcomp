@@ -62,3 +62,12 @@ create table t_investment_order(
     primary key (investment_order_id),
     foreign key (participant_id) references t_participant(participant_id)
 );
+
+create table t_refresh_token(
+    refresh_token_id    bigint(20) not null auto_increment,
+    token               varchar(100),
+    user_id             bigint(20) not null,
+    expiration_time     datetime not null,
+    primary key (refresh_token_id),
+    foreign key (user_id) references t_user(user_id)
+);

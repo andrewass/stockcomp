@@ -1,7 +1,7 @@
 package com.stockcomp.configuration;
 
 import com.stockcomp.controller.common.TokenAuthenticationFilter;
-import com.stockcomp.service.CustomUserService;
+import com.stockcomp.service.DefaultUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,22 +17,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserService customUserService;
+    private final DefaultUserService defaultUserService;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final PasswordEncoder passwordEncoder;
 
     public SecurityConfiguration(PasswordEncoder passwordEncoder,
                                  TokenAuthenticationFilter tokenAuthenticationFilter,
-                                 CustomUserService customUserService) {
+                                 DefaultUserService defaultUserService) {
         this.passwordEncoder = passwordEncoder;
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
-        this.customUserService = customUserService;
+        this.defaultUserService = defaultUserService;
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder authentication) throws Exception {
         authentication
-                .userDetailsService(customUserService)
+                .userDetailsService(defaultUserService)
                 .passwordEncoder(passwordEncoder);
     }
 

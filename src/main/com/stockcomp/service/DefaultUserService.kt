@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class CustomUserService @Autowired constructor(
+class DefaultUserService @Autowired constructor(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder
 ) : UserDetailsService {
@@ -22,11 +22,11 @@ class CustomUserService @Autowired constructor(
         return User(persistedUser.username, persistedUser.password, emptyList())
     }
 
-    fun addNewUser(request: SignUpRequest): com.stockcomp.domain.User {
+    fun addNewUser(request: SignUpRequest): com.stockcomp.domain.user.User {
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateCredentialException("Existing username : ${request.username}")
         }
-        val user = com.stockcomp.domain.User(
+        val user = com.stockcomp.domain.user.User(
             username = request.username,
             password = passwordEncoder.encode(request.password),
             email = request.email
@@ -34,7 +34,7 @@ class CustomUserService @Autowired constructor(
         return userRepository.save(user)
     }
 
-    fun getPersistedUser(username: String): com.stockcomp.domain.User {
+    fun getPersistedUser(username: String): com.stockcomp.domain.user.User {
         return userRepository.findByUsername(username).get()
     }
 }

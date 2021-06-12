@@ -1,6 +1,7 @@
 package com.stockcomp.controller.common
 
 import com.stockcomp.exception.InsufficientFundsException
+import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -18,4 +19,8 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(InsufficientFundsException::class)
     fun handleInsufficientFundsException(exception: InsufficientFundsException): ResponseEntity<Any> =
         ResponseEntity(exception.message, HttpStatus.CONFLICT)
+
+    @ExceptionHandler(ExpiredJwtException::class)
+    fun handleJwtExpiredException(exception: ExpiredJwtException): ResponseEntity<Any> =
+        ResponseEntity("JWT Token expired", HttpStatus.UNAUTHORIZED)
 }

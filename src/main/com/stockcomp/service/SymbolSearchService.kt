@@ -1,4 +1,4 @@
-package com.stockcomp.schedule
+package com.stockcomp.service
 
 import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.document.Exchange

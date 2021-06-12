@@ -1,6 +1,7 @@
 package com.stockcomp.controller.common
 
-import com.stockcomp.service.CustomUserService
+import com.stockcomp.service.DefaultUserService
+import com.stockcomp.service.security.DefaultJwtService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -17,8 +18,8 @@ import javax.servlet.http.HttpServletResponse
  */
 @Component
 class TokenAuthenticationFilter(
-    private val userService: CustomUserService,
-    private val jwtUtil: JwtUtil
+    private val userService: DefaultUserService,
+    private val defaultJwtService: DefaultJwtService
 ) : OncePerRequestFilter() {
 
     @Value("\${token.name}")
@@ -31,9 +32,9 @@ class TokenAuthenticationFilter(
     ) {
         val token = getTokenFromCookie(request)
         if (token != null && SecurityContextHolder.getContext().authentication == null) {
-            val username = jwtUtil.extractUsername(token)
+            val username = defaultJwtService.extractUsername(token)
             val userDetails = userService.loadUserByUsername(username)
-            if (jwtUtil.tokenIsValid(token, userDetails)) {
+            if (defaultJwtService.accessTokenIsValid(token, userDetails)) {
                 val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken

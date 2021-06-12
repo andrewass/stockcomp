@@ -1,7 +1,6 @@
-package com.stockcomp.domain
+package com.stockcomp.domain.user
 
 import javax.persistence.*
-
 
 @Entity
 @Table(name = "T_USER")

@@ -1,6 +1,6 @@
 package com.stockcomp.service
 
-import com.stockcomp.domain.User
+import com.stockcomp.domain.user.User
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.SignUpRequest
@@ -29,7 +29,7 @@ internal class CustomUserServiceTest {
     private var passwordEncoder = BCryptPasswordEncoder()
 
     @InjectMockKs
-    private lateinit var userService: CustomUserService
+    private lateinit var userService: DefaultUserService
 
     private val username = "testUser"
     private val password = "testPassword"

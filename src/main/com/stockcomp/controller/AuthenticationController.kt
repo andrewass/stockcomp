@@ -1,10 +1,10 @@
 package com.stockcomp.controller
 
-import com.stockcomp.controller.common.JwtUtil
+import com.stockcomp.service.security.DefaultJwtService
 import com.stockcomp.controller.common.createCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
-import com.stockcomp.service.CustomUserService
+import com.stockcomp.service.DefaultUserService
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.ApiOperation
@@ -17,17 +17,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class AuthenticationController internal constructor(
     private val authenticationManager: AuthenticationManager,
-    private val userService: CustomUserService,
-    private val jwtUtil: JwtUtil,
+    private val userService: DefaultUserService,
+    private val jwtService: DefaultJwtService,
     meterRegistry: MeterRegistry
 ) {
-    @Value("\${token.expiration}")
+    @Value("\${jwt.cookie.duration}")
     private val cookieDuration: Int = 0
 
     private val signUpCounter: Counter = meterRegistry.counter("sign.up.counter")
@@ -36,8 +37,8 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign up a new user")
     fun signUpUser(@RequestBody request: SignUpRequest): ResponseEntity<HttpStatus> {
         userService.addNewUser(request)
-        val jwt = jwtUtil.generateToken(request.username)
-        val cookie = createCookie(jwt, cookieDuration)
+        val accessToken = jwtService.generateTokenPair(request.username)
+        val cookie = createCookie(accessToken, cookieDuration)
         signUpCounter.increment()
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
@@ -47,18 +48,27 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign in existing user")
     fun signInUser(@RequestBody request: AuthenticationRequest): ResponseEntity<HttpStatus> {
         authenticateUser(request.username, request.password)
-        val jwt = jwtUtil.generateToken(request.username)
-        val cookie = createCookie(jwt, cookieDuration)
+        val accessToken = jwtService.generateTokenPair(request.username)
+        val cookie = createCookie(accessToken, cookieDuration)
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
     }
 
     @PostMapping("/sign-out")
-    @ApiOperation(value = "Sign out signed in user")
+    @ApiOperation("Sign out signed in user")
     fun signOutUser(request: HttpServletRequest): ResponseEntity<HttpStatus> {
         val cookie = createCookie("", 0)
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build<HttpStatus>()
+    }
+
+    @GetMapping("/refresh-token")
+    @ApiOperation("Refresh the access token")
+    fun refreshToken(request: HttpServletRequest, response : HttpServletResponse,
+                     @RequestParam username : String) : ResponseEntity<HttpStatus> {
+        val tokenpair = jwtService.refreshTokenPair(username)
+
+        return  ResponseEntity(HttpStatus.OK)
     }
 
     private fun authenticateUser(username: String, password: String): Authentication {
