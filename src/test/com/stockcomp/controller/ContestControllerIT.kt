@@ -2,15 +2,16 @@ package com.stockcomp.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.IntegrationTest
-import com.stockcomp.service.security.DefaultJwtService
-import com.stockcomp.domain.user.User
+import com.stockcomp.controller.common.createCookie
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.user.User
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
 import com.stockcomp.repository.jpa.UserRepository
 import com.stockcomp.request.InvestmentTransactionRequest
+import com.stockcomp.service.security.DefaultJwtService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -23,7 +24,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.servlet.http.Cookie
 
 @WithMockUser
 @Transactional
@@ -43,7 +43,7 @@ internal class ContestControllerIT : IntegrationTest() {
     lateinit var participantRepository: ParticipantRepository
 
     @Autowired
-    lateinit var defaultJwtService: DefaultJwtService
+    lateinit var jwtService: DefaultJwtService
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
@@ -54,42 +54,32 @@ internal class ContestControllerIT : IntegrationTest() {
     private val contestNumber = "100"
     private val symbol = "AAPL"
     private val description = "APPLE INC"
-    //private val jwt = jwtUtil.generateToken(username)
 
     @Test
     fun `should return status 200 when signing up for contest`() {
         createTestData()
+        val accessToken = jwtService.generateTokenPair(username).first
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/sign-up")
                 .param("username", username)
                 .param("contestNumber", contestNumber)
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
+                .cookie(createCookie("accessToken", accessToken, 1000))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
     }
 
     @Test
-    fun `should return status 404 when necessary objects not found on sign up`() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/contest/sign-up")
-                .param("username", username)
-                .param("contestNumber", contestNumber)
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound)
-    }
-
-    @Test
     fun `should return status ok when placing buy order`() {
         val (user, contest) = createTestData()
+        val accessToken = jwtService.generateTokenPair(username).first
         contest.startContest()
         signUpUserForContest(user, contest)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/place-buy-order")
                 .content(createInvestmentTransactionRequest())
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
+                .cookie(createCookie("accessToken", accessToken, 1000))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
@@ -98,6 +88,7 @@ internal class ContestControllerIT : IntegrationTest() {
     @Test
     fun `should return status ok when placing sell order`() {
         val (user, contest) = createTestData()
+        val accessToken = jwtService.generateTokenPair(username).first
         contest.startContest()
         signUpUserForContest(user, contest)
         buyInvestment(contest)
@@ -105,7 +96,7 @@ internal class ContestControllerIT : IntegrationTest() {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/contest/place-sell-order")
                 .content(createInvestmentTransactionRequest())
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
+                .cookie(createCookie("accessToken", accessToken, 1000))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
@@ -114,6 +105,7 @@ internal class ContestControllerIT : IntegrationTest() {
     @Test
     fun `should get investments of a symbol for a given participant`() {
         val (user, contest) = createTestData()
+        val accessToken = jwtService.generateTokenPair(username).first
         contest.startContest()
         signUpUserForContest(user, contest)
         buyInvestment(contest)
@@ -122,7 +114,7 @@ internal class ContestControllerIT : IntegrationTest() {
             MockMvcRequestBuilders.get("/contest/symbol-investment")
                 .param("symbol", symbol)
                 .param("contestNumber", contestNumber)
-                .cookie(Cookie("jwt", defaultJwtService.generateTokenPair(username).first))
+                .cookie(createCookie("accessToken", accessToken, 1000))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
