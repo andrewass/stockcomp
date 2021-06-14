@@ -1,19 +1,19 @@
 package com.stockcomp.controller.common
 
-import org.springframework.http.ResponseCookie
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 
 
-fun getJwtFromCookie(request: HttpServletRequest): String? =
+fun getAccessTokenFromCookie(request: HttpServletRequest): String? =
     request.cookies
-        ?.filter { it.name == "jwt" }
+        ?.filter { it.name == "accessToken" }
         ?.map { it.value }
         ?.first()
 
-fun createCookie(jwt: String, maxAge: Int): ResponseCookie =
-    ResponseCookie.from("jwt", jwt)
-        .httpOnly(true)
-        .secure(false)
-        .path("/")
-        .maxAge(maxAge.toLong())
-        .build()
+fun createCookie(name: String, value: String, maxAge: Int): Cookie =
+    Cookie(name, value).apply {
+        isHttpOnly = true
+        secure = false
+        path = "/"
+        setMaxAge(maxAge)
+    }

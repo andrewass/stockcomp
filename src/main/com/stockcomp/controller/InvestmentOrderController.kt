@@ -1,7 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.service.security.DefaultJwtService
-import com.stockcomp.controller.common.getJwtFromCookie
+import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.response.InvestmentOrderDto
 import com.stockcomp.service.order.InvestmentOrderService
 import org.springframework.http.HttpStatus
@@ -22,7 +22,7 @@ class InvestmentOrderController(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> {
-        val jwt = getJwtFromCookie(httpServletRequest)
+        val jwt = getAccessTokenFromCookie(httpServletRequest)
         val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
         val response = investmentOrderService.getAllActiveOrdersForParticipant(username!!, contestNumber)
 
@@ -35,7 +35,7 @@ class InvestmentOrderController(
         @RequestParam symbol: String,
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> {
-        val jwt = getJwtFromCookie(httpServletRequest)
+        val jwt = getAccessTokenFromCookie(httpServletRequest)
         val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
         val response = investmentOrderService
             .getAllActiveOrdersForSymbolForParticipant(username!!, symbol, contestNumber)
@@ -48,7 +48,7 @@ class InvestmentOrderController(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> {
-        val jwt = getJwtFromCookie(httpServletRequest)
+        val jwt = getAccessTokenFromCookie(httpServletRequest)
         val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
         val response = investmentOrderService.getAllCompletedOrdersForParticipant(username!!, contestNumber)
 
@@ -61,7 +61,7 @@ class InvestmentOrderController(
         @RequestParam symbol: String,
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> {
-        val jwt = getJwtFromCookie(httpServletRequest)
+        val jwt = getAccessTokenFromCookie(httpServletRequest)
         val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
         val response = investmentOrderService
             .getAllCompletedOrdersForSymbolForParticipant(username!!, symbol, contestNumber)
@@ -74,7 +74,7 @@ class InvestmentOrderController(
         httpServletRequest: HttpServletRequest,
         @RequestParam orderId: Long
     ): ResponseEntity<HttpStatus> {
-        val jwt = getJwtFromCookie(httpServletRequest)
+        val jwt = getAccessTokenFromCookie(httpServletRequest)
         val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
         investmentOrderService.deleteActiveInvestmentOrder(username!!, orderId)
 

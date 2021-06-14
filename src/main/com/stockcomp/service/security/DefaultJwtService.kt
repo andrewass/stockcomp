@@ -11,11 +11,13 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 import java.util.stream.Stream
 
 @Service
+@Transactional
 class DefaultJwtService(
     private val userRepository: UserRepository,
     private val refreshTokenRepository: RefreshTokenRepository
@@ -24,10 +26,10 @@ class DefaultJwtService(
     @Value("\${jwt.secret}")
     private lateinit var secretKey: String
 
-    @Value("\${jwt.access.token.duration}")
+    @Value("\${access.token.duration}")
     private val accessTokenDuration: Int = 0
 
-    @Value("\${jwt.refresh.token.duration}")
+    @Value("\${refresh.token.duration}")
     private val refreshTokenDuration: Long = 0
 
     override fun refreshTokenPair(username: String, currentRefreshToken: String): Pair<String, String> {
@@ -58,7 +60,7 @@ class DefaultJwtService(
     override fun extractUsername(token: String): String = extractClaimFromAccessToken(token, Claims::getSubject)
 
     override fun deleteRefreshToken(user: User) {
-        TODO("Not yet implemented")
+        refreshTokenRepository.deleteRefreshTokenByUser(user)
     }
 
     private fun isAccessTokenExpired(token: String) = extractExpiration(token).before(Date())
