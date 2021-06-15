@@ -10,6 +10,12 @@ fun getAccessTokenFromCookie(request: HttpServletRequest): String? =
         ?.map { it.value }
         ?.first()
 
+fun getRefreshTokenFromCookie(request: HttpServletRequest) : String =
+    request.cookies
+        .filter { it.name == "refreshToken" }
+        .map { it.value }
+        .first()
+
 fun createCookie(name: String, value: String, maxAge: Int): Cookie =
     Cookie(name, value).apply {
         isHttpOnly = true

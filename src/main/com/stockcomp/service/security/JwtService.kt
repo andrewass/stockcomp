@@ -7,7 +7,7 @@ interface JwtService {
 
     fun generateTokenPair(username: String): Pair<String, String>
 
-    fun refreshTokenPair(username: String, currentRefreshToken : String): Pair<String, String>
+    fun refreshTokenPair(refreshToken : String): Pair<String, String>
 
     fun accessTokenIsValid(token: String, userDetails: UserDetails): Boolean
 

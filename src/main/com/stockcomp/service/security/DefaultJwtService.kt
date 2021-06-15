@@ -32,9 +32,10 @@ class DefaultJwtService(
     @Value("\${refresh.token.duration}")
     private val refreshTokenDuration: Long = 0
 
-    override fun refreshTokenPair(username: String, currentRefreshToken: String): Pair<String, String> {
+    override fun refreshTokenPair(refreshToken: String): Pair<String, String> {
+        val currentRefreshToken = refreshTokenRepository.findRefreshTokenByToken(refreshToken);
         if (currentRefreshTokenIsValid(currentRefreshToken)) {
-            return generateTokenPair(username)
+            return generateTokenPair(currentRefreshToken.user.username)
         } else {
             throw TokenRefreshException("Expired or non-existing refresh token")
         }
@@ -93,9 +94,7 @@ class DefaultJwtService(
         return refreshToken.token
     }
 
-    private fun currentRefreshTokenIsValid(currentRefreshToken: String): Boolean {
-        val refreshToken = refreshTokenRepository.findRefreshTokenByToken(currentRefreshToken)
-
+    private fun currentRefreshTokenIsValid(refreshToken: RefreshToken): Boolean {
         return Stream.ofNullable(refreshToken)
             .anyMatch { it.expirationTime.isAfter(LocalDateTime.now()) }
     }

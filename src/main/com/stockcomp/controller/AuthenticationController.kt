@@ -2,6 +2,7 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.createCookie
 import com.stockcomp.controller.common.getAccessTokenFromCookie
+import com.stockcomp.controller.common.getRefreshTokenFromCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import com.stockcomp.service.DefaultUserService
@@ -37,9 +38,9 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign up a new user")
     fun signUpUser(@RequestBody request: SignUpRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
         userService.addNewUser(request)
-        val tokenPair = jwtService.generateTokenPair(request.username)
-        val accessTokenCookie = createCookie("accessToken", tokenPair.first, cookieDuration)
-        val refreshTokenCookie = createCookie("refreshToken", tokenPair.second, cookieDuration)
+        val (accessToken, refreshToken) = jwtService.generateTokenPair(request.username)
+        val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
+        val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
         signUpCounter.increment()
         response.addCookie(accessTokenCookie)
         response.addCookie(refreshTokenCookie)
@@ -53,9 +54,9 @@ class AuthenticationController internal constructor(
         @RequestBody request: AuthenticationRequest, response: HttpServletResponse
     ): ResponseEntity<HttpStatus> {
         authenticateUser(request.username, request.password)
-        val tokenPair = jwtService.generateTokenPair(request.username)
-        val accessTokenCookie = createCookie("accessToken", tokenPair.first, cookieDuration)
-        val refreshTokenCookie = createCookie("refreshToken", tokenPair.second, cookieDuration)
+        val (accessToken, refreshToken) = jwtService.generateTokenPair(request.username)
+        val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
+        val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
         response.addCookie(accessTokenCookie)
         response.addCookie(refreshTokenCookie)
 
@@ -64,14 +65,12 @@ class AuthenticationController internal constructor(
 
     @PostMapping("/sign-out")
     @ApiOperation("Sign out signed in user")
-    fun signOutUser(
-        request: HttpServletRequest, response: HttpServletResponse
-    ): ResponseEntity<HttpStatus> {
-        val accessToken = getAccessTokenFromCookie(request)
-        val username = accessToken?.let { jwtService.extractUsername(accessToken) }
-        val tokenPair = jwtService.generateTokenPair(username!!)
-        val accessTokenCookie = createCookie("accessToken", tokenPair.first, 0)
-        val refreshTokenCookie = createCookie("refreshToken", tokenPair.second, 0)
+    fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
+        val currentAccessToken = getAccessTokenFromCookie(request)
+        val username = currentAccessToken?.let { jwtService.extractUsername(currentAccessToken) }
+        val (accessToken, refreshToken) = jwtService.generateTokenPair(username!!)
+        val accessTokenCookie = createCookie("accessToken", accessToken, 0)
+        val refreshTokenCookie = createCookie("refreshToken", refreshToken, 0)
         response.addCookie(accessTokenCookie)
         response.addCookie(refreshTokenCookie)
 
@@ -80,11 +79,13 @@ class AuthenticationController internal constructor(
 
     @GetMapping("/refresh-token")
     @ApiOperation("Refresh the access token")
-    fun refreshToken(
-        request: HttpServletRequest, response: HttpServletResponse,
-        @RequestParam username: String
-    ): ResponseEntity<HttpStatus> {
-        val tokenpair = jwtService.refreshTokenPair(username, "temptoken")
+    fun refreshToken(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
+        val currentRefreshToken = getRefreshTokenFromCookie(request)
+        val (accessToken, refreshToken) = jwtService.refreshTokenPair(currentRefreshToken)
+        val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
+        val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
+        response.addCookie(accessTokenCookie)
+        response.addCookie(refreshTokenCookie)
 
         return ResponseEntity(HttpStatus.OK)
     }
