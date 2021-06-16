@@ -8,6 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,11 +16,17 @@ class SymbolSearchService(
     private val stockConsumer: StockConsumer,
     private val repository: SymbolDocumentRepository
 ) {
+
+    @Value("\${auto.start.tasks}")
+    private val autoStartTasks: Boolean = false
+
     private val logger = LoggerFactory.getLogger(SymbolSearchService::class.java)
 
     init {
-        GlobalScope.launch {
-            populateSymbols()
+        if(autoStartTasks) {
+            GlobalScope.launch {
+                populateSymbols()
+            }
         }
     }
 

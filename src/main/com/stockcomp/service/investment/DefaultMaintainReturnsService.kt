@@ -10,20 +10,24 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class DefaultMaintainReturnsService(
     private val investmentRepository: InvestmentRepository,
     private val stockService: StockService,
-    contestRepository: ContestRepository
+    private val contestRepository: ContestRepository
 ) : MaintainReturnsService {
+
+    @Value("\${auto.start.tasks}")
+    private val autoStartTasks: Boolean = false
 
     private val logger = LoggerFactory.getLogger(DefaultMaintainReturnsService::class.java)
     private var launchedJob: Job? = null
 
     init {
-        if (contestRepository.findAllByInRunningModeIsTrue().isNotEmpty()) {
+        if (shouldLaunchTask()) {
             startReturnsMaintenance()
         }
     }
@@ -65,4 +69,8 @@ class DefaultMaintainReturnsService(
         }
         investmentRepository.save(investment)
     }
+
+    private fun shouldLaunchTask() : Boolean =
+        contestRepository.findAllByInRunningModeIsTrue().isNotEmpty() && autoStartTasks
+
 }
