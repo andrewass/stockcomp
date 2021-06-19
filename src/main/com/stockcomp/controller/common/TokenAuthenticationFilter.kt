@@ -26,9 +26,7 @@ class TokenAuthenticationFilter(
     lateinit var accessTokenName: String
 
     override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
+        request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain
     ) {
         val token = getTokenFromCookie(request)
         if (token != null && SecurityContextHolder.getContext().authentication == null) {

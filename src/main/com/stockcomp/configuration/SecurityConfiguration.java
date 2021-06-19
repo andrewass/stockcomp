@@ -1,5 +1,6 @@
 package com.stockcomp.configuration;
 
+import com.stockcomp.controller.common.ExceptionHandlerFilter;
 import com.stockcomp.controller.common.TokenAuthenticationFilter;
 import com.stockcomp.service.DefaultUserService;
 import org.springframework.context.annotation.Bean;
@@ -19,14 +20,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final DefaultUserService defaultUserService;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfiguration(PasswordEncoder passwordEncoder,
-                                 TokenAuthenticationFilter tokenAuthenticationFilter,
-                                 DefaultUserService defaultUserService) {
+    public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter tokenAuthenticationFilter,
+                                 DefaultUserService defaultUserService, ExceptionHandlerFilter exceptionHandlerFilter) {
         this.passwordEncoder = passwordEncoder;
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
         this.defaultUserService = defaultUserService;
+        this.exceptionHandlerFilter = exceptionHandlerFilter;
     }
 
     @Override
@@ -49,6 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(exceptionHandlerFilter, TokenAuthenticationFilter.class);
     }
 
     @Bean
