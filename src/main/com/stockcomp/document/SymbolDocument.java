@@ -55,4 +55,17 @@ public class SymbolDocument {
     public void setExchange(Exchange exchange) {
         this.exchange = exchange;
     }
+
+    @Override
+    public int hashCode(){
+        return symbol.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof SymbolDocument){
+            return symbol.equals(((SymbolDocument) other).symbol);
+        }
+        return false;
+    }
 }

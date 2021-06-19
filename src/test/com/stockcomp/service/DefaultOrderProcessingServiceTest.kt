@@ -20,7 +20,7 @@ internal class DefaultOrderProcessingServiceTest {
     private lateinit var investmentOrderRepository: InvestmentOrderRepository
 
     @MockK
-    private lateinit var stockService: StockService
+    private lateinit var symbolService: SymbolService
 
     @InjectMockKs
     private lateinit var orderProcessingService: DefaultOrderProcessingService

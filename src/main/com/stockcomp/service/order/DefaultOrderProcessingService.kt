@@ -12,7 +12,7 @@ import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.InvestmentOrderRepository
 import com.stockcomp.repository.jpa.InvestmentRepository
 import com.stockcomp.repository.jpa.ParticipantRepository
-import com.stockcomp.service.StockService
+import com.stockcomp.service.SymbolService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,7 +27,7 @@ class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
-    private val stockService: StockService,
+    private val symbolService: SymbolService,
     private val contestRepository: ContestRepository
 ) : OrderProcessingService {
 
@@ -73,7 +73,7 @@ class DefaultOrderProcessingService(
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
-        val symbolPrice = stockService.getRealTimePrice(symbol)
+        val symbolPrice = symbolService.getRealTimePrice(symbol)
         orders.forEach {
             processOrder(it, symbolPrice.currentPrice)
         }

@@ -4,7 +4,7 @@ import com.stockcomp.domain.contest.Investment
 import com.stockcomp.repository.jpa.ContestRepository
 import com.stockcomp.repository.jpa.InvestmentRepository
 import com.stockcomp.response.RealTimePrice
-import com.stockcomp.service.StockService
+import com.stockcomp.service.SymbolService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 @Service
 class DefaultMaintainReturnsService(
     private val investmentRepository: InvestmentRepository,
-    private val stockService: StockService,
+    private val symbolService: SymbolService,
     private val contestRepository: ContestRepository
 ) : MaintainReturnsService {
 
@@ -54,7 +54,7 @@ class DefaultMaintainReturnsService(
         val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
         investmentMap.forEach { (symbol, investment) ->
             run {
-                val realTimePrice = stockService.getRealTimePrice(symbol)
+                val realTimePrice = symbolService.getRealTimePrice(symbol)
                 investment.forEach { updateInvestment(it, realTimePrice) }
             }
         }

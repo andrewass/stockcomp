@@ -33,7 +33,7 @@ internal class StockServiceTest {
     private lateinit var operations: ElasticsearchOperations
 
     @InjectMockKs
-    private lateinit var stockService: StockService
+    private lateinit var symbolService: SymbolService
 
     private val symbol1 = "AAPL"
     private val symbol2 = "APPL"
@@ -53,7 +53,7 @@ internal class StockServiceTest {
             stockConsumer.findRealTimePrice(symbol1)
         } returns consumerResponse
 
-        val response = stockService.getRealTimePrice(symbol1)
+        val response = symbolService.getRealTimePrice(symbol1)
 
         assertEquals(consumerResponse.currentPrice, response.currentPrice)
         assertEquals(consumerResponse.highPrice, response.highPrice)
@@ -70,7 +70,7 @@ internal class StockServiceTest {
             stockConsumer.getHistoricPriceList(symbol1)
         } returns consumerResponse
 
-        val response = stockService.getHistoricPriceList(symbol1)
+        val response = symbolService.getHistoricPriceList(symbol1)
 
         assertEquals(2, response.size)
         assertEquals(consumerResponse[0].price, response[0].price)
@@ -85,7 +85,7 @@ internal class StockServiceTest {
             stockConsumer.getHistoricPriceList(symbol1)
         } returns emptyList()
 
-        val response = stockService.getHistoricPriceList(symbol1)
+        val response = symbolService.getHistoricPriceList(symbol1)
 
         assertTrue(response.isEmpty())
     }
@@ -97,7 +97,7 @@ internal class StockServiceTest {
             stockConsumer.searchSymbol(query)
         } returns consumerResponse
 
-        val response = stockService.searchSymbol(query)
+        val response = symbolService.searchSymbol(query)
 
         assertEquals(2, response.size)
         assertEquals(consumerResponse[0].description, response[0].description)
@@ -112,7 +112,7 @@ internal class StockServiceTest {
             stockConsumer.searchSymbol(query)
         } returns emptyList()
 
-        val response = stockService.searchSymbol(query)
+        val response = symbolService.searchSymbol(query)
 
         assertTrue(response.isEmpty())
     }
@@ -123,9 +123,8 @@ internal class StockServiceTest {
             operations.search(any<Query>(), SymbolDocument::class.java)
         } returns createSearchHits()
 
-        val response = stockService.getSymbolSuggestions(query)
+        val response = symbolService.getSymbolSuggestions(query)
 
-        assertEquals(2, response.size)
         assertEquals(description1, response[0].description)
         assertEquals(symbol1, response[0].symbol)
         assertEquals(description2, response[1].description)
@@ -138,7 +137,7 @@ internal class StockServiceTest {
             operations.search(any<Query>(), SymbolDocument::class.java)
         } returns createEmptySearchHits()
 
-        val response = stockService.getSymbolSuggestions(query)
+        val response = symbolService.getSymbolSuggestions(query)
 
         verify { operations.search(any<Query>(), SymbolDocument::class.java) }
         assertTrue(response.isEmpty())

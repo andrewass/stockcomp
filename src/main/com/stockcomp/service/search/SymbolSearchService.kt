@@ -1,4 +1,4 @@
-package com.stockcomp.service
+package com.stockcomp.service.search
 
 import com.stockcomp.consumer.StockConsumer
 import com.stockcomp.document.Exchange
@@ -20,6 +20,9 @@ class SymbolSearchService(
     @Value("\${auto.start.tasks}")
     private val autoStartTasks: Boolean = false
 
+    @Value("\${symbol.search.delay.time}")
+    private val delayTime : Long = 0L
+
     private val logger = LoggerFactory.getLogger(SymbolSearchService::class.java)
 
     init {
@@ -35,7 +38,7 @@ class SymbolSearchService(
             logger.info("Populating symbols for ElasticSearch")
             val stockExchanges = findStockExchanges()
             updatePersistedSymbolDocuments(fetchSymbolsFromStockExchanges(stockExchanges))
-            delay(60000 * 60)
+            delay(delayTime)
         }
     }
 
