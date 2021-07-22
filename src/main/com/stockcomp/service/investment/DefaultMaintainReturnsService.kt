@@ -1,10 +1,9 @@
 package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Investment
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.InvestmentRepository
-import com.stockcomp.response.RealTimePrice
-import com.stockcomp.service.SymbolService
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.InvestmentRepository
+import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,7 +20,7 @@ class DefaultMaintainReturnsService(
 ) : MaintainReturnsService {
 
     @Value("\${auto.start.tasks}")
-    private val autoStartTasks: Boolean = false
+    private val autoStartTasks: Boolean = true
 
     private val logger = LoggerFactory.getLogger(DefaultMaintainReturnsService::class.java)
     private var launchedJob: Job? = null
@@ -60,11 +59,11 @@ class DefaultMaintainReturnsService(
         }
     }
 
-    private fun updateInvestment(investment: Investment, realTimePrice: RealTimePrice) {
+    private fun updateInvestment(investment: Investment, realTimePrice: Double) {
         val averagePrice = investment.sumPaid / investment.totalAmountBought
         val averageExpenses = averagePrice * investment.amount
         investment.apply {
-            totalValue = amount * realTimePrice.currentPrice
+            totalValue = amount * realTimePrice
             investmentReturns = totalValue - averageExpenses
         }
         investmentRepository.save(investment)

@@ -2,7 +2,7 @@ package com.stockcomp.service
 
 import com.stockcomp.domain.user.User
 import com.stockcomp.exception.DuplicateCredentialException
-import com.stockcomp.repository.jpa.UserRepository
+import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.SignUpRequest
 import io.mockk.MockKAnnotations
 import io.mockk.every

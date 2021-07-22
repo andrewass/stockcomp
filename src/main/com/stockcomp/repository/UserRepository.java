@@ -1,4 +1,4 @@
-package com.stockcomp.repository.jpa;
+package com.stockcomp.repository;
 
 import com.stockcomp.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

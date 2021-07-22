@@ -7,9 +7,9 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.user.User
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
-import com.stockcomp.repository.jpa.UserRepository
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.service.security.DefaultJwtService
 import org.junit.jupiter.api.Test

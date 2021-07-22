@@ -2,8 +2,8 @@ package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.service.util.mapToInvestmentDto

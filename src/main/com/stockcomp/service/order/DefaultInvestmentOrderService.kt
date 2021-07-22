@@ -3,9 +3,9 @@ package com.stockcomp.service.order
 import com.stockcomp.domain.contest.OrderStatus
 import com.stockcomp.domain.contest.OrderStatus.*
 import com.stockcomp.exception.InvalidStateException
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.InvestmentOrderRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.InvestmentOrderRepository
+import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.InvestmentOrderDto
 import com.stockcomp.service.util.mapToInvestmentOrderDto
 import org.springframework.stereotype.Service

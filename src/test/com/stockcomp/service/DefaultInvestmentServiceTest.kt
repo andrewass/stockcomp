@@ -2,8 +2,8 @@ package com.stockcomp.service
 
 import com.stockcomp.domain.user.User
 import com.stockcomp.domain.contest.*
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.service.investment.DefaultInvestmentService
 import io.mockk.MockKAnnotations

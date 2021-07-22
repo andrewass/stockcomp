@@ -8,11 +8,11 @@ import com.stockcomp.domain.contest.OrderStatus.FAILED
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType.BUY
 import com.stockcomp.domain.contest.TransactionType.SELL
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.InvestmentOrderRepository
-import com.stockcomp.repository.jpa.InvestmentRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
-import com.stockcomp.service.SymbolService
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.InvestmentOrderRepository
+import com.stockcomp.repository.InvestmentRepository
+import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -32,7 +32,7 @@ class DefaultOrderProcessingService(
 ) : OrderProcessingService {
 
     @Value("\${auto.start.tasks}")
-    private val autoStartTasks: Boolean = false
+    private val autoStartTasks: Boolean = true
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
     private var launchedJob: Job? = null
@@ -66,6 +66,7 @@ class DefaultOrderProcessingService(
             orderMap.forEach { (symbol, orders) ->
                 run {
                     processOrdersForSymbol(symbol, orders)
+                    logger.info("Processing order for symbol $symbol")
                     delay(1500L)
                 }
             }
@@ -73,9 +74,9 @@ class DefaultOrderProcessingService(
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
-        val symbolPrice = symbolService.getRealTimePrice(symbol)
+        val realTimePrice = symbolService.getRealTimePrice(symbol)
         orders.forEach {
-            processOrder(it, symbolPrice.currentPrice)
+            processOrder(it, realTimePrice)
         }
     }
 

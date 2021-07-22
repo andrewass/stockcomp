@@ -1,8 +1,9 @@
 package com.stockcomp.service
 
-import com.stockcomp.repository.jpa.InvestmentOrderRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
+import com.stockcomp.repository.InvestmentOrderRepository
+import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.order.DefaultOrderProcessingService
+import com.stockcomp.service.symbol.SymbolService
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK

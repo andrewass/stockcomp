@@ -1,9 +1,9 @@
 package com.stockcomp.service
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.repository.jpa.ContestRepository
-import com.stockcomp.repository.jpa.ParticipantRepository
-import com.stockcomp.repository.jpa.UserRepository
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.order.OrderProcessingService
 import io.mockk.MockKAnnotations

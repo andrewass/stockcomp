@@ -1,4 +1,4 @@
-package com.stockcomp.repository.jpa;
+package com.stockcomp.repository;
 
 import com.stockcomp.domain.contest.InvestmentOrder;
 import com.stockcomp.domain.contest.OrderStatus;

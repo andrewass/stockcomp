@@ -3,8 +3,8 @@ package com.stockcomp.service.security
 import com.stockcomp.domain.user.RefreshToken
 import com.stockcomp.domain.user.User
 import com.stockcomp.exception.TokenRefreshException
-import com.stockcomp.repository.jpa.RefreshTokenRepository
-import com.stockcomp.repository.jpa.UserRepository
+import com.stockcomp.repository.RefreshTokenRepository
+import com.stockcomp.repository.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
