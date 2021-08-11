@@ -11,4 +11,4 @@ COPY ${JAR_FILE} app.jar
 EXPOSE 8080
 
 #Specifies the executable to start when the container is booting
-ENTRYPOINT ["java","-jar","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","/app.jar"]
+ENTRYPOINT ["java","-jar","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010","/app.jar"]

@@ -1,25 +1,6 @@
 version: "3.8"
 
 services:
-  #ElasticSearch
-  es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
-    container_name: es01
-    environment:
-      - node.name=es01
-      - cluster.name=es-docker-cluster
-      - bootstrap.memory_lock=true
-      - cluster.initial_master_nodes=es01
-      - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es-volume:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-
   #Prometheus
   prometheus:
     image: prom/prometheus
@@ -61,7 +42,6 @@ services:
     build: .
     depends_on:
       - stock-comp-mysql
-      - es01
     restart: on-failure
     environment:
       - FINNHUB_API_KEY=${FINNHUB_API_KEY}
@@ -72,10 +52,9 @@ services:
       - JWT_SECRET=${JWT_SECRET}
     ports:
       - "8080:8080"
-      - "5005:5005"
+      - "5010:5010"
 
 volumes:
-  es-volume:
   grafana-volume:
   mysql-volume:
     driver: "local"

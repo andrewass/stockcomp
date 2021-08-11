@@ -1,5 +1,6 @@
 package com.stockcomp.domain.user
 
+import com.stockcomp.domain.BaseEntity
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -19,4 +20,5 @@ class RefreshToken(
     val user: User,
 
     val expirationTime: LocalDateTime
-)
+
+) : BaseEntity()

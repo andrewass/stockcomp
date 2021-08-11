@@ -1,10 +1,11 @@
 package com.stockcomp.domain.user
 
+import com.stockcomp.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
 @Table(name = "T_USER")
-class User(
+class User (
 
     @Id
     @Column(name = "USER_ID")
@@ -16,4 +17,5 @@ class User(
     val password: String,
 
     val email: String
-)
+
+) : BaseEntity()

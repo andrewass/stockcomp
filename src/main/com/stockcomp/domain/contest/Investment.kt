@@ -1,5 +1,6 @@
 package com.stockcomp.domain.contest
 
+import com.stockcomp.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
@@ -29,4 +30,5 @@ class Investment(
     var investmentReturns : Double = 0.00,
 
     var totalValue : Double = 0.00
-)
+
+) : BaseEntity()

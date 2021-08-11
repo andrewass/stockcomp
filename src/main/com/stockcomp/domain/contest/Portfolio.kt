@@ -1,5 +1,6 @@
 package com.stockcomp.domain.contest
 
+import com.stockcomp.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
@@ -13,4 +14,5 @@ class Portfolio (
 
     @OneToMany(mappedBy = "portfolio", cascade = [CascadeType.ALL])
     val investments : MutableList<Investment> = mutableListOf()
-)
+
+) : BaseEntity()

@@ -1,5 +1,6 @@
 package com.stockcomp.domain.contest
 
+import com.stockcomp.domain.BaseEntity
 import com.stockcomp.domain.user.User
 import javax.persistence.*
 
@@ -34,4 +35,5 @@ class Participant(
 
     @Column(name = "participant_score")
     var score: Int? = null
-)
+
+) : BaseEntity()

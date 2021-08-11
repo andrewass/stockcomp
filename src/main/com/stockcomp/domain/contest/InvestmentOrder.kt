@@ -1,5 +1,6 @@
 package com.stockcomp.domain.contest
 
+import com.stockcomp.domain.BaseEntity
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -33,4 +34,5 @@ class InvestmentOrder(
     @ManyToOne
     @JoinColumn(name = "PARTICIPANT_ID", nullable = false)
     val participant: Participant
-)
+
+) : BaseEntity()

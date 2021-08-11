@@ -1,5 +1,6 @@
 package com.stockcomp.domain.contest
 
+import com.stockcomp.domain.BaseEntity
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -22,13 +23,15 @@ class Contest(
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val participants: MutableList<Participant> = mutableListOf()
-){
-    fun startContest(){
+
+) : BaseEntity() {
+
+    fun startContest() {
         inPreStartMode = false
         inRunningMode = true
     }
 
-    fun stopContest(){
+    fun stopContest() {
         inRunningMode = false
     }
 }
