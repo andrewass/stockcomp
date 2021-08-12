@@ -1,6 +1,7 @@
 package com.stockcomp.domain.user
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.Role
 import javax.persistence.*
 
 @Entity
@@ -16,6 +17,9 @@ class User (
 
     val password: String,
 
-    val email: String
+    val email: String,
+
+    @Enumerated(EnumType.STRING)
+    val userRole: Role = Role.USER
 
 ) : BaseEntity()

@@ -5,6 +5,7 @@ create table t_user(
 	email           varchar(60) not null,
 	date_created    datetime not null,
 	date_updated    datetime not null,
+	user_role       varchar(10) not null,
 	primary key (user_id)
 );
 
