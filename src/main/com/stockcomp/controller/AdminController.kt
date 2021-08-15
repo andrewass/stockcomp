@@ -1,5 +1,6 @@
 package com.stockcomp.controller
 
+import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.response.ContestDto
 import com.stockcomp.response.UserDto
 import com.stockcomp.service.admin.AdminService
@@ -30,13 +31,19 @@ class AdminController(
         return ResponseEntity.ok(contest)
     }
 
+    @PostMapping("/contests")
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> {
+        adminService.createContest(request)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
     @PutMapping("/contests/{id}")
     fun updateContest(@RequestBody contestDto: ContestDto): ResponseEntity<HttpStatus> {
         adminService.updateContest(contestDto)
 
         return ResponseEntity(HttpStatus.OK)
     }
-
 
     @GetMapping("/users")
     fun getUsers(): HttpEntity<List<UserDto>> {

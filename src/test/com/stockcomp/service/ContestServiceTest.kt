@@ -4,13 +4,11 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.repository.UserRepository
-import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.order.OrderProcessingService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -54,15 +52,6 @@ internal class ContestServiceTest {
         every {
             orderProcessingService.stopOrderProcessing()
         } returns Unit
-    }
-
-    @Test
-    fun `should create contest`() {
-        val request = CreateContestRequest(startTime = LocalDateTime.now(), contestNumber = contestNumber)
-
-        val createdContest = contestService.createContest(request)
-
-        assertEquals(contest, createdContest)
     }
 
     @Test

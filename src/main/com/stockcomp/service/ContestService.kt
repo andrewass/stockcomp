@@ -1,11 +1,9 @@
 package com.stockcomp.service
 
-import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.repository.UserRepository
-import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.order.OrderProcessingService
 import org.slf4j.LoggerFactory
@@ -21,14 +19,6 @@ class ContestService(
     private val orderProcessingService: OrderProcessingService
 ) {
     private val logger = LoggerFactory.getLogger(ContestService::class.java)
-
-    fun createContest(request: CreateContestRequest): Contest {
-        val contest = Contest(
-            contestNumber = request.contestNumber,
-            startTime = request.startTime
-        )
-        return contestRepository.save(contest)
-    }
 
     fun startContest(contestNumber: Int) {
         val contest = contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
@@ -64,13 +54,14 @@ class ContestService(
         contestRepository.save(contest)
     }
 
-    fun getUpcomingContests(username: String?): List<UpcomingContest> {
+    fun getUpcomingContests(username: String): List<UpcomingContest> {
         val upcomingContests = contestRepository.findAllByCompletedIsFalse()
 
         return upcomingContests.map {
             UpcomingContest(
-                startTime = it.startTime, contestNumber = it.contestNumber, running = it.completed,
-                userParticipating = username?.let { user -> userIsParticipating(user, it.contestNumber) })
+                startTime = it.startTime, contestNumber = it.contestNumber, running = it.running,
+                userParticipating = userIsParticipating(username, it.contestNumber)
+            )
         }
     }
 

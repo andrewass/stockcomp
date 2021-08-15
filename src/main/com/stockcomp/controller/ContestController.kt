@@ -26,8 +26,7 @@ class ContestController(
     @GetMapping("/upcoming-contests")
     @ApiOperation(value = "Return a list of upcoming contests")
     fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContest>> {
-        val jwt = getAccessTokenFromCookie(httpServletRequest)
-        val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
+        val username = extractUsernameFromRequest(httpServletRequest)
         val contests = contestService.getUpcomingContests(username)
 
         return ResponseEntity.ok(contests)

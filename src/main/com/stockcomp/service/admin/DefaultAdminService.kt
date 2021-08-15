@@ -1,8 +1,10 @@
 package com.stockcomp.service.admin
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
+import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.response.ContestDto
 import com.stockcomp.response.UserDto
 import org.springframework.stereotype.Service
@@ -27,6 +29,15 @@ class DefaultAdminService(
 
         return objectMapper.convertValue(contest.get(), ContestDto::class.java)
     }
+
+    override fun createContest(request: CreateContestRequest) {
+        val contest = Contest(
+            contestNumber = request.contestNumber,
+            startTime = request.startTime
+        )
+        contestRepository.save(contest)
+    }
+
 
     override fun updateContest(contestDto: ContestDto) {
         val contest = contestRepository.findById(contestDto.id).get()
