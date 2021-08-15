@@ -33,7 +33,7 @@ class ContestService(
     fun startContest(contestNumber: Int) {
         val contest = contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         try {
-            contest.get().isRunning = true
+            contest.get().running = true
 
             contestRepository.save(contest.get())
             orderProcessingService.startOrderProcessing()
@@ -46,7 +46,7 @@ class ContestService(
     fun stopContest(contestNumber: Int) {
         val contest = contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
         try {
-            contest.get().isRunning = false
+            contest.get().running = false
             contestRepository.save(contest.get())
             orderProcessingService.stopOrderProcessing()
             logger.info("Stopping contest")
@@ -65,12 +65,12 @@ class ContestService(
     }
 
     fun getUpcomingContests(username: String?): List<UpcomingContest> {
-        val upcomingContests = contestRepository.findAllByCompletedIsFalseOrRunningIsTrue()
+        val upcomingContests = contestRepository.findAllByCompletedIsFalse()
 
         return upcomingContests.map {
             UpcomingContest(
-                startTime = it.startTime, contestNumber = it.contestNumber, isRunning = it.isCompleted,
-                userIsParticipating = username?.let { user -> userIsParticipating(user, it.contestNumber) })
+                startTime = it.startTime, contestNumber = it.contestNumber, running = it.completed,
+                userParticipating = username?.let { user -> userIsParticipating(user, it.contestNumber) })
         }
     }
 

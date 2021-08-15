@@ -10,7 +10,7 @@ data class ContestDto(
 
     val contestNumber: Int,
 
-    val isRunning: Boolean,
+    val running: Boolean,
 
-    val isCompleted: Boolean
+    val completed: Boolean
 )

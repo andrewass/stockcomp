@@ -18,7 +18,7 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
 
     Contest findContestByContestNumberAndCompletedIsFalseOrRunningIsTrue(Integer contestNumber);
 
-    List<Contest> findAllByCompletedIsFalseOrRunningIsTrue();
+    List<Contest> findAllByCompletedIsFalse();
 
     List<Contest> findAllByRunningIsTrue();
 }

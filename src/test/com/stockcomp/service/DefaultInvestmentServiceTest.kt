@@ -131,8 +131,8 @@ internal class DefaultInvestmentServiceTest {
     private fun createContest() =
         Contest(
             contestNumber = 100,
-            isRunning = false,
-            isCompleted = true,
+            running = false,
+            completed = true,
             startTime = LocalDateTime.now().minusDays(10)
         )
 

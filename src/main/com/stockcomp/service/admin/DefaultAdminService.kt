@@ -17,7 +17,7 @@ class DefaultAdminService(
 ) : AdminService {
 
     override fun getRunningAndUpcomingContests(): List<ContestDto> {
-        val contests = contestRepository.findAllByCompletedIsFalseOrRunningIsTrue()
+        val contests = contestRepository.findAllByCompletedIsFalse()
 
         return contests.map { objectMapper.convertValue(it, ContestDto::class.java) }
     }
@@ -31,8 +31,8 @@ class DefaultAdminService(
     override fun updateContest(contestDto: ContestDto) {
         val contest = contestRepository.findById(contestDto.id).get()
         contest.apply {
-            isRunning = contestDto.isRunning
-            isCompleted = contestDto.isCompleted
+            running = contestDto.running
+            completed = contestDto.completed
         }
         contestRepository.save(contest)
     }

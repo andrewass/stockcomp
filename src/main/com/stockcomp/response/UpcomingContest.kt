@@ -7,7 +7,7 @@ data class UpcomingContest(
 
     val contestNumber: Int,
 
-    val isRunning: Boolean,
+    val running: Boolean,
 
-    val userIsParticipating : Boolean?
+    val userParticipating : Boolean
 )
