@@ -6,10 +6,7 @@ import com.stockcomp.service.admin.AdminService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/admin")
@@ -22,18 +19,24 @@ class AdminController(
     fun getRunningAndUpcomingContests(): HttpEntity<List<ContestDto>> {
         val contests = adminService.getRunningAndUpcomingContests()
 
-        return createResponse(contests)
+        return createListResponse(contests)
+    }
+
+    @GetMapping("/contests/{id}")
+    fun getContest(@PathVariable id: Long): HttpEntity<ContestDto> {
+        val contest = adminService.getContest(id)
+
+        return ResponseEntity.ok(contest)
     }
 
     @GetMapping("/users")
-    fun getUsers() : HttpEntity<List<UserDto>> {
+    fun getUsers(): HttpEntity<List<UserDto>> {
         val users = adminService.getUsers()
 
-        return createResponse(users)
+        return createListResponse(users)
     }
 
-
-    private fun <T : Any> createResponse(result: List<T>): ResponseEntity<List<T>> {
+    private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> {
         val responseHeader = HttpHeaders()
         responseHeader.set("Access-Control-Expose-Headers", "Content-Range")
         responseHeader.set("Content-Range", "posts 0-${result.size}/${result.size}")

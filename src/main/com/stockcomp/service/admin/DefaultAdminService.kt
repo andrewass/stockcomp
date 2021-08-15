@@ -22,6 +22,12 @@ class DefaultAdminService(
         return contests.map { objectMapper.convertValue(it, ContestDto::class.java) }
     }
 
+    override fun getContest(id: Long): ContestDto {
+        val contest = contestRepository.findById(id)
+
+        return objectMapper.convertValue(contest.get(), ContestDto::class.java)
+    }
+
     override fun getUsers(): List<UserDto> {
         val users = userRepository.findAll()
 
