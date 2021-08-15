@@ -31,12 +31,10 @@ class ContestService(
     }
 
     fun startContest(contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber)
+        val contest = contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         try {
-            contest.get().apply {
-                inPreStartMode = false
-                inRunningMode = true
-            }
+            contest.get().isRunning = true
+
             contestRepository.save(contest.get())
             orderProcessingService.startOrderProcessing()
             logger.info("Starting contest")
@@ -46,9 +44,9 @@ class ContestService(
     }
 
     fun stopContest(contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)
+        val contest = contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
         try {
-            contest.get().inRunningMode = false
+            contest.get().isRunning = false
             contestRepository.save(contest.get())
             orderProcessingService.stopOrderProcessing()
             logger.info("Stopping contest")
@@ -59,7 +57,7 @@ class ContestService(
 
     fun signUpUser(username: String, contestNumber: Int) {
         val contest = contestRepository
-            .findContestByContestNumberAndInPreStartModeIsTrueOrInRunningModeIsTrue(contestNumber)
+            .findContestByContestNumberAndCompletedIsFalseOrRunningIsTrue(contestNumber)
         val user = userRepository.findByUsername(username).get()
         val participant = Participant(user = user, contest = contest)
         contest.participants.add(participant)
@@ -67,12 +65,11 @@ class ContestService(
     }
 
     fun getUpcomingContests(username: String?): List<UpcomingContest> {
-        val upcomingContests = contestRepository.findAllByInRunningModeIsTrueOrInPreStartModeIsTrue()
+        val upcomingContests = contestRepository.findAllByCompletedIsFalseOrRunningIsTrue()
 
         return upcomingContests.map {
             UpcomingContest(
-                startTime = it.startTime, contestNumber = it.contestNumber,
-                inPreStartMode = it.inPreStartMode, inRunningMode = it.inRunningMode,
+                startTime = it.startTime, contestNumber = it.contestNumber, isRunning = it.isCompleted,
                 userIsParticipating = username?.let { user -> userIsParticipating(user, it.contestNumber) })
         }
     }

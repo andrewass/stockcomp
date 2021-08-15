@@ -68,7 +68,7 @@ internal class ContestServiceTest {
     @Test
     fun `should start already created contest`() {
         every {
-            contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber)
+            contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         } returns Optional.of(contest)
 
         contestService.startContest(contestNumber)
@@ -77,7 +77,7 @@ internal class ContestServiceTest {
     @Test
     fun `should throw exception when trying to start a non-existing contest`() {
         every {
-            contestRepository.findContestByContestNumberAndInPreStartModeIsTrue(contestNumber)
+            contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         } returns Optional.empty()
 
         assertThrows<IllegalStateException> {
@@ -88,7 +88,7 @@ internal class ContestServiceTest {
     @Test
     fun `should stop already running contest`() {
         every {
-            contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)
+            contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
         } returns Optional.of(contest)
 
         contestService.stopContest(contestNumber)
@@ -97,7 +97,7 @@ internal class ContestServiceTest {
     @Test
     fun `should throw exception when trying to stop a non-running contest`() {
         every {
-            contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)
+            contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
         } returns Optional.empty()
 
         assertThrows<IllegalStateException> {

@@ -45,7 +45,7 @@ internal class DefaultInvestmentServiceTest {
     private fun setUp() {
         MockKAnnotations.init(this)
         every {
-            contestRepository.findContestByContestNumberAndInRunningModeIsTrue(contestNumber)
+            contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
         } returns Optional.of(contest)
         every {
             participantRepository.findParticipantFromUsernameAndContest(username, contest)
@@ -131,8 +131,8 @@ internal class DefaultInvestmentServiceTest {
     private fun createContest() =
         Contest(
             contestNumber = 100,
-            inPreStartMode = false,
-            inRunningMode = true,
+            isRunning = false,
+            isCompleted = true,
             startTime = LocalDateTime.now().minusDays(10)
         )
 

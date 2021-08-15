@@ -10,7 +10,7 @@ data class ContestDto(
 
     val contestNumber: Int,
 
-    var inPreStartMode: Boolean,
+    val isRunning: Boolean,
 
-    var inRunningMode: Boolean
+    val isCompleted: Boolean
 )

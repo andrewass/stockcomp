@@ -1,7 +1,6 @@
 package com.stockcomp.domain.user
 
 import com.stockcomp.domain.BaseEntity
-import com.stockcomp.domain.Role
 import javax.persistence.*
 
 @Entity

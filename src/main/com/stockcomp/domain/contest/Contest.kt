@@ -17,9 +17,9 @@ class Contest(
 
     val contestNumber: Int,
 
-    var inPreStartMode: Boolean = true,
+    var isRunning: Boolean = true,
 
-    var inRunningMode: Boolean = false,
+    var isCompleted: Boolean = false,
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val participants: MutableList<Participant> = mutableListOf()
@@ -27,11 +27,14 @@ class Contest(
 ) : BaseEntity() {
 
     fun startContest() {
-        inPreStartMode = false
-        inRunningMode = true
+        isRunning = true
     }
 
     fun stopContest() {
-        inRunningMode = false
+        isRunning = false
+    }
+
+    fun setCompleted() {
+        isCompleted = true
     }
 }

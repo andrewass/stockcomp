@@ -5,6 +5,7 @@ import com.stockcomp.response.UserDto
 import com.stockcomp.service.admin.AdminService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -16,18 +17,26 @@ class AdminController(
 ) {
 
     @GetMapping("/contests")
-    fun getRunningAndUpcomingContests(): HttpEntity<List<ContestDto>> {
+    fun getRunningAndUpcomingContests(): ResponseEntity<List<ContestDto>> {
         val contests = adminService.getRunningAndUpcomingContests()
 
         return createListResponse(contests)
     }
 
     @GetMapping("/contests/{id}")
-    fun getContest(@PathVariable id: Long): HttpEntity<ContestDto> {
+    fun getContest(@PathVariable id: Long): ResponseEntity<ContestDto> {
         val contest = adminService.getContest(id)
 
         return ResponseEntity.ok(contest)
     }
+
+    @PutMapping("/contests/{id}")
+    fun updateContest(@RequestBody contestDto: ContestDto): ResponseEntity<HttpStatus> {
+        adminService.updateContest(contestDto)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
 
     @GetMapping("/users")
     fun getUsers(): HttpEntity<List<UserDto>> {

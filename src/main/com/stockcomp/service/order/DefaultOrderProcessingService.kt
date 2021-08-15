@@ -151,5 +151,5 @@ class DefaultOrderProcessingService(
     }
 
     private fun shouldLaunchTask() : Boolean =
-        contestRepository.findAllByInRunningModeIsTrue().isNotEmpty() && autoStartTasks
+        contestRepository.findAllByRunningIsTrue().isNotEmpty() && autoStartTasks
 }

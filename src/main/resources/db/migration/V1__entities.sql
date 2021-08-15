@@ -13,8 +13,8 @@ create table t_contest(
 	contest_id          bigint(20)  not null auto_increment,
 	contest_number      int not null,
 	start_time          datetime,
-	in_pre_start_mode   boolean,
-	in_running_mode     boolean,
+	is_completed        boolean,
+	is_running          boolean,
 	date_created    	datetime not null,
 	date_updated    	datetime not null,
 	primary key (contest_id)

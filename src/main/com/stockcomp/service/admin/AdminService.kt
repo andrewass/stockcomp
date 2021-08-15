@@ -7,4 +7,5 @@ interface AdminService {
     fun getRunningAndUpcomingContests(): List<ContestDto>
     fun getUsers(): List<UserDto>
     fun getContest(id: Long): ContestDto
+    fun updateContest(id: ContestDto)
 }
