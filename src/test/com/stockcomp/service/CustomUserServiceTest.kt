@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class CustomUserServiceTest {
@@ -41,7 +40,7 @@ internal class CustomUserServiceTest {
         MockKAnnotations.init(this)
         every {
             userRepository.findByUsername(username)
-        } returns Optional.of(user)
+        } returns user
     }
 
     @Test
@@ -63,7 +62,7 @@ internal class CustomUserServiceTest {
             userRepository.save(capture(userSlot))
         } returns user
 
-        userService.addNewUser(SignUpRequest(username, password, email))
+        userService.signUpUser(SignUpRequest(username, password, email))
 
         verify { userRepository.save(any<User>()) }
         assertEquals(username, userSlot.captured.username)
@@ -72,18 +71,18 @@ internal class CustomUserServiceTest {
     }
 
     @Test
-    fun `should throw exception when attempting to add user with duplicate username`(){
+    fun `should throw exception when attempting to add user with duplicate username`() {
         every {
             userRepository.existsByUsername(username)
         } returns true
 
         assertThrows<DuplicateCredentialException> {
-            userService.addNewUser(SignUpRequest(username, password, email))
+            userService.signUpUser(SignUpRequest(username, password, email))
         }
     }
 
     @Test
-    fun `should get peristed user`(){
+    fun `should get peristed user`() {
         val user = userService.getPersistedUser(username)
 
         assertEquals(username, user.username)

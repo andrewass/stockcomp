@@ -33,7 +33,7 @@ class DefaultJwtService(
     private val refreshTokenDuration: Long = 0
 
     override fun refreshTokenPair(refreshToken: String): Pair<String, String> {
-        val currentRefreshToken = refreshTokenRepository.findRefreshTokenByToken(refreshToken);
+        val currentRefreshToken = refreshTokenRepository.findRefreshTokenByToken(refreshToken)
         if (currentRefreshTokenIsValid(currentRefreshToken)) {
             return generateTokenPair(currentRefreshToken.user.username)
         } else {
@@ -42,7 +42,7 @@ class DefaultJwtService(
     }
 
     override fun generateTokenPair(username: String): Pair<String, String> {
-        val user = userRepository.findByUsername(username).get()
+        val user = userRepository.findByUsername(username)
         deleteRefreshToken(user)
         val claims: HashMap<String, Any> = hashMapOf("sub" to username)
         val accessToken = createAccessToken(claims)

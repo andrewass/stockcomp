@@ -24,7 +24,6 @@ class ContestService(
         val contest = contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         try {
             contest.get().running = true
-
             contestRepository.save(contest.get())
             orderProcessingService.startOrderProcessing()
             logger.info("Starting contest")
@@ -46,9 +45,8 @@ class ContestService(
     }
 
     fun signUpUser(username: String, contestNumber: Int) {
-        val contest = contestRepository
-            .findContestByContestNumberAndCompletedIsFalseOrRunningIsTrue(contestNumber)
-        val user = userRepository.findByUsername(username).get()
+        val contest = contestRepository.findContestByContestNumber(contestNumber).get()
+        val user = userRepository.findByUsername(username)
         val participant = Participant(user = user, contest = contest)
         contest.participants.add(participant)
         contestRepository.save(contest)

@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -37,7 +36,7 @@ class AuthenticationController internal constructor(
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sign up a new user")
     fun signUpUser(@RequestBody request: SignUpRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
-        userService.addNewUser(request)
+        userService.signUpUser(request)
         val (accessToken, refreshToken) = jwtService.generateTokenPair(request.username)
         val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
         val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
@@ -52,15 +51,16 @@ class AuthenticationController internal constructor(
     @ApiOperation(value = "Sign in existing user")
     fun signInUser(
         @RequestBody request: AuthenticationRequest, response: HttpServletResponse
-    ): ResponseEntity<HttpStatus> {
+    ): ResponseEntity<String> {
         authenticateUser(request.username, request.password)
+        val userRole = userService.signInUser(request)
         val (accessToken, refreshToken) = jwtService.generateTokenPair(request.username)
         val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
         val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
         response.addCookie(accessTokenCookie)
         response.addCookie(refreshTokenCookie)
 
-        return ResponseEntity(HttpStatus.OK)
+        return ResponseEntity.ok(userRole)
     }
 
     @PostMapping("/sign-out")
@@ -90,9 +90,8 @@ class AuthenticationController internal constructor(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    private fun authenticateUser(username: String, password: String): Authentication {
+    private fun authenticateUser(username: String, password: String) {
         val token = UsernamePasswordAuthenticationToken(username, password)
-
-        return authenticationManager.authenticate(token)
+        authenticationManager.authenticate(token)
     }
 }

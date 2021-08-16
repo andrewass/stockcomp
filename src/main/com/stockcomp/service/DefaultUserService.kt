@@ -2,6 +2,7 @@ package com.stockcomp.service
 
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository
+import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
@@ -17,12 +18,12 @@ class DefaultUserService @Autowired constructor(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(userName: String): UserDetails {
-        val persistedUser = userRepository.findByUsername(userName).get()
+        val persistedUser = userRepository.findByUsername(userName)
 
         return User(persistedUser.username, persistedUser.password, emptyList())
     }
 
-    fun addNewUser(request: SignUpRequest): com.stockcomp.domain.user.User {
+    fun signUpUser(request: SignUpRequest): com.stockcomp.domain.user.User {
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateCredentialException("Existing username : ${request.username}")
         }
@@ -34,7 +35,13 @@ class DefaultUserService @Autowired constructor(
         return userRepository.save(user)
     }
 
+    fun signInUser(request: AuthenticationRequest): String {
+        val user = userRepository.findByUsername(request.username)
+
+        return user.userRole.toString()
+    }
+
     fun getPersistedUser(username: String): com.stockcomp.domain.user.User {
-        return userRepository.findByUsername(username).get()
+        return userRepository.findByUsername(username)
     }
 }
