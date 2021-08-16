@@ -6,7 +6,6 @@ import com.stockcomp.response.UserDto
 import com.stockcomp.service.admin.AdminService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -32,17 +31,24 @@ class AdminController(
     }
 
     @PostMapping("/contests")
-    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> {
-        adminService.createContest(request)
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<ContestDto> {
+        val contest = adminService.createContest(request)
 
-        return ResponseEntity(HttpStatus.OK)
+        return ResponseEntity.ok(contest)
     }
 
     @PutMapping("/contests/{id}")
-    fun updateContest(@RequestBody contestDto: ContestDto): ResponseEntity<HttpStatus> {
-        adminService.updateContest(contestDto)
+    fun updateContest(@RequestBody contestDto: ContestDto): ResponseEntity<ContestDto> {
+        val contest = adminService.updateContest(contestDto)
 
-        return ResponseEntity(HttpStatus.OK)
+        return ResponseEntity.ok(contest)
+    }
+
+    @DeleteMapping("/contests/{id}")
+    fun deleteContest(@PathVariable id: Long): ResponseEntity<ContestDto> {
+        val contest = adminService.deleteContest(id)
+
+        return ResponseEntity.ok(contest)
     }
 
     @GetMapping("/users")

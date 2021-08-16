@@ -8,6 +8,7 @@ interface AdminService {
     fun getRunningAndUpcomingContests(): List<ContestDto>
     fun getUsers(): List<UserDto>
     fun getContest(id: Long): ContestDto
-    fun updateContest(contestDto: ContestDto)
-    fun createContest(request: CreateContestRequest)
+    fun updateContest(contestDto: ContestDto): ContestDto
+    fun createContest(request: CreateContestRequest): ContestDto
+    fun deleteContest(id: Long): ContestDto
 }

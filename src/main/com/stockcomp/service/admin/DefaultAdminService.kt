@@ -30,24 +30,33 @@ class DefaultAdminService(
         return objectMapper.convertValue(contest.get(), ContestDto::class.java)
     }
 
-    override fun createContest(request: CreateContestRequest) {
+    override fun createContest(request: CreateContestRequest) : ContestDto {
         val contest = Contest(
             contestNumber = request.contestNumber,
             startTime = request.startTime
         )
-        contestRepository.save(contest)
+        val persistedContest = contestRepository.save(contest)
+
+        return objectMapper.convertValue(persistedContest, ContestDto::class.java)
     }
 
+    override fun deleteContest(id: Long) : ContestDto{
+        val persistedContest = contestRepository.findById(id).get()
+        contestRepository.delete(persistedContest)
 
-    override fun updateContest(contestDto: ContestDto) {
+        return objectMapper.convertValue(persistedContest, ContestDto::class.java)
+    }
+
+    override fun updateContest(contestDto: ContestDto) : ContestDto {
         val contest = contestRepository.findById(contestDto.id).get()
         contest.apply {
             running = contestDto.running
             completed = contestDto.completed
         }
-        contestRepository.save(contest)
-    }
+        val persistedContest = contestRepository.save(contest)
 
+        return objectMapper.convertValue(persistedContest, ContestDto::class.java)
+    }
 
     override fun getUsers(): List<UserDto> {
         val users = userRepository.findAll()
