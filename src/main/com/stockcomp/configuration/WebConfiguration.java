@@ -12,8 +12,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 public class WebConfiguration {
 
-    @Value("${finnhub.base.url}")
-    private String finnhubBaseUrl;
+    @Value("${consumer.base.url}")
+    private String consumerBaseUrl;
 
     @Bean
     public WebClient webClient() {
@@ -21,7 +21,7 @@ public class WebConfiguration {
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(20 * 1024 * 1024))
-                .baseUrl(finnhubBaseUrl).build();
+                .baseUrl(consumerBaseUrl).build();
     }
 
     @Bean

@@ -76,7 +76,11 @@ class DefaultOrderProcessingService(
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
         val realTimePrice = symbolService.getRealTimePrice(symbol)
         orders.forEach {
-            processOrder(it, realTimePrice)
+            try {
+                processOrder(it, realTimePrice)
+            } catch (e : Exception){
+                logger.error("Unable to process order ${it.id} : ${e.stackTrace}")
+            }
         }
     }
 

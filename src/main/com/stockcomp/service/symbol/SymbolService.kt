@@ -1,11 +1,15 @@
 package com.stockcomp.service.symbol
 
+import com.stockcomp.consumer.QuoteConsumer
 import org.springframework.stereotype.Service
 
 @Service
-class SymbolService {
+class SymbolService(
+    private val quoteConsumer: QuoteConsumer
+) {
 
     fun getRealTimePrice(symbol: String): Double {
-        return 0.00
+        val response = quoteConsumer.getRealTimePrice(symbol)
+        return response.price
     }
 }
