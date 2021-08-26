@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   #Prometheus
@@ -48,9 +48,15 @@ services:
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
       - JWT_SECRET=${JWT_SECRET}
+      - CONSUMER_BASE_URL=http://stock-analyzer:8088
     ports:
       - "8080:8080"
       - "5010:5010"
+
+networks:
+  default:
+    external: true
+    name: stock-analyzer_default
 
 volumes:
   grafana-volume:

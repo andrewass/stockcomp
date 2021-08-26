@@ -9,7 +9,6 @@ class SymbolService(
 ) {
 
     fun getRealTimePrice(symbol: String): Double {
-        val response = quoteConsumer.getRealTimePrice(symbol)
-        return response.price
+        return quoteConsumer.getRealTimePrice(symbol).price
     }
 }

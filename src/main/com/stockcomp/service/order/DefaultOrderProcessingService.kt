@@ -65,9 +65,9 @@ class DefaultOrderProcessingService(
             val orderMap = orders.groupBy { it.symbol }
             orderMap.forEach { (symbol, orders) ->
                 run {
+                    delay(15000L)
                     processOrdersForSymbol(symbol, orders)
                     logger.info("Processing order for symbol $symbol")
-                    delay(1500L)
                 }
             }
         }
@@ -76,11 +76,7 @@ class DefaultOrderProcessingService(
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
         val realTimePrice = symbolService.getRealTimePrice(symbol)
         orders.forEach {
-            try {
-                processOrder(it, realTimePrice)
-            } catch (e : Exception){
-                logger.error("Unable to process order ${it.id} : ${e.stackTrace}")
-            }
+            processOrder(it, realTimePrice)
         }
     }
 
@@ -154,6 +150,6 @@ class DefaultOrderProcessingService(
         participantRepository.save(participant)
     }
 
-    private fun shouldLaunchTask() : Boolean =
+    private fun shouldLaunchTask(): Boolean =
         contestRepository.findAllByRunningIsTrue().isNotEmpty() && autoStartTasks
 }

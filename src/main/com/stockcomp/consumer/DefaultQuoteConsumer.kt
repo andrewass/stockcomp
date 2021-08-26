@@ -8,7 +8,7 @@ import org.springframework.web.util.UriBuilder
 @Component
 class DefaultQuoteConsumer(
     private val webClient: WebClient
-): QuoteConsumer {
+) : QuoteConsumer {
 
     override fun getRealTimePrice(symbol: String): RealTimePrice {
         return webClient.get()

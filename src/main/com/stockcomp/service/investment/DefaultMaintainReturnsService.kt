@@ -38,8 +38,8 @@ class DefaultMaintainReturnsService(
         }
         launchedJob = GlobalScope.launch {
             while (true) {
-                maintainReturns()
                 delay(30000L)
+                maintainReturns()
             }
         }
     }
@@ -53,6 +53,7 @@ class DefaultMaintainReturnsService(
         val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
         investmentMap.forEach { (symbol, investment) ->
             run {
+                logger.info("Maintaining returns for symbol $symbol")
                 val realTimePrice = symbolService.getRealTimePrice(symbol)
                 investment.forEach { updateInvestment(it, realTimePrice) }
             }
