@@ -12,7 +12,7 @@ fun mapToInvestmentDto(investment: Investment?, symbol: String) =
     InvestmentDto(
         symbol = symbol,
         amount = investment?.amount ?: 0,
-        sumPaid = investment?.sumPaid ?: 0.00,
+        averagePricePaid = investment?.sumPaid ?: 0.00,
         investmentReturns = investment?.investmentReturns ?: 0.00
     )
 

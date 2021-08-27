@@ -12,6 +12,7 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.response.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -80,19 +81,17 @@ class DefaultOrderProcessingService(
         }
     }
 
-    private fun processOrder(investmentOrder: InvestmentOrder, currentPrice: Double) {
+    private fun processOrder(investmentOrder: InvestmentOrder, realTimePrice: RealTimePrice) {
         val participant = investmentOrder.participant
-        if (investmentOrder.transactionType == BUY && participant.remainingFund >= currentPrice) {
-            processBuyOrder(participant, currentPrice, investmentOrder)
+        if (investmentOrder.transactionType == BUY && participant.remainingFund >= realTimePrice.usdPrice) {
+            processBuyOrder(participant, realTimePrice, investmentOrder)
         } else {
-            processSellOrder(participant, currentPrice, investmentOrder)
+            processSellOrder(participant, realTimePrice, investmentOrder)
         }
     }
 
-    private fun processBuyOrder(
-        participant: Participant, currentPrice: Double, order: InvestmentOrder
-    ) {
-        if (currentPrice <= order.acceptedPrice) {
+    private fun processBuyOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
+        if (realTimePrice.price <= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
                 ?: investmentRepository.save(
                     Investment(
@@ -101,23 +100,20 @@ class DefaultOrderProcessingService(
                         name = order.symbol
                     )
                 )
-            val amountBought = getAvailableAmountToBuy(participant, currentPrice, order)
+            val amountBought = getAvailableAmountToBuy(participant, realTimePrice, order)
             investment.amount += amountBought
-            investment.totalAmountBought += amountBought
-            investment.sumPaid += amountBought * currentPrice
-            participant.remainingFund -= amountBought * currentPrice
+            investment.sumPaid += amountBought * realTimePrice.usdPrice
+            participant.remainingFund -= amountBought * realTimePrice.usdPrice
             postProcessOrder(order, amountBought, investment, participant)
         }
     }
 
-    private fun processSellOrder(
-        participant: Participant, currentPrice: Double, order: InvestmentOrder
-    ) {
-        if (currentPrice >= order.acceptedPrice) {
+    private fun processSellOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
+        if (realTimePrice.price >= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
             val amountSold = min(investment.amount, order.totalAmount)
             investment.amount -= amountSold
-            participant.remainingFund += amountSold * currentPrice
+            participant.remainingFund += amountSold * realTimePrice.usdPrice
             if (investment.amount == 0) {
                 investmentRepository.delete(investment)
             }
@@ -125,8 +121,10 @@ class DefaultOrderProcessingService(
         }
     }
 
-    private fun getAvailableAmountToBuy(participant: Participant, currentPrice: Double, order: InvestmentOrder): Int {
-        val maxAvailAmount = participant.remainingFund % currentPrice
+    private fun getAvailableAmountToBuy(
+        participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder
+    ): Int {
+        val maxAvailAmount = participant.remainingFund % realTimePrice.usdPrice
 
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }

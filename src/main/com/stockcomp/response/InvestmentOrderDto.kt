@@ -7,5 +7,6 @@ data class InvestmentOrderDto(
     val totalAmount: Int,
     val transactionType: String,
     val symbol: String,
-    val acceptedPrice: Double
+    val acceptedPrice: Double,
+    val currency: String
 )

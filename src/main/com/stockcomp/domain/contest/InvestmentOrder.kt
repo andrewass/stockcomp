@@ -21,6 +21,8 @@ class InvestmentOrder(
 
     val acceptedPrice: Double,
 
+    val currency : String,
+
     val expirationTime: LocalDateTime,
 
     @Enumerated(EnumType.STRING)

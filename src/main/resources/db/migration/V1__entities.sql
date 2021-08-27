@@ -65,6 +65,7 @@ create table t_investment_order(
     total_amount          int not null,
     remaining_amount      int not null,
     accepted_price        double not null,
+    currency              varchar(10) not null,
     expiration_time       datetime not null,
     transaction_type      varchar(20) not null,
     order_status          varchar(20) not null,

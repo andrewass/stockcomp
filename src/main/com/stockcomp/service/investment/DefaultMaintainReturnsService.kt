@@ -55,7 +55,7 @@ class DefaultMaintainReturnsService(
             run {
                 logger.info("Maintaining returns for symbol $symbol")
                 val realTimePrice = symbolService.getRealTimePrice(symbol)
-                investment.forEach { updateInvestment(it, realTimePrice) }
+                investment.forEach { updateInvestment(it, realTimePrice.price) }
             }
         }
     }
