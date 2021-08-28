@@ -32,11 +32,12 @@ class DefaultInvestmentService(
         participantRepository.save(participant)
     }
 
-    override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto {
+    override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
         val portfolio = getParticipant(username, contestNumber).portfolio
-        val investment = portfolio.investments.firstOrNull { it.symbol == symbol }
 
-        return mapToInvestmentDto(investment, symbol)
+        return portfolio.investments.firstOrNull { it.symbol == symbol }?.let {
+            return mapToInvestmentDto(it)
+        }
     }
 
     override fun getRemainingFunds(username: String, contestNumber: Int) =
@@ -44,12 +45,7 @@ class DefaultInvestmentService(
 
     override fun getTotalInvestmentReturns(username: String, contestNumber: Int): Double =
         getParticipant(username, contestNumber).portfolio.investments
-            .map { it.investmentReturns }
-            .sum()
-
-    override fun getTotalValueOfInvestments(username: String, contestNumber: Int): Double =
-        getParticipant(username, contestNumber).portfolio.investments
-            .map { it.totalValue }
+            .map { it.totalEarnings }
             .sum()
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {

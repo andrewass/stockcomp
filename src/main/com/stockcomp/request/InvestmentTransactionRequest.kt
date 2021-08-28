@@ -14,6 +14,8 @@ data class InvestmentTransactionRequest(
 
     val amount: Int,
 
+    val currency: String,
+
     @JsonSerialize(using = LocalDateSerializer::class)
     @JsonDeserialize(using = LocalDateDeserializer::class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

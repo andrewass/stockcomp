@@ -138,6 +138,7 @@ internal class ContestControllerIT : IntegrationTest() {
             symbol = symbol,
             amount = 100,
             acceptedPrice = 100.00,
+            currency = "USD",
             expirationTime = LocalDate.now()
         )
         return objectMapper.writeValueAsString(request)

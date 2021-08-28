@@ -33,11 +33,12 @@ class DefaultOrderProcessingService(
     private var keepProcessingOrders = false
 
     init {
-        startOrderProcessing()
+       startOrderProcessing()
     }
 
     final override fun startOrderProcessing() {
         keepProcessingOrders = true
+        logger.info("Starting order processing")
         GlobalScope.launch {
             iterateProcessingOrders()
         }
@@ -49,8 +50,7 @@ class DefaultOrderProcessingService(
     }
 
     private suspend fun iterateProcessingOrders() {
-        logger.info("Launching order processing")
-        while (true) {
+        while (keepProcessingOrders) {
             val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
             val orderMap = orders.groupBy { it.symbol }
             orderMap.forEach { (symbol, orders) ->

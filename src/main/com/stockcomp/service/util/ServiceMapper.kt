@@ -8,12 +8,13 @@ import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.InvestmentOrderDto
 
-fun mapToInvestmentDto(investment: Investment?, symbol: String) =
+fun mapToInvestmentDto(investment: Investment) =
     InvestmentDto(
-        symbol = symbol,
-        amount = investment?.amount ?: 0,
-        averagePricePaid = investment?.sumPaid ?: 0.00,
-        investmentReturns = investment?.investmentReturns ?: 0.00
+        symbol = investment.symbol,
+        totalEarnings = investment.totalEarnings,
+        amount = investment.amount,
+        averageUnitCost = investment.averageUnitCost,
+        name = investment.symbol
     )
 
 fun mapToInvestmentOrder(
@@ -22,6 +23,7 @@ fun mapToInvestmentOrder(
     InvestmentOrder(
         symbol = request.symbol,
         acceptedPrice = request.acceptedPrice,
+        currency = request.currency,
         expirationTime = request.expirationTime.atStartOfDay(),
         totalAmount = request.amount,
         transactionType = transactionType,
@@ -36,5 +38,6 @@ fun mapToInvestmentOrderDto(order: InvestmentOrder) =
         remainingAmount = order.remainingAmount,
         status= order.orderStatus.decode,
         transactionType = order.transactionType.decode,
-        acceptedPrice = order.acceptedPrice
+        acceptedPrice = order.acceptedPrice,
+        currency = order.currency
     )

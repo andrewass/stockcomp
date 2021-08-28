@@ -97,7 +97,7 @@ internal class DefaultInvestmentServiceTest {
         )
         val investment = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
 
-        assertEquals(symbol, investment.symbol)
+        assertEquals(symbol, investment!!.symbol)
         assertEquals(totalAmount, investment.amount)
     }
 
@@ -124,6 +124,7 @@ internal class DefaultInvestmentServiceTest {
             contestNumber = contestNumber,
             symbol = symbol,
             amount = totalAmount,
+            currency = "USD",
             expirationTime = expirationTime,
             acceptedPrice = acceptedPrice
         )

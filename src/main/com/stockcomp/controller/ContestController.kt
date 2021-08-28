@@ -85,11 +85,12 @@ class ContestController(
     fun getInvestmentForSymbol(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int, @RequestParam symbol: String
-    ): ResponseEntity<InvestmentDto> {
+    ): ResponseEntity<InvestmentDto?> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val investments = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
-
-        return ResponseEntity.ok(investments)
+        investmentService.getInvestmentForSymbol(username, contestNumber, symbol)?.let {
+            return ResponseEntity.ok(it)
+        }
+        return ResponseEntity(HttpStatus.NOT_FOUND)
     }
 
     @GetMapping("/total-investment-returns")
@@ -99,17 +100,6 @@ class ContestController(
     ): ResponseEntity<Double> {
         val username = extractUsernameFromRequest(httpServletRequest)
         val totalInvestmentReturns = investmentService.getTotalInvestmentReturns(username, contestNumber)
-
-        return ResponseEntity.ok(totalInvestmentReturns)
-    }
-
-    @GetMapping("/total-value-investments")
-    @ApiOperation(value = "Get total value of all investments for participant")
-    fun getTotalValueInvestments(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<Double> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val totalInvestmentReturns = investmentService.getTotalValueOfInvestments(username, contestNumber)
 
         return ResponseEntity.ok(totalInvestmentReturns)
     }
