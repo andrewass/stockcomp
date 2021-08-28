@@ -23,12 +23,8 @@ class Investment(
 
     var amount: Int = 0,
 
-    var totalAmountBought : Int = 0,
+    var averageUnitCost: Double = 0.00,
 
-    var sumPaid: Double = 0.00,
-
-    var investmentReturns : Double = 0.00,
-
-    var totalValue : Double = 0.00
+    var totalEarnings : Double = 0.00
 
 ) : BaseEntity()

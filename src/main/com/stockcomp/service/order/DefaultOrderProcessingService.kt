@@ -8,18 +8,15 @@ import com.stockcomp.domain.contest.OrderStatus.FAILED
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType.BUY
 import com.stockcomp.domain.contest.TransactionType.SELL
-import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.lang.Integer.min
 
@@ -28,34 +25,26 @@ class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
-    private val symbolService: SymbolService,
-    private val contestRepository: ContestRepository
+    private val symbolService: SymbolService
 ) : OrderProcessingService {
 
-    @Value("\${auto.start.tasks}")
-    private val autoStartTasks: Boolean = true
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
-    private var launchedJob: Job? = null
+    private var keepProcessingOrders = false
 
     init {
-        if (shouldLaunchTask()) {
-            startOrderProcessing()
-        }
+        startOrderProcessing()
     }
 
     final override fun startOrderProcessing() {
-        if (launchedJob?.isActive == true) {
-            logger.warn("Unable to start order processing. Previous order processing still running")
-            return
-        }
-        launchedJob = GlobalScope.launch {
+        keepProcessingOrders = true
+        GlobalScope.launch {
             iterateProcessingOrders()
         }
     }
 
     override fun stopOrderProcessing() {
-        launchedJob?.cancel()
+        keepProcessingOrders = false
         logger.info("Stopping order processing")
     }
 
@@ -100,24 +89,33 @@ class DefaultOrderProcessingService(
                         name = order.symbol
                     )
                 )
-            val amountBought = getAvailableAmountToBuy(participant, realTimePrice, order)
-            investment.amount += amountBought
-            investment.sumPaid += amountBought * realTimePrice.usdPrice
-            participant.remainingFund -= amountBought * realTimePrice.usdPrice
-            postProcessOrder(order, amountBought, investment, participant)
+            val amountToBuy = getAvailableAmountToBuy(participant, realTimePrice, order)
+            investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePrice, amountToBuy)
+            investment.amount += amountToBuy
+            participant.remainingFund -= amountToBuy * realTimePrice.usdPrice
+            postProcessOrder(order, amountToBuy, investment, participant)
         }
+    }
+
+    private fun calculateAverageUnitCost(
+        investment: Investment, realTimePrice: RealTimePrice, amountToBuy: Int
+    ): Double {
+        val totalCost = (investment.amount * investment.averageUnitCost) + (amountToBuy * realTimePrice.usdPrice)
+        val totalAmount = investment.amount + amountToBuy
+
+        return totalCost / totalAmount
     }
 
     private fun processSellOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
         if (realTimePrice.price >= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
-            val amountSold = min(investment.amount, order.totalAmount)
-            investment.amount -= amountSold
-            participant.remainingFund += amountSold * realTimePrice.usdPrice
+            val amountToSell = min(investment.amount, order.totalAmount)
+            investment.amount -= amountToSell
+            participant.remainingFund += amountToSell * realTimePrice.usdPrice
             if (investment.amount == 0) {
                 investmentRepository.delete(investment)
             }
-            postProcessOrder(order, amountSold, investment, participant)
+            postProcessOrder(order, amountToSell, investment, participant)
         }
     }
 
@@ -130,8 +128,7 @@ class DefaultOrderProcessingService(
     }
 
     private fun postProcessOrder(
-        order: InvestmentOrder, amountProcessed: Int,
-        investment: Investment, participant: Participant
+        order: InvestmentOrder, amountProcessed: Int, investment: Investment, participant: Participant
     ) {
         order.remainingAmount -= amountProcessed
         if (order.remainingAmount == 0) {
@@ -147,7 +144,4 @@ class DefaultOrderProcessingService(
         investmentRepository.save(investment)
         participantRepository.save(participant)
     }
-
-    private fun shouldLaunchTask(): Boolean =
-        contestRepository.findAllByRunningIsTrue().isNotEmpty() && autoStartTasks
 }
