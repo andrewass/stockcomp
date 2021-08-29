@@ -38,14 +38,18 @@ class DefaultMaintainReturnsService(
 
     private suspend fun maintainReturns() {
         while (keepMaintainingReturns) {
-            delay(30000L)
-            val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
-            investmentMap.forEach { (symbol, investment) ->
-                run {
-                    logger.info("Maintaining returns for symbol $symbol")
-                    val realTimePrice = symbolService.getRealTimePrice(symbol)
-                    investment.forEach { updateInvestment(it, realTimePrice) }
+            try {
+                delay(30000L)
+                val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
+                investmentMap.forEach { (symbol, investment) ->
+                    run {
+                        logger.info("Maintaining returns for symbol $symbol")
+                        val realTimePrice = symbolService.getRealTimePrice(symbol)
+                        investment.forEach { updateInvestment(it, realTimePrice) }
+                    }
                 }
+            } catch (e: Exception) {
+                logger.error("Failed return maintenance : ${e.message}")
             }
         }
     }

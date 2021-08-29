@@ -33,7 +33,7 @@ class DefaultOrderProcessingService(
     private var keepProcessingOrders = false
 
     init {
-       startOrderProcessing()
+        startOrderProcessing()
     }
 
     final override fun startOrderProcessing() {
@@ -51,14 +51,18 @@ class DefaultOrderProcessingService(
 
     private suspend fun iterateProcessingOrders() {
         while (keepProcessingOrders) {
-            val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
-            val orderMap = orders.groupBy { it.symbol }
-            orderMap.forEach { (symbol, orders) ->
-                run {
-                    delay(15000L)
-                    processOrdersForSymbol(symbol, orders)
-                    logger.info("Processing order for symbol $symbol")
+            try {
+                val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
+                val orderMap = orders.groupBy { it.symbol }
+                orderMap.forEach { (symbol, orders) ->
+                    run {
+                        delay(15000L)
+                        processOrdersForSymbol(symbol, orders)
+                        logger.info("Processing order for symbol $symbol")
+                    }
                 }
+            } catch (e : Exception){
+                logger.error("Failed order processing : ${e.message}")
             }
         }
     }
@@ -82,13 +86,8 @@ class DefaultOrderProcessingService(
     private fun processBuyOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
         if (realTimePrice.price <= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
-                ?: investmentRepository.save(
-                    Investment(
-                        symbol = order.symbol,
-                        portfolio = participant.portfolio,
-                        name = order.symbol
-                    )
-                )
+                ?: Investment(symbol = order.symbol, portfolio = participant.portfolio, name = order.symbol)
+
             val amountToBuy = getAvailableAmountToBuy(participant, realTimePrice, order)
             investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePrice, amountToBuy)
             investment.amount += amountToBuy
@@ -122,7 +121,7 @@ class DefaultOrderProcessingService(
     private fun getAvailableAmountToBuy(
         participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder
     ): Int {
-        val maxAvailAmount = participant.remainingFund % realTimePrice.usdPrice
+        val maxAvailAmount = participant.remainingFund / realTimePrice.usdPrice
 
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }
