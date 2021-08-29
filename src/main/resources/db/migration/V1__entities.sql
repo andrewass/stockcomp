@@ -29,12 +29,12 @@ create table t_portfolio(
 
 create table t_investment(
     investment_id           bigint(20) not null auto_increment,
-    investment_name         varchar(100),
     symbol                  varchar(20),
     portfolio_id            bigint(20)  not null,
     amount                  int,
     average_unit_cost       double,
     total_profit            double,
+    total_value             double,
     date_created    		datetime not null,
     date_updated    		datetime not null,
     primary key (investment_id),

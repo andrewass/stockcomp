@@ -125,7 +125,7 @@ internal class ContestControllerIT : IntegrationTest() {
     private fun buyInvestment(contest: Contest) {
         val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest)
         val investment = Investment(
-            name = description, symbol = symbol,
+            symbol = symbol,
             portfolio = participant[0].portfolio, amount = 100
         )
         participant[0].portfolio.investments.add(investment)

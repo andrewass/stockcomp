@@ -55,9 +55,11 @@ class DefaultMaintainReturnsService(
     }
 
     private fun updateInvestment(investment: Investment, realTimePrice: RealTimePrice) {
-        val currentValue = investment.amount * realTimePrice.usdPrice
         val currentExpenses = investment.amount * investment.averageUnitCost
-        investment.totalProfit = currentValue - currentExpenses
+        investment.apply {
+            totalValue = this.amount * realTimePrice.usdPrice
+            totalProfit = this.totalValue - currentExpenses
+        }
         investmentRepository.save(investment)
     }
 }

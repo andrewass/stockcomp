@@ -91,7 +91,7 @@ internal class DefaultInvestmentServiceTest {
     fun `should get investment for a given symbol`() {
         participant.portfolio.investments.add(
             Investment(
-                name = "APPLE INC", symbol = symbol,
+                symbol = symbol,
                 amount = totalAmount, portfolio = participant.portfolio
             )
         )

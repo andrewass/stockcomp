@@ -12,9 +12,6 @@ class Investment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(name = "INVESTMENT_NAME")
-    val name: String,
-
     val symbol: String,
 
     @ManyToOne
@@ -25,6 +22,8 @@ class Investment(
 
     var averageUnitCost: Double = 0.00,
 
-    var totalProfit : Double = 0.00
+    var totalProfit : Double = 0.00,
+
+    var totalValue : Double = 0.00
 
 ) : BaseEntity()

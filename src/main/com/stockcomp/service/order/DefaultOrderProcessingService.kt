@@ -86,7 +86,7 @@ class DefaultOrderProcessingService(
     private fun processBuyOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
         if (realTimePrice.price <= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
-                ?: Investment(symbol = order.symbol, portfolio = participant.portfolio, name = order.symbol)
+                ?: Investment(symbol = order.symbol, portfolio = participant.portfolio)
 
             val amountToBuy = getAvailableAmountToBuy(participant, realTimePrice, order)
             investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePrice, amountToBuy)
