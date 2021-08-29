@@ -25,6 +25,6 @@ class Investment(
 
     var averageUnitCost: Double = 0.00,
 
-    var totalEarnings : Double = 0.00
+    var totalProfit : Double = 0.00
 
 ) : BaseEntity()

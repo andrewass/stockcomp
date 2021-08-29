@@ -11,7 +11,7 @@ import com.stockcomp.response.InvestmentOrderDto
 fun mapToInvestmentDto(investment: Investment) =
     InvestmentDto(
         symbol = investment.symbol,
-        totalEarnings = investment.totalEarnings,
+        totalEarnings = investment.totalProfit,
         amount = investment.amount,
         averageUnitCost = investment.averageUnitCost,
         name = investment.symbol

@@ -34,7 +34,7 @@ create table t_investment(
     portfolio_id            bigint(20)  not null,
     amount                  int,
     average_unit_cost       double,
-    total_earnings          double,
+    total_profit            double,
     date_created    		datetime not null,
     date_updated    		datetime not null,
     primary key (investment_id),
