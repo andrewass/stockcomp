@@ -43,9 +43,9 @@ class DefaultInvestmentService(
     override fun getRemainingFunds(username: String, contestNumber: Int) =
         getParticipant(username, contestNumber).remainingFund
 
-    override fun getTotalProfits(username: String, contestNumber: Int): Double =
+    override fun getTotalValue(username: String, contestNumber: Int): Double =
         getParticipant(username, contestNumber).portfolio.investments
-            .map { it.totalProfit }
+            .map { it.totalValue }
             .sum()
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {

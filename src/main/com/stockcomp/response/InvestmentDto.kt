@@ -5,5 +5,6 @@ data class InvestmentDto(
     val symbol: String,
     val amount: Int,
     val averageUnitCost: Double,
-    val totalEarnings: Double
+    val totalValue: Double,
+    val totalProfit: Double
 )

@@ -93,13 +93,13 @@ class ContestController(
         return ResponseEntity(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping("/total-investment-returns")
-    @ApiOperation(value = "Get total investment returns for participant")
-    fun getTotalProfits(
+    @GetMapping("/total-investment-value")
+    @ApiOperation(value = "Get total investment value for participant")
+    fun getTotalInvestmentValue(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<Double> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val totalInvestmentReturns = investmentService.getTotalProfits(username, contestNumber)
+        val totalInvestmentReturns = investmentService.getTotalValue(username, contestNumber)
 
         return ResponseEntity.ok(totalInvestmentReturns)
     }
