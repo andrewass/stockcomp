@@ -1,5 +1,6 @@
 package com.stockcomp.service.investment
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType
 import com.stockcomp.repository.ContestRepository
@@ -15,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultInvestmentService(
     private val contestRepository: ContestRepository,
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val objectMapper: ObjectMapper = ObjectMapper()
 ) : InvestmentService {
 
     override fun placeBuyOrder(request: InvestmentTransactionRequest, username: String) {
@@ -38,6 +40,12 @@ class DefaultInvestmentService(
         return portfolio.investments.firstOrNull { it.symbol == symbol }?.let {
             return mapToInvestmentDto(it)
         }
+    }
+
+    override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<InvestmentDto> {
+        val portfolio = getParticipant(username, contestNumber).portfolio
+
+        return portfolio.investments.map { objectMapper.convertValue(it, InvestmentDto::class.java) }
     }
 
     override fun getRemainingFunds(username: String, contestNumber: Int) =

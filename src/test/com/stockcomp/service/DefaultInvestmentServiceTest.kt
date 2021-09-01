@@ -1,5 +1,6 @@
 package com.stockcomp.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.domain.user.User
 import com.stockcomp.domain.contest.*
 import com.stockcomp.repository.ContestRepository
@@ -10,6 +11,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
@@ -28,6 +30,9 @@ internal class DefaultInvestmentServiceTest {
 
     @MockK
     private lateinit var participantRepository: ParticipantRepository
+
+    @SpyK
+    private var objectMapper = ObjectMapper()
 
     @InjectMockKs
     private lateinit var investmentService: DefaultInvestmentService
