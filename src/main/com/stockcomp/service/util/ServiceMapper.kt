@@ -8,14 +8,14 @@ import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.InvestmentOrderDto
 
-fun mapToInvestmentDto(investment: Investment) =
+fun Investment.toInvestmentDto() =
     InvestmentDto(
-        symbol = investment.symbol,
-        totalProfit = investment.totalProfit,
-        totalValue = investment.totalValue,
-        amount = investment.amount,
-        averageUnitCost = investment.averageUnitCost,
-        name = investment.symbol
+        id = this.id!!,
+        symbol = this.symbol,
+        totalProfit = this.totalProfit,
+        totalValue = this.totalValue,
+        amount = this.amount,
+        averageUnitCost = this.averageUnitCost
     )
 
 fun mapToInvestmentOrder(

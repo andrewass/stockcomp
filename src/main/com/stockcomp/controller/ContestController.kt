@@ -1,13 +1,13 @@
 package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
-import com.stockcomp.service.security.DefaultJwtService
 import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.investment.InvestmentService
+import com.stockcomp.service.security.DefaultJwtService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -85,7 +85,7 @@ class ContestController(
     fun getInvestmentForSymbol(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int, @RequestParam symbol: String
-    ): ResponseEntity<InvestmentDto?> {
+    ): ResponseEntity<InvestmentDto> {
         val username = extractUsernameFromRequest(httpServletRequest)
         investmentService.getInvestmentForSymbol(username, contestNumber, symbol)?.let {
             return ResponseEntity.ok(it)

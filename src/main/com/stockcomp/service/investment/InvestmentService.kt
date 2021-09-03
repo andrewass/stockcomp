@@ -4,15 +4,15 @@ import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
 
 interface InvestmentService {
-    fun placeBuyOrder(request : InvestmentTransactionRequest, username : String)
+    fun placeBuyOrder(request: InvestmentTransactionRequest, username: String)
 
     fun placeSellOrder(request: InvestmentTransactionRequest, username: String)
 
-    fun getInvestmentForSymbol(username: String, contestNumber : Int, symbol: String) : InvestmentDto?
+    fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto?
 
-    fun getRemainingFunds(username: String, contestNumber: Int) : Double
+    fun getRemainingFunds(username: String, contestNumber: Int): Double
 
     fun getTotalValue(username: String, contestNumber: Int): Double
 
-    fun getAllInvestmentsForContest(username: String, contestNumber: Int) : List<InvestmentDto>
+    fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<InvestmentDto>
 }

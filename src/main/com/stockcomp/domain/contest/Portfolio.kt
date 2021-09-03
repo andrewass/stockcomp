@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "T_PORTFOLIO")
-class Portfolio (
+class Portfolio(
 
     @Id
     @Column(name = "PORTFOLIO_ID")
@@ -13,6 +13,6 @@ class Portfolio (
     val id: Long? = null,
 
     @OneToMany(mappedBy = "portfolio", cascade = [CascadeType.ALL])
-    val investments : MutableList<Investment> = mutableListOf()
+    val investments: MutableList<Investment> = mutableListOf()
 
 ) : BaseEntity()

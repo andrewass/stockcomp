@@ -1,7 +1,7 @@
 package com.stockcomp.response
 
 data class InvestmentDto(
-    val name: String,
+    val id: Long,
     val symbol: String,
     val amount: Int,
     val averageUnitCost: Double,

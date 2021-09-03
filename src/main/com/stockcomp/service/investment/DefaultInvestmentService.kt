@@ -1,14 +1,13 @@
 package com.stockcomp.service.investment
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentTransactionRequest
 import com.stockcomp.response.InvestmentDto
-import com.stockcomp.service.util.mapToInvestmentDto
 import com.stockcomp.service.util.mapToInvestmentOrder
+import com.stockcomp.service.util.toInvestmentDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultInvestmentService(
     private val contestRepository: ContestRepository,
-    private val participantRepository: ParticipantRepository,
-    private val objectMapper: ObjectMapper = ObjectMapper()
+    private val participantRepository: ParticipantRepository
 ) : InvestmentService {
 
     override fun placeBuyOrder(request: InvestmentTransactionRequest, username: String) {
@@ -37,15 +35,13 @@ class DefaultInvestmentService(
     override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
         val portfolio = getParticipant(username, contestNumber).portfolio
 
-        return portfolio.investments.firstOrNull { it.symbol == symbol }?.let {
-            return mapToInvestmentDto(it)
-        }
+        return portfolio.investments.firstOrNull { it.symbol == symbol }?.toInvestmentDto()
     }
 
     override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<InvestmentDto> {
         val portfolio = getParticipant(username, contestNumber).portfolio
 
-        return portfolio.investments.map { objectMapper.convertValue(it, InvestmentDto::class.java) }
+        return portfolio.investments.map { it.toInvestmentDto() }
     }
 
     override fun getRemainingFunds(username: String, contestNumber: Int) =
