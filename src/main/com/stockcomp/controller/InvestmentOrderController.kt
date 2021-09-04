@@ -2,8 +2,10 @@ package com.stockcomp.controller
 
 import com.stockcomp.service.security.DefaultJwtService
 import com.stockcomp.controller.common.getAccessTokenFromCookie
+import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.response.InvestmentOrderDto
 import com.stockcomp.service.order.InvestmentOrderService
+import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,6 +18,42 @@ class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
     private val defaultJwtService: DefaultJwtService
 ) {
+
+    @PostMapping("/place-buy-order")
+    @ApiOperation(value = "Place a buy order for a given participant")
+    fun placeBuyOrder(
+        httpServletRequest: HttpServletRequest,
+        @RequestBody investmentRequest: InvestmentOrderRequest
+    ): ResponseEntity<HttpStatus> {
+        val username = extractUsernameFromRequest(httpServletRequest)
+        investmentOrderService.placeBuyOrder(investmentRequest, username)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @PostMapping("/place-sell-order")
+    @ApiOperation(value = "Place a sell order for a given participant")
+    fun placeSellOrder(
+        httpServletRequest: HttpServletRequest,
+        @RequestBody investmentRequest: InvestmentOrderRequest
+    ): ResponseEntity<HttpStatus> {
+        val username = extractUsernameFromRequest(httpServletRequest)
+        investmentOrderService.placeSellOrder(investmentRequest, username)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @PostMapping("/delete-active-order")
+    fun deleteActiveOrder(
+        httpServletRequest: HttpServletRequest,
+        @RequestParam orderId: Long
+    ): ResponseEntity<HttpStatus> {
+        val jwt = getAccessTokenFromCookie(httpServletRequest)
+        val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
+        investmentOrderService.deleteActiveInvestmentOrder(username!!, orderId)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
 
     @GetMapping("/active-orders-participant")
     fun getAllActiveOrdersForParticiapant(
@@ -69,15 +107,10 @@ class InvestmentOrderController(
         return ResponseEntity.ok(response)
     }
 
-    @PostMapping("/delete-active-order")
-    fun deleteActiveOrder(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam orderId: Long
-    ): ResponseEntity<HttpStatus> {
-        val jwt = getAccessTokenFromCookie(httpServletRequest)
-        val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
-        investmentOrderService.deleteActiveInvestmentOrder(username!!, orderId)
+    private fun extractUsernameFromRequest(request: HttpServletRequest): String {
+        val jwt = getAccessTokenFromCookie(request)
 
-        return ResponseEntity(HttpStatus.OK)
+        return defaultJwtService.extractUsername(jwt!!)
     }
+
 }

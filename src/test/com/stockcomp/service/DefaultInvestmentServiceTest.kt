@@ -1,16 +1,18 @@
 package com.stockcomp.service
 
-import com.stockcomp.domain.contest.*
+import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.Investment
+import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.request.InvestmentTransactionRequest
+import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.service.investment.DefaultInvestmentService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -62,32 +64,6 @@ internal class DefaultInvestmentServiceTest {
     }
 
     @Test
-    fun `should place buy order for participant`() {
-        val request = createInvestmentTransactionRequest()
-
-        investmentService.placeBuyOrder(request, username)
-
-        val awaitingOrder = participant.investmentOrders[0]
-
-        verifyCommonFields(awaitingOrder)
-        assertEquals(TransactionType.BUY, awaitingOrder.transactionType)
-        verify { participantRepository.save(participant) }
-    }
-
-    @Test
-    fun `should place sell order for participant`() {
-        val request = createInvestmentTransactionRequest()
-
-        investmentService.placeSellOrder(request, username)
-
-        val awaitingOrder = participant.investmentOrders[0]
-
-        verifyCommonFields(awaitingOrder)
-        assertEquals(TransactionType.SELL, awaitingOrder.transactionType)
-        verify { participantRepository.save(participant) }
-    }
-
-    @Test
     fun `should get investment for a given symbol`() {
         participant.portfolio.investments.add(
             Investment(
@@ -121,7 +97,7 @@ internal class DefaultInvestmentServiceTest {
     }
 
     private fun createInvestmentTransactionRequest() =
-        InvestmentTransactionRequest(
+        InvestmentOrderRequest(
             contestNumber = contestNumber,
             symbol = symbol,
             amount = totalAmount,

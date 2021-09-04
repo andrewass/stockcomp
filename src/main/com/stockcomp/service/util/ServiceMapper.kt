@@ -4,7 +4,7 @@ import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType
-import com.stockcomp.request.InvestmentTransactionRequest
+import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.InvestmentOrderDto
 
@@ -19,7 +19,7 @@ fun Investment.toInvestmentDto() =
     )
 
 fun mapToInvestmentOrder(
-    participant: Participant, request: InvestmentTransactionRequest, transactionType: TransactionType
+    participant: Participant, request: InvestmentOrderRequest, transactionType: TransactionType
 ) =
     InvestmentOrder(
         symbol = request.symbol,

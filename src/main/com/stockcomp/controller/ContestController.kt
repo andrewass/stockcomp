@@ -2,8 +2,6 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
-import com.stockcomp.request.InvestmentTransactionRequest
-import com.stockcomp.response.InvestmentDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.ContestService
 import com.stockcomp.service.investment.InvestmentService
@@ -54,43 +52,6 @@ class ContestController(
         val isParticipating = contestService.userIsParticipating(username, contestNumber)
 
         return ResponseEntity.ok(isParticipating)
-    }
-
-    @PostMapping("/place-buy-order")
-    @ApiOperation(value = "Place a buy order for a given participant")
-    fun placeBuyOrder(
-        httpServletRequest: HttpServletRequest,
-        @RequestBody investmentRequest: InvestmentTransactionRequest
-    ): ResponseEntity<HttpStatus> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        investmentService.placeBuyOrder(investmentRequest, username)
-
-        return ResponseEntity(HttpStatus.OK)
-    }
-
-    @PostMapping("/place-sell-order")
-    @ApiOperation(value = "Place a sell order for a given participant")
-    fun placeSellOrder(
-        httpServletRequest: HttpServletRequest,
-        @RequestBody investmentRequest: InvestmentTransactionRequest
-    ): ResponseEntity<HttpStatus> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        investmentService.placeSellOrder(investmentRequest, username)
-
-        return ResponseEntity(HttpStatus.OK)
-    }
-
-    @GetMapping("/symbol-investment")
-    @ApiOperation(value = "Get investments for a given symbol")
-    fun getInvestmentForSymbol(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam contestNumber: Int, @RequestParam symbol: String
-    ): ResponseEntity<InvestmentDto> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        investmentService.getInvestmentForSymbol(username, contestNumber, symbol)?.let {
-            return ResponseEntity.ok(it)
-        }
-        return ResponseEntity(HttpStatus.NOT_FOUND)
     }
 
     @GetMapping("/total-investment-value")

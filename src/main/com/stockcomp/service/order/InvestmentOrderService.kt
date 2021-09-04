@@ -1,8 +1,15 @@
 package com.stockcomp.service.order
 
+import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.response.InvestmentOrderDto
 
 interface InvestmentOrderService {
+
+    fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String)
+
+    fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String)
+
+    fun deleteActiveInvestmentOrder(username: String, orderId: Long)
 
     fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto>
 
@@ -14,5 +21,4 @@ interface InvestmentOrderService {
     fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
             : List<InvestmentOrderDto>
 
-    fun deleteActiveInvestmentOrder(username: String, orderId: Long)
 }

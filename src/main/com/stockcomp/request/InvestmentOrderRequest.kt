@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer
 import java.time.LocalDate
 
-data class InvestmentTransactionRequest(
+data class InvestmentOrderRequest(
     val contestNumber: Int,
 
     val symbol: String,
