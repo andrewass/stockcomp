@@ -16,7 +16,7 @@ class DefaultInvestmentService(
 ) : InvestmentService {
 
     override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
-        val participant = getParticipant(username, contestNumber)
+            val participant = getParticipant(username, contestNumber)
 
         return participant.investments.firstOrNull { it.symbol == symbol }?.toInvestmentDto()
     }

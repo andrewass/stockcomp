@@ -26,17 +26,14 @@ class DefaultInvestmentOrderService(
     override fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String) {
         val participant = getParticipant(username, investmentRequest.contestNumber)
         val order = mapToInvestmentOrder(participant, investmentRequest, TransactionType.BUY)
-        participant.investmentOrders.add(order)
-        participantRepository.save(participant)
+        investmentOrderRepository.save(order)
     }
 
     override fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String) {
         val participant = getParticipant(username, investmentRequest.contestNumber)
         val order = mapToInvestmentOrder(participant, investmentRequest, TransactionType.SELL)
-        participant.investmentOrders.add(order)
-        participantRepository.save(participant)
+        investmentOrderRepository.save(order)
     }
-
 
     override fun deleteActiveInvestmentOrder(username: String, orderId: Long) {
         val order = investmentOrderRepository.findById(orderId).get()

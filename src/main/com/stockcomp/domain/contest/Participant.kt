@@ -17,10 +17,10 @@ class Participant(
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.REMOVE])
     val investmentOrders : MutableList<InvestmentOrder> = mutableListOf(),
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.REMOVE])
     val investments: MutableList<Investment> = mutableListOf(),
 
     @ManyToOne
