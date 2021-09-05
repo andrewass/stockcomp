@@ -17,12 +17,11 @@ class Participant(
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
-    @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "PORTFOLIO_ID")
-    val portfolio : Portfolio = Portfolio(),
-
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
     val investmentOrders : MutableList<InvestmentOrder> = mutableListOf(),
+
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    val investments: MutableList<Investment> = mutableListOf(),
 
     @ManyToOne
     @JoinColumn(name = "CONTEST_ID")

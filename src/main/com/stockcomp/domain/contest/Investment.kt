@@ -15,8 +15,8 @@ class Investment(
     val symbol: String,
 
     @ManyToOne
-    @JoinColumn(name = "PORTFOLIO_ID", nullable = false)
-    val portfolio: Portfolio,
+    @JoinColumn(name = "PARTICIPANT_ID", nullable = false)
+    val participant: Participant,
 
     var amount: Int = 0,
 

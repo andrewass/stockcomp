@@ -13,24 +13,26 @@ import com.stockcomp.response.InvestmentOrderDto
 import com.stockcomp.service.util.mapToInvestmentOrder
 import com.stockcomp.service.util.mapToInvestmentOrderDto
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class DefaultInvestmentOrderService(
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val participantRepository: ParticipantRepository,
     private val contestRepository: ContestRepository
 ) : InvestmentOrderService {
 
-    override fun placeBuyOrder(request: InvestmentOrderRequest, username: String) {
-        val participant = getParticipant(username, request.contestNumber)
-        val order = mapToInvestmentOrder(participant, request, TransactionType.BUY)
+    override fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String) {
+        val participant = getParticipant(username, investmentRequest.contestNumber)
+        val order = mapToInvestmentOrder(participant, investmentRequest, TransactionType.BUY)
         participant.investmentOrders.add(order)
         participantRepository.save(participant)
     }
 
-    override fun placeSellOrder(request: InvestmentOrderRequest, username: String) {
-        val participant = getParticipant(username, request.contestNumber)
-        val order = mapToInvestmentOrder(participant, request, TransactionType.SELL)
+    override fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String) {
+        val participant = getParticipant(username, investmentRequest.contestNumber)
+        val order = mapToInvestmentOrder(participant, investmentRequest, TransactionType.SELL)
         participant.investmentOrders.add(order)
         participantRepository.save(participant)
     }

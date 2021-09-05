@@ -65,12 +65,8 @@ internal class DefaultInvestmentServiceTest {
 
     @Test
     fun `should get investment for a given symbol`() {
-        participant.portfolio.investments.add(
-            Investment(
-                id = 100L,
-                symbol = symbol,
-                amount = totalAmount, portfolio = participant.portfolio
-            )
+        participant.investments.add(
+            Investment(id = 100L, symbol = symbol, amount = totalAmount, participant = participant)
         )
         val investment = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
 

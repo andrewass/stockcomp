@@ -1,11 +1,8 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.domain.contest.Investment
-import com.stockcomp.domain.contest.InvestmentOrder
-import com.stockcomp.domain.contest.OrderStatus
+import com.stockcomp.domain.contest.*
 import com.stockcomp.domain.contest.OrderStatus.COMPLETED
 import com.stockcomp.domain.contest.OrderStatus.FAILED
-import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.TransactionType.BUY
 import com.stockcomp.domain.contest.TransactionType.SELL
 import com.stockcomp.repository.InvestmentOrderRepository
@@ -18,16 +15,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.lang.Integer.min
 
 @Service
+@Transactional
 class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
     private val symbolService: SymbolService
 ) : OrderProcessingService {
-
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
     private var keepProcessingOrders = false
@@ -85,15 +83,21 @@ class DefaultOrderProcessingService(
 
     private fun processBuyOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
         if (realTimePrice.price <= order.acceptedPrice) {
-            val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
-                ?: Investment(symbol = order.symbol, portfolio = participant.portfolio)
-
+            val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
+                ?: createInvestment(order.symbol, participant)
             val amountToBuy = getAvailableAmountToBuy(participant, realTimePrice, order)
             investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePrice, amountToBuy)
             investment.amount += amountToBuy
             participant.remainingFund -= amountToBuy * realTimePrice.usdPrice
-            postProcessOrder(order, amountToBuy, investment, participant)
+            postProcessOrder(order, amountToBuy, participant)
         }
+    }
+
+    private fun createInvestment(symbol: String, participant: Participant) : Investment {
+        val investment =  Investment(symbol = symbol, participant = participant)
+        participant.investments.add(investment)
+
+        return investment
     }
 
     private fun calculateAverageUnitCost(
@@ -107,14 +111,14 @@ class DefaultOrderProcessingService(
 
     private fun processSellOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
         if (realTimePrice.price >= order.acceptedPrice) {
-            val investment = investmentRepository.findBySymbolAndPortfolio(order.symbol, participant.portfolio)
+            val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
             val amountToSell = min(investment.amount, order.totalAmount)
             investment.amount -= amountToSell
             participant.remainingFund += amountToSell * realTimePrice.usdPrice
             if (investment.amount == 0) {
-                investmentRepository.delete(investment)
+                participant.investments.remove(investment)
             }
-            postProcessOrder(order, amountToSell, investment, participant)
+            postProcessOrder(order, amountToSell, participant)
         }
     }
 
@@ -126,9 +130,7 @@ class DefaultOrderProcessingService(
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }
 
-    private fun postProcessOrder(
-        order: InvestmentOrder, amountProcessed: Int, investment: Investment, participant: Participant
-    ) {
+    private fun postProcessOrder(order: InvestmentOrder, amountProcessed: Int, participant: Participant) {
         order.remainingAmount -= amountProcessed
         if (order.remainingAmount == 0) {
             order.orderStatus = COMPLETED
@@ -139,8 +141,6 @@ class DefaultOrderProcessingService(
                         "shares not found in portfolio"
             }
         }
-        investmentOrderRepository.save(order)
-        investmentRepository.save(investment)
         participantRepository.save(participant)
     }
 }

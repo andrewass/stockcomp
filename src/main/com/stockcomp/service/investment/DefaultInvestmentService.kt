@@ -16,22 +16,22 @@ class DefaultInvestmentService(
 ) : InvestmentService {
 
     override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
-        val portfolio = getParticipant(username, contestNumber).portfolio
+        val participant = getParticipant(username, contestNumber)
 
-        return portfolio.investments.firstOrNull { it.symbol == symbol }?.toInvestmentDto()
+        return participant.investments.firstOrNull { it.symbol == symbol }?.toInvestmentDto()
     }
 
     override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<InvestmentDto> {
-        val portfolio = getParticipant(username, contestNumber).portfolio
+        val participant = getParticipant(username, contestNumber)
 
-        return portfolio.investments.map { it.toInvestmentDto() }
+        return participant.investments.map { it.toInvestmentDto() }
     }
 
     override fun getRemainingFunds(username: String, contestNumber: Int) =
         getParticipant(username, contestNumber).remainingFund
 
     override fun getTotalValue(username: String, contestNumber: Int): Double =
-        getParticipant(username, contestNumber).portfolio.investments
+        getParticipant(username, contestNumber).investments
             .map { it.totalValue }
             .sum()
 

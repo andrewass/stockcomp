@@ -20,32 +20,10 @@ create table t_contest(
 	primary key (contest_id)
 );
 
-create table t_portfolio(
-	portfolio_id    bigint(20)  not null auto_increment,
-	date_created    datetime not null,
-	date_updated    datetime not null,
-	primary key (portfolio_id)
-);
-
-create table t_investment(
-    investment_id           bigint(20) not null auto_increment,
-    symbol                  varchar(20),
-    portfolio_id            bigint(20)  not null,
-    amount                  int,
-    average_unit_cost       double,
-    total_profit            double,
-    total_value             double,
-    date_created    		datetime not null,
-    date_updated    		datetime not null,
-    primary key (investment_id),
-    foreign key (portfolio_id) references t_portfolio(portfolio_id)
-);
-
 create table t_participant(
     participant_id      bigint(20) not null auto_increment,
     contest_id          bigint(20) not null,
     user_id             bigint(20) not null,
-    portfolio_id        bigint(20) not null,
     remaining_fund      double,
     participant_rank    int,
     participant_score   int,
@@ -53,8 +31,21 @@ create table t_participant(
     date_updated    	datetime not null,
     primary key (participant_id),
     foreign key (contest_id) references t_contest(contest_id),
-    foreign key (user_id) references t_user(user_id),
-    foreign key (portfolio_id) references t_portfolio(portfolio_id)
+    foreign key (user_id) references t_user(user_id)
+);
+
+create table t_investment(
+    investment_id           bigint(20) not null auto_increment,
+    symbol                  varchar(20),
+    amount                  int,
+    average_unit_cost       double,
+    total_profit            double,
+    total_value             double,
+    participant_id          bigint(20) not null,
+    date_created    		datetime not null,
+    date_updated    		datetime not null,
+    primary key (investment_id),
+    foreign key (participant_id) references t_participant(participant_id)
 );
 
 create table t_investment_order(

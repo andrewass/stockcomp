@@ -27,7 +27,7 @@ class InvestmentController(
         investmentService.getInvestmentForSymbol(username, contestNumber, symbol)?.let {
             return ResponseEntity.ok(it)
         }
-        return ResponseEntity(HttpStatus.NOT_FOUND)
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @GetMapping("/total-investments")
