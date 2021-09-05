@@ -54,19 +54,8 @@ class ContestController(
         return ResponseEntity.ok(isParticipating)
     }
 
-    @GetMapping("/total-investment-value")
-    @ApiOperation(value = "Get total investment value for participant")
-    fun getTotalInvestmentValue(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<Double> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val totalInvestmentReturns = investmentService.getTotalValue(username, contestNumber)
-
-        return ResponseEntity.ok(totalInvestmentReturns)
-    }
-
     @GetMapping("/remaining-funds")
-    @ApiOperation(value = "Get participants remaining funds")
+    @ApiOperation(value = "Get remaining funds for a participant")
     fun getRemainingFunds(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<Double> {
