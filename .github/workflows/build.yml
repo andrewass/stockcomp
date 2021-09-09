@@ -20,7 +20,7 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Build and run tets with Maven
+    - name: Build and run tests with Maven
       run: mvn clean install
 
     - name: Build & push Docker image

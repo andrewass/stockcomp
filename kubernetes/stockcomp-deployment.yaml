@@ -11,14 +11,12 @@ spec:
       app: stockcomp
   template:
     metadata:
-      name: stockcomp-app
       labels:
         app: stockcomp
     spec:
       containers:
-        - name: stockcomp-service
-          image: stockcomp:latest
-          imagePullPolicy: IfNotPresent
+        - name: stockcomp
+          image: ghcr.io/andrewass/stockcomp:latest
           ports:
             - containerPort: 8080
           env:
