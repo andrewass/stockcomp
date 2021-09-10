@@ -1,4 +1,4 @@
-package com.stockcomp.service
+package com.stockcomp.service.user
 
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository

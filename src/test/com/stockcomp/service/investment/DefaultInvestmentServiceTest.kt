@@ -1,4 +1,4 @@
-package com.stockcomp.service
+package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
@@ -8,16 +8,11 @@ import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.service.investment.DefaultInvestmentService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -70,8 +65,8 @@ internal class DefaultInvestmentServiceTest {
         )
         val investment = investmentService.getInvestmentForSymbol(username, contestNumber, symbol)
 
-        assertEquals(symbol, investment!!.symbol)
-        assertEquals(totalAmount, investment.amount)
+        Assertions.assertEquals(symbol, investment!!.symbol)
+        Assertions.assertEquals(totalAmount, investment.amount)
     }
 
     @Test
@@ -79,17 +74,17 @@ internal class DefaultInvestmentServiceTest {
         participant.remainingFund = 1400.00
         val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
 
-        assertEquals(1400.00, remainingFunds)
+        Assertions.assertEquals(1400.00, remainingFunds)
     }
 
     private fun verifyCommonFields(investmentOrder: InvestmentOrder) {
-        assertTrue(participant.investmentOrders.size == 1)
-        assertEquals(symbol, investmentOrder.symbol)
-        assertEquals(acceptedPrice, investmentOrder.acceptedPrice)
-        assertEquals(expirationTime.atStartOfDay(), investmentOrder.expirationTime)
-        assertEquals(totalAmount, investmentOrder.totalAmount)
-        assertEquals(totalAmount, investmentOrder.remainingAmount)
-        assertSame(participant, investmentOrder.participant)
+        Assertions.assertTrue(participant.investmentOrders.size == 1)
+        Assertions.assertEquals(symbol, investmentOrder.symbol)
+        Assertions.assertEquals(acceptedPrice, investmentOrder.acceptedPrice)
+        Assertions.assertEquals(expirationTime.atStartOfDay(), investmentOrder.expirationTime)
+        Assertions.assertEquals(totalAmount, investmentOrder.totalAmount)
+        Assertions.assertEquals(totalAmount, investmentOrder.remainingAmount)
+        Assertions.assertSame(participant, investmentOrder.participant)
     }
 
     private fun createInvestmentTransactionRequest() =

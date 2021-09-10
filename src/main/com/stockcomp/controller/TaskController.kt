@@ -1,6 +1,6 @@
 package com.stockcomp.controller
 
-import com.stockcomp.service.ContestService
+import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.investment.MaintainReturnsService
 import com.stockcomp.service.order.OrderProcessingService
 import io.swagger.annotations.ApiOperation

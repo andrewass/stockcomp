@@ -1,4 +1,4 @@
-package com.stockcomp.service
+package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository

@@ -1,4 +1,4 @@
-package com.stockcomp.service
+package com.stockcomp.service.user
 
 import com.stockcomp.domain.user.User
 import com.stockcomp.exception.DuplicateCredentialException
@@ -11,11 +11,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -47,8 +43,8 @@ internal class CustomUserServiceTest {
     fun `should load user by username`() {
         val userDetails = userService.loadUserByUsername(username)
 
-        assertEquals(username, userDetails.username)
-        assertEquals(password, userDetails.password)
+        Assertions.assertEquals(username, userDetails.username)
+        Assertions.assertEquals(password, userDetails.password)
     }
 
     @Test
@@ -65,9 +61,9 @@ internal class CustomUserServiceTest {
         userService.signUpUser(SignUpRequest(username, password, email))
 
         verify { userRepository.save(any<User>()) }
-        assertEquals(username, userSlot.captured.username)
-        assertEquals(userSlot.captured.password.length, 60)
-        assertEquals(email, userSlot.captured.email)
+        Assertions.assertEquals(username, userSlot.captured.username)
+        Assertions.assertEquals(userSlot.captured.password.length, 60)
+        Assertions.assertEquals(email, userSlot.captured.email)
     }
 
     @Test
@@ -85,8 +81,8 @@ internal class CustomUserServiceTest {
     fun `should get peristed user`() {
         val user = userService.getPersistedUser(username)
 
-        assertEquals(username, user.username)
-        assertEquals(password, user.password)
-        assertEquals(email, user.email)
+        Assertions.assertEquals(username, user.username)
+        Assertions.assertEquals(password, user.password)
+        Assertions.assertEquals(email, user.email)
     }
 }

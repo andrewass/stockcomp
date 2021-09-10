@@ -2,7 +2,7 @@ package com.stockcomp.configuration;
 
 import com.stockcomp.controller.common.ExceptionHandlerFilter;
 import com.stockcomp.controller.common.TokenAuthenticationFilter;
-import com.stockcomp.service.DefaultUserService;
+import com.stockcomp.service.user.DefaultUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

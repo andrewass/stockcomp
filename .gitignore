@@ -34,3 +34,4 @@ build/
 
 ### Misc Scripts ###
 /dockerwsl.sh
+/kubernetes/config.yaml
