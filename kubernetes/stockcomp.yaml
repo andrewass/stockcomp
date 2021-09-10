@@ -22,7 +22,7 @@ spec:
           env:
             - name: CONSUMER_BASE_URL
               value: http://stock-analyzer:8088
-            - name: SPRING_DATASOURCER_URL
+            - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:
                   name: mysql-config
