@@ -23,19 +23,19 @@ spec:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: mysql-secret
+                name: secrets
                 key: root-password
           - name: MYSQL_DATABASE
             value: stockcompdb
           - name: MYSQL_USER
             valueFrom:
               secretKeyRef:
-                name: mysql-secret
+                name: secrets
                 key: username
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: mysql-secret
+                name: secrets
                 key: password
 
 ---

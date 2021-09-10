@@ -25,24 +25,29 @@ spec:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:
-                  name: mysql-config
+                  name: config
                   key: database_url
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
+                  name: secrets
                   key: password
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
+                  name: secrets
                   key: username
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: jwt-secret
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: stockcomp
+  name: stockcomp-service
 spec:
   selector:
     app: stockcomp
