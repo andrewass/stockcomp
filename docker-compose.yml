@@ -21,32 +21,16 @@ services:
     depends_on:
       - prometheus
 
-  #MySql Database
-  stock-comp-mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=stockcompdb
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-volume:/var/lib/mysql
-
   #Spring Boot app
   stock-comp-server:
     image: stock-comp-server
     container_name: stock-comp
     build: .
-    depends_on:
-      - stock-comp-mysql
     restart: on-failure
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://stock-comp-mysql:3306/stockcompdb?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_URL=${POSTGRESQL_URL}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRESQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRESQL_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - CONSUMER_BASE_URL=http://stock-analyzer:8088
     ports:
@@ -60,5 +44,4 @@ networks:
 
 volumes:
   grafana-volume:
-  mysql-volume:
     driver: "local"

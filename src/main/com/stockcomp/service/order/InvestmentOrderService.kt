@@ -20,5 +20,4 @@ interface InvestmentOrderService {
 
     fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
             : List<InvestmentOrderDto>
-
 }

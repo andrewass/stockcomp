@@ -9,6 +9,9 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
+import io.mockk.slot
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -17,7 +20,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class ContestServiceTest {
+internal class DefaultContestServiceTest {
 
     @MockK
     private lateinit var contestRepository: ContestRepository
@@ -32,17 +35,19 @@ internal class ContestServiceTest {
     private lateinit var orderProcessingService: OrderProcessingService
 
     @InjectMockKs
-    private lateinit var contestService: ContestService
+    private lateinit var defaultContestService: DefaultContestService
 
     private val contestNumber = 33
     private val contest = Contest(contestNumber = contestNumber, startTime = LocalDateTime.now())
+
+    var contestSlot = slot<Contest>()
 
     @BeforeAll
     private fun setUp() {
         MockKAnnotations.init(this)
 
         every {
-            contestRepository.save(any<Contest>())
+            contestRepository.save(capture(contestSlot))
         } returns contest
 
         every {
@@ -60,7 +65,8 @@ internal class ContestServiceTest {
             contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         } returns Optional.of(contest)
 
-        contestService.startContest(contestNumber)
+        defaultContestService.startContest(contestNumber)
+        assertTrue(contestSlot.captured.running)
     }
 
     @Test
@@ -70,7 +76,7 @@ internal class ContestServiceTest {
         } returns Optional.empty()
 
         assertThrows<IllegalStateException> {
-            contestService.startContest(contestNumber)
+            defaultContestService.startContest(contestNumber)
         }
     }
 
@@ -80,7 +86,7 @@ internal class ContestServiceTest {
             contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
         } returns Optional.of(contest)
 
-        contestService.stopContest(contestNumber)
+        defaultContestService.stopContest(contestNumber)
     }
 
     @Test
@@ -90,7 +96,12 @@ internal class ContestServiceTest {
         } returns Optional.empty()
 
         assertThrows<IllegalStateException> {
-            contestService.startContest(contestNumber)
+            defaultContestService.startContest(contestNumber)
         }
+    }
+
+    @Test
+    fun `should sign up for upcoming contest`(){
+
     }
 }

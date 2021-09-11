@@ -1,6 +1,6 @@
 package com.stockcomp.controller
 
-import com.stockcomp.service.contest.ContestService
+import com.stockcomp.service.contest.DefaultContestService
 import com.stockcomp.service.investment.MaintainReturnsService
 import com.stockcomp.service.order.OrderProcessingService
 import io.swagger.annotations.ApiOperation
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/task")
 class TaskController(
-    private val contestService: ContestService,
+    private val contestService: DefaultContestService,
     private val orderProcessingService: OrderProcessingService,
     private val maintainReturnsService: MaintainReturnsService
 ) {

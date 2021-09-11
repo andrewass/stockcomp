@@ -3,7 +3,7 @@ package com.stockcomp.controller
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.response.UpcomingContest
-import com.stockcomp.service.contest.ContestService
+import com.stockcomp.service.contest.DefaultContestService
 import com.stockcomp.service.investment.InvestmentService
 import com.stockcomp.service.security.DefaultJwtService
 import io.swagger.annotations.ApiOperation
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest
 @RequestMapping("/contest")
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class ContestController(
-    private val contestService: ContestService,
+    private val contestService: DefaultContestService,
     private val investmentService: InvestmentService,
     private val defaultJwtService: DefaultJwtService
 ) : CustomExceptionHandler() {
