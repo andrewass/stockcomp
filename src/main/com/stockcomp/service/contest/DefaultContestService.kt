@@ -21,31 +21,35 @@ class DefaultContestService(
     private val logger = LoggerFactory.getLogger(DefaultContestService::class.java)
 
     override fun startContest(contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
-        try {
-            contest.get().running = true
-            contestRepository.save(contest.get())
+        contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)?.let {
+            it.startContest()
+            contestRepository.save(it)
             orderProcessingService.startOrderProcessing()
-            logger.info("Starting contest")
-        } catch (e: NoSuchElementException) {
-            throw IllegalStateException("Unable to start the contest at the given state")
-        }
+            logger.info("Starting contest $contestNumber")
+        } ?: throw NoSuchElementException("Unable to start contest. Contest with number $contestNumber not found")
     }
 
     override fun stopContest(contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
-        try {
-            contest.get().running = false
-            contestRepository.save(contest.get())
+        contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)?.let {
+            it.stopContest()
+            contestRepository.save(it)
             orderProcessingService.stopOrderProcessing()
-            logger.info("Stopping contest")
-        } catch (e: NoSuchElementException) {
-            throw IllegalStateException("Unable to stop the contest at the given state")
-        }
+            logger.info("Stopping contest $contestNumber")
+        } ?: throw NoSuchElementException("Unable to stop contest. Contest with number $contestNumber not found")
     }
 
+    override fun completeContest(contestNumber: Int) {
+        contestRepository.findContestByContestNumberAndCompletedIsFalse(contestNumber)?.let{
+            it.completeContest()
+            contestRepository.save(it)
+            orderProcessingService.stopOrderProcessing()
+            logger.info("Completing contest $contestNumber")
+        } ?: throw NoSuchElementException("Unable to complete contest. Contest with number $contestNumber not found")
+    }
+
+
     override fun signUpUser(username: String, contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumber(contestNumber).get()
+        val contest = contestRepository.findContestByContestNumber(contestNumber)
         val user = userRepository.findByUsername(username)
         val participant = Participant(user = user, contest = contest)
         contest.participants.add(participant)
@@ -65,7 +69,7 @@ class DefaultContestService(
 
     override fun userIsParticipating(username: String, contestNumber: Int): Boolean {
         val contest = contestRepository.findContestByContestNumber(contestNumber)
-        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest.get())
+        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest)
 
         return participant.isNotEmpty()
     }

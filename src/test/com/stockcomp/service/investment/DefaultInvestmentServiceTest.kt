@@ -15,7 +15,6 @@ import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class DefaultInvestmentServiceTest {
@@ -43,10 +42,12 @@ internal class DefaultInvestmentServiceTest {
         MockKAnnotations.init(this)
         every {
             contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
-        } returns Optional.of(contest)
+        } returns contest
+
         every {
             participantRepository.findParticipantFromUsernameAndContest(username, contest)
         } returns listOf(participant)
+
         every {
             participantRepository.save(participant)
         } returns participant

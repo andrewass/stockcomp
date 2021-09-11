@@ -8,6 +8,8 @@ interface ContestService {
 
     fun stopContest(contestNumber: Int)
 
+    fun completeContest(contestNumber: Int)
+
     fun signUpUser(username: String, contestNumber: Int)
 
     fun getUpcomingContests(username: String): List<UpcomingContest>

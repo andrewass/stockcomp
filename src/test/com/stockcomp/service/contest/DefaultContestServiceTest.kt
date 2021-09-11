@@ -10,14 +10,13 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.slot
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class DefaultContestServiceTest {
@@ -40,7 +39,7 @@ internal class DefaultContestServiceTest {
     private val contestNumber = 33
     private val contest = Contest(contestNumber = contestNumber, startTime = LocalDateTime.now())
 
-    var contestSlot = slot<Contest>()
+    private var contestSlot = slot<Contest>()
 
     @BeforeAll
     private fun setUp() {
@@ -63,19 +62,21 @@ internal class DefaultContestServiceTest {
     fun `should start already created contest`() {
         every {
             contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
-        } returns Optional.of(contest)
+        } returns createUpcomingContest()
 
         defaultContestService.startContest(contestNumber)
+
         assertTrue(contestSlot.captured.running)
+        assertFalse(contestSlot.captured.completed)
     }
 
     @Test
     fun `should throw exception when trying to start a non-existing contest`() {
         every {
             contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
-        } returns Optional.empty()
+        } returns null
 
-        assertThrows<IllegalStateException> {
+        assertThrows<NoSuchElementException> {
             defaultContestService.startContest(contestNumber)
         }
     }
@@ -84,24 +85,35 @@ internal class DefaultContestServiceTest {
     fun `should stop already running contest`() {
         every {
             contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
-        } returns Optional.of(contest)
+        } returns createRunningContest()
 
         defaultContestService.stopContest(contestNumber)
+
+        assertFalse(contestSlot.captured.completed)
+        assertFalse(contestSlot.captured.running)
     }
 
     @Test
-    fun `should throw exception when trying to stop a non-running contest`() {
+    fun `should throw exception when trying to stop a non-existing contest`() {
         every {
             contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
-        } returns Optional.empty()
+        } returns null
 
-        assertThrows<IllegalStateException> {
+        assertThrows<NoSuchElementException> {
             defaultContestService.startContest(contestNumber)
         }
     }
 
     @Test
-    fun `should sign up for upcoming contest`(){
+    fun `should sign up for upcoming contest`() {
 
     }
+
+    private fun createUpcomingContest() =
+        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = 100)
+
+    private fun createRunningContest() =
+        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = 100, running = true)
+
+
 }

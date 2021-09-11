@@ -16,7 +16,7 @@ class DefaultInvestmentService(
 ) : InvestmentService {
 
     override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
-            val participant = getParticipant(username, contestNumber)
+        val participant = getParticipant(username, contestNumber)
 
         return participant.investments.firstOrNull { it.symbol == symbol }?.toInvestmentDto()
     }
@@ -38,8 +38,7 @@ class DefaultInvestmentService(
     private fun getParticipant(username: String, contestNumber: Int): Participant {
         val contest = contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
 
-        return participantRepository.findParticipantFromUsernameAndContest(
-            username, contest.get()
-        ).stream().findFirst().get()
+        return participantRepository.findParticipantFromUsernameAndContest(username, contest)
+            .stream().findFirst().get()
     }
 }

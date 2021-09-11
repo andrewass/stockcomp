@@ -17,7 +17,7 @@ class Contest(
 
     val contestNumber: Int,
 
-    var running: Boolean = true,
+    var running: Boolean = false,
 
     var completed: Boolean = false,
 
@@ -34,7 +34,8 @@ class Contest(
         running = false
     }
 
-    fun setCompleted() {
+    fun completeContest(){
+        running = false
         completed = true
     }
 }
