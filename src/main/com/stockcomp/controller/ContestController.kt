@@ -42,18 +42,6 @@ class ContestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("/user-participating")
-    @ApiOperation(value = "Verify if user is participating in a given contest")
-    fun isParticipating(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<Boolean> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val isParticipating = contestService.userIsParticipating(username, contestNumber)
-
-        return ResponseEntity.ok(isParticipating)
-    }
-
     @GetMapping("/remaining-funds")
     @ApiOperation(value = "Get remaining funds for a participant")
     fun getRemainingFunds(

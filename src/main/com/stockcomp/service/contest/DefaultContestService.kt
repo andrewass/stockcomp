@@ -1,11 +1,12 @@
 package com.stockcomp.service.contest
 
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.repository.UserRepository
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.order.OrderProcessingService
+import com.stockcomp.service.user.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultContestService(
     private val contestRepository: ContestRepository,
-    private val userRepository: UserRepository,
+    private val userService: UserService,
     private val participantRepository: ParticipantRepository,
     private val orderProcessingService: OrderProcessingService
 ) : ContestService {
@@ -39,7 +40,7 @@ class DefaultContestService(
     }
 
     override fun completeContest(contestNumber: Int) {
-        contestRepository.findContestByContestNumberAndCompletedIsFalse(contestNumber)?.let{
+        contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)?.let {
             it.completeContest()
             contestRepository.save(it)
             orderProcessingService.stopOrderProcessing()
@@ -49,28 +50,24 @@ class DefaultContestService(
 
 
     override fun signUpUser(username: String, contestNumber: Int) {
-        val contest = contestRepository.findContestByContestNumber(contestNumber)
-        val user = userRepository.findByUsername(username)
-        val participant = Participant(user = user, contest = contest)
-        contest.participants.add(participant)
-        contestRepository.save(contest)
+        contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)?.let {
+            val user = userService.findUserByUsername(username)
+            val participant = Participant(user = user, contest = it)
+            participantRepository.save(participant)
+        } ?: throw NoSuchElementException("Unable to sign up user. Contest with number $contestNumber not found")
     }
 
     override fun getUpcomingContests(username: String): List<UpcomingContest> {
-        val upcomingContests = contestRepository.findAllByCompletedIsFalse()
+        val upcomingContests = contestRepository.findAllByCompleted(false)
 
         return upcomingContests.map {
             UpcomingContest(
                 startTime = it.startTime, contestNumber = it.contestNumber, running = it.running,
-                userParticipating = userIsParticipating(username, it.contestNumber)
+                userParticipating = userIsParticipating(username, it)
             )
         }
     }
 
-    override fun userIsParticipating(username: String, contestNumber: Int): Boolean {
-        val contest = contestRepository.findContestByContestNumber(contestNumber)
-        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest)
-
-        return participant.isNotEmpty()
-    }
+    private fun userIsParticipating(username: String, contest: Contest): Boolean =
+        participantRepository.findParticipantFromUsernameAndContest(username, contest).isNotEmpty()
 }

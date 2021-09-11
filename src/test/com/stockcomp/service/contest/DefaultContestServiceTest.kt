@@ -1,17 +1,18 @@
 package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.repository.UserRepository
 import com.stockcomp.service.order.OrderProcessingService
+import com.stockcomp.service.user.UserService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.slot
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -25,7 +26,7 @@ internal class DefaultContestServiceTest {
     private lateinit var contestRepository: ContestRepository
 
     @MockK
-    private lateinit var userRepository: UserRepository
+    private lateinit var userService: UserService
 
     @MockK
     private lateinit var participantRepository: ParticipantRepository
@@ -37,9 +38,13 @@ internal class DefaultContestServiceTest {
     private lateinit var defaultContestService: DefaultContestService
 
     private val contestNumber = 33
-    private val contest = Contest(contestNumber = contestNumber, startTime = LocalDateTime.now())
+    private val username = "testUser"
+    private val contest = Contest(startTime = LocalDateTime.now(), contestNumber = contestNumber)
+    private val user = User(username = username, email = "testEmail", password = "testPassword")
+    private val participant = Participant(user = user, contest = contest)
 
     private var contestSlot = slot<Contest>()
+    private var participantSlot = slot<Participant>()
 
     @BeforeAll
     private fun setUp() {
@@ -62,7 +67,7 @@ internal class DefaultContestServiceTest {
     fun `should start already created contest`() {
         every {
             contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
-        } returns createUpcomingContest()
+        } returns createFutureContest()
 
         defaultContestService.startContest(contestNumber)
 
@@ -105,15 +110,87 @@ internal class DefaultContestServiceTest {
     }
 
     @Test
-    fun `should sign up for upcoming contest`() {
+    fun `should complete already running contest`() {
+        every {
+            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+        } returns createRunningContest()
 
+        defaultContestService.completeContest(contestNumber)
+
+        assertFalse(contestSlot.captured.running)
+        assertTrue(contestSlot.captured.completed)
     }
 
-    private fun createUpcomingContest() =
-        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = 100)
+    @Test
+    fun `should throw exception when trying to complete a non-existing contest`() {
+        every {
+            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+        } returns null
+
+        assertThrows<NoSuchElementException> {
+            defaultContestService.completeContest(contestNumber)
+        }
+    }
+
+    @Test
+    fun `should sign up user for contest`() {
+        val runningContest = createRunningContest()
+
+        every {
+            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+        } returns runningContest
+
+        every {
+            userService.findUserByUsername(username)
+        } returns user
+
+        every {
+            participantRepository.save(capture(participantSlot))
+        } returns participant
+
+        defaultContestService.signUpUser(username, contestNumber)
+
+        assertEquals(participantSlot.captured.contest, runningContest)
+        assertEquals(participantSlot.captured.user, user)
+    }
+
+    @Test
+    fun `should throw exception when trying to sign up for a non-existing contest`() {
+        every {
+            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+        } returns null
+
+        assertThrows<NoSuchElementException> {
+            defaultContestService.signUpUser(username, contestNumber)
+        }
+    }
+
+    @Test
+    fun `should get upcoming contests`() {
+        val runningContest = createRunningContest()
+
+        every {
+            contestRepository.findAllByCompleted(false)
+        } returns listOf(runningContest)
+
+        every {
+            participantRepository.findParticipantFromUsernameAndContest(username, runningContest)
+        } returns listOf(participant)
+
+        val upcomingContests = defaultContestService.getUpcomingContests(username)
+
+        assertEquals(upcomingContests.size, 1)
+        upcomingContests[0].let {
+            assertEquals(it.contestNumber, contestNumber)
+            assertEquals(it.running, true)
+            assertEquals(it.userParticipating, true)
+            assertEquals(it.startTime, runningContest.startTime)
+        }
+    }
+
+    private fun createFutureContest() =
+        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = contestNumber)
 
     private fun createRunningContest() =
-        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = 100, running = true)
-
-
+        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = contestNumber, running = true)
 }

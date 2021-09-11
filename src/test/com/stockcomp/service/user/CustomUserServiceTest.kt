@@ -79,7 +79,7 @@ internal class CustomUserServiceTest {
 
     @Test
     fun `should get peristed user`() {
-        val user = userService.getPersistedUser(username)
+        val user = userService.findUserByUsername(username)
 
         Assertions.assertEquals(username, user.username)
         Assertions.assertEquals(password, user.password)

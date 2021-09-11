@@ -13,6 +13,4 @@ interface ContestService {
     fun signUpUser(username: String, contestNumber: Int)
 
     fun getUpcomingContests(username: String): List<UpcomingContest>
-
-    fun userIsParticipating(username: String, contestNumber: Int) : Boolean
 }

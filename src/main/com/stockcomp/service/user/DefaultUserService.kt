@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class DefaultUserService @Autowired constructor(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder
-) : UserDetailsService {
+) : UserDetailsService, UserService {
 
     override fun loadUserByUsername(userName: String): UserDetails {
         val persistedUser = userRepository.findByUsername(userName)
@@ -23,7 +23,7 @@ class DefaultUserService @Autowired constructor(
         return User(persistedUser.username, persistedUser.password, emptyList())
     }
 
-    fun signUpUser(request: SignUpRequest): com.stockcomp.domain.user.User {
+    override fun signUpUser(request: SignUpRequest): com.stockcomp.domain.user.User {
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateCredentialException("Existing username : ${request.username}")
         }
@@ -35,13 +35,13 @@ class DefaultUserService @Autowired constructor(
         return userRepository.save(user)
     }
 
-    fun signInUser(request: AuthenticationRequest): String {
+    override fun signInUser(request: AuthenticationRequest): String {
         val user = userRepository.findByUsername(request.username)
 
         return user.userRole.toString()
     }
 
-    fun getPersistedUser(username: String): com.stockcomp.domain.user.User {
+    override fun findUserByUsername(username: String): com.stockcomp.domain.user.User {
         return userRepository.findByUsername(username)
     }
 }
