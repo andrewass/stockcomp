@@ -6,7 +6,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest(properties = { "jwt.secret=testSecret","auto.start.tasks=false"})
+@SpringBootTest(properties = {"jwt.secret=testSecret"})
 public abstract class IntegrationTest {
 
     public static final PostgreSQLContainer POSTGRESQL_CONTAINER;
