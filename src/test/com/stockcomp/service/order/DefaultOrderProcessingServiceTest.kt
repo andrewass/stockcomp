@@ -2,7 +2,7 @@ package com.stockcomp.service.order
 
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.service.symbol.SymbolService
+import com.stockcomp.service.symbol.DefaultSymbolService
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -20,7 +20,7 @@ internal class DefaultOrderProcessingServiceTest {
     private lateinit var investmentOrderRepository: InvestmentOrderRepository
 
     @MockK
-    private lateinit var symbolService: SymbolService
+    private lateinit var symbolService: DefaultSymbolService
 
     @InjectMockKs
     private lateinit var orderProcessingService: DefaultOrderProcessingService
