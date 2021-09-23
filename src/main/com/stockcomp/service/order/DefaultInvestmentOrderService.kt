@@ -66,7 +66,7 @@ class DefaultInvestmentOrderService(
     private fun findOrdersByParticipant(
         username: String, contestNumber: Int, orderStatus: List<OrderStatus>
     ): List<InvestmentOrderDto> {
-        val contest = contestRepository.findContestByContestNumber(contestNumber)
+        val contest = contestRepository.findByContestNumber(contestNumber)
         val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest).first()
 
         val investmentOrders = investmentOrderRepository.findAllByParticipantAndOrderStatusIn(
@@ -78,7 +78,7 @@ class DefaultInvestmentOrderService(
     private fun findOrdersByParticipantAndSymbol(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
     ): List<InvestmentOrderDto> {
-        val contest = contestRepository.findContestByContestNumber(contestNumber)
+        val contest = contestRepository.findByContestNumber(contestNumber)
         val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest).first()
 
         val investmentOrders = investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(
@@ -88,7 +88,7 @@ class DefaultInvestmentOrderService(
     }
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {
-        val contest = contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
+        val contest = contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
 
         return participantRepository.findParticipantFromUsernameAndContest(username, contest)
             .stream().findFirst().get()

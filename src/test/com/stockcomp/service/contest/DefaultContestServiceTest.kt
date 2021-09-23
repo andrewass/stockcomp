@@ -66,7 +66,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should start already created contest`() {
         every {
-            contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
+            contestRepository.findByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         } returns createFutureContest()
 
         defaultContestService.startContest(contestNumber)
@@ -78,7 +78,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should throw exception when trying to start a non-existing contest`() {
         every {
-            contestRepository.findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
+            contestRepository.findByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -89,7 +89,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should stop already running contest`() {
         every {
-            contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
+            contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
         } returns createRunningContest()
 
         defaultContestService.stopContest(contestNumber)
@@ -101,7 +101,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should throw exception when trying to stop a non-existing contest`() {
         every {
-            contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
+            contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -112,7 +112,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should complete already running contest`() {
         every {
-            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
         } returns createRunningContest()
 
         defaultContestService.completeContest(contestNumber)
@@ -124,7 +124,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should throw exception when trying to complete a non-existing contest`() {
         every {
-            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -137,7 +137,7 @@ internal class DefaultContestServiceTest {
         val runningContest = createRunningContest()
 
         every {
-            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
         } returns runningContest
 
         every {
@@ -157,7 +157,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should throw exception when trying to sign up for a non-existing contest`() {
         every {
-            contestRepository.findContestByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
         } returns null
 
         assertThrows<NoSuchElementException> {

@@ -3,10 +3,7 @@ package com.stockcomp.service.util
 import com.stockcomp.domain.contest.*
 import com.stockcomp.domain.user.User
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.response.ContestDto
-import com.stockcomp.response.InvestmentDto
-import com.stockcomp.response.InvestmentOrderDto
-import com.stockcomp.response.UserDto
+import com.stockcomp.response.*
 
 fun Investment.toInvestmentDto() =
     InvestmentDto(
@@ -33,6 +30,13 @@ fun Contest.toContestDto() =
         running = this.running,
         completed = this.completed,
         startTime = this.startTime
+    )
+
+fun Participant.toParticipantDto() =
+    ParticipantDto(
+        username = this.user.username,
+        rank = this.rank,
+        totalValue = this.totalValue
     )
 
 fun mapToInvestmentOrder(

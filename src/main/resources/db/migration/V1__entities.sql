@@ -24,7 +24,7 @@ create table t_participant(
     user_id             bigserial not null,
     remaining_fund      double precision,
     participant_rank    int,
-    participant_score   int,
+    total_value         double precision not null,
     date_created    	timestamp not null,
     date_updated    	timestamp not null,
     foreign key (contest_id) references t_contest(contest_id),

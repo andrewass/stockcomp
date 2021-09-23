@@ -41,7 +41,7 @@ internal class DefaultInvestmentServiceTest {
     private fun setUp() {
         MockKAnnotations.init(this)
         every {
-            contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
+            contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
         } returns contest
 
         every {

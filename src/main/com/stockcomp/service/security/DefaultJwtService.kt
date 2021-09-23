@@ -33,7 +33,7 @@ class DefaultJwtService(
     private val refreshTokenDuration: Long = 0
 
     override fun refreshTokenPair(refreshToken: String): Pair<String, String> {
-        val currentRefreshToken = refreshTokenRepository.findRefreshTokenByToken(refreshToken)
+        val currentRefreshToken = refreshTokenRepository.findByToken(refreshToken)
         if (currentRefreshTokenIsValid(currentRefreshToken)) {
             return generateTokenPair(currentRefreshToken.user.username)
         } else {

@@ -2,6 +2,7 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
+import com.stockcomp.response.ParticipantDto
 import com.stockcomp.response.UpcomingContest
 import com.stockcomp.service.contest.DefaultContestService
 import com.stockcomp.service.investment.InvestmentService
@@ -52,6 +53,17 @@ class ContestController(
 
         return ResponseEntity.ok(remainingFunds)
     }
+
+    @GetMapping("/participants-by-ranking")
+    @ApiOperation(value = "Get participants sorted by ascending rank")
+    fun getRankingList(
+        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
+    ): ResponseEntity<List<ParticipantDto>> {
+        val rankingList = contestService.getParticipantsByAscendingRanking(contestNumber)
+
+        return ResponseEntity.ok(rankingList)
+    }
+
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String {
         val jwt = getAccessTokenFromCookie(request)

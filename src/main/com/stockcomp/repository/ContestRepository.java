@@ -9,13 +9,13 @@ import java.util.List;
 @Repository
 public interface ContestRepository extends JpaRepository<Contest, Long> {
 
-    Contest findContestByContestNumber(Integer contestNumber);
+    Contest findByContestNumber(Integer contestNumber);
 
-    Contest findContestByContestNumberAndRunningIsTrue(Integer contestNumber);
+    Contest findByContestNumberAndRunningIsTrue(Integer contestNumber);
 
-    Contest findContestByContestNumberAndCompletedIsFalseAndRunningIsFalse(Integer contestNumber);
+    Contest findByContestNumberAndCompletedIsFalseAndRunningIsFalse(Integer contestNumber);
 
-    Contest findContestByContestNumberAndCompleted(Integer contestNumber, Boolean completed);
+    Contest findByContestNumberAndCompleted(Integer contestNumber, Boolean completed);
 
     List<Contest> findAllByCompleted(Boolean completed);
 }

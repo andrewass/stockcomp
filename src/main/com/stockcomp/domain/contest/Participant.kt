@@ -32,7 +32,6 @@ class Participant(
     @Column(name = "participant_rank")
     var rank: Int? = null,
 
-    @Column(name = "participant_score")
-    var score: Int? = null
+    var totalValue: Double = 20000.00
 
 ) : BaseEntity()

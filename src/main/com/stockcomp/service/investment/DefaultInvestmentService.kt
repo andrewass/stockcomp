@@ -36,7 +36,7 @@ class DefaultInvestmentService(
             .sum()
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {
-        val contest = contestRepository.findContestByContestNumberAndRunningIsTrue(contestNumber)
+        val contest = contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
 
         return participantRepository.findParticipantFromUsernameAndContest(username, contest)
             .stream().findFirst().get()
