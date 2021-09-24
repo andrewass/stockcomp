@@ -54,16 +54,26 @@ class ContestController(
         return ResponseEntity.ok(remainingFunds)
     }
 
-    @GetMapping("/participants-by-ranking")
-    @ApiOperation(value = "Get participants sorted by ascending rank")
+    @GetMapping("/participants-by-value")
+    @ApiOperation(value = "Get contest participants sorted by descending total value")
     fun getRankingList(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<List<ParticipantDto>> {
-        val rankingList = contestService.getParticipantsByAscendingRanking(contestNumber)
+        val rankingList = contestService.getParticipantsByTotalValue(contestNumber)
 
         return ResponseEntity.ok(rankingList)
     }
 
+    @GetMapping("/participant")
+    @ApiOperation("Get participant of a given contest")
+    fun getParticipant(
+        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
+    ) : ResponseEntity<ParticipantDto> {
+        val username = extractUsernameFromRequest(httpServletRequest)
+        val participant = contestService.getParticipant(contestNumber, username)
+
+        return ResponseEntity.ok(participant)
+    }
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String {
         val jwt = getAccessTokenFromCookie(request)

@@ -50,6 +50,7 @@ class DefaultContestService(
         } ?: throw NoSuchElementException("Unable to complete contest. Contest with number $contestNumber not found")
     }
 
+    override fun getRunningContest(): Contest? = contestRepository.findByRunningIsTrue()
 
     override fun signUpUser(username: String, contestNumber: Int) {
         contestRepository.findByContestNumberAndCompleted(contestNumber, false)?.let {
@@ -70,16 +71,21 @@ class DefaultContestService(
         }
     }
 
-    override fun getParticipantsByAscendingRanking(contestNumber: Int): List<ParticipantDto> {
+    override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> {
         contestRepository.findByContestNumber(contestNumber)?.let { contest ->
-            val participants = participantRepository.findAllByContestOrderByRankAsc(contest)
+            val participants = participantRepository.findAllByContestOrderByTotalValueDesc(contest)
 
             return participants.map { it.toParticipantDto() }
         } ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
     }
 
-    override fun getParticipant(contestNumber: Int, username: String): Int {
-        TODO("Not yet implemented")
+    override fun getParticipant(contestNumber: Int, username: String): ParticipantDto {
+        contestRepository.findByContestNumber(contestNumber)?.let { contest ->
+            userService.findUserByUsername(username).let { user ->
+                return participantRepository.findByContestAndUser(contest, user)?.toParticipantDto()
+                    ?: throw NoSuchElementException("Participant not found for given user and contest")
+            }
+        } ?: throw NoSuchElementException("Contest $contestNumber not found")
     }
 
     private fun userIsParticipating(username: String, contest: Contest): Boolean =

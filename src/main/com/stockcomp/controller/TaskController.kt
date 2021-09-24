@@ -1,7 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.service.contest.DefaultContestService
-import com.stockcomp.service.investment.MaintainReturnsService
+import com.stockcomp.service.investment.MaintainParticipantsService
 import com.stockcomp.service.order.OrderProcessingService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class TaskController(
     private val contestService: DefaultContestService,
     private val orderProcessingService: OrderProcessingService,
-    private val maintainReturnsService: MaintainReturnsService
+    private val maintainParticipantsService: MaintainParticipantsService
 ) {
 
     @PostMapping("/start-contest")
@@ -49,18 +49,18 @@ class TaskController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PostMapping("/start-investment-returns-processing")
-    @ApiOperation("Start processing of investment returns")
-    fun startInvestmentReturnsProcessing(): ResponseEntity<HttpStatus> {
-        maintainReturnsService.startReturnsMaintenance()
+    @PostMapping("/start-participants-maintenance")
+    @ApiOperation("Start maintenance of all participants of a running contest")
+    fun startParticipantsMaintenance(): ResponseEntity<HttpStatus> {
+        maintainParticipantsService.startParticipantsMaintenance()
 
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PostMapping("/stop-investment-returns-processing")
-    @ApiOperation("Stop processing of investment returns")
-    fun stopInvestmentReturnsProcessing(): ResponseEntity<HttpStatus> {
-        maintainReturnsService.stopReturnsMaintenance()
+    @PostMapping("/stop-participants-maintenance")
+    @ApiOperation("Stop maintenance of all participants of a running contest")
+    fun stopParticipantsMaintenance(): ResponseEntity<HttpStatus> {
+        maintainParticipantsService.stopParticipantsMaintenance()
 
         return ResponseEntity(HttpStatus.OK)
     }
