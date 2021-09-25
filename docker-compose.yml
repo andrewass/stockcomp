@@ -21,7 +21,6 @@ services:
     depends_on:
       - prometheus
 
-
   #PostgreSQL
   stock-comp-db:
     image: postgres:13-alpine

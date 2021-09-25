@@ -11,6 +11,7 @@ create table t_user(
 create table t_contest(
 	contest_id          bigserial primary key,
 	contest_number      int not null,
+	participant_count   int not null,
 	start_time          timestamp,
 	completed           boolean,
 	running             boolean,

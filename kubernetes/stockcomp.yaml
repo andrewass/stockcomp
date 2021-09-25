@@ -51,9 +51,9 @@ metadata:
 spec:
   selector:
     app: stockcomp
-  type: LoadBalancer #Set type to LoadBalancer to make service external
+  type: NodePort
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30000 #External port
+      nodePort: 30000

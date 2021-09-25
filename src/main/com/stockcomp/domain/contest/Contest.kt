@@ -21,6 +21,8 @@ class Contest(
 
     var completed: Boolean = false,
 
+    var participantCount: Int = 0,
+
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val participants: MutableList<Participant> = mutableListOf()
 

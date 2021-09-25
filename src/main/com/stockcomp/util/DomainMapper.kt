@@ -27,6 +27,7 @@ fun Contest.toContestDto() =
     ContestDto(
         id = this.id!!,
         contestNumber = this.contestNumber,
+        participantCount = this.participantCount,
         running = this.running,
         completed = this.completed,
         startTime = this.startTime
