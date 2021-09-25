@@ -58,6 +58,11 @@ class AdminController(
         return createListResponse(users)
     }
 
+    @GetMapping("/ping")
+    fun getPing() : ResponseEntity<String> {
+        return  ResponseEntity.ok("ping")
+    }
+
     private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> {
         val responseHeader = HttpHeaders()
         responseHeader.set("Access-Control-Expose-Headers", "Content-Range")
