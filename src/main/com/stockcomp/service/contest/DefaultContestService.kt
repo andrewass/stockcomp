@@ -5,7 +5,7 @@ import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContest
+import com.stockcomp.response.UpcomingContestDto
 import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
 import com.stockcomp.service.util.toParticipantDto
@@ -50,8 +50,6 @@ class DefaultContestService(
         } ?: throw NoSuchElementException("Unable to complete contest. Contest with number $contestNumber not found")
     }
 
-    override fun getRunningContest(): Contest? = contestRepository.findByRunningIsTrue()
-
     override fun signUpUser(username: String, contestNumber: Int) {
         contestRepository.findByContestNumberAndCompleted(contestNumber, false)?.let {
             val user = userService.findUserByUsername(username)
@@ -60,11 +58,11 @@ class DefaultContestService(
         } ?: throw NoSuchElementException("Unable to sign up user. Contest $contestNumber not found")
     }
 
-    override fun getUpcomingContests(username: String): List<UpcomingContest> {
+    override fun getUpcomingContests(username: String): List<UpcomingContestDto> {
         val upcomingContests = contestRepository.findAllByCompleted(false)
 
         return upcomingContests.map {
-            UpcomingContest(
+            UpcomingContestDto(
                 startTime = it.startTime, contestNumber = it.contestNumber, running = it.running,
                 userParticipating = userIsParticipating(username, it)
             )

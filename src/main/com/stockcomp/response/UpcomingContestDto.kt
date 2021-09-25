@@ -2,7 +2,7 @@ package com.stockcomp.response
 
 import java.time.LocalDateTime
 
-data class UpcomingContest(
+data class UpcomingContestDto(
     val startTime: LocalDateTime,
 
     val contestNumber: Int,

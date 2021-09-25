@@ -1,6 +1,7 @@
 package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Investment
+import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.RealTimePrice
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service
 class DefaultMaintainParticipantsService(
     private val investmentRepository: InvestmentRepository,
     private val participantRepository: ParticipantRepository,
-    private val symbolService: SymbolService,
-    private val contestService: ContestService
+    private val contestRepository: ContestRepository,
+    private val symbolService: SymbolService
 ) : MaintainParticipantsService {
 
     private val logger = LoggerFactory.getLogger(DefaultMaintainParticipantsService::class.java)
@@ -60,7 +61,7 @@ class DefaultMaintainParticipantsService(
     }
 
     private fun maintainRanking(){
-        val runningContest = contestService.getRunningContest()
+        val runningContest = contestRepository.findByRunningIsTrue()
         val rank = 0
         val participants = participantRepository.findAllByContestOrderByTotalValueDesc(runningContest)
         participants.forEach{ it.rank = rank.inc()}

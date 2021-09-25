@@ -21,18 +21,35 @@ services:
     depends_on:
       - prometheus
 
+
+  #PostgreSQL
+  stock-comp-db:
+    image: postgres:13-alpine
+    container_name: postgresql
+    environment:
+      POSTGRES_DB: "stockdb"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_ROOT_PASSWORD: "rootpass"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql-volume:/var/lib/postgresql
+
   #Spring Boot app
   stock-comp-server:
     image: stock-comp-server
     container_name: stock-comp
     build: .
+    depends_on:
+      - stock-comp-db
     restart: on-failure
     environment:
-      - SPRING_DATASOURCE_URL=${POSTGRESQL_URL}
-      - SPRING_DATASOURCE_USERNAME=${POSTGRESQL_USER}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRESQL_PASSWORD}
-      - JWT_SECRET=${JWT_SECRET}
-      - CONSUMER_BASE_URL=http://stock-analyzer:8088
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://stock-comp-db:5432/stockdb"
+      SPRING_DATASOURCE_USERNAME: "user"
+      SPRING_DATASOURCE_PASSWORD: "password"
+      JWT_SECRET: ${JWT_SECRET}
+      CONSUMER_BASE_URL: "http://stock-analyzer:8088"
     ports:
       - "8080:8080"
       - "5010:5010"
@@ -44,4 +61,5 @@ networks:
 
 volumes:
   grafana-volume:
+  postgresql-volume:
     driver: "local"
