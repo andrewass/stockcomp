@@ -19,6 +19,9 @@ spec:
           image: postgres:13-alpine
           ports:
             - containerPort: 5432
+          volumeMounts:
+            - name: postgresql-persistent-storage
+              mountPath: /var/lib/postgresql/data
           env:
             - name: POSTGRES_ROOT_PASSWORD
               valueFrom:
@@ -37,6 +40,10 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: password
+      volumes:
+        - name: postgresql-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgresql-pv-claim
 
 ---
 apiVersion: v1
