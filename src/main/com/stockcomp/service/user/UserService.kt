@@ -10,5 +10,5 @@ interface UserService {
 
     fun signInUser(request: AuthenticationRequest): String
 
-    fun findUserByUsername(username: String): User
+    fun findUserByUsername(username: String): User?
 }

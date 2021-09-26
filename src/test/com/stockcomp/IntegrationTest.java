@@ -6,7 +6,11 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest(properties = {"jwt.secret=testSecret"})
+@SpringBootTest(properties = {
+        "jwt.secret=testSecret",
+        "admin.password=admin",
+        "admin.email=admin@admin.com"
+})
 public abstract class IntegrationTest {
 
     public static final PostgreSQLContainer POSTGRESQL_CONTAINER;

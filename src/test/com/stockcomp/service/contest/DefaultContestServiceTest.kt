@@ -6,7 +6,7 @@ import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.order.OrderProcessingService
-import com.stockcomp.service.user.UserService
+import com.stockcomp.service.user.DefaultUserService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -26,7 +26,7 @@ internal class DefaultContestServiceTest {
     private lateinit var contestRepository: ContestRepository
 
     @MockK
-    private lateinit var userService: UserService
+    private lateinit var userService: DefaultUserService
 
     @MockK
     private lateinit var participantRepository: ParticipantRepository

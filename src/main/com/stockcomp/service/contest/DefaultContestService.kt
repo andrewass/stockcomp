@@ -52,7 +52,7 @@ class DefaultContestService(
 
     override fun signUpUser(username: String, contestNumber: Int) {
         contestRepository.findByContestNumberAndCompleted(contestNumber, false)?.let {
-            val user = userService.findUserByUsername(username)
+            val user = userService.findUserByUsername(username)!!
             val participant = Participant(user = user, contest = it)
             participantRepository.save(participant)
             it.participantCount.inc()
@@ -81,7 +81,7 @@ class DefaultContestService(
 
     override fun getParticipant(contestNumber: Int, username: String): ParticipantDto {
         contestRepository.findByContestNumber(contestNumber)?.let { contest ->
-            userService.findUserByUsername(username).let { user ->
+            userService.findUserByUsername(username)?.let { user ->
                 return participantRepository.findByContestAndUser(contest, user)?.toParticipantDto()
                     ?: throw NoSuchElementException("Participant not found for given user and contest")
             }

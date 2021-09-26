@@ -48,7 +48,8 @@ services:
       SPRING_DATASOURCE_USERNAME: "user"
       SPRING_DATASOURCE_PASSWORD: "password"
       JWT_SECRET: ${JWT_SECRET}
-      CONSUMER_BASE_URL: "http://stock-analyzer:8088"
+      ADMIN_EMAIL: "admin@admin.com"
+      ADMIN_PASSWORD: "admin"
     ports:
       - "8080:8080"
       - "5010:5010"

@@ -24,7 +24,7 @@ internal class CustomUserServiceTest {
     private var passwordEncoder = BCryptPasswordEncoder()
 
     @InjectMockKs
-    private lateinit var userService: DefaultUserService
+    private lateinit var defaultUserService: DefaultUserService
 
     private val username = "testUser"
     private val password = "testPassword"
@@ -41,7 +41,7 @@ internal class CustomUserServiceTest {
 
     @Test
     fun `should load user by username`() {
-        val userDetails = userService.loadUserByUsername(username)
+        val userDetails = defaultUserService.loadUserByUsername(username)
 
         Assertions.assertEquals(username, userDetails.username)
         Assertions.assertEquals(password, userDetails.password)
@@ -58,7 +58,7 @@ internal class CustomUserServiceTest {
             userRepository.save(capture(userSlot))
         } returns user
 
-        userService.signUpUser(SignUpRequest(username, password, email))
+        defaultUserService.signUpUser(SignUpRequest(username, password, email))
 
         verify { userRepository.save(any<User>()) }
         Assertions.assertEquals(username, userSlot.captured.username)
@@ -73,13 +73,13 @@ internal class CustomUserServiceTest {
         } returns true
 
         assertThrows<DuplicateCredentialException> {
-            userService.signUpUser(SignUpRequest(username, password, email))
+            defaultUserService.signUpUser(SignUpRequest(username, password, email))
         }
     }
 
     @Test
     fun `should get peristed user`() {
-        val user = userService.findUserByUsername(username)
+        val user = defaultUserService.findUserByUsername(username)!!
 
         Assertions.assertEquals(username, user.username)
         Assertions.assertEquals(password, user.password)

@@ -30,7 +30,8 @@ class DefaultUserService @Autowired constructor(
         val user = com.stockcomp.domain.user.User(
             username = request.username,
             password = passwordEncoder.encode(request.password),
-            email = request.email
+            email = request.email,
+            userRole = request.role
         )
         return userRepository.save(user)
     }
@@ -41,7 +42,7 @@ class DefaultUserService @Autowired constructor(
         return user.userRole.toString()
     }
 
-    override fun findUserByUsername(username: String): com.stockcomp.domain.user.User {
+    override fun findUserByUsername(username: String): com.stockcomp.domain.user.User? {
         return userRepository.findByUsername(username)
     }
 }

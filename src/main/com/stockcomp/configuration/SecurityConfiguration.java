@@ -2,7 +2,10 @@ package com.stockcomp.configuration;
 
 import com.stockcomp.controller.common.ExceptionHandlerFilter;
 import com.stockcomp.controller.common.TokenAuthenticationFilter;
+import com.stockcomp.domain.user.Role;
+import com.stockcomp.request.SignUpRequest;
 import com.stockcomp.service.user.DefaultUserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,27 +17,35 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final DefaultUserService defaultUserService;
+    private final DefaultUserService userService;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${admin.password}")
+    private String adminPassword;
+
+    @Value("${admin.email}")
+    private String adminEmail;
+
     public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter tokenAuthenticationFilter,
-                                 DefaultUserService defaultUserService, ExceptionHandlerFilter exceptionHandlerFilter) {
+                                 DefaultUserService userService, ExceptionHandlerFilter exceptionHandlerFilter) {
         this.passwordEncoder = passwordEncoder;
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
-        this.defaultUserService = defaultUserService;
+        this.userService = userService;
         this.exceptionHandlerFilter = exceptionHandlerFilter;
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder authentication) throws Exception {
         authentication
-                .userDetailsService(defaultUserService)
+                .userDetailsService(userService)
                 .passwordEncoder(passwordEncoder);
     }
 
@@ -44,8 +55,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/task/*","/auth/*", "/actuator/*","/admin/*",
-                        "/admin/*/*","/swagger-ui.html")
+                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/*",
+                        "/admin/*/*", "/swagger-ui.html")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -58,5 +69,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @PostConstruct
+    private void createAdminUser() {
+        var adminUsername = "admin";
+        var existingAdmin = userService.findUserByUsername(adminUsername);
+        if (existingAdmin == null) {
+            userService.signUpUser(new SignUpRequest(adminUsername, adminPassword, adminEmail, Role.ADMIN));
+        }
     }
 }
