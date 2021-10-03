@@ -5,9 +5,10 @@ import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContestDto
+import com.stockcomp.response.UpcomingContestParticipantDto
 import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
+import com.stockcomp.service.util.mapToUpcomingContestParticipantDto
 import com.stockcomp.service.util.toParticipantDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -60,15 +61,10 @@ class DefaultContestService(
         } ?: throw NoSuchElementException("Unable to sign up user. Contest $contestNumber not found")
     }
 
-    override fun getUpcomingContests(username: String): List<UpcomingContestDto> {
+    override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> {
         val upcomingContests = contestRepository.findAllByCompleted(false)
 
-        return upcomingContests.map {
-            UpcomingContestDto(
-                startTime = it.startTime, contestNumber = it.contestNumber, running = it.running,
-                userParticipating = userIsParticipating(username, it)
-            )
-        }
+        return upcomingContests.map { createUpcomingContestParticipantDto(username, it) }
     }
 
     override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> {
@@ -88,6 +84,9 @@ class DefaultContestService(
         } ?: throw NoSuchElementException("Contest $contestNumber not found")
     }
 
-    private fun userIsParticipating(username: String, contest: Contest): Boolean =
-        participantRepository.findParticipantFromUsernameAndContest(username, contest).isNotEmpty()
+    private fun createUpcomingContestParticipantDto(username: String, contest: Contest): UpcomingContestParticipantDto {
+        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest)
+
+        return mapToUpcomingContestParticipantDto(contest, participant)
+    }
 }

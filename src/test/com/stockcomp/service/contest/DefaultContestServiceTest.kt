@@ -177,7 +177,7 @@ internal class DefaultContestServiceTest {
             participantRepository.findParticipantFromUsernameAndContest(username, runningContest)
         } returns listOf(participant)
 
-        val upcomingContests = defaultContestService.getUpcomingContests(username)
+        val upcomingContests = defaultContestService.getUpcomingContestsParticipant(username)
 
         assertEquals(upcomingContests.size, 1)
         upcomingContests[0].let {

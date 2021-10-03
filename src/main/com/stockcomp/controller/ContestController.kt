@@ -3,7 +3,7 @@ package com.stockcomp.controller
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContestDto
+import com.stockcomp.response.UpcomingContestParticipantDto
 import com.stockcomp.service.contest.DefaultContestService
 import com.stockcomp.service.investment.InvestmentService
 import com.stockcomp.service.security.DefaultJwtService
@@ -24,9 +24,9 @@ class ContestController(
 
     @GetMapping("/upcoming-contests")
     @ApiOperation(value = "Return a list of upcoming contests")
-    fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContestDto>> {
+    fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContestParticipantDto>> {
         val username = extractUsernameFromRequest(httpServletRequest)
-        val contests = contestService.getUpcomingContests(username)
+        val contests = contestService.getUpcomingContestsParticipant(username)
 
         return ResponseEntity.ok(contests)
     }

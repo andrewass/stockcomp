@@ -19,7 +19,7 @@ fun User.toUserDto() =
     UserDto(
         id = this.id!!,
         username = this.username,
-        email =  this.email,
+        email = this.email,
         userRole = this.userRole.name
     )
 
@@ -47,7 +47,7 @@ fun mapToInvestmentOrder(
         symbol = request.symbol,
         acceptedPrice = request.acceptedPrice,
         currency = request.currency,
-        expirationTime = request.expirationTime.atStartOfDay(),
+        expirationTime = request.expirationTime,
         totalAmount = request.amount,
         transactionType = transactionType,
         participant = participant
@@ -59,8 +59,18 @@ fun mapToInvestmentOrderDto(order: InvestmentOrder) =
         symbol = order.symbol,
         totalAmount = order.totalAmount,
         remainingAmount = order.remainingAmount,
-        status= order.orderStatus.decode,
+        status = order.orderStatus.decode,
         transactionType = order.transactionType.decode,
         acceptedPrice = order.acceptedPrice,
         currency = order.currency
+    )
+
+fun mapToUpcomingContestParticipantDto(contest: Contest, participant: List<Participant>) =
+    UpcomingContestParticipantDto(
+        contestNumber = contest.contestNumber,
+        startTime = contest.startTime,
+        running = contest.running,
+        userParticipating = participant.isNotEmpty(),
+        rank = participant.firstOrNull()?.rank,
+        participantCount = contest.participantCount
     )

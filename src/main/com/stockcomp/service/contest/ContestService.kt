@@ -1,8 +1,7 @@
 package com.stockcomp.service.contest
 
-import com.stockcomp.domain.contest.Contest
 import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContestDto
+import com.stockcomp.response.UpcomingContestParticipantDto
 
 interface ContestService {
 
@@ -14,7 +13,7 @@ interface ContestService {
 
     fun signUpUser(username: String, contestNumber: Int)
 
-    fun getUpcomingContests(username: String): List<UpcomingContestDto>
+    fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto>
 
     fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto>
 

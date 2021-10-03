@@ -32,7 +32,7 @@ internal class DefaultInvestmentServiceTest {
     private val contestNumber = 100
     private val acceptedPrice = 150.00
     private val totalAmount = 120
-    private val expirationTime = LocalDate.now().plusDays(10L)
+    private val expirationTime = LocalDateTime.now().plusDays(10L)
     private val symbol = "AAPL"
     private val contest = createContest()
     private val participant = createParticipant()
@@ -82,7 +82,7 @@ internal class DefaultInvestmentServiceTest {
         Assertions.assertTrue(participant.investmentOrders.size == 1)
         Assertions.assertEquals(symbol, investmentOrder.symbol)
         Assertions.assertEquals(acceptedPrice, investmentOrder.acceptedPrice)
-        Assertions.assertEquals(expirationTime.atStartOfDay(), investmentOrder.expirationTime)
+        Assertions.assertEquals(expirationTime, investmentOrder.expirationTime)
         Assertions.assertEquals(totalAmount, investmentOrder.totalAmount)
         Assertions.assertEquals(totalAmount, investmentOrder.remainingAmount)
         Assertions.assertSame(participant, investmentOrder.participant)
