@@ -1,11 +1,12 @@
 package com.stockcomp.domain.user
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import javax.persistence.*
 
 @Entity
 @Table(name = "T_USER")
-class User (
+class User(
 
     @Id
     @Column(name = "USER_ID")
@@ -19,6 +20,12 @@ class User (
     val email: String,
 
     @Enumerated(EnumType.STRING)
-    val userRole: Role = Role.USER
+    val userRole: Role = Role.USER,
 
-) : BaseEntity()
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
+    val refreshTokens: MutableList<RefreshToken> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
+    val leaderboardEntries : MutableList<LeaderboardEntry> = mutableListOf()
+
+    ) : BaseEntity()

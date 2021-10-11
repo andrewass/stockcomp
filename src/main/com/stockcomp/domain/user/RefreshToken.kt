@@ -15,7 +15,7 @@ class RefreshToken(
 
     val token: String,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
