@@ -1,7 +1,6 @@
 package com.stockcomp.domain.user
 
 import com.stockcomp.domain.BaseEntity
-import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import javax.persistence.*
 
 @Entity
@@ -24,8 +23,5 @@ class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
     val refreshTokens: MutableList<RefreshToken> = mutableListOf(),
-
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
-    val leaderboardEntries : MutableList<LeaderboardEntry> = mutableListOf()
 
     ) : BaseEntity()

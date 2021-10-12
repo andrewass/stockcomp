@@ -34,7 +34,8 @@ create table t_participant(
 
 create table t_leaderboard_entry(
 	 leaderboard_entry_id   bigserial primary key,
-	 completed_contests     int,
+	 contest_count          int,
+	 ranking                int,
 	 user_id                bigserial not null,
 	 foreign key (user_id) references t_user(user_id)
 );
@@ -43,7 +44,9 @@ create table t_medal(
      medal_id               bigserial primary key,
      medal_value            varchar(10),
      position               int,
+     contest_id             bigserial not null,
      leaderboard_entry_id   bigserial not null,
+     foreign key (contest_id) references t_contest(contest_id),
      foreign key (leaderboard_entry_id) references t_leaderboard_entry(leaderboard_entry_id)
 );
 

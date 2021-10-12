@@ -13,13 +13,15 @@ class LeaderboardEntry(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    var completedContests : Int = 0,
+    var contestCount: Int = 0,
+
+    var ranking: Int = 0,
 
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.REMOVE])
-    val medals : MutableList<Medal> = mutableListOf(),
+    val medals: MutableList<Medal> = mutableListOf(),
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "USER_ID", nullable = false)
-    val user : User
+    val user: User,
 
-) : BaseEntity()
+    ) : BaseEntity()

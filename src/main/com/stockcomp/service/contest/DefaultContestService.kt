@@ -8,8 +8,8 @@ import com.stockcomp.response.ParticipantDto
 import com.stockcomp.response.UpcomingContestParticipantDto
 import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
-import com.stockcomp.service.util.mapToUpcomingContestParticipantDto
-import com.stockcomp.service.util.toParticipantDto
+import com.stockcomp.util.mapToUpcomingContestParticipantDto
+import com.stockcomp.util.toParticipantDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

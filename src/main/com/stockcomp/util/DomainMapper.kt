@@ -1,9 +1,13 @@
-package com.stockcomp.service.util
+package com.stockcomp.util
 
 import com.stockcomp.domain.contest.*
+import com.stockcomp.domain.leaderboard.LeaderboardEntry
+import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.user.User
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.response.*
+import com.stockcomp.response.leaderboard.LeaderboardEntryDto
+import com.stockcomp.response.leaderboard.MedalDto
 
 fun Investment.toInvestmentDto() =
     InvestmentDto(
@@ -38,6 +42,19 @@ fun Participant.toParticipantDto() =
         username = this.user.username,
         rank = this.rank,
         totalValue = this.totalValue
+    )
+
+fun Medal.toMedalDto() =
+    MedalDto(
+        medalValue = this.medalValue.decode,
+        position = this.position
+    )
+
+fun LeaderboardEntry.toLeaderboardEntryDto() =
+    LeaderboardEntryDto(
+        ranking = this.ranking,
+        contestCount = this.contestCount,
+        medals = this.medals.map { it.toMedalDto() }
     )
 
 fun mapToInvestmentOrder(

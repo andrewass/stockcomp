@@ -1,6 +1,7 @@
 package com.stockcomp.domain.contest
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.leaderboard.Medal
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -24,7 +25,10 @@ class Contest(
     var participantCount: Int = 0,
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
-    val participants: MutableList<Participant> = mutableListOf()
+    val participants: MutableList<Participant> = mutableListOf(),
+
+    @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
+    val medals: MutableList<Medal> = mutableListOf()
 
 ) : BaseEntity() {
 
@@ -36,7 +40,7 @@ class Contest(
         running = false
     }
 
-    fun completeContest(){
+    fun completeContest() {
         running = false
         completed = true
     }

@@ -6,8 +6,8 @@ import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.response.ContestDto
 import com.stockcomp.response.UserDto
-import com.stockcomp.service.util.toContestDto
-import com.stockcomp.service.util.toUserDto
+import com.stockcomp.util.toContestDto
+import com.stockcomp.util.toUserDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

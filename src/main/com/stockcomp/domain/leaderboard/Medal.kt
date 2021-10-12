@@ -1,6 +1,7 @@
 package com.stockcomp.domain.leaderboard
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.contest.Contest
 import javax.persistence.*
 
 @Entity
@@ -15,7 +16,11 @@ class Medal(
     @Enumerated(EnumType.STRING)
     val medalValue: MedalValue,
 
-    val position : Int,
+    val position: Int,
+
+    @ManyToOne
+    @JoinColumn(name = "CONTEST_ID", nullable = false)
+    val contest: Contest,
 
     @ManyToOne
     @JoinColumn(name = "LEADERBOARD_ENTRY_ID", nullable = false)
