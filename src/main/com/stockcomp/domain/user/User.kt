@@ -22,6 +22,6 @@ class User(
     val userRole: Role = Role.USER,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
-    val refreshTokens: MutableList<RefreshToken> = mutableListOf(),
+    val refreshTokens: MutableList<RefreshToken> = mutableListOf()
 
-    ) : BaseEntity()
+) : BaseEntity()

@@ -1,11 +1,11 @@
 create table t_user(
-	user_id         bigserial  primary key ,
-	username        varchar(50) unique not null,
-	password        varchar(200) not null,
-	email           varchar(60) unique not null,
-	date_created    timestamp not null,
-	date_updated    timestamp not null,
-	user_role       varchar(10) not null
+	user_id                 bigserial  primary key ,
+	username                varchar(50) unique not null,
+	password                varchar(200) not null,
+	email                   varchar(60) unique not null,
+	user_role               varchar(10) not null,
+	date_created            timestamp not null,
+	date_updated            timestamp not null
 );
 
 create table t_contest(
@@ -36,7 +36,10 @@ create table t_leaderboard_entry(
 	 leaderboard_entry_id   bigserial primary key,
 	 contest_count          int,
 	 ranking                int,
+	 score                  double precision,
 	 user_id                bigserial not null,
+	 last_contest_id        bigserial,
+	 foreign key (last_contest_id) references t_contest(contest_id),
 	 foreign key (user_id) references t_user(user_id)
 );
 

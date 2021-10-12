@@ -1,6 +1,7 @@
 package com.stockcomp.domain.leaderboard
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.user.User
 import javax.persistence.*
 
@@ -17,11 +18,23 @@ class LeaderboardEntry(
 
     var ranking: Int = 0,
 
+    var score : Double = Double.MAX_VALUE,
+
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.REMOVE])
-    val medals: MutableList<Medal> = mutableListOf(),
+    val medals: List<Medal> = mutableListOf(),
+
+    @OneToOne
+    @JoinColumn(name = "LAST_CONTEST_ID")
+    var lastContest : Contest? = null,
 
     @OneToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
-    ) : BaseEntity()
+    ) : BaseEntity(){
+
+        fun addMedal(medal: Medal) {
+            medals as MutableList
+            medals.add(medal)
+        }
+    }
