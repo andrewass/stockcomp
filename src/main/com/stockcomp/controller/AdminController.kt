@@ -6,6 +6,7 @@ import com.stockcomp.response.UserDto
 import com.stockcomp.service.admin.AdminService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -58,9 +59,11 @@ class AdminController(
         return createListResponse(users)
     }
 
-    @GetMapping("/ping")
-    fun getPing() : ResponseEntity<String> {
-        return  ResponseEntity.ok("ping")
+    @PostMapping("/update-leaderboard/{id}")
+    fun updateLeaderboard(@PathVariable id : Int) : ResponseEntity<HttpStatus> {
+        adminService.updateLeaderboard(id)
+
+        return ResponseEntity(HttpStatus.OK)
     }
 
     private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> {

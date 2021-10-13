@@ -6,6 +6,7 @@ import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.response.ContestDto
 import com.stockcomp.response.UserDto
+import com.stockcomp.service.leaderboard.LeaderboardService
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
 import org.springframework.stereotype.Service
@@ -15,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultAdminService(
     private val contestRepository: ContestRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val leaderboardService: LeaderboardService
 ) : AdminService {
 
     override fun getRunningAndUpcomingContests(): List<ContestDto> {
@@ -45,6 +47,12 @@ class DefaultAdminService(
         contestRepository.delete(contest)
 
         return contest.toContestDto()
+    }
+
+    override fun updateLeaderboard(contestNumber: Int) {
+        contestRepository.findByContestNumber(contestNumber)?.let {
+            leaderboardService.updateLeaderboard(it)
+        }
     }
 
     override fun updateContest(contestDto: ContestDto): ContestDto {

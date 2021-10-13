@@ -20,7 +20,7 @@ class LeaderboardEntry(
 
     var score : Double = Double.MAX_VALUE,
 
-    @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL])
     val medals: List<Medal> = mutableListOf(),
 
     @OneToOne

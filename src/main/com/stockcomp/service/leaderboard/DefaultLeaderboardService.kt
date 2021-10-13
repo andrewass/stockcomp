@@ -27,8 +27,8 @@ class DefaultLeaderboardService(
     private fun updateScoreForParticipants(contest: Contest) {
         val medalMap = createMedalMap(contest)
         contest.participants.forEach { participant ->
-            //TODO Fetch entry from existing user
-            val leaderboardEntry = LeaderboardEntry(user = participant.user)
+            val leaderboardEntry = leaderboardEntryRepository.findByUser(participant.user)
+                ?: LeaderboardEntry(user = participant.user)
             if (contest != leaderboardEntry.lastContest) {
                 val participantScore = (participant.rank!! / contest.participantCount).toDouble()
 
@@ -37,7 +37,7 @@ class DefaultLeaderboardService(
                     this.contestCount = this.contestCount + 1
                     this.lastContest = contest
                 }
-                updateMedalsForEntry(leaderboardEntry, participant, contest)
+                updateMedalsForEntry(leaderboardEntry, participant, contest, medalMap)
                 leaderboardEntryRepository.save(leaderboardEntry)
             }
         }
@@ -52,6 +52,19 @@ class DefaultLeaderboardService(
         )
     }
 
-    private fun updateMedalsForEntry(leaderboardEntry: LeaderboardEntry, participant: Participant, contest: Contest) {
+    private fun updateMedalsForEntry(
+        leaderboardEntry: LeaderboardEntry, participant: Participant,
+        contest: Contest, medalMap: Map<Double, MedalValue>
+    ) {
+        medalMap.entries.firstOrNull { (key, _) -> key <= participant.rank!! }?.let {
+            leaderboardEntry.addMedal(
+                Medal(
+                    contest = contest,
+                    leaderboardEntry = leaderboardEntry,
+                    medalValue = it.value,
+                    position = participant.rank!!
+                )
+            )
+        }
     }
 }
