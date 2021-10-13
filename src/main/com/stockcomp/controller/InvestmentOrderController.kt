@@ -5,6 +5,7 @@ import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.response.InvestmentOrderDto
 import com.stockcomp.service.order.InvestmentOrderService
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/investment-order")
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
+@Api(description = "Endpoints for investment order operations")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
     private val defaultJwtService: DefaultJwtService
@@ -44,6 +46,7 @@ class InvestmentOrderController(
     }
 
     @PostMapping("/delete-active-order")
+    @ApiOperation(value = "Delete an active investment order")
     fun deleteActiveOrder(
         httpServletRequest: HttpServletRequest,
         @RequestParam orderId: Long
@@ -56,6 +59,7 @@ class InvestmentOrderController(
     }
 
     @GetMapping("/active-orders-participant")
+    @ApiOperation(value = "Get all active investment orders for a participant")
     fun getAllActiveOrdersForParticiapant(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int
@@ -68,6 +72,7 @@ class InvestmentOrderController(
     }
 
     @GetMapping("/active-orders-symbol-participant")
+    @ApiOperation(value = "Get all active investment orders for a given symbol and participant")
     fun getAllActiveOrdersForSymbolForParticipant(
         httpServletRequest: HttpServletRequest,
         @RequestParam symbol: String,
@@ -82,6 +87,7 @@ class InvestmentOrderController(
     }
 
     @GetMapping("/completed-orders-participant")
+    @ApiOperation(value = "Get all completed investment orders for a participant")
     fun getAllCompletedOrdersForParticipant(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int
@@ -94,6 +100,7 @@ class InvestmentOrderController(
     }
 
     @GetMapping("/completed-orders-symbol-participant")
+    @ApiOperation(value = "Get all completed investment orders for a given symbol and participant")
     fun getAllCompletedOrdersForSymbolForParticipant(
         httpServletRequest: HttpServletRequest,
         @RequestParam symbol: String,

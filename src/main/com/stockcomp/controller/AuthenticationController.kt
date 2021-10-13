@@ -9,6 +9,7 @@ import com.stockcomp.service.user.DefaultUserService
 import com.stockcomp.service.security.DefaultJwtService
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
+@Api(description = "Endpoints for user authentication")
 class AuthenticationController internal constructor(
     private val authenticationManager: AuthenticationManager,
     private val userService: DefaultUserService,

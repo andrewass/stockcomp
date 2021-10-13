@@ -7,6 +7,7 @@ import com.stockcomp.response.UpcomingContestParticipantDto
 import com.stockcomp.service.contest.DefaultContestService
 import com.stockcomp.service.investment.InvestmentService
 import com.stockcomp.service.security.DefaultJwtService
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/contest")
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
+@Api(description = "Endpoints for contest related operations")
 class ContestController(
     private val contestService: DefaultContestService,
     private val investmentService: InvestmentService,
