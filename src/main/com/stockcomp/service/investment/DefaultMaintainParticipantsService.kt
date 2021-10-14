@@ -5,9 +5,9 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.RealTimePrice
-import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.symbol.SymbolService
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -31,7 +31,7 @@ class DefaultMaintainParticipantsService(
     final override fun startParticipantsMaintenance() {
         keepMaintainingReturns = true
         logger.info("Starting maintenance of investment returns")
-        GlobalScope.launch {
+        CoroutineScope(Default).launch {
             maintainReturns()
         }
     }
@@ -60,11 +60,11 @@ class DefaultMaintainParticipantsService(
         }
     }
 
-    private fun maintainRanking(){
+    private fun maintainRanking() {
         val runningContest = contestRepository.findByRunningIsTrue()
         val rank = 0
         val participants = participantRepository.findAllByContestOrderByTotalValueDesc(runningContest)
-        participants.forEach{ it.rank = rank.inc()}
+        participants.forEach { it.rank = rank.inc() }
         participantRepository.saveAll(participants)
     }
 

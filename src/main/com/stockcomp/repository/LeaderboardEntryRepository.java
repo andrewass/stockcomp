@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface LeaderboardEntryRepository extends JpaRepository<LeaderboardEntry, Long> {
 
-    List<LeaderboardEntry> findAllByOrderByRankingAsc();
+    List<LeaderboardEntry> findAllByOrderByRanking();
+
+    List<LeaderboardEntry> findAllByOrderByScore();
 
     LeaderboardEntry findByUser(User user);
 }

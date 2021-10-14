@@ -13,9 +13,8 @@ import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.response.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Default
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -40,7 +39,7 @@ class DefaultOrderProcessingService(
     final override fun startOrderProcessing() {
         keepProcessingOrders = true
         logger.info("Starting order processing")
-        GlobalScope.launch {
+        CoroutineScope(Default).launch {
             iterateProcessingOrders()
         }
     }
@@ -66,6 +65,7 @@ class DefaultOrderProcessingService(
                 logger.error("Failed order processing : ${e.message}")
             }
         }
+        logger.info("Order processing is now completed")
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
