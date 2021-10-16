@@ -1,6 +1,7 @@
 package com.stockcomp.service.admin
 
 import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.LeaderboardUpdateStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
@@ -50,10 +51,10 @@ class DefaultAdminService(
         return contest.toContestDto()
     }
 
-    override fun updateLeaderboard(contestNumber: Int) {
-        contestRepository.findByContestNumber(contestNumber)?.let {
-            leaderboardService.updateLeaderboard(it)
-        }
+    override fun getCompletedContests(): List<ContestDto> {
+        val contests = contestRepository.findAllByCompleted(true)
+
+        return contests.map { it.toContestDto() }
     }
 
     override fun updateContest(contestDto: ContestDto): ContestDto {
@@ -61,6 +62,9 @@ class DefaultAdminService(
         contest.apply {
             running = contestDto.running
             completed = contestDto.completed
+        }
+        if(contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.AWAITING){
+            leaderboardService.updateLeaderboard(contest)
         }
         val persistedContest = contestRepository.save(contest)
 

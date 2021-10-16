@@ -9,15 +9,16 @@ create table t_user(
 );
 
 create table t_contest(
-	contest_id          bigserial primary key,
-	contest_number      int not null,
-	participant_count   int not null,
-	start_time          timestamp,
-	end_time            timestamp,
-	completed           boolean,
-	running             boolean,
-	date_created    	timestamp not null,
-	date_updated    	timestamp not null
+	contest_id              bigserial primary key,
+	contest_number          int not null,
+	participant_count       int not null,
+	start_time              timestamp,
+	end_time                timestamp,
+	completed               boolean,
+	running                 boolean,
+	leaderboard_update      varchar(20),
+	date_created    	    timestamp not null,
+	date_updated    	    timestamp not null
 );
 
 create table t_participant(

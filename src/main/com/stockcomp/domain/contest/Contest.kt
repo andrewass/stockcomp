@@ -24,6 +24,10 @@ class Contest(
 
     var completed: Boolean = false,
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "LEADERBOARD_UPDATE")
+    var leaderboardUpdateStatus: LeaderboardUpdateStatus = LeaderboardUpdateStatus.AWAITING,
+
     var participantCount: Int = 0,
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])

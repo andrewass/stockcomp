@@ -18,5 +18,5 @@ interface AdminService {
 
     fun deleteContest(id: Long): ContestDto
 
-    fun updateLeaderboard(contestNumber : Int)
+    fun getCompletedContests(): List<ContestDto>
 }

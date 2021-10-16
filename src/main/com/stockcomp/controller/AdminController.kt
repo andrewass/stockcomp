@@ -8,7 +8,6 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -66,14 +65,6 @@ class AdminController(
         val users = adminService.getUsers()
 
         return createListResponse(users)
-    }
-
-    @PostMapping("/update-leaderboard/{contestNumber}")
-    @ApiOperation(value = "Update the leaderboard based on a given contest number")
-    fun updateLeaderboard(@PathVariable contestNumber : Int) : ResponseEntity<HttpStatus> {
-        adminService.updateLeaderboard(contestNumber)
-
-        return ResponseEntity(HttpStatus.OK)
     }
 
     private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> {

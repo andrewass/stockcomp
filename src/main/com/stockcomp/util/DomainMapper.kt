@@ -34,6 +34,7 @@ fun Contest.toContestDto() =
         participantCount = this.participantCount,
         running = this.running,
         completed = this.completed,
+        leaderboardUpdateStatus = this.leaderboardUpdateStatus.decode,
         startTime = this.startTime,
         endTime = this.endTime
     )

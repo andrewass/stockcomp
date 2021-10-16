@@ -1,10 +1,12 @@
 package com.stockcomp.service.leaderboard
 
 import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.LeaderboardUpdateStatus
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.leaderboard.MedalValue
+import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.LeaderboardEntryRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
@@ -17,16 +19,18 @@ import kotlin.math.ceil
 @Service
 @Transactional
 class DefaultLeaderboardService(
-    private val leaderboardEntryRepository: LeaderboardEntryRepository
+    private val leaderboardEntryRepository: LeaderboardEntryRepository,
+    private val contestRepository: ContestRepository
 ) : LeaderboardService {
 
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
     override fun updateLeaderboard(contest: Contest) {
         logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
-        updateScoreForParticipants(contest)
-        logger.info("Update of participant score completed")
+        contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
         CoroutineScope(Default).launch {
+            updateScoreForParticipants(contest)
+            logger.info("Update of participant score completed")
             updateRankingForEntries()
         }
     }
@@ -60,6 +64,8 @@ class DefaultLeaderboardService(
                 leaderboardEntryRepository.save(leaderboardEntry)
             }
         }
+        contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
+        contestRepository.save(contest)
     }
 
     private fun createMedalMap(contest: Contest): HashMap<Double, MedalValue> {
