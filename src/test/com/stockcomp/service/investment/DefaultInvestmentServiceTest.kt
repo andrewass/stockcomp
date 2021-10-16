@@ -103,7 +103,8 @@ internal class DefaultInvestmentServiceTest {
             contestNumber = 100,
             running = false,
             completed = true,
-            startTime = LocalDateTime.now().minusDays(10)
+            startTime = LocalDateTime.now().minusWeeks(1L),
+            endTime = LocalDateTime.now().plusWeeks(7L)
         )
 
     private fun createParticipant() =

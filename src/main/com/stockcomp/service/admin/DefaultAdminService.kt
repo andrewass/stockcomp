@@ -20,8 +20,8 @@ class DefaultAdminService(
     private val leaderboardService: LeaderboardService
 ) : AdminService {
 
-    override fun getRunningAndUpcomingContests(): List<ContestDto> {
-        val contests = contestRepository.findAllByCompleted(false)
+    override fun getAllContests(): List<ContestDto> {
+        val contests = contestRepository.findAll()
 
         return contests.map { it.toContestDto() }
     }
@@ -35,7 +35,8 @@ class DefaultAdminService(
     override fun createContest(request: CreateContestRequest): ContestDto {
         val contest = Contest(
             contestNumber = request.contestNumber,
-            startTime = request.startTime
+            startTime = request.startTime,
+            endTime = request.startTime.plusMonths(2L)
         )
         val persistedContest = contestRepository.save(contest)
 

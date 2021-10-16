@@ -36,9 +36,9 @@ class DefaultLeaderboardService(
     }
 
     private fun updateRankingForEntries() {
-        val rank = 0
+        var rank = 1
         val entries = leaderboardEntryRepository.findAllByOrderByScore()
-        entries.forEach { it.ranking = rank.inc() }
+        entries.forEach { it.ranking = rank++ }
         leaderboardEntryRepository.saveAll(entries)
         logger.info("Update of each ranking completed")
     }

@@ -56,7 +56,7 @@ class DefaultContestService(
             val user = userService.findUserByUsername(username)!!
             val participant = Participant(user = user, contest = it)
             participantRepository.save(participant)
-            it.participantCount.inc()
+            it.participantCount++
             contestRepository.save(it)
         } ?: throw NoSuchElementException("Unable to sign up user. Contest $contestNumber not found")
     }

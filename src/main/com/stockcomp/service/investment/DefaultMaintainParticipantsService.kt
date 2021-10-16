@@ -62,9 +62,9 @@ class DefaultMaintainParticipantsService(
 
     private fun maintainRanking() {
         val runningContest = contestRepository.findByRunningIsTrue()
-        val rank = 0
+        var rank = 1
         val participants = participantRepository.findAllByContestOrderByTotalValueDesc(runningContest)
-        participants.forEach { it.rank = rank.inc() }
+        participants.forEach { it.rank = rank++ }
         participantRepository.saveAll(participants)
     }
 

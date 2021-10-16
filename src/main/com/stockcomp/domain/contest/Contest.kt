@@ -16,6 +16,8 @@ class Contest(
 
     val startTime: LocalDateTime,
 
+    val endTime: LocalDateTime,
+
     val contestNumber: Int,
 
     var running: Boolean = false,

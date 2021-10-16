@@ -34,7 +34,8 @@ fun Contest.toContestDto() =
         participantCount = this.participantCount,
         running = this.running,
         completed = this.completed,
-        startTime = this.startTime
+        startTime = this.startTime,
+        endTime = this.endTime
     )
 
 fun Participant.toParticipantDto() =
@@ -86,6 +87,7 @@ fun mapToUpcomingContestParticipantDto(contest: Contest, participant: List<Parti
     UpcomingContestParticipantDto(
         contestNumber = contest.contestNumber,
         startTime = contest.startTime,
+        endTime = contest.endTime,
         running = contest.running,
         userParticipating = participant.isNotEmpty(),
         rank = participant.firstOrNull()?.rank,

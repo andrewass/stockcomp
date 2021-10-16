@@ -39,7 +39,8 @@ internal class DefaultContestServiceTest {
 
     private val contestNumber = 33
     private val username = "testUser"
-    private val contest = Contest(startTime = LocalDateTime.now(), contestNumber = contestNumber)
+    private val contest = Contest(startTime = LocalDateTime.now(),
+        endTime = LocalDateTime.now().plusMonths(2L), contestNumber = contestNumber)
     private val user = User(username = username, email = "testEmail", password = "testPassword")
     private val participant = Participant(user = user, contest = contest)
 
@@ -189,8 +190,10 @@ internal class DefaultContestServiceTest {
     }
 
     private fun createFutureContest() =
-        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = contestNumber)
+        Contest(startTime = LocalDateTime.now().plusWeeks(1L), endTime = LocalDateTime.now().plusWeeks(5L),
+            contestNumber = contestNumber)
 
     private fun createRunningContest() =
-        Contest(startTime = LocalDateTime.now().plusWeeks(1), contestNumber = contestNumber, running = true)
+        Contest(startTime = LocalDateTime.now().minusWeeks(1), endTime = LocalDateTime.now().plusWeeks(7L),
+            contestNumber = contestNumber, running = true)
 }

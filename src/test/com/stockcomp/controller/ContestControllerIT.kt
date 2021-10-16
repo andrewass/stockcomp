@@ -115,7 +115,8 @@ internal class ContestControllerIT : IntegrationTest() {
         val user = User(username = username, email = email, password = password)
         val contest = Contest(
             contestNumber = contestNumber.toInt(), startTime = LocalDateTime.now(),
-            running = runningContest, completed = completedContest
+            endTime =  LocalDateTime.now().plusMonths(2), running = runningContest,
+            completed = completedContest
         )
         val participant = Participant(user = user, contest = contest)
         userRepository.save(user)

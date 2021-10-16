@@ -21,9 +21,9 @@ class AdminController(
 ) {
 
     @GetMapping("/contests")
-    @ApiOperation(value = "Get running and upcoming contests")
+    @ApiOperation(value = "Get all contests")
     fun getRunningAndUpcomingContests(): ResponseEntity<List<ContestDto>> {
-        val contests = adminService.getRunningAndUpcomingContests()
+        val contests = adminService.getAllContests()
 
         return createListResponse(contests)
     }

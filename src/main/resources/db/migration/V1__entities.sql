@@ -13,6 +13,7 @@ create table t_contest(
 	contest_number      int not null,
 	participant_count   int not null,
 	start_time          timestamp,
+	end_time            timestamp,
 	completed           boolean,
 	running             boolean,
 	date_created    	timestamp not null,
