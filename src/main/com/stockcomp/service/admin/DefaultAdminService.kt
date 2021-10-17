@@ -63,7 +63,7 @@ class DefaultAdminService(
             running = contestDto.running
             completed = contestDto.completed
         }
-        if(contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.AWAITING){
+        if (shouldUpdateLeaderboard(contest)) {
             leaderboardService.updateLeaderboard(contest)
         }
         val persistedContest = contestRepository.save(contest)
@@ -76,4 +76,8 @@ class DefaultAdminService(
 
         return users.map { it.toUserDto() }
     }
+
+    private fun shouldUpdateLeaderboard(contest: Contest): Boolean =
+        contest.completed && contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.AWAITING
+
 }

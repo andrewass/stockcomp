@@ -8,6 +8,9 @@ import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.leaderboard.MedalValue
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.LeaderboardEntryRepository
+import com.stockcomp.response.leaderboard.LeaderboardEntryDto
+import com.stockcomp.service.user.UserService
+import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
@@ -20,7 +23,8 @@ import kotlin.math.ceil
 @Transactional
 class DefaultLeaderboardService(
     private val leaderboardEntryRepository: LeaderboardEntryRepository,
-    private val contestRepository: ContestRepository
+    private val contestRepository: ContestRepository,
+    private val userService: UserService
 ) : LeaderboardService {
 
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
@@ -35,8 +39,15 @@ class DefaultLeaderboardService(
         }
     }
 
-    override fun getSortedLeaderboard(): List<LeaderboardEntry> {
+    override fun getSortedLeaderboardEntries(): List<LeaderboardEntryDto> {
         return leaderboardEntryRepository.findAllByOrderByRanking()
+            .map { it.toLeaderboardEntryDto() }
+    }
+
+    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto {
+        userService.findUserByUsername(username).let {
+            return leaderboardEntryRepository.findByUser(it).toLeaderboardEntryDto()
+        }
     }
 
     private fun updateRankingForEntries() {

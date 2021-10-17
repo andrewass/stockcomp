@@ -51,9 +51,8 @@ class InvestmentOrderController(
         httpServletRequest: HttpServletRequest,
         @RequestParam orderId: Long
     ): ResponseEntity<HttpStatus> {
-        val jwt = getAccessTokenFromCookie(httpServletRequest)
-        val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
-        investmentOrderService.deleteActiveInvestmentOrder(username!!, orderId)
+        val username = extractUsernameFromRequest(httpServletRequest)
+        investmentOrderService.deleteActiveInvestmentOrder(username, orderId)
 
         return ResponseEntity(HttpStatus.OK)
     }
@@ -64,9 +63,8 @@ class InvestmentOrderController(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> {
-        val jwt = getAccessTokenFromCookie(httpServletRequest)
-        val username = jwt?.let { defaultJwtService.extractUsername(jwt) }
-        val response = investmentOrderService.getAllActiveOrdersForParticipant(username!!, contestNumber)
+        val username = extractUsernameFromRequest(httpServletRequest)
+        val response = investmentOrderService.getAllActiveOrdersForParticipant(username, contestNumber)
 
         return ResponseEntity.ok(response)
     }
