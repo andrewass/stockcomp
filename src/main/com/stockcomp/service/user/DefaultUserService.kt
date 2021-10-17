@@ -31,6 +31,7 @@ class DefaultUserService @Autowired constructor(
             username = request.username,
             password = passwordEncoder.encode(request.password),
             email = request.email,
+            country= request.country,
             userRole = request.role
         )
         return userRepository.save(user)

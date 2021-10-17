@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/*",
-                        "/admin/*/*", "/swagger-ui/*","/swagger-resources/**","/v2/api-docs")
+                        "/admin/*/*", "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -76,7 +76,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         var adminUsername = "admin";
         var existingAdmin = userService.findUserByUsername(adminUsername);
         if (existingAdmin == null) {
-            userService.signUpUser(new SignUpRequest(adminUsername, adminPassword, adminEmail, Role.ADMIN));
+            userService.signUpUser(
+                    new SignUpRequest(adminUsername, adminPassword, adminEmail, "Norway", Role.ADMIN));
         }
     }
 }

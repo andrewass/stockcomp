@@ -24,6 +24,7 @@ fun User.toUserDto() =
         id = this.id!!,
         username = this.username,
         email = this.email,
+        country = this.country,
         userRole = this.userRole.name
     )
 
@@ -56,6 +57,8 @@ fun LeaderboardEntry.toLeaderboardEntryDto() =
     LeaderboardEntryDto(
         ranking = this.ranking,
         contestCount = this.contestCount,
+        score = this.score,
+        username = this.user.username,
         medals = this.medals.map { it.toMedalDto() }
     )
 

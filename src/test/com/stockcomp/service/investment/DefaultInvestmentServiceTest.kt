@@ -13,7 +13,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.*
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -109,7 +108,10 @@ internal class DefaultInvestmentServiceTest {
 
     private fun createParticipant() =
         Participant(
-            user = User(username = username, password = "testPassword", email = "testEmail"),
+            user = User(
+                username = username, password = "testPassword",
+                email = "testEmail", country = "Canada"
+            ),
             contest = contest
         )
 }

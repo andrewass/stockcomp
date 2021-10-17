@@ -43,6 +43,7 @@ internal class ContestControllerIT : IntegrationTest() {
     private val username = "testUser"
     private val password = "testPassword"
     private val email = "testEmail"
+    private val country = "Canada"
     private val contestNumber = "100"
     private val runningContest = true
     private val completedContest = true
@@ -112,7 +113,7 @@ internal class ContestControllerIT : IntegrationTest() {
     }
 
     private fun createTestData(runningContest: Boolean, completedContest: Boolean) {
-        val user = User(username = username, email = email, password = password)
+        val user = User(username = username, email = email, password = password, country = country)
         val contest = Contest(
             contestNumber = contestNumber.toInt(), startTime = LocalDateTime.now(),
             endTime =  LocalDateTime.now().plusMonths(2), running = runningContest,

@@ -41,7 +41,7 @@ internal class DefaultContestServiceTest {
     private val username = "testUser"
     private val contest = Contest(startTime = LocalDateTime.now(),
         endTime = LocalDateTime.now().plusMonths(2L), contestNumber = contestNumber)
-    private val user = User(username = username, email = "testEmail", password = "testPassword")
+    private val user = User(username = username, email = "testEmail", password = "testPassword", country = "Canada")
     private val participant = Participant(user = user, contest = contest)
 
     private var contestSlot = slot<Contest>()

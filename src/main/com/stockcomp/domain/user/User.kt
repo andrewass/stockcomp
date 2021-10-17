@@ -14,9 +14,11 @@ class User(
 
     val username: String,
 
-    val password: String,
+    var password: String,
 
     val email: String,
+
+    var country: String,
 
     @Enumerated(EnumType.STRING)
     val userRole: Role = Role.USER,
