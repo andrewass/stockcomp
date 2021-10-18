@@ -9,7 +9,7 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.response.InvestmentOrderDto
+import com.stockcomp.dto.InvestmentOrderDto
 import com.stockcomp.util.mapToInvestmentOrder
 import com.stockcomp.util.mapToInvestmentOrderDto
 import org.springframework.stereotype.Service

@@ -3,7 +3,7 @@ package com.stockcomp.service.investment
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.response.InvestmentDto
+import com.stockcomp.dto.InvestmentDto
 import com.stockcomp.util.toInvestmentDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

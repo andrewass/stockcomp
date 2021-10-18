@@ -1,7 +1,7 @@
 package com.stockcomp.service.symbol
 
 import com.stockcomp.consumer.QuoteConsumer
-import com.stockcomp.response.RealTimePrice
+import com.stockcomp.dto.RealTimePrice
 import org.springframework.stereotype.Service
 
 @Service

@@ -11,7 +11,7 @@ import com.stockcomp.domain.contest.TransactionType.SELL
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.response.RealTimePrice
+import com.stockcomp.dto.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Default

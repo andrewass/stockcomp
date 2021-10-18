@@ -5,8 +5,8 @@ import com.stockcomp.domain.contest.LeaderboardUpdateStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.response.ContestDto
-import com.stockcomp.response.UserDto
+import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.UserDto
 import com.stockcomp.service.leaderboard.LeaderboardService
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto

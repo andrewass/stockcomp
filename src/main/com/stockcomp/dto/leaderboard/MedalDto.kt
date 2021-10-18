@@ -1,4 +1,4 @@
-package com.stockcomp.response.leaderboard
+package com.stockcomp.dto.leaderboard
 
 data class MedalDto(
     val medalValue: String,

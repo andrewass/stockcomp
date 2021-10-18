@@ -8,7 +8,7 @@ import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.leaderboard.MedalValue
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.LeaderboardEntryRepository
-import com.stockcomp.response.leaderboard.LeaderboardEntryDto
+import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope

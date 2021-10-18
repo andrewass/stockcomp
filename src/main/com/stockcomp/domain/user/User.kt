@@ -18,7 +18,9 @@ class User(
 
     val email: String,
 
-    var country: String,
+    var country: String? = null,
+
+    var fullName: String? = null,
 
     @Enumerated(EnumType.STRING)
     val userRole: Role = Role.USER,

@@ -1,7 +1,7 @@
 package com.stockcomp.service.order
 
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.response.InvestmentOrderDto
+import com.stockcomp.dto.InvestmentOrderDto
 
 interface InvestmentOrderService {
 

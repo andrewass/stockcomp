@@ -1,7 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.controller.common.getAccessTokenFromCookie
-import com.stockcomp.response.leaderboard.LeaderboardEntryDto
+import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.service.leaderboard.LeaderboardService
 import com.stockcomp.service.security.DefaultJwtService
 import io.swagger.annotations.Api

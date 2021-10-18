@@ -3,7 +3,7 @@ package com.stockcomp.controller
 import com.stockcomp.service.security.DefaultJwtService
 import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.response.InvestmentOrderDto
+import com.stockcomp.dto.InvestmentOrderDto
 import com.stockcomp.service.order.InvestmentOrderService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation

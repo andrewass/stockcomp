@@ -3,7 +3,8 @@ create table t_user(
 	username                varchar(50) unique not null,
 	password                varchar(200) not null,
 	email                   varchar(60) unique not null,
-	country                 varchar(100) not null,
+	country                 varchar(100),
+	full_name               varchar(100),
 	user_role               varchar(10) not null,
 	date_created            timestamp not null,
 	date_updated            timestamp not null

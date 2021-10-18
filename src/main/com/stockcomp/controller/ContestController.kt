@@ -2,8 +2,8 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
-import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContestParticipantDto
+import com.stockcomp.dto.ParticipantDto
+import com.stockcomp.dto.UpcomingContestParticipantDto
 import com.stockcomp.service.contest.DefaultContestService
 import com.stockcomp.service.investment.InvestmentService
 import com.stockcomp.service.security.DefaultJwtService

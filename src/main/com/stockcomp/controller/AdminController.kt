@@ -1,8 +1,8 @@
 package com.stockcomp.controller
 
 import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.response.ContestDto
-import com.stockcomp.response.UserDto
+import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.UserDto
 import com.stockcomp.service.admin.AdminService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation

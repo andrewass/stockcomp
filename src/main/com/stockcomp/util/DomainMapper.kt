@@ -5,9 +5,9 @@ import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.user.User
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.response.*
-import com.stockcomp.response.leaderboard.LeaderboardEntryDto
-import com.stockcomp.response.leaderboard.MedalDto
+import com.stockcomp.dto.*
+import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
+import com.stockcomp.dto.leaderboard.MedalDto
 
 fun Investment.toInvestmentDto() =
     InvestmentDto(
@@ -24,7 +24,6 @@ fun User.toUserDto() =
         id = this.id!!,
         username = this.username,
         email = this.email,
-        country = this.country,
         userRole = this.userRole.name
     )
 
@@ -59,6 +58,7 @@ fun LeaderboardEntry.toLeaderboardEntryDto() =
         contestCount = this.contestCount,
         score = this.score,
         username = this.user.username,
+        country = this.user.country,
         medals = this.medals.map { it.toMedalDto() }
     )
 

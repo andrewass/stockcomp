@@ -1,6 +1,6 @@
 package com.stockcomp.service.investment
 
-import com.stockcomp.response.InvestmentDto
+import com.stockcomp.dto.InvestmentDto
 
 interface InvestmentService {
 

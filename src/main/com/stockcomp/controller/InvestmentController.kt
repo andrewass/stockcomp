@@ -1,7 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.controller.common.getAccessTokenFromCookie
-import com.stockcomp.response.InvestmentDto
+import com.stockcomp.dto.InvestmentDto
 import com.stockcomp.service.investment.InvestmentService
 import com.stockcomp.service.security.DefaultJwtService
 import io.swagger.annotations.ApiOperation

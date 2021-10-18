@@ -1,4 +1,4 @@
-package com.stockcomp.response
+package com.stockcomp.dto
 
 data class ParticipantDto(
     val username : String,

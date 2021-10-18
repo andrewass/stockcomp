@@ -1,4 +1,4 @@
-package com.stockcomp.response
+package com.stockcomp.dto
 
 import java.time.LocalDateTime
 

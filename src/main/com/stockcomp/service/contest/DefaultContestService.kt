@@ -4,8 +4,8 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContestParticipantDto
+import com.stockcomp.dto.ParticipantDto
+import com.stockcomp.dto.UpcomingContestParticipantDto
 import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.mapToUpcomingContestParticipantDto

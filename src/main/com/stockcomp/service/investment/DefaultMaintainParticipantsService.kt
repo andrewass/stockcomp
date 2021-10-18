@@ -4,7 +4,7 @@ import com.stockcomp.domain.contest.Investment
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.response.RealTimePrice
+import com.stockcomp.dto.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default

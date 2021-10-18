@@ -1,6 +1,6 @@
 package com.stockcomp.consumer
 
-import com.stockcomp.response.RealTimePrice
+import com.stockcomp.dto.RealTimePrice
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriBuilder

@@ -1,8 +1,8 @@
 package com.stockcomp.service.admin
 
 import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.response.ContestDto
-import com.stockcomp.response.UserDto
+import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.UserDto
 
 interface AdminService {
 

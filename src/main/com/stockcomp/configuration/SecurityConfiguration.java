@@ -77,7 +77,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         var existingAdmin = userService.findUserByUsername(adminUsername);
         if (existingAdmin == null) {
             userService.signUpUser(
-                    new SignUpRequest(adminUsername, adminPassword, adminEmail, "Norway", Role.ADMIN));
+                    new SignUpRequest(adminUsername, adminPassword, adminEmail, Role.ADMIN));
         }
     }
 }

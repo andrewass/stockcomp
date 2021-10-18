@@ -1,7 +1,7 @@
 package com.stockcomp.service.leaderboard
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.response.leaderboard.LeaderboardEntryDto
+import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 
 interface LeaderboardService {
 

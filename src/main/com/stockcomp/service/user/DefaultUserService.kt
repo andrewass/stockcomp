@@ -1,5 +1,6 @@
 package com.stockcomp.service.user
 
+import com.stockcomp.dto.UserDetailsDto
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.AuthenticationRequest
@@ -31,7 +32,6 @@ class DefaultUserService @Autowired constructor(
             username = request.username,
             password = passwordEncoder.encode(request.password),
             email = request.email,
-            country= request.country,
             userRole = request.role
         )
         return userRepository.save(user)
@@ -43,7 +43,16 @@ class DefaultUserService @Autowired constructor(
         return user.userRole.toString()
     }
 
+    override fun updateUserDetails(userDetailsDto: UserDetailsDto) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserDetails(username: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun findUserByUsername(username: String): com.stockcomp.domain.user.User? {
         return userRepository.findByUsername(username)
     }
+
 }

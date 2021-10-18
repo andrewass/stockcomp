@@ -1,7 +1,7 @@
 package com.stockcomp.service.contest
 
-import com.stockcomp.response.ParticipantDto
-import com.stockcomp.response.UpcomingContestParticipantDto
+import com.stockcomp.dto.ParticipantDto
+import com.stockcomp.dto.UpcomingContestParticipantDto
 
 interface ContestService {
 

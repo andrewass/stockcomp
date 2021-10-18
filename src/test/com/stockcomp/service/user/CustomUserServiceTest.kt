@@ -29,7 +29,6 @@ internal class CustomUserServiceTest {
     private val username = "testUser"
     private val password = "testPassword"
     private val email = "testEmail"
-    private val country = "Canada"
     private val user = User(username = username, password = password, email = email, country = "Canada")
 
     @BeforeAll
@@ -59,7 +58,7 @@ internal class CustomUserServiceTest {
             userRepository.save(capture(userSlot))
         } returns user
 
-        defaultUserService.signUpUser(SignUpRequest(username, password, email, country))
+        defaultUserService.signUpUser(SignUpRequest(username, password, email))
 
         verify { userRepository.save(any()) }
         Assertions.assertEquals(username, userSlot.captured.username)
@@ -74,7 +73,7 @@ internal class CustomUserServiceTest {
         } returns true
 
         assertThrows<DuplicateCredentialException> {
-            defaultUserService.signUpUser(SignUpRequest(username, password, email, country))
+            defaultUserService.signUpUser(SignUpRequest(username, password, email))
         }
     }
 
