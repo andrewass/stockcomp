@@ -15,5 +15,5 @@ interface UserService {
 
     fun updateUserDetails(userDetailsDto: UserDetailsDto)
 
-    fun getUserDetails(username: String)
+    fun getUserDetails(username: String): UserDetailsDto
 }

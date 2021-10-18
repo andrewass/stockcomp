@@ -5,6 +5,7 @@ import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
+import com.stockcomp.util.toUserDetailsDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -44,11 +45,17 @@ class DefaultUserService @Autowired constructor(
     }
 
     override fun updateUserDetails(userDetailsDto: UserDetailsDto) {
-        TODO("Not yet implemented")
+        userRepository.findByUsername(userDetailsDto.username).let {
+            it.country = userDetailsDto.country
+            it.fullName = userDetailsDto.fullName
+            userRepository.save(it)
+        }
     }
 
-    override fun getUserDetails(username: String) {
-        TODO("Not yet implemented")
+    override fun getUserDetails(username: String): UserDetailsDto {
+        val user = userRepository.findByUsername(username)
+
+        return user.toUserDetailsDto()
     }
 
     override fun findUserByUsername(username: String): com.stockcomp.domain.user.User? {

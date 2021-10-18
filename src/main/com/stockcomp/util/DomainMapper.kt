@@ -4,10 +4,10 @@ import com.stockcomp.domain.contest.*
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.user.User
-import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.dto.*
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.dto.leaderboard.MedalDto
+import com.stockcomp.request.InvestmentOrderRequest
 
 fun Investment.toInvestmentDto() =
     InvestmentDto(
@@ -25,6 +25,13 @@ fun User.toUserDto() =
         username = this.username,
         email = this.email,
         userRole = this.userRole.name
+    )
+
+fun User.toUserDetailsDto() =
+    UserDetailsDto(
+        username = this.username,
+        country = this.country,
+        fullName = this.fullName
     )
 
 fun Contest.toContestDto() =
