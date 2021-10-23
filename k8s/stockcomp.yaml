@@ -22,6 +22,10 @@ spec:
           env:
             - name: CONSUMER_BASE_URL
               value: http://stock-analyzer:8088
+            - name: ADMIN_PASSWORD
+              value: admin
+            - name: ADMIN_EMAIL
+              value: admin@admin.com
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:

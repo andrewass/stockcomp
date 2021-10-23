@@ -34,4 +34,5 @@ build/
 
 ### Misc Scripts ###
 /dockerwsl.sh
-/kubernetes/config.yaml
+/k8s/config.yaml
+/k8s/*-values.yaml

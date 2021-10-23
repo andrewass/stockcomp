@@ -6,13 +6,11 @@ import com.stockcomp.service.order.OrderProcessingService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/task")
+@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class TaskController(
     private val contestService: DefaultContestService,
     private val orderProcessingService: OrderProcessingService,
