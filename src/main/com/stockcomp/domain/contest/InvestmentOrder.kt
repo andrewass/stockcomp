@@ -1,6 +1,8 @@
 package com.stockcomp.domain.contest
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.domain.contest.enums.TransactionType
 import java.time.LocalDateTime
 import javax.persistence.*
 

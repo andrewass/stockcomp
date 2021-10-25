@@ -1,4 +1,4 @@
-package com.stockcomp.domain.contest
+package com.stockcomp.domain.contest.enums
 
 enum class LeaderboardUpdateStatus(val decode : String) {
     AWAITING("Awaiting"),

@@ -22,4 +22,8 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(ExpiredJwtException::class)
     fun handleJwtExpiredException(exception: ExpiredJwtException): ResponseEntity<Any> =
         ResponseEntity("JWT Token expired", HttpStatus.UNAUTHORIZED)
+
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleIllegalStateException(exception: IllegalStateException) : ResponseEntity<Any> =
+        ResponseEntity(exception.message, HttpStatus.CONFLICT)
 }

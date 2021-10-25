@@ -2,12 +2,12 @@ package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
-import com.stockcomp.domain.contest.OrderStatus
-import com.stockcomp.domain.contest.OrderStatus.COMPLETED
-import com.stockcomp.domain.contest.OrderStatus.FAILED
+import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.domain.contest.enums.OrderStatus.COMPLETED
+import com.stockcomp.domain.contest.enums.OrderStatus.FAILED
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.TransactionType.BUY
-import com.stockcomp.domain.contest.TransactionType.SELL
+import com.stockcomp.domain.contest.enums.TransactionType.BUY
+import com.stockcomp.domain.contest.enums.TransactionType.SELL
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository

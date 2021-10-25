@@ -2,6 +2,7 @@ package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.dto.ParticipantDto
@@ -26,7 +27,7 @@ class DefaultContestService(
 
     override fun startContest(contestNumber: Int) {
         contestRepository.findByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)?.let {
-            it.startContest()
+            it.contestStatus = ContestStatus.RUNNING
             contestRepository.save(it)
             orderProcessingService.startOrderProcessing()
             logger.info("Starting contest $contestNumber")
@@ -35,7 +36,7 @@ class DefaultContestService(
 
     override fun stopContest(contestNumber: Int) {
         contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)?.let {
-            it.stopContest()
+            it.contestStatus = ContestStatus.STOPPED
             contestRepository.save(it)
             orderProcessingService.stopOrderProcessing()
             logger.info("Stopping contest $contestNumber")
@@ -44,7 +45,7 @@ class DefaultContestService(
 
     override fun completeContest(contestNumber: Int) {
         contestRepository.findByContestNumberAndCompleted(contestNumber, false)?.let {
-            it.completeContest()
+            it.contestStatus = ContestStatus.COMPLETED
             contestRepository.save(it)
             orderProcessingService.stopOrderProcessing()
             logger.info("Completing contest $contestNumber")

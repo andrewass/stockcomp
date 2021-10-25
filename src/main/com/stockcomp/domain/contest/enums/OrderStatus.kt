@@ -1,4 +1,4 @@
-package com.stockcomp.domain.contest
+package com.stockcomp.domain.contest.enums
 
 enum class OrderStatus(val decode : String){
     ACTIVE("Active"),

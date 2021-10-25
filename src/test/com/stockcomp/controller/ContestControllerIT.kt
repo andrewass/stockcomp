@@ -4,6 +4,7 @@ import com.stockcomp.IntegrationTest
 import com.stockcomp.controller.common.createCookie
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -45,8 +46,6 @@ internal class ContestControllerIT : IntegrationTest() {
     private val email = "testEmail"
     private val country = "Canada"
     private val contestNumber = "100"
-    private val runningContest = true
-    private val completedContest = true
 
     @Test
     fun `should sign up for running contest`() {
@@ -112,12 +111,11 @@ internal class ContestControllerIT : IntegrationTest() {
         ).andExpect(status().isNotFound)
     }
 
-    private fun createTestData(runningContest: Boolean, completedContest: Boolean) {
+    private fun createTestData() {
         val user = User(username = username, email = email, password = password, country = country)
         val contest = Contest(
             contestNumber = contestNumber.toInt(), startTime = LocalDateTime.now(),
-            endTime =  LocalDateTime.now().plusMonths(2), running = runningContest,
-            completed = completedContest
+            endTime =  LocalDateTime.now().plusMonths(2), contestStatus = ContestStatus.RUNNING
         )
         val participant = Participant(user = user, contest = contest)
         userRepository.save(user)

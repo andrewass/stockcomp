@@ -1,9 +1,9 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.domain.contest.OrderStatus
-import com.stockcomp.domain.contest.OrderStatus.*
+import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.TransactionType
+import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository

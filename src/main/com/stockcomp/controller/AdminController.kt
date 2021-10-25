@@ -1,13 +1,14 @@
 package com.stockcomp.controller
 
-import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.UserDto
+import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.admin.AdminService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -65,6 +66,14 @@ class AdminController(
         val users = adminService.getUsers()
 
         return createListResponse(users)
+    }
+
+    @PostMapping("/update-leaderboard/{id}")
+    @ApiOperation(value = "Update leadeboard based on a given contest")
+    fun updateLeaderboardFromContest(@PathVariable id: Long): ResponseEntity<HttpStatus> {
+        adminService.updateLeaderboard(id)
+
+        return ResponseEntity(HttpStatus.OK)
     }
 
     private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> {

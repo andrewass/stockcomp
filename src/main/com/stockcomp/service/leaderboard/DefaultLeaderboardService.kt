@@ -1,7 +1,7 @@
 package com.stockcomp.service.leaderboard
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.LeaderboardUpdateStatus
+import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
@@ -30,6 +30,9 @@ class DefaultLeaderboardService(
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
     override fun updateLeaderboard(contest: Contest) {
+        if(contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.COMPLETED){
+            throw IllegalStateException("Leaderboard already updated from contest id ${contest.id}")
+        }
         logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
         contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
         CoroutineScope(Default).launch {

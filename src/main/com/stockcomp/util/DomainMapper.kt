@@ -1,6 +1,7 @@
 package com.stockcomp.util
 
 import com.stockcomp.domain.contest.*
+import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.user.User
@@ -39,8 +40,7 @@ fun Contest.toContestDto() =
         id = this.id!!,
         contestNumber = this.contestNumber,
         participantCount = this.participantCount,
-        running = this.running,
-        completed = this.completed,
+        contestStatus = this.contestStatus.decode,
         leaderboardUpdateStatus = this.leaderboardUpdateStatus.decode,
         startTime = this.startTime,
         endTime = this.endTime
@@ -99,7 +99,7 @@ fun mapToUpcomingContestParticipantDto(contest: Contest, participant: List<Parti
         contestNumber = contest.contestNumber,
         startTime = contest.startTime,
         endTime = contest.endTime,
-        running = contest.running,
+        contestStatus = contest.contestStatus.decode,
         userParticipating = participant.isNotEmpty(),
         rank = participant.firstOrNull()?.rank,
         participantCount = contest.participantCount

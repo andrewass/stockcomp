@@ -1,13 +1,14 @@
 package com.stockcomp.service.admin
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.LeaderboardUpdateStatus
+import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.UserDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.dto.ContestDto
-import com.stockcomp.dto.UserDto
 import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.service.order.DefaultOrderProcessingService
+import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
 import org.springframework.stereotype.Service
@@ -16,9 +17,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class DefaultAdminService(
+    private val leaderboardService: LeaderboardService,
+    private val orderProcessingService: OrderProcessingService,
     private val contestRepository: ContestRepository,
-    private val userRepository: UserRepository,
-    private val leaderboardService: LeaderboardService
+    private val userRepository: UserRepository
 ) : AdminService {
 
     override fun getAllContests(): List<ContestDto> {
@@ -57,18 +59,15 @@ class DefaultAdminService(
         return contests.map { it.toContestDto() }
     }
 
+    override fun updateLeaderboard(contestId: Long) {
+        val contest = contestRepository.findById(contestId).get()
+        leaderboardService.updateLeaderboard(contest)
+    }
+
     override fun updateContest(contestDto: ContestDto): ContestDto {
         val contest = contestRepository.findById(contestDto.id).get()
-        contest.apply {
-            running = contestDto.running
-            completed = contestDto.completed
-        }
-        if (shouldUpdateLeaderboard(contest)) {
-            leaderboardService.updateLeaderboard(contest)
-        }
-        val persistedContest = contestRepository.save(contest)
-
-        return persistedContest.toContestDto()
+        //TODO: Update contest with new status
+        return contestRepository.save(contest).toContestDto()
     }
 
     override fun getUsers(): List<UserDto> {
@@ -77,7 +76,5 @@ class DefaultAdminService(
         return users.map { it.toUserDto() }
     }
 
-    private fun shouldUpdateLeaderboard(contest: Contest): Boolean =
-        contest.completed && contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.AWAITING
 
 }

@@ -1,6 +1,8 @@
 package com.stockcomp.domain.contest
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.domain.leaderboard.Medal
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -20,9 +22,8 @@ class Contest(
 
     val contestNumber: Int,
 
-    var running: Boolean = false,
-
-    var completed: Boolean = false,
+    @Enumerated(EnumType.STRING)
+    var contestStatus : ContestStatus = ContestStatus.AWAITING_START,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "LEADERBOARD_UPDATE")
@@ -36,18 +37,4 @@ class Contest(
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val medals: MutableList<Medal> = mutableListOf()
 
-) : BaseEntity() {
-
-    fun startContest() {
-        running = true
-    }
-
-    fun stopContest() {
-        running = false
-    }
-
-    fun completeContest() {
-        running = false
-        completed = true
-    }
-}
+) : BaseEntity()
