@@ -12,7 +12,7 @@ interface AdminService {
 
     fun getContest(id: Long): ContestDto
 
-    fun updateContest(contestDto: ContestDto): ContestDto
+    fun updateContestStatus(contestDto: ContestDto): ContestDto
 
     fun createContest(request: CreateContestRequest): ContestDto
 

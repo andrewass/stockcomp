@@ -22,67 +22,46 @@ class AdminController(
 
     @GetMapping("/contests")
     @ApiOperation(value = "Get all contests")
-    fun getRunningAndUpcomingContests(): ResponseEntity<List<ContestDto>> {
-        val contests = adminService.getAllContests()
-
-        return createListResponse(contests)
-    }
+    fun getRunningAndUpcomingContests(): ResponseEntity<List<ContestDto>> =
+        createListResponse(adminService.getAllContests())
 
     @GetMapping("/contests/{id}")
     @ApiOperation(value = "Get contest by its ID")
-    fun getContest(@PathVariable id: Long): ResponseEntity<ContestDto> {
-        val contest = adminService.getContest(id)
-
-        return ResponseEntity.ok(contest)
-    }
+    fun getContest(@PathVariable id: Long): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(adminService.getContest(id))
 
     @PostMapping("/contests")
     @ApiOperation(value = "Create a new contest")
-    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<ContestDto> {
-        val contest = adminService.createContest(request)
-
-        return ResponseEntity.ok(contest)
-    }
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(adminService.createContest(request))
 
     @PutMapping("/contests/{id}")
     @ApiOperation(value = "Update status of an existing contest")
-    fun updateContest(@RequestBody contestDto: ContestDto): ResponseEntity<ContestDto> {
-        val contest = adminService.updateContest(contestDto)
-
-        return ResponseEntity.ok(contest)
-    }
+    fun updateContest(@RequestBody contestDto: ContestDto): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(adminService.updateContestStatus(contestDto))
 
     @DeleteMapping("/contests/{id}")
     @ApiOperation(value = "Delete an existing contest, specified by its ID")
-    fun deleteContest(@PathVariable id: Long): ResponseEntity<ContestDto> {
-        val contest = adminService.deleteContest(id)
-
-        return ResponseEntity.ok(contest)
-    }
+    fun deleteContest(@PathVariable id: Long): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(adminService.deleteContest(id))
 
     @GetMapping("/users")
     @ApiOperation(value = "Get all signed-up users")
-    fun getUsers(): HttpEntity<List<UserDto>> {
-        val users = adminService.getUsers()
-
-        return createListResponse(users)
-    }
+    fun getUsers(): HttpEntity<List<UserDto>> =
+        createListResponse(adminService.getUsers())
 
     @PostMapping("/update-leaderboard/{id}")
     @ApiOperation(value = "Update leadeboard based on a given contest")
     fun updateLeaderboardFromContest(@PathVariable id: Long): ResponseEntity<HttpStatus> {
         adminService.updateLeaderboard(id)
-
         return ResponseEntity(HttpStatus.OK)
     }
 
-    private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> {
-        val responseHeader = HttpHeaders()
-        responseHeader.set("Access-Control-Expose-Headers", "Content-Range")
-        responseHeader.set("Content-Range", "posts 0-${result.size}/${result.size}")
-
-        return ResponseEntity.ok()
-            .headers(responseHeader)
-            .body(result)
-    }
+    private fun <T : Any> createListResponse(result: List<T>): ResponseEntity<List<T>> =
+        HttpHeaders().apply {
+            this.set("Access-Control-Expose-Headers", "Content-Range")
+            this.set("Content-Range", "posts 0-${result.size}/${result.size}")
+        }.let {
+            ResponseEntity.ok().headers(it).body(result)
+        }
 }

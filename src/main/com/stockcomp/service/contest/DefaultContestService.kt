@@ -26,7 +26,7 @@ class DefaultContestService(
     private val logger = LoggerFactory.getLogger(DefaultContestService::class.java)
 
     override fun startContest(contestNumber: Int) {
-        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)?.let {
+        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)?.also {
             it.contestStatus = ContestStatus.RUNNING
             contestRepository.save(it)
             orderProcessingService.startOrderProcessing()
@@ -37,12 +37,13 @@ class DefaultContestService(
     override fun stopContest(contestNumber: Int) {
         contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
             ?.takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
-            ?.let {
+            ?.also {
                 it.contestStatus = ContestStatus.STOPPED
                 contestRepository.save(it)
                 orderProcessingService.stopOrderProcessing()
                 logger.info("Stopping contest $contestNumber")
-            } ?: throw NoSuchElementException("Unable to stop contest. Contest with number $contestNumber not found")
+            }
+            ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
     override fun completeContest(contestNumber: Int) {
@@ -72,23 +73,20 @@ class DefaultContestService(
                 participantRepository.save(participant)
                 it.participantCount++
                 contestRepository.save(it)
-            } ?: throw NoSuchElementException("Unable to sign up user. Contest $contestNumber not found")
+            }
+            ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
-    override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> {
-        val upcomingContests = contestRepository.findAll()
+    override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> =
+        contestRepository.findAll()
             .filter { listOf(ContestStatus.RUNNING, ContestStatus.AWAITING_START).contains(it.contestStatus) }
+            .map { createUpcomingContestParticipantDto(username, it) }
 
-        return upcomingContests.map { createUpcomingContestParticipantDto(username, it) }
-    }
-
-    override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> {
-        contestRepository.findByContestNumber(contestNumber)?.let { contest ->
-            val participants = participantRepository.findAllByContestOrderByTotalValueDesc(contest)
-
-            return participants.map { it.toParticipantDto() }
-        } ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
-    }
+    override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> =
+        contestRepository.findByContestNumber(contestNumber)
+            ?.let { participantRepository.findAllByContestOrderByTotalValueDesc(it) }
+            ?.let { it.map { participant -> participant.toParticipantDto() } }
+            ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
 
     override fun getParticipant(contestNumber: Int, username: String): ParticipantDto {
         contestRepository.findByContestNumber(contestNumber)?.let { contest ->
