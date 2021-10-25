@@ -16,8 +16,7 @@ create table t_contest(
 	participant_count       int not null,
 	start_time              timestamp,
 	end_time                timestamp,
-	completed               boolean,
-	running                 boolean,
+	contest_status         varchar(20),
 	leaderboard_update      varchar(20),
 	date_created    	    timestamp not null,
 	date_updated    	    timestamp not null

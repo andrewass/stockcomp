@@ -1,6 +1,7 @@
 package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.dto.InvestmentDto
@@ -36,7 +37,7 @@ class DefaultInvestmentService(
             .sum()
 
     private fun getParticipant(username: String, contestNumber: Int): Participant {
-        val contest = contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
+        val contest = contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
 
         return participantRepository.findParticipantFromUsernameAndContest(username, contest)
             .stream().findFirst().get()

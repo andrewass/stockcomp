@@ -4,6 +4,7 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -40,7 +41,7 @@ internal class DefaultInvestmentServiceTest {
     private fun setUp() {
         MockKAnnotations.init(this)
         every {
-            contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
+            contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
         } returns contest
 
         every {
@@ -100,8 +101,7 @@ internal class DefaultInvestmentServiceTest {
     private fun createContest() =
         Contest(
             contestNumber = 100,
-            running = false,
-            completed = true,
+            contestStatus = ContestStatus.COMPLETED,
             startTime = LocalDateTime.now().minusWeeks(1L),
             endTime = LocalDateTime.now().plusWeeks(7L)
         )

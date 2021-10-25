@@ -3,10 +3,10 @@ package com.stockcomp.service.contest
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.dto.ParticipantDto
 import com.stockcomp.dto.UpcomingContestParticipantDto
+import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.mapToUpcomingContestParticipantDto
@@ -26,7 +26,7 @@ class DefaultContestService(
     private val logger = LoggerFactory.getLogger(DefaultContestService::class.java)
 
     override fun startContest(contestNumber: Int) {
-        contestRepository.findByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)?.let {
+        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)?.let {
             it.contestStatus = ContestStatus.RUNNING
             contestRepository.save(it)
             orderProcessingService.startOrderProcessing()
@@ -35,35 +35,49 @@ class DefaultContestService(
     }
 
     override fun stopContest(contestNumber: Int) {
-        contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)?.let {
-            it.contestStatus = ContestStatus.STOPPED
-            contestRepository.save(it)
-            orderProcessingService.stopOrderProcessing()
-            logger.info("Stopping contest $contestNumber")
-        } ?: throw NoSuchElementException("Unable to stop contest. Contest with number $contestNumber not found")
+        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
+            ?.takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
+            ?.let {
+                it.contestStatus = ContestStatus.STOPPED
+                contestRepository.save(it)
+                orderProcessingService.stopOrderProcessing()
+                logger.info("Stopping contest $contestNumber")
+            } ?: throw NoSuchElementException("Unable to stop contest. Contest with number $contestNumber not found")
     }
 
     override fun completeContest(contestNumber: Int) {
-        contestRepository.findByContestNumberAndCompleted(contestNumber, false)?.let {
-            it.contestStatus = ContestStatus.COMPLETED
-            contestRepository.save(it)
-            orderProcessingService.stopOrderProcessing()
-            logger.info("Completing contest $contestNumber")
-        } ?: throw NoSuchElementException("Unable to complete contest. Contest with number $contestNumber not found")
+        contestRepository.findByContestNumber(contestNumber)
+            ?.takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
+            ?.let {
+                it.contestStatus = ContestStatus.COMPLETED
+                contestRepository.save(it)
+                orderProcessingService.stopOrderProcessing()
+                logger.info("Completing contest $contestNumber")
+            }
+            ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
     override fun signUpUser(username: String, contestNumber: Int) {
-        contestRepository.findByContestNumberAndCompleted(contestNumber, false)?.let {
-            val user = userService.findUserByUsername(username)!!
-            val participant = Participant(user = user, contest = it)
-            participantRepository.save(participant)
-            it.participantCount++
-            contestRepository.save(it)
-        } ?: throw NoSuchElementException("Unable to sign up user. Contest $contestNumber not found")
+        contestRepository.findByContestNumber(contestNumber)
+            ?.takeIf { contest ->
+                contest.contestStatus in listOf(
+                    ContestStatus.RUNNING,
+                    ContestStatus.STOPPED,
+                    ContestStatus.AWAITING_START
+                )
+            }
+            ?.let {
+                val user = userService.findUserByUsername(username)!!
+                val participant = Participant(user = user, contest = it)
+                participantRepository.save(participant)
+                it.participantCount++
+                contestRepository.save(it)
+            } ?: throw NoSuchElementException("Unable to sign up user. Contest $contestNumber not found")
     }
 
     override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> {
-        val upcomingContests = contestRepository.findAllByCompleted(false)
+        val upcomingContests = contestRepository.findAll()
+            .filter { listOf(ContestStatus.RUNNING, ContestStatus.AWAITING_START).contains(it.contestStatus) }
 
         return upcomingContests.map { createUpcomingContestParticipantDto(username, it) }
     }

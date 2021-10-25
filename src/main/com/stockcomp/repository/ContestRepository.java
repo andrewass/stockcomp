@@ -1,6 +1,7 @@
 package com.stockcomp.repository;
 
 import com.stockcomp.domain.contest.Contest;
+import com.stockcomp.domain.contest.enums.ContestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,13 +12,9 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
 
     Contest findByContestNumber(Integer contestNumber);
 
-    Contest findByContestNumberAndRunningIsTrue(Integer contestNumber);
+    Contest findByContestStatus(ContestStatus contestStatus);
 
-    Contest findByContestNumberAndCompletedIsFalseAndRunningIsFalse(Integer contestNumber);
+    Contest findByContestNumberAndContestStatus(Integer contestNumber, ContestStatus contestStatus);
 
-    Contest findByContestNumberAndCompleted(Integer contestNumber, Boolean completed);
-
-    Contest findByRunningIsTrue();
-
-    List<Contest> findAllByCompleted(Boolean completed);
+    List<Contest> findAllByContestStatus(ContestStatus contestStatus);
 }

@@ -2,6 +2,7 @@ package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -39,8 +40,10 @@ internal class DefaultContestServiceTest {
 
     private val contestNumber = 33
     private val username = "testUser"
-    private val contest = Contest(startTime = LocalDateTime.now(),
-        endTime = LocalDateTime.now().plusMonths(2L), contestNumber = contestNumber)
+    private val contest = Contest(
+        startTime = LocalDateTime.now(),
+        endTime = LocalDateTime.now().plusMonths(2L), contestNumber = contestNumber
+    )
     private val user = User(username = username, email = "testEmail", password = "testPassword", country = "Canada")
     private val participant = Participant(user = user, contest = contest)
 
@@ -67,19 +70,18 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should start already created contest`() {
         every {
-            contestRepository.findByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
+            contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)
         } returns createFutureContest()
 
         defaultContestService.startContest(contestNumber)
 
-        assertTrue(contestSlot.captured.running)
-        assertFalse(contestSlot.captured.completed)
+        assertEquals(ContestStatus.RUNNING, contestSlot.captured.contestStatus)
     }
 
     @Test
     fun `should throw exception when trying to start a non-existing contest`() {
         every {
-            contestRepository.findByContestNumberAndCompletedIsFalseAndRunningIsFalse(contestNumber)
+            contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -90,19 +92,18 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should stop already running contest`() {
         every {
-            contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
+            contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
         } returns createRunningContest()
 
         defaultContestService.stopContest(contestNumber)
 
-        assertFalse(contestSlot.captured.completed)
-        assertFalse(contestSlot.captured.running)
+        assertEquals(ContestStatus.STOPPED, contestSlot.captured.contestStatus)
     }
 
     @Test
     fun `should throw exception when trying to stop a non-existing contest`() {
         every {
-            contestRepository.findByContestNumberAndRunningIsTrue(contestNumber)
+            contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -113,19 +114,18 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should complete already running contest`() {
         every {
-            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumber(contestNumber)
         } returns createRunningContest()
 
         defaultContestService.completeContest(contestNumber)
 
-        assertFalse(contestSlot.captured.running)
-        assertTrue(contestSlot.captured.completed)
+        assertEquals(ContestStatus.COMPLETED, contestSlot.captured.contestStatus)
     }
 
     @Test
     fun `should throw exception when trying to complete a non-existing contest`() {
         every {
-            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumber(contestNumber)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -138,7 +138,7 @@ internal class DefaultContestServiceTest {
         val runningContest = createRunningContest()
 
         every {
-            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumber(contestNumber)
         } returns runningContest
 
         every {
@@ -158,7 +158,7 @@ internal class DefaultContestServiceTest {
     @Test
     fun `should throw exception when trying to sign up for a non-existing contest`() {
         every {
-            contestRepository.findByContestNumberAndCompleted(contestNumber, false)
+            contestRepository.findByContestNumber(contestNumber)
         } returns null
 
         assertThrows<NoSuchElementException> {
@@ -171,7 +171,7 @@ internal class DefaultContestServiceTest {
         val runningContest = createRunningContest()
 
         every {
-            contestRepository.findAllByCompleted(false)
+            contestRepository.findAll()
         } returns listOf(runningContest)
 
         every {
@@ -182,18 +182,22 @@ internal class DefaultContestServiceTest {
 
         assertEquals(upcomingContests.size, 1)
         upcomingContests[0].let {
-            assertEquals(it.contestNumber, contestNumber)
-            assertEquals(it.running, true)
-            assertEquals(it.userParticipating, true)
-            assertEquals(it.startTime, runningContest.startTime)
+            assertEquals(contestNumber, it.contestNumber)
+            assertEquals(ContestStatus.RUNNING.decode, it.contestStatus)
+            assertEquals(true, it.userParticipating, )
+            assertEquals(runningContest.startTime, it.startTime)
         }
     }
 
     private fun createFutureContest() =
-        Contest(startTime = LocalDateTime.now().plusWeeks(1L), endTime = LocalDateTime.now().plusWeeks(5L),
-            contestNumber = contestNumber)
+        Contest(
+            startTime = LocalDateTime.now().plusWeeks(1L), endTime = LocalDateTime.now().plusWeeks(5L),
+            contestNumber = contestNumber
+        )
 
     private fun createRunningContest() =
-        Contest(startTime = LocalDateTime.now().minusWeeks(1), endTime = LocalDateTime.now().plusWeeks(7L),
-            contestNumber = contestNumber, running = true)
+        Contest(
+            startTime = LocalDateTime.now().minusWeeks(1), endTime = LocalDateTime.now().plusWeeks(7L),
+            contestNumber = contestNumber, contestStatus = ContestStatus.RUNNING
+        )
 }

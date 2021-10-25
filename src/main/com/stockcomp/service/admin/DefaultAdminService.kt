@@ -1,6 +1,7 @@
 package com.stockcomp.service.admin
 
 import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.UserDto
 import com.stockcomp.repository.ContestRepository
@@ -54,7 +55,7 @@ class DefaultAdminService(
     }
 
     override fun getCompletedContests(): List<ContestDto> {
-        val contests = contestRepository.findAllByCompleted(true)
+        val contests = contestRepository.findAllByContestStatus(ContestStatus.COMPLETED)
 
         return contests.map { it.toContestDto() }
     }

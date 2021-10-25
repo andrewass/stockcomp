@@ -1,6 +1,7 @@
 package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Investment
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -61,7 +62,7 @@ class DefaultMaintainParticipantsService(
     }
 
     private fun maintainRanking() {
-        val runningContest = contestRepository.findByRunningIsTrue()
+        val runningContest = contestRepository.findByContestStatus(ContestStatus.RUNNING)
         var rank = 1
         val participants = participantRepository.findAllByContestOrderByTotalValueDesc(runningContest)
         participants.forEach { it.rank = rank++ }

@@ -49,7 +49,7 @@ internal class ContestControllerIT : IntegrationTest() {
 
     @Test
     fun `should sign up for running contest`() {
-        createTestData(runningContest, !completedContest)
+        createTestData(ContestStatus.RUNNING)
         val accessToken = jwtService.generateTokenPair(username).first
 
         mockMvc.perform(
@@ -62,7 +62,7 @@ internal class ContestControllerIT : IntegrationTest() {
 
     @Test
     fun `should return status 404 when signing up for completed contest`() {
-        createTestData(!runningContest, completedContest)
+        createTestData(ContestStatus.COMPLETED)
         val accessToken = jwtService.generateTokenPair(username).first
 
         mockMvc.perform(
@@ -75,7 +75,7 @@ internal class ContestControllerIT : IntegrationTest() {
 
     @Test
     fun `should get list of upcoming contests`() {
-        createTestData(runningContest, !completedContest)
+        createTestData(ContestStatus.RUNNING)
         val accessToken = jwtService.generateTokenPair(username).first
 
         mockMvc.perform(
@@ -87,7 +87,7 @@ internal class ContestControllerIT : IntegrationTest() {
 
     @Test
     fun `should get remaining funds for a contest participant`() {
-        createTestData(runningContest, !completedContest)
+        createTestData(ContestStatus.RUNNING)
         val accessToken = jwtService.generateTokenPair(username).first
 
         mockMvc.perform(
@@ -100,7 +100,7 @@ internal class ContestControllerIT : IntegrationTest() {
 
     @Test
     fun `should return status 404 when fetching remaining funds for completed contest`() {
-        createTestData(!runningContest, completedContest)
+        createTestData(ContestStatus.COMPLETED)
         val accessToken = jwtService.generateTokenPair(username).first
 
         mockMvc.perform(
@@ -111,11 +111,11 @@ internal class ContestControllerIT : IntegrationTest() {
         ).andExpect(status().isNotFound)
     }
 
-    private fun createTestData() {
+    private fun createTestData(contestStatus : ContestStatus) {
         val user = User(username = username, email = email, password = password, country = country)
         val contest = Contest(
             contestNumber = contestNumber.toInt(), startTime = LocalDateTime.now(),
-            endTime =  LocalDateTime.now().plusMonths(2), contestStatus = ContestStatus.RUNNING
+            endTime =  LocalDateTime.now().plusMonths(2), contestStatus = contestStatus
         )
         val participant = Participant(user = user, contest = contest)
         userRepository.save(user)
