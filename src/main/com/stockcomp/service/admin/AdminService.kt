@@ -20,5 +20,5 @@ interface AdminService {
 
     fun getCompletedContests(): List<ContestDto>
 
-    fun updateLeaderboard(contestId : Long)
+    fun updateLeaderboard(contestNumber : Int)
 }

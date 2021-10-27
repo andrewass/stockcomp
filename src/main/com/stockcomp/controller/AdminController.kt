@@ -50,10 +50,10 @@ class AdminController(
     fun getUsers(): HttpEntity<List<UserDto>> =
         createListResponse(adminService.getUsers())
 
-    @PostMapping("/update-leaderboard/{id}")
-    @ApiOperation(value = "Update leadeboard based on a given contest")
-    fun updateLeaderboardFromContest(@PathVariable id: Long): ResponseEntity<HttpStatus> {
-        adminService.updateLeaderboard(id)
+    @PostMapping("/update-leaderboard")
+    @ApiOperation(value = "Update leaderboard based on a given contest")
+    fun updateLeaderboardFromContest(@RequestParam contestNumber: Int): ResponseEntity<HttpStatus> {
+        adminService.updateLeaderboard(contestNumber)
         return ResponseEntity(HttpStatus.OK)
     }
 

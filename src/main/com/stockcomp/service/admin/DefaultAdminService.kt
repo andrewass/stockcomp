@@ -8,7 +8,6 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.leaderboard.LeaderboardService
-import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
 import org.springframework.stereotype.Service
@@ -46,14 +45,14 @@ class DefaultAdminService(
         contestRepository.findAllByContestStatus(ContestStatus.COMPLETED)
             .map { it.toContestDto() }
 
-    override fun updateLeaderboard(contestId: Long) {
-        contestRepository.findById(contestId).get()
+    override fun updateLeaderboard(contestNumber: Int) {
+        contestRepository.findByContestNumber(contestNumber)
             .also { leaderboardService.updateLeaderboard(it) }
     }
 
     override fun updateContestStatus(contestDto: ContestDto): ContestDto =
         contestRepository.findById(contestDto.id).get()
-            .apply { this.contestStatus = ContestStatus.valueOf(contestDto.contestStatus) }
+            .apply { this.contestStatus = ContestStatus.fromDecode(contestDto.contestStatus)!! }
             .let { contestRepository.save(it).toContestDto() }
 
     override fun getUsers(): List<UserDto> =

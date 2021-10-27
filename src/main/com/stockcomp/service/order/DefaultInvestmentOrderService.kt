@@ -1,16 +1,16 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType
+import com.stockcomp.dto.InvestmentOrderDto
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.dto.InvestmentOrderDto
 import com.stockcomp.util.mapToInvestmentOrder
 import com.stockcomp.util.mapToInvestmentOrderDto
 import org.springframework.stereotype.Service
@@ -25,73 +25,69 @@ class DefaultInvestmentOrderService(
 ) : InvestmentOrderService {
 
     override fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String) {
-        val participant = getParticipant(username, investmentRequest.contestNumber)
-        val order = mapToInvestmentOrder(participant, investmentRequest, TransactionType.BUY)
-        investmentOrderRepository.save(order)
+        mapToInvestmentOrder(
+            getParticipant(username, investmentRequest.contestNumber),
+            investmentRequest,
+            TransactionType.BUY
+        ).also { investmentOrderRepository.save(it) }
     }
 
     override fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String) {
-        val participant = getParticipant(username, investmentRequest.contestNumber)
-        val order = mapToInvestmentOrder(participant, investmentRequest, TransactionType.SELL)
-        investmentOrderRepository.save(order)
+        mapToInvestmentOrder(
+            getParticipant(username, investmentRequest.contestNumber),
+            investmentRequest,
+            TransactionType.SELL
+        ).also { investmentOrderRepository.save(it) }
     }
 
     override fun deleteActiveInvestmentOrder(username: String, orderId: Long) {
-        val order = investmentOrderRepository.findById(orderId).get()
-        if (order.participant.user.username == username) {
-            investmentOrderRepository.delete(order)
-        } else {
-            throw InvalidStateException("Attempting to delete order not tied to user $orderId")
-        }
+        investmentOrderRepository.findById(orderId).get()
+            .takeIf { it.participant.user.username == username }
+            ?.also { investmentOrderRepository.delete(it) }
+            ?: throw InvalidStateException("Attempting to delete order not tied to user : $orderId")
     }
 
     override fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int)
-            : List<InvestmentOrderDto> {
-        return findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
-    }
+            : List<InvestmentOrderDto> =
+        findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
+
 
     override fun getAllCompletedOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
-            : List<InvestmentOrderDto> {
-        return findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(COMPLETED, FAILED))
-    }
+            : List<InvestmentOrderDto> =
+        findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(COMPLETED, FAILED))
 
-    override fun getAllActiveOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> {
-        return findOrdersByParticipant(username, contestNumber, listOf(ACTIVE))
-    }
+
+    override fun getAllActiveOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> =
+        findOrdersByParticipant(username, contestNumber, listOf(ACTIVE))
+
 
     override fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
-            : List<InvestmentOrderDto> {
-        return findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
-    }
+            : List<InvestmentOrderDto> =
+        findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
+
 
     private fun findOrdersByParticipant(
         username: String, contestNumber: Int, orderStatus: List<OrderStatus>
-    ): List<InvestmentOrderDto> {
-        val contest = contestRepository.findByContestNumber(contestNumber)
-        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest).first()
+    ): List<InvestmentOrderDto> =
+        contestRepository.findByContestNumber(contestNumber)
+            .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
+            .let { investmentOrderRepository.findAllByParticipantAndOrderStatusIn(it, orderStatus) }
+            .let { it.map { order -> mapToInvestmentOrderDto(order) } }
 
-        val investmentOrders = investmentOrderRepository.findAllByParticipantAndOrderStatusIn(
-            participant, orderStatus
-        )
-        return investmentOrders.map { mapToInvestmentOrderDto(it) }
-    }
 
     private fun findOrdersByParticipantAndSymbol(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
-    ): List<InvestmentOrderDto> {
-        val contest = contestRepository.findByContestNumber(contestNumber)
-        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest).first()
+    ): List<InvestmentOrderDto> =
+        contestRepository.findByContestNumber(contestNumber)
+            .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
+            .let {
+                investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(
+                    it, symbol, orderStatus
+                )
+            }.let { it.map { order -> mapToInvestmentOrderDto(order) } }
 
-        val investmentOrders = investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(
-            participant, symbol, orderStatus
-        )
-        return investmentOrders.map { mapToInvestmentOrderDto(it) }
-    }
 
-    private fun getParticipant(username: String, contestNumber: Int): Participant {
-        val contest = contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
-
-        return participantRepository.findParticipantFromUsernameAndContest(username, contest)
-            .stream().findFirst().get()
-    }
+    private fun getParticipant(username: String, contestNumber: Int): Participant =
+        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
+            .let { participantRepository.findParticipantFromUsernameAndContest(username, it) }.first()
 }

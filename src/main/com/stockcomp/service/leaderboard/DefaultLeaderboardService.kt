@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.math.ceil
+import kotlin.math.max
 
 @Service
 @Transactional
@@ -55,9 +56,9 @@ class DefaultLeaderboardService(
 
     private fun updateRankingForEntries() {
         var rank = 1
-        val entries = leaderboardEntryRepository.findAllByOrderByScore()
-        entries.forEach { it.ranking = rank++ }
-        leaderboardEntryRepository.saveAll(entries)
+        leaderboardEntryRepository.findAllByOrderByScore()
+            .onEach {  it.ranking = rank++ }
+            .also { leaderboardEntryRepository.saveAll(it) }
         logger.info("Update of each ranking completed")
     }
 
@@ -83,7 +84,7 @@ class DefaultLeaderboardService(
     }
 
     private fun createMedalMap(contest: Contest): HashMap<Double, MedalValue> {
-        val basePercentage = (100 / contest.participantCount).toDouble()
+        val basePercentage = (100 / max(contest.participantCount,1)).toDouble()
         return hashMapOf(
             ceil(5 / basePercentage) to MedalValue.GOLD,
             ceil(10 / basePercentage) to MedalValue.SILVER,
