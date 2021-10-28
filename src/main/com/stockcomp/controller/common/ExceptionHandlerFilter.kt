@@ -16,11 +16,12 @@ class ExceptionHandlerFilter : OncePerRequestFilter() {
     ) {
         try {
             filterChain.doFilter(request, response)
-        } catch (exception : ExpiredJwtException){
-            val currentAccessToken = getAccessTokenFromCookie(request)
-            val expiredCookie = createCookie("accessToken", currentAccessToken!!, 0)
-            response.addCookie(expiredCookie)
-            response.status = HttpStatus.UNAUTHORIZED.value()
+        } catch (exception: ExpiredJwtException) {
+            createCookie("accessToken", getAccessTokenFromCookie(request)!!, 0)
+                .also {
+                    response.addCookie(it)
+                    response.status = HttpStatus.UNAUTHORIZED.value()
+                }
         }
     }
 }

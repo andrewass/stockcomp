@@ -5,8 +5,8 @@ import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.controller.common.getRefreshTokenFromCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
-import com.stockcomp.service.user.DefaultUserService
 import com.stockcomp.service.security.DefaultJwtService
+import com.stockcomp.service.user.DefaultUserService
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.Api
@@ -35,65 +35,63 @@ class AuthenticationController internal constructor(
 
     private val signUpCounter: Counter = meterRegistry.counter("sign.up.counter")
 
+    private val accessToken = "accessToken"
+    private val refreshToken = "refreshToken"
+
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sign up a new user")
-    fun signUpUser(@RequestBody request: SignUpRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
+    fun signUpUser(@RequestBody request: SignUpRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
         userService.signUpUser(request)
-        val (accessToken, refreshToken) = jwtService.generateTokenPair(request.username)
-        val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
-        val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
-        signUpCounter.increment()
-        response.addCookie(accessTokenCookie)
-        response.addCookie(refreshTokenCookie)
+            .let { jwtService.generateTokenPair(request.username) }
+            .let {
+                response.addCookie(createCookie(accessToken, it.first, cookieDuration))
+                response.addCookie(createCookie(refreshToken, it.second, cookieDuration))
+                signUpCounter.increment()
+                ResponseEntity(HttpStatus.OK)
+            }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @PostMapping("/sign-in")
     @ApiOperation(value = "Sign in existing user")
     fun signInUser(
         @RequestBody request: AuthenticationRequest, response: HttpServletResponse
-    ): ResponseEntity<String> {
+    ): ResponseEntity<String> =
         authenticateUser(request.username, request.password)
-        val userRole = userService.signInUser(request)
-        val (accessToken, refreshToken) = jwtService.generateTokenPair(request.username)
-        val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
-        val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
-        response.addCookie(accessTokenCookie)
-        response.addCookie(refreshTokenCookie)
+            .let { userService.signInUser(request) }
+            .let {
+                jwtService.generateTokenPair(request.username).let { pair ->
+                    response.addCookie(createCookie(accessToken, pair.first, cookieDuration))
+                    response.addCookie(createCookie(refreshToken, pair.second, cookieDuration))
+                }
+                ResponseEntity.ok(it)
+            }
 
-        return ResponseEntity.ok(userRole)
-    }
 
     @PostMapping("/sign-out")
     @ApiOperation("Sign out signed in user")
-    fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
-        val currentAccessToken = getAccessTokenFromCookie(request)
-        val username = currentAccessToken?.let { jwtService.extractUsername(currentAccessToken) }
-        val (accessToken, refreshToken) = jwtService.generateTokenPair(username!!)
-        val accessTokenCookie = createCookie("accessToken", accessToken, 0)
-        val refreshTokenCookie = createCookie("refreshToken", refreshToken, 0)
-        response.addCookie(accessTokenCookie)
-        response.addCookie(refreshTokenCookie)
+    fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
+        getAccessTokenFromCookie(request)
+            .let { jwtService.extractUsername(it!!) }
+            .let { jwtService.generateTokenPair(it) }
+            .let {
+                response.addCookie(createCookie(accessToken, it.first, 0))
+                response.addCookie(createCookie(refreshToken, it.second, 0))
+            }.let { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @GetMapping("/refresh-token")
     @ApiOperation("Refresh the access token")
-    fun refreshToken(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> {
-        val currentRefreshToken = getRefreshTokenFromCookie(request)
-        val (accessToken, refreshToken) = jwtService.refreshTokenPair(currentRefreshToken)
-        val accessTokenCookie = createCookie("accessToken", accessToken, cookieDuration)
-        val refreshTokenCookie = createCookie("refreshToken", refreshToken, cookieDuration)
-        response.addCookie(accessTokenCookie)
-        response.addCookie(refreshTokenCookie)
+    fun refreshToken(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
+        getRefreshTokenFromCookie(request)
+            .let { jwtService.refreshTokenPair(it) }
+            .let {
+                response.addCookie(createCookie(accessToken, it.first, cookieDuration))
+                response.addCookie(createCookie(refreshToken, it.second, cookieDuration))
+            }.let { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     private fun authenticateUser(username: String, password: String) {
-        val token = UsernamePasswordAuthenticationToken(username, password)
-        authenticationManager.authenticate(token)
+        UsernamePasswordAuthenticationToken(username, password)
+            .also { authenticationManager.authenticate(it) }
     }
 }

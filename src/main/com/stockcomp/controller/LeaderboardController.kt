@@ -25,24 +25,20 @@ class LeaderboardController(
 
     @GetMapping("/entries")
     @ApiOperation(value = "Get all leaderboard entries")
-    fun getAllLeaderboardEntries(httpServletRequest: HttpServletRequest): ResponseEntity<List<LeaderboardEntryDto>> {
-        val entries = leaderboardService.getSortedLeaderboardEntries()
+    fun getAllLeaderboardEntries(httpServletRequest: HttpServletRequest): ResponseEntity<List<LeaderboardEntryDto>> =
+        leaderboardService.getSortedLeaderboardEntries()
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(entries)
-    }
 
     @GetMapping("/user-entry")
     @ApiOperation(value = "Get leaderboard entry for given user")
-    fun getLeaderboardEntryForUser(httpServletRequest: HttpServletRequest): ResponseEntity<LeaderboardEntryDto> {
-        val userName = extractUsernameFromRequest(httpServletRequest)
-        val entry = leaderboardService.getLeaderboardEntryForUser(userName)
+    fun getLeaderboardEntryForUser(httpServletRequest: HttpServletRequest): ResponseEntity<LeaderboardEntryDto> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { leaderboardService.getLeaderboardEntryForUser(it) }
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(entry)
-    }
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String {
-        val jwt = getAccessTokenFromCookie(request)
-
-        return defaultJwtService.extractUsername(jwt!!)
-    }
+    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
+        getAccessTokenFromCookie(request)
+            .let { defaultJwtService.extractUsername(it!!) }
 }
