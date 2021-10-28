@@ -22,39 +22,34 @@ class InvestmentController(
     @ApiOperation(value = "Get investment for a given symbol for a participant")
     fun getInvestmentForSymbol(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int, @RequestParam symbol: String
-    ): ResponseEntity<InvestmentDto> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        investmentService.getInvestmentForSymbol(username, contestNumber, symbol)?.let {
-            return ResponseEntity.ok(it)
-        }
-        return ResponseEntity(HttpStatus.OK)
-    }
+    ): ResponseEntity<InvestmentDto> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { investmentService.getInvestmentForSymbol(it, contestNumber, symbol) }
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity(HttpStatus.OK)
+
 
     @GetMapping("/total-investments")
     @ApiOperation(value = "Get all investments for a participant")
     fun getAllInvestmentsForContest(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<List<InvestmentDto>> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val investments = investmentService.getAllInvestmentsForContest(username, contestNumber)
+    ): ResponseEntity<List<InvestmentDto>> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { investmentService.getAllInvestmentsForContest(it, contestNumber) }
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(investments)
-    }
 
     @GetMapping("/total-investment-value")
     @ApiOperation(value = "Get total investment value for participant")
     fun getTotalInvestmentValue(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<Double> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val totalInvestmentReturns = investmentService.getTotalValue(username, contestNumber)
+    ): ResponseEntity<Double> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { investmentService.getTotalValue(it, contestNumber) }
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(totalInvestmentReturns)
-    }
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String {
-        val jwt = getAccessTokenFromCookie(request)
-
-        return defaultJwtService.extractUsername(jwt!!)
-    }
+    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
+        getAccessTokenFromCookie(request)
+            .let { defaultJwtService.extractUsername(it!!) }
 }

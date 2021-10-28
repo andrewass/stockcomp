@@ -18,48 +18,41 @@ class TaskController(
 ) {
 
     @PostMapping("/start-contest")
-    fun startContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> {
+    fun startContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.startContest(contestNumber)
+            .run { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @PostMapping("/stop-contest")
-    fun stopContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> {
+    fun stopContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.stopContest(contestNumber)
+            .run { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @PostMapping("/start-order-process")
     @ApiOperation(value = "Start processing of investment orders")
-    fun startOrderProcessing(): ResponseEntity<HttpStatus> {
+    fun startOrderProcessing(): ResponseEntity<HttpStatus> =
         orderProcessingService.startOrderProcessing()
+            .run { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @PostMapping("/stop-order-process")
     @ApiOperation(value = "Stop processing of investment orders")
-    fun stopOrderProcessing(): ResponseEntity<HttpStatus> {
+    fun stopOrderProcessing(): ResponseEntity<HttpStatus> =
         orderProcessingService.stopOrderProcessing()
+            .run { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @PostMapping("/start-participants-maintenance")
     @ApiOperation("Start maintenance of all participants of a running contest")
-    fun startParticipantsMaintenance(): ResponseEntity<HttpStatus> {
+    fun startParticipantsMaintenance(): ResponseEntity<HttpStatus> =
         maintainParticipantsService.startParticipantsMaintenance()
+            .run { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @PostMapping("/stop-participants-maintenance")
     @ApiOperation("Stop maintenance of all participants of a running contest")
-    fun stopParticipantsMaintenance(): ResponseEntity<HttpStatus> {
+    fun stopParticipantsMaintenance(): ResponseEntity<HttpStatus> =
         maintainParticipantsService.stopParticipantsMaintenance()
-
-        return ResponseEntity(HttpStatus.OK)
-    }
+            .run { ResponseEntity(HttpStatus.OK) }
 }

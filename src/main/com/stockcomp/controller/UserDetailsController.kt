@@ -23,29 +23,22 @@ class UserDetailsController(
     @GetMapping("/get-details")
     @ApiOperation(value = "Get user details for a given username")
     fun getUserDetails(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam username: String?
-    ): ResponseEntity<UserDetailsDto> {
-        val userDetails = userService.getUserDetails(
-            username ?: extractUsernameFromRequest(httpServletRequest)
-        )
-        return ResponseEntity.ok(userDetails)
-    }
+        httpServletRequest: HttpServletRequest, @RequestParam username: String?
+    ): ResponseEntity<UserDetailsDto> =
+        userService.getUserDetails(username ?: extractUsernameFromRequest(httpServletRequest))
+            .let { ResponseEntity.ok(it) }
+
 
     @PutMapping("/update-details")
     @ApiOperation(value = "Update user details for a given user")
     fun updateUserDetails(
-        httpServletRequest: HttpServletRequest,
-        @RequestBody userDetailsDto: UserDetailsDto
-    ): ResponseEntity<HttpStatus> {
+        httpServletRequest: HttpServletRequest, @RequestBody userDetailsDto: UserDetailsDto
+    ): ResponseEntity<HttpStatus> =
         userService.updateUserDetails(userDetailsDto)
+            .run { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String {
-        val jwt = getAccessTokenFromCookie(request)
-
-        return jwtService.extractUsername(jwt!!)
-    }
+    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
+        getAccessTokenFromCookie(request)
+            .let { jwtService.extractUsername(it!!) }
 }

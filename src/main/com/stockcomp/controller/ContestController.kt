@@ -26,60 +26,53 @@ class ContestController(
 
     @GetMapping("/upcoming-contests")
     @ApiOperation(value = "Return a list of upcoming contests")
-    fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContestParticipantDto>> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val contests = contestService.getUpcomingContestsParticipant(username)
+    fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContestParticipantDto>> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { contestService.getUpcomingContestsParticipant(it) }
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(contests)
-    }
 
     @PostMapping("/sign-up")
     @ApiOperation(value = "Sing up user for a given contest")
     fun signUpForContest(
         httpServletRequest: HttpServletRequest,
         @RequestParam contestNumber: Int
-    ): ResponseEntity<HttpStatus> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        contestService.signUpUser(username, contestNumber)
+    ): ResponseEntity<HttpStatus> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { contestService.signUpUser(it, contestNumber) }
+            .let { ResponseEntity(HttpStatus.OK) }
 
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     @GetMapping("/remaining-funds")
     @ApiOperation(value = "Get remaining funds for a participant")
     fun getRemainingFunds(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<Double> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
+    ): ResponseEntity<Double> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { investmentService.getRemainingFunds(it, contestNumber) }
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(remainingFunds)
-    }
 
     @GetMapping("/participants-by-value")
     @ApiOperation(value = "Get contest participants sorted by descending total value")
     fun getRankingList(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<List<ParticipantDto>> {
-        val rankingList = contestService.getParticipantsByTotalValue(contestNumber)
+    ): ResponseEntity<List<ParticipantDto>> =
+        contestService.getParticipantsByTotalValue(contestNumber)
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(rankingList)
-    }
 
     @GetMapping("/participant")
     @ApiOperation("Get participant of a given contest")
     fun getParticipant(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ) : ResponseEntity<ParticipantDto> {
-        val username = extractUsernameFromRequest(httpServletRequest)
-        val participant = contestService.getParticipant(contestNumber, username)
+    ): ResponseEntity<ParticipantDto> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { contestService.getParticipant(contestNumber, it) }
+            .let { ResponseEntity.ok(it) }
 
-        return ResponseEntity.ok(participant)
-    }
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String {
-        val jwt = getAccessTokenFromCookie(request)
-
-        return defaultJwtService.extractUsername(jwt!!)
-    }
+    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
+        getAccessTokenFromCookie(request)
+            .let { defaultJwtService.extractUsername(it!!) }
 }
