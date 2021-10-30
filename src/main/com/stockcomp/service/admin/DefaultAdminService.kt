@@ -7,7 +7,9 @@ import com.stockcomp.dto.UserDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.service.investment.MaintainParticipantsService
 import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
 import org.springframework.stereotype.Service
@@ -17,9 +19,13 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultAdminService(
     private val leaderboardService: LeaderboardService,
+    private val maintainParticipantsService: MaintainParticipantsService,
+    private val orderProcessingService: OrderProcessingService,
     private val contestRepository: ContestRepository,
     private val userRepository: UserRepository
 ) : AdminService {
+
+    private val pass = Unit
 
     override fun getAllContests(): List<ContestDto> =
         contestRepository.findAll()
@@ -52,8 +58,22 @@ class DefaultAdminService(
 
     override fun updateContestStatus(contestDto: ContestDto): ContestDto =
         contestRepository.findById(contestDto.id).get()
-            .apply { this.contestStatus = ContestStatus.fromDecode(contestDto.contestStatus)!! }
-            .let { contestRepository.save(it).toContestDto() }
+            .let {
+                when (ContestStatus.fromDecode(contestDto.contestStatus)) {
+                    ContestStatus.COMPLETED -> leaderboardService.updateLeaderboard(it)
+                    ContestStatus.STOPPED -> {
+                        orderProcessingService.stopOrderProcessing()
+                        maintainParticipantsService.stopParticipantsMaintenance()
+                    }
+                    ContestStatus.RUNNING -> {
+                        orderProcessingService.startOrderProcessing()
+                        maintainParticipantsService.startParticipantsMaintenance()
+                    }
+                    ContestStatus.AWAITING_START -> pass
+                }
+                it.contestStatus = ContestStatus.fromDecode(contestDto.contestStatus)!!
+                contestRepository.save(it).toContestDto()
+            }
 
     override fun getUsers(): List<UserDto> =
         userRepository.findAll()

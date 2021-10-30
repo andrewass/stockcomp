@@ -2,19 +2,21 @@ package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.OrderStatus.COMPLETED
 import com.stockcomp.domain.contest.enums.OrderStatus.FAILED
-import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
+import com.stockcomp.dto.RealTimePrice
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.dto.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -69,10 +71,10 @@ class DefaultOrderProcessingService(
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
-        val realTimePrice = symbolService.getRealTimePrice(symbol)
-        orders.forEach {
-            processOrder(it, realTimePrice)
-        }
+        symbolService.getRealTimePrice(symbol)
+            .also { realTimePrice ->
+                orders.forEach { processOrder(it, realTimePrice) }
+            }
     }
 
     private fun processOrder(investmentOrder: InvestmentOrder, realTimePrice: RealTimePrice) {

@@ -65,19 +65,6 @@ class InvestmentOrderController(
             .let { ResponseEntity.ok(it) }
 
 
-    @GetMapping("/active-orders-symbol-participant")
-    @ApiOperation(value = "Get all active investment orders for a given symbol and participant")
-    fun getAllActiveOrdersForSymbolForParticipant(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam symbol: String,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { defaultJwtService.extractUsername(it) }
-            .let { investmentOrderService.getAllActiveOrdersForSymbolForParticipant(it, symbol, contestNumber) }
-            .let { ResponseEntity.ok(it) }
-
-
     @GetMapping("/completed-orders-participant")
     @ApiOperation(value = "Get all completed investment orders for a participant")
     fun getAllCompletedOrdersForParticipant(
@@ -85,7 +72,6 @@ class InvestmentOrderController(
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> =
         extractUsernameFromRequest(httpServletRequest)
-            .let { defaultJwtService.extractUsername(it) }
             .let { investmentOrderService.getAllCompletedOrdersForParticipant(it, contestNumber) }
             .let { ResponseEntity.ok(it) }
 
@@ -98,7 +84,18 @@ class InvestmentOrderController(
         @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> =
         extractUsernameFromRequest(httpServletRequest)
-            .let { defaultJwtService.extractUsername(it) }
+            .let { investmentOrderService.getAllCompletedOrdersForSymbolForParticipant(it, symbol, contestNumber) }
+            .let { ResponseEntity.ok(it) }
+
+
+    @GetMapping("/active-orders-symbol-participant")
+    @ApiOperation(value = "Get all active investment orders for a given symbol and participant")
+    fun getAllActiveOrdersForSymbolForParticipant(
+        httpServletRequest: HttpServletRequest,
+        @RequestParam symbol: String,
+        @RequestParam contestNumber: Int
+    ): ResponseEntity<List<InvestmentOrderDto>> =
+        extractUsernameFromRequest(httpServletRequest)
             .let { investmentOrderService.getAllActiveOrdersForSymbolForParticipant(it, symbol, contestNumber) }
             .let { ResponseEntity.ok(it) }
 

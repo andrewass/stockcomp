@@ -36,7 +36,6 @@ class DefaultContestService(
 
     override fun stopContest(contestNumber: Int) {
         contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
-            ?.takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
             ?.also {
                 it.contestStatus = ContestStatus.STOPPED
                 contestRepository.save(it)
@@ -82,24 +81,28 @@ class DefaultContestService(
             .filter { listOf(ContestStatus.RUNNING, ContestStatus.AWAITING_START).contains(it.contestStatus) }
             .map { createUpcomingContestParticipantDto(username, it) }
 
+
     override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> =
         contestRepository.findByContestNumber(contestNumber)
             ?.let { participantRepository.findAllByContestOrderByTotalValueDesc(it) }
             ?.let { it.map { participant -> participant.toParticipantDto() } }
             ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
 
-    override fun getParticipant(contestNumber: Int, username: String): ParticipantDto {
-        contestRepository.findByContestNumber(contestNumber)?.let { contest ->
-            userService.findUserByUsername(username)?.let { user ->
-                return participantRepository.findByContestAndUser(contest, user)?.toParticipantDto()
-                    ?: throw NoSuchElementException("Participant not found for given user and contest")
-            }
-        } ?: throw NoSuchElementException("Contest $contestNumber not found")
-    }
 
-    private fun createUpcomingContestParticipantDto(username: String, contest: Contest): UpcomingContestParticipantDto {
-        val participant = participantRepository.findParticipantFromUsernameAndContest(username, contest)
+    override fun getParticipant(contestNumber: Int, username: String): ParticipantDto =
+        contestRepository.findByContestNumber(contestNumber)
+            ?.let { contest ->
+                userService.findUserByUsername(username)
+                    ?.let { user ->
+                        participantRepository.findByContestAndUser(contest, user)?.toParticipantDto()
+                            ?: throw NoSuchElementException("Participant not found for given user and contest")
+                    }
+            } ?: throw NoSuchElementException("Contest $contestNumber not found")
 
-        return mapToUpcomingContestParticipantDto(contest, participant)
-    }
+
+    private fun createUpcomingContestParticipantDto(username: String, contest: Contest): UpcomingContestParticipantDto =
+        mapToUpcomingContestParticipantDto(
+            contest,
+            participantRepository.findParticipantFromUsernameAndContest(username, contest)
+        )
 }

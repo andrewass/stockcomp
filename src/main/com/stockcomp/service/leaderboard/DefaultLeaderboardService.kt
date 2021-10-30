@@ -1,14 +1,14 @@
 package com.stockcomp.service.leaderboard
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.leaderboard.MedalValue
+import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.LeaderboardEntryRepository
-import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +31,7 @@ class DefaultLeaderboardService(
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
     override fun updateLeaderboard(contest: Contest) {
-        if(contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.COMPLETED){
+        if (contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.COMPLETED) {
             throw IllegalStateException("Leaderboard already updated from contest id ${contest.id}")
         }
         logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
@@ -48,16 +48,14 @@ class DefaultLeaderboardService(
             .map { it.toLeaderboardEntryDto() }
     }
 
-    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto {
-        userService.findUserByUsername(username).let {
-            return leaderboardEntryRepository.findByUser(it).toLeaderboardEntryDto()
-        }
-    }
+    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto =
+        userService.findUserByUsername(username)
+            .let { leaderboardEntryRepository.findByUser(it).toLeaderboardEntryDto() }
 
     private fun updateRankingForEntries() {
         var rank = 1
         leaderboardEntryRepository.findAllByOrderByScore()
-            .onEach {  it.ranking = rank++ }
+            .onEach { it.ranking = rank++ }
             .also { leaderboardEntryRepository.saveAll(it) }
         logger.info("Update of each ranking completed")
     }
@@ -83,28 +81,33 @@ class DefaultLeaderboardService(
         contestRepository.save(contest)
     }
 
-    private fun createMedalMap(contest: Contest): HashMap<Double, MedalValue> {
-        val basePercentage = (100 / max(contest.participantCount,1)).toDouble()
-        return hashMapOf(
-            ceil(5 / basePercentage) to MedalValue.GOLD,
-            ceil(10 / basePercentage) to MedalValue.SILVER,
-            ceil(15 / basePercentage) to MedalValue.BRONZE
-        )
-    }
+    private fun createMedalMap(contest: Contest): HashMap<Double, MedalValue> =
+        getBasePercentage(contest)
+            .let {
+                hashMapOf(
+                    ceil(5 / it) to MedalValue.GOLD,
+                    ceil(10 / it) to MedalValue.SILVER,
+                    ceil(15 / it) to MedalValue.BRONZE
+                )
+            }
+
+    private fun getBasePercentage(contest: Contest) = (100 / max(contest.participantCount, 1)).toDouble()
 
     private fun updateMedalsForEntry(
         leaderboardEntry: LeaderboardEntry, participant: Participant,
         contest: Contest, medalMap: Map<Double, MedalValue>
     ) {
-        medalMap.entries.firstOrNull { (key, _) -> key <= participant.rank!! }?.let {
-            leaderboardEntry.addMedal(
-                Medal(
-                    contest = contest,
-                    leaderboardEntry = leaderboardEntry,
-                    medalValue = it.value,
-                    position = participant.rank!!
+        medalMap.entries
+            .firstOrNull { (key, _) -> key <= participant.rank!! }
+            ?.let {
+                leaderboardEntry.addMedal(
+                    Medal(
+                        contest = contest,
+                        leaderboardEntry = leaderboardEntry,
+                        medalValue = it.value,
+                        position = participant.rank!!
+                    )
                 )
-            )
-        }
+            }
     }
 }
