@@ -26,7 +26,9 @@ class DefaultMaintainParticipantsService(
     private var keepMaintainingReturns = false
 
     init {
-        startParticipantsMaintenance()
+        if(contestRepository.findAllByContestStatus(ContestStatus.RUNNING).isNotEmpty()) {
+            startParticipantsMaintenance()
+        }
     }
 
     final override fun startParticipantsMaintenance() {
@@ -59,6 +61,7 @@ class DefaultMaintainParticipantsService(
                 logger.error("Failed return maintenance : ${e.message}")
             }
         }
+        logger.info("Maintenance of investment returns is now stopped")
     }
 
     private fun maintainRanking() {

@@ -3,12 +3,14 @@ package com.stockcomp.service.order
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.OrderStatus.COMPLETED
 import com.stockcomp.domain.contest.enums.OrderStatus.FAILED
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
 import com.stockcomp.dto.RealTimePrice
+import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -28,6 +30,7 @@ class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
+    private val contestRepository: ContestRepository,
     private val symbolService: SymbolService
 ) : OrderProcessingService {
 
@@ -35,7 +38,9 @@ class DefaultOrderProcessingService(
     private var keepProcessingOrders = false
 
     init {
-        startOrderProcessing()
+        if(contestRepository.findAllByContestStatus(ContestStatus.RUNNING).isNotEmpty()) {
+            startOrderProcessing()
+        }
     }
 
     final override fun startOrderProcessing() {
@@ -67,7 +72,7 @@ class DefaultOrderProcessingService(
                 logger.error("Failed order processing : ${e.message}")
             }
         }
-        logger.info("Order processing is now completed")
+        logger.info("Order processing is now stopped")
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {

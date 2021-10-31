@@ -9,6 +9,7 @@ import com.stockcomp.domain.leaderboard.MedalValue
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.LeaderboardEntryRepository
+import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope
@@ -25,21 +26,22 @@ import kotlin.math.max
 class DefaultLeaderboardService(
     private val leaderboardEntryRepository: LeaderboardEntryRepository,
     private val contestRepository: ContestRepository,
+    private val participantRepository: ParticipantRepository,
     private val userService: UserService
 ) : LeaderboardService {
 
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
     override fun updateLeaderboard(contest: Contest) {
-        if (contest.leaderboardUpdateStatus == LeaderboardUpdateStatus.COMPLETED) {
-            throw IllegalStateException("Leaderboard already updated from contest id ${contest.id}")
-        }
-        logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
-        contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
-        CoroutineScope(Default).launch {
-            updateScoreForParticipants(contest)
-            logger.info("Update of participant score completed")
-            updateRankingForEntries()
+        if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED) {
+            logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
+            contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
+            CoroutineScope(Default).launch {
+                updateScoreForParticipants(contest)
+                logger.info("Update of participant score completed")
+                updateRankingForEntries()
+                logger.info("Update of each ranking completed")
+            }
         }
     }
 
@@ -57,26 +59,26 @@ class DefaultLeaderboardService(
         leaderboardEntryRepository.findAllByOrderByScore()
             .onEach { it.ranking = rank++ }
             .also { leaderboardEntryRepository.saveAll(it) }
-        logger.info("Update of each ranking completed")
     }
 
     private fun updateScoreForParticipants(contest: Contest) {
         val medalMap = createMedalMap(contest)
-        contest.participants.forEach { participant ->
-            val leaderboardEntry = leaderboardEntryRepository.findByUser(participant.user)
-                ?: LeaderboardEntry(user = participant.user)
-            if (contest != leaderboardEntry.lastContest) {
-                val participantScore = (participant.rank!! / contest.participantCount).toDouble()
+        participantRepository.findParticipantsByContest(contest)
+            .forEach { participant ->
+                val leaderboardEntry = leaderboardEntryRepository.findByUser(participant.user)
+                    ?: LeaderboardEntry(user = participant.user)
 
-                leaderboardEntry.apply {
-                    this.score += participantScore
-                    this.contestCount = this.contestCount + 1
-                    this.lastContest = contest
+                if (contest != leaderboardEntry.lastContest) {
+                    val participantScore = (participant.rank!! / contest.participantCount).toDouble()
+                    leaderboardEntry.apply {
+                        this.score += participantScore
+                        this.contestCount = this.contestCount + 1
+                        this.lastContest = contest
+                    }
+                    updateMedalsForEntry(leaderboardEntry, participant, contest, medalMap)
+                    leaderboardEntryRepository.save(leaderboardEntry)
                 }
-                updateMedalsForEntry(leaderboardEntry, participant, contest, medalMap)
-                leaderboardEntryRepository.save(leaderboardEntry)
             }
-        }
         contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
         contestRepository.save(contest)
     }
