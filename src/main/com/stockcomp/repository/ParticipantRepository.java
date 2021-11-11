@@ -20,6 +20,8 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
     List<Participant> findAllByContestOrderByTotalValueDesc(Contest contest);
 
+    List<Participant> findAllByContestOrderByRankAsc(Contest contest);
+
     Participant findByContestAndUser(Contest contest, User user);
 
 }

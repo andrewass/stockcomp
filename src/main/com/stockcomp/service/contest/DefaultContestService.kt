@@ -3,6 +3,7 @@ package com.stockcomp.service.contest
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.ParticipantDto
 import com.stockcomp.dto.UpcomingContestParticipantDto
 import com.stockcomp.repository.ContestRepository
@@ -10,6 +11,7 @@ import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.mapToUpcomingContestParticipantDto
+import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toParticipantDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -76,6 +78,12 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
+    override fun getAllContests(): List<ContestDto> =
+        contestRepository.findAll()
+            .sortedByDescending { it.startTime }
+            .map { it.toContestDto() }
+
+
     override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> =
         contestRepository.findAll()
             .filter { listOf(ContestStatus.RUNNING, ContestStatus.AWAITING_START).contains(it.contestStatus) }
@@ -85,6 +93,13 @@ class DefaultContestService(
     override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> =
         contestRepository.findByContestNumber(contestNumber)
             ?.let { participantRepository.findAllByContestOrderByTotalValueDesc(it) }
+            ?.let { it.map { participant -> participant.toParticipantDto() } }
+            ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
+
+
+    override fun getParticipantsByRank(contestNumber: Int): List<ParticipantDto> =
+        contestRepository.findByContestNumber(contestNumber)
+            ?.let { participantRepository.findAllByContestOrderByRankAsc(it) }
             ?.let { it.map { participant -> participant.toParticipantDto() } }
             ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
 

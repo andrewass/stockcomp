@@ -2,11 +2,12 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
+import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.ParticipantDto
 import com.stockcomp.dto.UpcomingContestParticipantDto
-import com.stockcomp.service.contest.DefaultContestService
+import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.investment.InvestmentService
-import com.stockcomp.service.security.DefaultJwtService
+import com.stockcomp.service.security.JwtService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -19,9 +20,9 @@ import javax.servlet.http.HttpServletRequest
 @CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 @Api(description = "Endpoints for contest related operations")
 class ContestController(
-    private val contestService: DefaultContestService,
+    private val contestService: ContestService,
     private val investmentService: InvestmentService,
-    private val defaultJwtService: DefaultJwtService
+    private val defaultJwtService: JwtService
 ) : CustomExceptionHandler() {
 
     @GetMapping("/upcoming-contests")
@@ -29,6 +30,13 @@ class ContestController(
     fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContestParticipantDto>> =
         extractUsernameFromRequest(httpServletRequest)
             .let { contestService.getUpcomingContestsParticipant(it) }
+            .let { ResponseEntity.ok(it) }
+
+
+    @GetMapping("/all-contests")
+    @ApiOperation(value = "Return a list of all contests")
+    fun allContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<ContestDto>> =
+        contestService.getAllContests()
             .let { ResponseEntity.ok(it) }
 
 
@@ -53,12 +61,12 @@ class ContestController(
             .let { ResponseEntity.ok(it) }
 
 
-    @GetMapping("/participants-by-value")
-    @ApiOperation(value = "Get contest participants sorted by descending total value")
-    fun getRankingList(
+    @GetMapping("/participants-by-rank")
+    @ApiOperation(value = "Get contest participants sorted by ranking")
+    fun getParticipantsByRanking(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<List<ParticipantDto>> =
-        contestService.getParticipantsByTotalValue(contestNumber)
+        contestService.getParticipantsByRank(contestNumber)
             .let { ResponseEntity.ok(it) }
 
 
