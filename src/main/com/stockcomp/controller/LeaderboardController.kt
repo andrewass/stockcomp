@@ -7,10 +7,7 @@ import com.stockcomp.service.security.DefaultJwtService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 
@@ -32,8 +29,11 @@ class LeaderboardController(
 
     @GetMapping("/user-entry")
     @ApiOperation(value = "Get leaderboard entry for given user")
-    fun getLeaderboardEntryForUser(httpServletRequest: HttpServletRequest): ResponseEntity<LeaderboardEntryDto> =
-        extractUsernameFromRequest(httpServletRequest)
+    fun getLeaderboardEntryForUser(
+        httpServletRequest: HttpServletRequest,
+        @RequestParam(required = false) username: String?
+    ): ResponseEntity<LeaderboardEntryDto> =
+        (username ?: extractUsernameFromRequest(httpServletRequest))
             .let { leaderboardService.getLeaderboardEntryForUser(it) }
             .let { ResponseEntity.ok(it) }
 

@@ -80,6 +80,15 @@ class ContestController(
             .let { ResponseEntity.ok(it) }
 
 
+    @GetMapping("/participant-history")
+    @ApiOperation("Get participant history for a given user")
+    fun getParticipantHistory(
+        httpServletRequest: HttpServletRequest, @RequestParam username: String
+    ): ResponseEntity<List<ParticipantDto>> =
+        contestService.getParticipantHistory(username)
+            .let { ResponseEntity.ok(it) }
+
+
     private fun extractUsernameFromRequest(request: HttpServletRequest): String =
         getAccessTokenFromCookie(request)
             .let { defaultJwtService.extractUsername(it!!) }

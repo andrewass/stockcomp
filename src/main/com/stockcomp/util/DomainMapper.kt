@@ -50,7 +50,8 @@ fun Participant.toParticipantDto() =
     ParticipantDto(
         username = this.user.username,
         rank = this.rank,
-        totalValue = this.totalValue
+        totalValue = this.totalValue,
+        country = this.user.country
     )
 
 fun Medal.toMedalDto() =

@@ -3,6 +3,7 @@ package com.stockcomp.service.contest
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.domain.contest.enums.ContestStatus.*
 import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.ParticipantDto
 import com.stockcomp.dto.UpcomingContestParticipantDto
@@ -28,8 +29,8 @@ class DefaultContestService(
     private val logger = LoggerFactory.getLogger(DefaultContestService::class.java)
 
     override fun startContest(contestNumber: Int) {
-        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)?.also {
-            it.contestStatus = ContestStatus.RUNNING
+        contestRepository.findByContestNumberAndContestStatus(contestNumber, AWAITING_START)?.also {
+            it.contestStatus = RUNNING
             contestRepository.save(it)
             orderProcessingService.startOrderProcessing()
             logger.info("Starting contest $contestNumber")
@@ -37,9 +38,9 @@ class DefaultContestService(
     }
 
     override fun stopContest(contestNumber: Int) {
-        contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
+        contestRepository.findByContestNumberAndContestStatus(contestNumber, RUNNING)
             ?.also {
-                it.contestStatus = ContestStatus.STOPPED
+                it.contestStatus = STOPPED
                 contestRepository.save(it)
                 orderProcessingService.stopOrderProcessing()
                 logger.info("Stopping contest $contestNumber")
@@ -49,9 +50,9 @@ class DefaultContestService(
 
     override fun completeContest(contestNumber: Int) {
         contestRepository.findByContestNumber(contestNumber)
-            ?.takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
+            ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED) }
             ?.let {
-                it.contestStatus = ContestStatus.COMPLETED
+                it.contestStatus = COMPLETED
                 contestRepository.save(it)
                 orderProcessingService.stopOrderProcessing()
                 logger.info("Completing contest $contestNumber")
@@ -61,13 +62,7 @@ class DefaultContestService(
 
     override fun signUpUser(username: String, contestNumber: Int) {
         contestRepository.findByContestNumber(contestNumber)
-            ?.takeIf { contest ->
-                contest.contestStatus in listOf(
-                    ContestStatus.RUNNING,
-                    ContestStatus.STOPPED,
-                    ContestStatus.AWAITING_START
-                )
-            }
+            ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START) }
             ?.let {
                 val user = userService.findUserByUsername(username)!!
                 val participant = Participant(user = user, contest = it)
@@ -86,7 +81,7 @@ class DefaultContestService(
 
     override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> =
         contestRepository.findAll()
-            .filter { listOf(ContestStatus.RUNNING, ContestStatus.AWAITING_START).contains(it.contestStatus) }
+            .filter { listOf(RUNNING, AWAITING_START).contains(it.contestStatus) }
             .map { createUpcomingContestParticipantDto(username, it) }
 
 
@@ -113,6 +108,14 @@ class DefaultContestService(
                             ?: throw NoSuchElementException("Participant not found for given user and contest")
                     }
             } ?: throw NoSuchElementException("Contest $contestNumber not found")
+
+
+    override fun getParticipantHistory(username: String): List<ParticipantDto> =
+        userService.findUserByUsername(username)
+            ?.let { participantRepository.findAllByUser(it) }
+            ?.filter { it.contest.contestStatus in listOf(RUNNING, STOPPED, COMPLETED) }
+            ?.map { it.toParticipantDto() }
+            ?: throw NoSuchElementException("User not found for username $username")
 
 
     private fun createUpcomingContestParticipantDto(username: String, contest: Contest): UpcomingContestParticipantDto =

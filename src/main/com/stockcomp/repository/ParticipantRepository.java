@@ -18,6 +18,8 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     @Query("SELECT p FROM Participant  p where p.contest = ?1")
     List<Participant> findParticipantsByContest(Contest contest);
 
+    List<Participant> findAllByUser(User user);
+
     List<Participant> findAllByContestOrderByTotalValueDesc(Contest contest);
 
     List<Participant> findAllByContestOrderByRankAsc(Contest contest);
