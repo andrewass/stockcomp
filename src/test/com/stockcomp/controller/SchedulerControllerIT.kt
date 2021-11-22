@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 internal class SchedulerControllerIT : IntegrationTest() {
 
     @Test
-    fun `should create contest`(){
-        assertEquals(2,2)
+    fun `should create contest`() {
+        assertEquals(2, 2)
     }
 }

@@ -3,14 +3,12 @@ package com.stockcomp.service.order
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.OrderStatus.COMPLETED
 import com.stockcomp.domain.contest.enums.OrderStatus.FAILED
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
 import com.stockcomp.dto.RealTimePrice
-import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -30,20 +28,13 @@ class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
-    private val contestRepository: ContestRepository,
     private val symbolService: SymbolService
 ) : OrderProcessingService {
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
     private var keepProcessingOrders = false
 
-    init {
-        if(contestRepository.findAllByContestStatus(ContestStatus.RUNNING).isNotEmpty()) {
-            startOrderProcessing()
-        }
-    }
-
-    final override fun startOrderProcessing() {
+    override fun startOrderProcessing() {
         keepProcessingOrders = true
         logger.info("Starting order processing")
         CoroutineScope(Default).launch {

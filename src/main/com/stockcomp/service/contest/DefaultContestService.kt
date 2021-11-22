@@ -2,7 +2,6 @@ package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.ContestStatus.*
 import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.ParticipantDto

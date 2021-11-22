@@ -25,13 +25,7 @@ class DefaultMaintainParticipantsService(
     private val logger = LoggerFactory.getLogger(DefaultMaintainParticipantsService::class.java)
     private var keepMaintainingReturns = false
 
-    init {
-        if(contestRepository.findAllByContestStatus(ContestStatus.RUNNING).isNotEmpty()) {
-            startParticipantsMaintenance()
-        }
-    }
-
-    final override fun startParticipantsMaintenance() {
+    override fun startParticipantsMaintenance() {
         keepMaintainingReturns = true
         logger.info("Starting maintenance of investment returns")
         CoroutineScope(Default).launch {
