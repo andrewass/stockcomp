@@ -5,4 +5,6 @@ interface OrderProcessingService {
     fun startOrderProcessing()
 
     fun stopOrderProcessing()
+
+    fun terminateRemainingOrders()
 }

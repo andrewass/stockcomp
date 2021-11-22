@@ -60,7 +60,10 @@ class DefaultAdminService(
         contestRepository.findById(contestDto.id).get()
             .let {
                 when (ContestStatus.fromDecode(contestDto.contestStatus)) {
-                    ContestStatus.COMPLETED -> leaderboardService.updateLeaderboard(it)
+                    ContestStatus.COMPLETED -> {
+                        orderProcessingService.terminateRemainingOrders()
+                        leaderboardService.updateLeaderboard(it)
+                    }
                     ContestStatus.STOPPED -> {
                         orderProcessingService.stopOrderProcessing()
                         maintainParticipantsService.stopParticipantsMaintenance()

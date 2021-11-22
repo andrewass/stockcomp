@@ -1,11 +1,11 @@
 package com.stockcomp.service.investment
 
 import com.stockcomp.domain.contest.Investment
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
+import com.stockcomp.dto.RealTimePrice
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.dto.RealTimePrice
 import com.stockcomp.service.symbol.SymbolService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
@@ -29,7 +29,7 @@ class DefaultMaintainParticipantsService(
         keepMaintainingReturns = true
         logger.info("Starting maintenance of investment returns")
         CoroutineScope(Default).launch {
-            maintainReturns()
+            maintainParticipants()
         }
     }
 
@@ -38,18 +38,18 @@ class DefaultMaintainParticipantsService(
         logger.info("Stopping maintenance of investment returns")
     }
 
-    private suspend fun maintainReturns() {
+    private suspend fun maintainParticipants() {
         while (keepMaintainingReturns) {
             try {
                 delay(30000L)
-                val investmentMap = investmentRepository.findAll().groupBy { it.symbol }
-                investmentMap.forEach { (symbol, investment) ->
-                    run {
+                investmentRepository.findAllInvestmentsByContestStatus(RUNNING)
+                    .groupBy { it.symbol }
+                    .forEach { (symbol, investment) ->
                         logger.info("Maintaining returns for symbol $symbol")
-                        val realTimePrice = symbolService.getRealTimePrice(symbol)
-                        investment.forEach { updateInvestmentAndParticipant(it, realTimePrice) }
+                        investment.forEach {
+                            updateInvestmentAndParticipant(it, symbolService.getRealTimePrice(symbol))
+                        }
                     }
-                }
                 maintainRanking()
             } catch (e: Exception) {
                 logger.error("Failed return maintenance : ${e.message}")
@@ -59,7 +59,7 @@ class DefaultMaintainParticipantsService(
     }
 
     private fun maintainRanking() {
-        val runningContest = contestRepository.findByContestStatus(ContestStatus.RUNNING)
+        val runningContest = contestRepository.findByContestStatus(RUNNING)
         var rank = 1
         val participants = participantRepository.findAllByContestOrderByTotalValueDesc(runningContest)
         participants.forEach { it.rank = rank++ }

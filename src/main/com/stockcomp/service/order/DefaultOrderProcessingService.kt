@@ -3,9 +3,8 @@ package com.stockcomp.service.order
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.domain.contest.enums.OrderStatus.COMPLETED
-import com.stockcomp.domain.contest.enums.OrderStatus.FAILED
+import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
+import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
 import com.stockcomp.dto.RealTimePrice
@@ -47,18 +46,32 @@ class DefaultOrderProcessingService(
         logger.info("Stopping order processing")
     }
 
+    override fun terminateRemainingOrders() {
+        keepProcessingOrders = false
+        logger.info("Terminating remaining orders")
+
+        investmentOrderRepository.findAllByOrderStatus(ACTIVE)
+            .filter { it.participant.contest.contestStatus == RUNNING }
+            .map { markContestAsTerminated(it) }
+            .let { investmentOrderRepository.saveAll(it) }
+    }
+
+    private fun markContestAsTerminated(investmentOrder: InvestmentOrder): InvestmentOrder =
+        investmentOrder.apply { this.orderStatus = TERMINATED }
+
+
     private suspend fun iterateProcessingOrders() {
         while (keepProcessingOrders) {
             try {
-                val orders = investmentOrderRepository.findAllByOrderStatus(OrderStatus.ACTIVE)
-                val orderMap = orders.groupBy { it.symbol }
-                orderMap.forEach { (symbol, orders) ->
-                    run {
-                        delay(15000L)
-                        processOrdersForSymbol(symbol, orders)
-                        logger.info("Processing order for symbol $symbol")
+                investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
+                    .groupBy { it.symbol }
+                    .forEach { (symbol, orders) ->
+                        run {
+                            delay(15000L)
+                            processOrdersForSymbol(symbol, orders)
+                            logger.info("Processing order for symbol $symbol")
+                        }
                     }
-                }
             } catch (e: Exception) {
                 logger.error("Failed order processing : ${e.message}")
             }
