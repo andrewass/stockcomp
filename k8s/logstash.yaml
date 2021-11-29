@@ -1,0 +1,22 @@
+input: |-
+  tcp {
+     port => 9600
+     codec => json
+  }
+
+
+## filter: |-
+##   grok {
+##     match => { "message" => "%{COMBINEDAPACHELOG}" }
+##   }
+##   date {
+##     match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+##   }
+##
+
+output: |-
+  elasticsearch {
+    hosts => ["elasticsearch-es-http:9200"]
+    index => "my-test-index"
+  }
+  stdout {}

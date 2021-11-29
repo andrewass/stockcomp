@@ -26,21 +26,15 @@ spec:
               value: admin
             - name: ADMIN_EMAIL
               value: admin@admin.com
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
             - name: SPRING_DATASOURCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: config
-                  key: database_url
+              value: jdbc:postgresql://postgresql:5432/stockdb
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: secrets
-                  key: password
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: secrets
-                  key: username
+                  name: postgresql
+                  key: postgresql-password
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
