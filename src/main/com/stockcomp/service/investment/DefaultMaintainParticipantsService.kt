@@ -59,11 +59,10 @@ class DefaultMaintainParticipantsService(
     }
 
     private fun maintainRanking() {
-        val runningContest = contestRepository.findByContestStatus(RUNNING)
-        var rank = 1
-        val participants = participantRepository.findAllByContestOrderByTotalValueDesc(runningContest)
-        participants.forEach { it.rank = rank++ }
-        participantRepository.saveAll(participants)
+        var rankCounter = 1
+        participantRepository.findAllByContestOrderByTotalValueDesc(contestRepository.findByContestStatus(RUNNING))
+            .onEach { it.rank = rankCounter++ }
+            .also { participantRepository.saveAll(it) }
     }
 
     private fun updateInvestmentAndParticipant(investment: Investment, realTimePrice: RealTimePrice) {
@@ -72,7 +71,7 @@ class DefaultMaintainParticipantsService(
         participant.totalValue += gains
         investment.apply {
             totalValue += gains
-            totalProfit = this.totalValue - (investment.amount * investment.averageUnitCost)
+            totalProfit = totalValue - (amount * averageUnitCost)
         }
         investmentRepository.save(investment)
         participantRepository.save(participant)

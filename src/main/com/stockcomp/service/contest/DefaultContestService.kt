@@ -64,7 +64,7 @@ class DefaultContestService(
             ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START) }
             ?.let {
                 val user = userService.findUserByUsername(username)!!
-                val participant = Participant(user = user, contest = it)
+                val participant = Participant(user = user, contest = it, rank = it.participantCount+1)
                 participantRepository.save(participant)
                 it.participantCount++
                 contestRepository.save(it)

@@ -39,7 +39,7 @@ create table t_leaderboard_entry(
 	 leaderboard_entry_id   bigserial primary key,
 	 contest_count          int,
 	 ranking                int,
-	 score                  double precision,
+	 score                  int,
 	 user_id                bigserial not null,
 	 last_contest_id        bigserial,
 	 date_created    	    timestamp not null,

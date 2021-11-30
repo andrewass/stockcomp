@@ -1,5 +1,5 @@
 #!/bin/bash
 
 helm install postgresql \
-    -f logstash.conf \
-    bitnami/postgresql
+  --set postgresqlDatabase=stockdb \
+  bitnami/postgresql

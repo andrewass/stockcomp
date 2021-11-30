@@ -112,6 +112,6 @@ internal class DefaultInvestmentServiceTest {
                 username = username, password = "testPassword",
                 email = "testEmail", country = "Canada"
             ),
-            contest = contest
+            contest = contest, rank = 1
         )
 }

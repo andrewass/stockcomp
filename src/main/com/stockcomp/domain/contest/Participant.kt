@@ -30,7 +30,7 @@ class Participant(
     var remainingFund: Double = 20000.00,
 
     @Column(name = "participant_rank")
-    var rank: Int? = null,
+    var rank: Int,
 
     var totalValue: Double = 20000.00
 

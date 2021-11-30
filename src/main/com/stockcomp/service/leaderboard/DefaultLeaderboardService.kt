@@ -18,8 +18,6 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.math.ceil
-import kotlin.math.max
 
 @Service
 @Transactional
@@ -32,10 +30,17 @@ class DefaultLeaderboardService(
 
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
+    private val medalMap = hashMapOf(
+        0.05 to MedalValue.GOLD,
+        0.10 to MedalValue.SILVER,
+        0.15 to MedalValue.BRONZE
+    )
+
     override fun updateLeaderboard(contest: Contest) {
         if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED) {
             logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
             contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
+
             CoroutineScope(Default).launch {
                 updateScoreForParticipants(contest)
                 logger.info("Update of participant score completed")
@@ -45,14 +50,15 @@ class DefaultLeaderboardService(
         }
     }
 
-    override fun getSortedLeaderboardEntries(): List<LeaderboardEntryDto> {
-        return leaderboardEntryRepository.findAllByOrderByRanking()
+    override fun getSortedLeaderboardEntries(): List<LeaderboardEntryDto> =
+        leaderboardEntryRepository.findAllByOrderByRanking()
             .map { it.toLeaderboardEntryDto() }
-    }
+
 
     override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto =
         userService.findUserByUsername(username)
             .let { leaderboardEntryRepository.findByUser(it).toLeaderboardEntryDto() }
+
 
     private fun updateRankingForEntries() {
         var rank = 1
@@ -62,54 +68,46 @@ class DefaultLeaderboardService(
     }
 
     private fun updateScoreForParticipants(contest: Contest) {
-        val medalMap = createMedalMap(contest)
         participantRepository.findParticipantsByContest(contest)
             .forEach { participant ->
-                val leaderboardEntry = leaderboardEntryRepository.findByUser(participant.user)
+                val entry = leaderboardEntryRepository.findByUser(participant.user)
                     ?: LeaderboardEntry(user = participant.user)
 
-                if (contest != leaderboardEntry.lastContest) {
-                    val participantScore = (participant.rank!! / contest.participantCount).toDouble()
-                    leaderboardEntry.apply {
-                        this.score += participantScore
-                        this.contestCount = this.contestCount + 1
-                        this.lastContest = contest
-                    }
-                    updateMedalsForEntry(leaderboardEntry, participant, contest, medalMap)
-                    leaderboardEntryRepository.save(leaderboardEntry)
+                if (contest != entry.lastContest) {
+                    updateAndSaveLeaderboardEntry(participant, contest, entry)
                 }
             }
         contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
         contestRepository.save(contest)
     }
 
-    private fun createMedalMap(contest: Contest): HashMap<Double, MedalValue> =
-        getBasePercentage(contest)
-            .let {
-                hashMapOf(
-                    ceil(5 / it) to MedalValue.GOLD,
-                    ceil(10 / it) to MedalValue.SILVER,
-                    ceil(15 / it) to MedalValue.BRONZE
-                )
-            }
+    private fun updateAndSaveLeaderboardEntry(participant: Participant, contest: Contest, entry: LeaderboardEntry) {
+        val participantScore = participant.rank / contest.participantCount
+        entry.apply {
+            score += participantScore
+            contestCount += 1
+            lastContest = contest
+        }
+        updateMedalsForEntry(entry, participant, contest)
+        leaderboardEntryRepository.save(entry)
+    }
 
-    private fun getBasePercentage(contest: Contest) = (100 / max(contest.participantCount, 1)).toDouble()
-
-    private fun updateMedalsForEntry(
-        leaderboardEntry: LeaderboardEntry, participant: Participant,
-        contest: Contest, medalMap: Map<Double, MedalValue>
-    ) {
+    private fun updateMedalsForEntry(entry: LeaderboardEntry, participant: Participant, contest: Contest) {
         medalMap.entries
-            .firstOrNull { (key, _) -> key <= participant.rank!! }
+            .firstOrNull { (key, _) -> key <= getParticipantPercentagePosition(participant, contest) }
             ?.let {
-                leaderboardEntry.addMedal(
+                entry.addMedal(
                     Medal(
                         contest = contest,
-                        leaderboardEntry = leaderboardEntry,
+                        leaderboardEntry = entry,
                         medalValue = it.value,
-                        position = participant.rank!!
+                        position = participant.rank
                     )
                 )
             }
     }
+
+    private fun getParticipantPercentagePosition(participant: Participant, contest: Contest): Double =
+        ((participant.rank - 1) / contest.participantCount).toDouble()
+
 }
