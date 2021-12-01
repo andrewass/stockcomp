@@ -76,7 +76,8 @@ class AuthenticationController internal constructor(
             .let {
                 response.addCookie(createCookie(accessToken, it.first, 0))
                 response.addCookie(createCookie(refreshToken, it.second, 0))
-            }.let { ResponseEntity(HttpStatus.OK) }
+                ResponseEntity(HttpStatus.OK)
+            }
 
 
     @GetMapping("/refresh-token")
@@ -87,7 +88,8 @@ class AuthenticationController internal constructor(
             .let {
                 response.addCookie(createCookie(accessToken, it.first, cookieDuration))
                 response.addCookie(createCookie(refreshToken, it.second, cookieDuration))
-            }.let { ResponseEntity(HttpStatus.OK) }
+                ResponseEntity(HttpStatus.OK)
+            }
 
 
     private fun authenticateUser(username: String, password: String) {

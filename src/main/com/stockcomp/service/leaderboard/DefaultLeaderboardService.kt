@@ -55,9 +55,9 @@ class DefaultLeaderboardService(
             .map { it.toLeaderboardEntryDto() }
 
 
-    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto =
+    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto? =
         userService.findUserByUsername(username)
-            .let { leaderboardEntryRepository.findByUser(it).toLeaderboardEntryDto() }
+            .let { leaderboardEntryRepository.findByUser(it)?.toLeaderboardEntryDto() }
 
 
     private fun updateRankingForEntries() {

@@ -50,7 +50,7 @@ class DefaultContestService(
     override fun completeContest(contestNumber: Int) {
         contestRepository.findByContestNumber(contestNumber)
             ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED) }
-            ?.let {
+            ?.also {
                 it.contestStatus = COMPLETED
                 contestRepository.save(it)
                 orderProcessingService.stopOrderProcessing()
@@ -62,7 +62,7 @@ class DefaultContestService(
     override fun signUpUser(username: String, contestNumber: Int) {
         contestRepository.findByContestNumber(contestNumber)
             ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START) }
-            ?.let {
+            ?.also {
                 val user = userService.findUserByUsername(username)!!
                 val participant = Participant(user = user, contest = it, rank = it.participantCount+1)
                 participantRepository.save(participant)

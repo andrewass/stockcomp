@@ -16,13 +16,13 @@
 
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.5.31</kotlin.version>
-        <testcontainers.version>1.16.0</testcontainers.version>
+        <kotlin.version>1.6.0</kotlin.version>
+        <testcontainers.version>1.16.2</testcontainers.version>
         <springfox.version>3.0.0</springfox.version>
         <kotlinx.coroutines.version>1.5.2</kotlinx.coroutines.version>
-        <mockk.version>1.10.0</mockk.version>
+        <mockk.version>1.12.0</mockk.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
-        <micrometer.version>1.6.5</micrometer.version>
+        <micrometer.version>1.8.0</micrometer.version>
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
     </properties>
 

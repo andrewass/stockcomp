@@ -9,5 +9,5 @@ interface LeaderboardService {
 
     fun getSortedLeaderboardEntries(): List<LeaderboardEntryDto>
 
-    fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto
+    fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto?
 }

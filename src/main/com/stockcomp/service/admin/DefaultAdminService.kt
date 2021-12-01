@@ -73,6 +73,7 @@ class DefaultAdminService(
                         maintainParticipantsService.startParticipantsMaintenance()
                     }
                     ContestStatus.AWAITING_START -> pass
+                    else -> {}
                 }
                 it.contestStatus = ContestStatus.fromDecode(contestDto.contestStatus)!!
                 contestRepository.save(it).toContestDto()
