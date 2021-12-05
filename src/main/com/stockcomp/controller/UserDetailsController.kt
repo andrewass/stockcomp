@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/user")
 @Api(description = "Endpoints for updating and fetching user details")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class UserDetailsController(
     private val userService: UserService,
     private val jwtService: JwtService

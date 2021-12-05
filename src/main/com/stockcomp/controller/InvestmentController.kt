@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/investment")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class InvestmentController(
     private val investmentService: InvestmentService,
     private val defaultJwtService: DefaultJwtService

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/investment-order")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 @Api(description = "Endpoints for investment order operations")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/leaderboard")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 @Api(description = "Endpoints for leaderboard entries")
 class LeaderboardController(
     private val leaderboardService: LeaderboardService,

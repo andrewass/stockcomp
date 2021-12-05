@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/contest")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 @Api(description = "Endpoints for contest related operations")
 class ContestController(
     private val contestService: ContestService,

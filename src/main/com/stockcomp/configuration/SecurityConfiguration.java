@@ -16,8 +16,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +53,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors()
+        httpSecurity
+                .cors().configurationSource(request -> createCorsConfiguration())
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
@@ -69,6 +72,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    private CorsConfiguration createCorsConfiguration() {
+        var cors = new CorsConfiguration();
+        cors.addAllowedOrigin("http://localhost:8080");
+        cors.addAllowedOrigin("http://localhost:8080");
+        cors.addAllowedOrigin("http://stockclient-service:80");
+        cors.setAllowCredentials(true);
+        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+
+        return cors;
     }
 
     @PostConstruct

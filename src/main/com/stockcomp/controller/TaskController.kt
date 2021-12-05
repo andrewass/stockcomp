@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/task")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 class TaskController(
     private val contestService: DefaultContestService,
     private val orderProcessingService: OrderProcessingService,

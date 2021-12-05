@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 @Api(description = "Endpoints for user authentication")
 class AuthenticationController internal constructor(
     private val authenticationManager: AuthenticationManager,

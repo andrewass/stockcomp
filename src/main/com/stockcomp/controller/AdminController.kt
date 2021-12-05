@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = ["http://localhost:8000"], allowCredentials = "true")
 @Api(description = "Endpoints available for admin users")
 class AdminController(
     private val adminService: AdminService
