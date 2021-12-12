@@ -69,14 +69,21 @@ class AuthenticationController internal constructor(
     @PostMapping("/sign-out")
     @ApiOperation("Sign out signed in user")
     fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
-        getAccessTokenFromCookie(request)
-            .let { jwtService.extractUsername(it!!) }
+        extractUsernameFromRequest(request)
             .let { jwtService.generateTokenPair(it) }
             .let {
                 response.addCookie(createCookie(accessToken, it.first, 0))
                 response.addCookie(createCookie(refreshToken, it.second, 0))
                 ResponseEntity(HttpStatus.OK)
             }
+
+
+    @PostMapping("verify-admin")
+    @ApiOperation("Verify requested user has admin role ")
+    fun verifyAdmin(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Boolean> =
+        extractUsernameFromRequest(request)
+            .let { userService.verifyAdminUser(it) }
+            .let { ResponseEntity.ok(it) }
 
 
     @GetMapping("/refresh-token")
@@ -95,4 +102,8 @@ class AuthenticationController internal constructor(
         UsernamePasswordAuthenticationToken(username, password)
             .also { authenticationManager.authenticate(it) }
     }
+
+    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
+        getAccessTokenFromCookie(request)
+            .let { jwtService.extractUsername(it!!) }
 }

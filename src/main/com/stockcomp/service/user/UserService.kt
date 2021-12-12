@@ -16,4 +16,6 @@ interface UserService {
     fun updateUserDetails(userDetailsDto: UserDetailsDto)
 
     fun getUserDetails(username: String): UserDetailsDto
+
+    fun verifyAdminUser(username: String) : Boolean
 }

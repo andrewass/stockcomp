@@ -1,5 +1,6 @@
 package com.stockcomp.service.user
 
+import com.stockcomp.domain.user.Role
 import com.stockcomp.dto.UserDetailsDto
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository
@@ -19,11 +20,10 @@ class DefaultUserService @Autowired constructor(
     private val passwordEncoder: PasswordEncoder
 ) : UserDetailsService, UserService {
 
-    override fun loadUserByUsername(userName: String): UserDetails {
-        val persistedUser = userRepository.findByUsername(userName)
+    override fun loadUserByUsername(userName: String): UserDetails =
+        userRepository.findByUsername(userName)
+            .let { User(it.username, it.password, emptyList()) }
 
-        return User(persistedUser.username, persistedUser.password, emptyList())
-    }
 
     override fun signUpUser(request: SignUpRequest): com.stockcomp.domain.user.User {
         if (userRepository.existsByUsername(request.username)) {
@@ -38,11 +38,9 @@ class DefaultUserService @Autowired constructor(
         return userRepository.save(user)
     }
 
-    override fun signInUser(request: AuthenticationRequest): String {
-        val user = userRepository.findByUsername(request.username)
+    override fun signInUser(request: AuthenticationRequest): String =
+        userRepository.findByUsername(request.username).userRole.toString()
 
-        return user.userRole.toString()
-    }
 
     override fun updateUserDetails(userDetailsDto: UserDetailsDto) {
         userRepository.findByUsername(userDetailsDto.username).let {
@@ -52,14 +50,14 @@ class DefaultUserService @Autowired constructor(
         }
     }
 
-    override fun getUserDetails(username: String): UserDetailsDto {
-        val user = userRepository.findByUsername(username)
+    override fun getUserDetails(username: String): UserDetailsDto =
+        userRepository.findByUsername(username).toUserDetailsDto()
 
-        return user.toUserDetailsDto()
-    }
 
-    override fun findUserByUsername(username: String): com.stockcomp.domain.user.User? {
-        return userRepository.findByUsername(username)
-    }
+    override fun verifyAdminUser(username: String): Boolean =
+        userRepository.findByUsername(username).userRole == Role.ADMIN
 
+
+    override fun findUserByUsername(username: String): com.stockcomp.domain.user.User? =
+        userRepository.findByUsername(username)
 }

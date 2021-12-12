@@ -28,7 +28,7 @@ class TokenAuthenticationFilter(
     override fun doFilterInternal(
         request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain
     ) {
-        val token = getTokenFromCookie(request)
+        val token = getAccessTokenFromCookie(request)
         if (token != null && SecurityContextHolder.getContext().authentication == null) {
             val username = defaultJwtService.extractUsername(token)
             val userDetails = userService.loadUserByUsername(username)
@@ -41,7 +41,7 @@ class TokenAuthenticationFilter(
         filterChain.doFilter(request, response)
     }
 
-    private fun getTokenFromCookie(request: HttpServletRequest): String? {
+    private fun getAccessTokenFromCookie(request: HttpServletRequest): String? {
         return request.cookies?.toList()
             ?.filter { it.name == accessTokenName }
             ?.map { it.value }
