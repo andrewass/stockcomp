@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -80,10 +79,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         cors.addAllowedOrigin("http://localhost:8000");
         cors.addAllowedOrigin("http://stockclient-service:80");
         cors.setAllowCredentials(true);
-        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS"));
-        cors.setAllowedHeaders(Arrays.asList("Origin","Access-Control-Allow-Origin",
-                "Content-Type","Accept","Authorization","Origin,Accept","X-Requested-With",
-                "Access-Control-Request-Method","Access-Control-Request-Headers"));
+        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cors.setAllowedHeaders(List.of("Origin", "Access-Control-Allow-Origin", "Access-Control-Expose-Headers",
+                "Content-Type", "Accept", "Authorization", "Origin,Accept", "X-Requested-With",
+                "Access-Control-Request-Method", "Access-Control-Request-Headers","Range"));
+        cors.setExposedHeaders(List.of("Content-Range"));
 
         return cors;
     }
