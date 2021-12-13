@@ -8,9 +8,11 @@ import com.stockcomp.service.order.OrderProcessingService
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component
+@ConditionalOnProperty(name = ["application.runner.enabled"], matchIfMissing = true)
 class ContestTaskRunner(
     private val orderProcessingService: OrderProcessingService,
     private val maintainParticipantsService: MaintainParticipantsService,

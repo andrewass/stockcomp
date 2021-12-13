@@ -9,7 +9,8 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest(properties = {
         "jwt.secret=testSecret",
         "admin.password=admin",
-        "admin.email=admin@admin.com"
+        "admin.email=admin@admin.com",
+        "application.runner.enabled=false"
 })
 public abstract class IntegrationTest {
 
