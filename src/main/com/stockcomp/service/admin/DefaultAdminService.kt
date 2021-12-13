@@ -61,7 +61,7 @@ class DefaultAdminService(
             .let {
                 when (ContestStatus.fromDecode(contestDto.contestStatus)) {
                     ContestStatus.COMPLETED -> {
-                        orderProcessingService.terminateRemainingOrders()
+                        orderProcessingService.terminateRemainingOrders(it)
                         leaderboardService.updateLeaderboard(it)
                     }
                     ContestStatus.STOPPED -> {
@@ -73,7 +73,7 @@ class DefaultAdminService(
                         maintainParticipantsService.startParticipantsMaintenance()
                     }
                     ContestStatus.AWAITING_START -> pass
-                    else -> {}
+                    else -> pass
                 }
                 it.contestStatus = ContestStatus.fromDecode(contestDto.contestStatus)!!
                 contestRepository.save(it).toContestDto()

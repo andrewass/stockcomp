@@ -78,7 +78,7 @@ class AuthenticationController internal constructor(
             }
 
 
-    @PostMapping("verify-admin")
+    @GetMapping("verify-admin")
     @ApiOperation("Verify requested user has admin role ")
     fun verifyAdmin(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Boolean> =
         extractUsernameFromRequest(request)

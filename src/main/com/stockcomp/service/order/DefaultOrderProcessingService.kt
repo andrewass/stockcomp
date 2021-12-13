@@ -1,5 +1,6 @@
 package com.stockcomp.service.order
 
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.Integer.min
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 @Transactional
@@ -31,37 +33,41 @@ class DefaultOrderProcessingService(
 ) : OrderProcessingService {
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
-    private var keepProcessingOrders = false
+    private var orderProcessingEnabled = AtomicBoolean(false)
 
     override fun startOrderProcessing() {
-        keepProcessingOrders = true
-        logger.info("Starting order processing")
-        CoroutineScope(Default).launch {
-            iterateProcessingOrders()
+        if(!orderProcessingIsEnabled()) {
+            orderProcessingEnabled.set(true)
+            logger.info("Starting order processing")
+            CoroutineScope(Default).launch {
+                iterateProcessingOrders()
+            }
         }
     }
 
     override fun stopOrderProcessing() {
-        keepProcessingOrders = false
+        orderProcessingEnabled.set(false)
         logger.info("Stopping order processing")
     }
 
-    override fun terminateRemainingOrders() {
-        keepProcessingOrders = false
+    override fun terminateRemainingOrders(contest: Contest) {
+        orderProcessingEnabled.set(false)
         logger.info("Terminating remaining orders")
 
         investmentOrderRepository.findAllByOrderStatus(ACTIVE)
-            .filter { it.participant.contest.contestStatus == RUNNING }
-            .map { markContestAsTerminated(it) }
+            .filter { it.participant.contest == contest }
+            .map { markInvestmentOrderAsTerminated(it) }
             .let { investmentOrderRepository.saveAll(it) }
     }
 
-    private fun markContestAsTerminated(investmentOrder: InvestmentOrder): InvestmentOrder =
+    private fun orderProcessingIsEnabled(): Boolean =
+        orderProcessingEnabled.get()
+
+    private fun markInvestmentOrderAsTerminated(investmentOrder: InvestmentOrder): InvestmentOrder =
         investmentOrder.apply { this.orderStatus = TERMINATED }
 
-
     private suspend fun iterateProcessingOrders() {
-        while (keepProcessingOrders) {
+        while (orderProcessingEnabled.get()) {
             try {
                 investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
                     .groupBy { it.symbol }

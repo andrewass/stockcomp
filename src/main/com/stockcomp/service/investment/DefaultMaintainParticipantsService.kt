@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 class DefaultMaintainParticipantsService(
@@ -23,23 +24,25 @@ class DefaultMaintainParticipantsService(
 ) : MaintainParticipantsService {
 
     private val logger = LoggerFactory.getLogger(DefaultMaintainParticipantsService::class.java)
-    private var keepMaintainingReturns = false
+    private var maintainingReturnsEnabled = AtomicBoolean(false)
 
     override fun startParticipantsMaintenance() {
-        keepMaintainingReturns = true
-        logger.info("Starting maintenance of investment returns")
-        CoroutineScope(Default).launch {
-            maintainParticipants()
+        if(!maintainingReturnsIsEnabled()) {
+            maintainingReturnsEnabled.set(true)
+            logger.info("Starting maintenance of investment returns")
+            CoroutineScope(Default).launch {
+                maintainParticipants()
+            }
         }
     }
 
     override fun stopParticipantsMaintenance() {
-        keepMaintainingReturns = false
+        maintainingReturnsEnabled.set(false)
         logger.info("Stopping maintenance of investment returns")
     }
 
     private suspend fun maintainParticipants() {
-        while (keepMaintainingReturns) {
+        while (maintainingReturnsIsEnabled()) {
             try {
                 delay(30000L)
                 investmentRepository.findAllInvestmentsByContestStatus(RUNNING)
@@ -57,6 +60,9 @@ class DefaultMaintainParticipantsService(
         }
         logger.info("Maintenance of investment returns is now stopped")
     }
+
+    private fun maintainingReturnsIsEnabled(): Boolean =
+        maintainingReturnsEnabled.get()
 
     private fun maintainRanking() {
         var rankCounter = 1
