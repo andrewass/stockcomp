@@ -13,6 +13,8 @@ import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.util.mapToInvestmentOrder
 import com.stockcomp.util.mapToInvestmentOrderDto
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,10 +23,21 @@ import org.springframework.transaction.annotation.Transactional
 class DefaultInvestmentOrderService(
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val participantRepository: ParticipantRepository,
-    private val contestRepository: ContestRepository
+    private val contestRepository: ContestRepository,
+    meterRegistry: SimpleMeterRegistry
 ) : InvestmentOrderService {
 
+    private val sellOrderCounter = Counter.builder("sell.order.placed")
+        .description("Number of sell orders placed")
+        .register(meterRegistry)
+
+    private val buyOrderCounter = Counter.builder("buy.order.placed")
+        .description("Number of buy orders placed")
+        .register(meterRegistry)
+
+
     override fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String) {
+        buyOrderCounter.increment()
         mapToInvestmentOrder(
             getParticipant(username, investmentRequest.contestNumber),
             investmentRequest,
@@ -33,6 +46,7 @@ class DefaultInvestmentOrderService(
     }
 
     override fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String) {
+        sellOrderCounter.increment()
         mapToInvestmentOrder(
             getParticipant(username, investmentRequest.contestNumber),
             investmentRequest,

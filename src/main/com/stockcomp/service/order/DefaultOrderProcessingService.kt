@@ -13,6 +13,8 @@ import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService
+import io.micrometer.core.instrument.Gauge
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.delay
@@ -29,14 +31,15 @@ class DefaultOrderProcessingService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
-    private val symbolService: SymbolService
+    private val symbolService: SymbolService,
+    private val meterRegistry: SimpleMeterRegistry
 ) : OrderProcessingService {
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
     private var orderProcessingEnabled = AtomicBoolean(false)
 
     override fun startOrderProcessing() {
-        if(!orderProcessingIsEnabled()) {
+        if (!orderProcessingIsEnabled()) {
             orderProcessingEnabled.set(true)
             logger.info("Starting order processing")
             CoroutineScope(Default).launch {
@@ -70,6 +73,7 @@ class DefaultOrderProcessingService(
         while (orderProcessingEnabled.get()) {
             try {
                 investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
+                    .also { gaugeOrders(it) }
                     .groupBy { it.symbol }
                     .forEach { (symbol, orders) ->
                         run {
@@ -83,6 +87,12 @@ class DefaultOrderProcessingService(
             }
         }
         logger.info("Order processing is now stopped")
+    }
+
+    private fun gaugeOrders(orders: List<InvestmentOrder>) {
+        Gauge.builder("active.orders", orders) { list -> list.size.toDouble() }
+            .description("Number of active orders")
+            .register(meterRegistry)
     }
 
     private fun processOrdersForSymbol(symbol: String, orders: List<InvestmentOrder>) {
