@@ -7,9 +7,8 @@ import com.stockcomp.dto.UserDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.service.investment.MaintainParticipantsService
 import com.stockcomp.service.leaderboard.LeaderboardService
-import com.stockcomp.service.order.OrderProcessingService
+import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
 import org.springframework.stereotype.Service
@@ -19,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultAdminService(
     private val leaderboardService: LeaderboardService,
-    private val maintainParticipantsService: MaintainParticipantsService,
-    private val orderProcessingService: OrderProcessingService,
+    private val contestTasks: ContestTasks,
     private val contestRepository: ContestRepository,
     private val userRepository: UserRepository
 ) : AdminService {
@@ -61,16 +59,16 @@ class DefaultAdminService(
             .let {
                 when (ContestStatus.fromDecode(contestDto.contestStatus)) {
                     ContestStatus.COMPLETED -> {
-                        orderProcessingService.terminateRemainingOrders(it)
+                        contestTasks.terminateRemainingOrders(it)
                         leaderboardService.updateLeaderboard(it)
                     }
                     ContestStatus.STOPPED -> {
-                        orderProcessingService.stopOrderProcessing()
-                        maintainParticipantsService.stopParticipantsMaintenance()
+                        contestTasks.stopOrderProcessing()
+                        contestTasks.stopInvestmentProcessing()
                     }
                     ContestStatus.RUNNING -> {
-                        orderProcessingService.startOrderProcessing()
-                        maintainParticipantsService.startParticipantsMaintenance()
+                        contestTasks.startOrderProcessing()
+                        contestTasks.startInvestmentProcessing()
                     }
                     ContestStatus.AWAITING_START -> pass
                     else -> pass

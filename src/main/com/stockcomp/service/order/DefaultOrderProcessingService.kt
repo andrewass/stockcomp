@@ -15,46 +15,42 @@ import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.Integer.min
-import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 @Transactional
-class DefaultOrderProcessingService(
+class DefaultMaintainOrderService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
     private val symbolService: SymbolService,
     private val meterRegistry: SimpleMeterRegistry
-) : OrderProcessingService {
+) : MaintainOrderService {
 
-    private val logger = LoggerFactory.getLogger(DefaultOrderProcessingService::class.java)
-    private var orderProcessingEnabled = AtomicBoolean(false)
+    private val logger = LoggerFactory.getLogger(DefaultMaintainOrderService::class.java)
 
-    override fun startOrderProcessing() {
-        if (!orderProcessingIsEnabled()) {
-            orderProcessingEnabled.set(true)
-            logger.info("Starting order processing")
-            CoroutineScope(Default).launch {
-                iterateProcessingOrders()
-            }
+    override suspend fun processInvestmentOrders() {
+        try {
+            investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
+                .also { gaugeOrders(it) }
+                .groupBy { it.symbol }
+                .forEach { (symbol, orders) ->
+                    run {
+                        delay(15000L)
+                        processOrdersForSymbol(symbol, orders)
+                        logger.info("Processing order for symbol $symbol")
+                    }
+                }
+        } catch (e: Exception) {
+            logger.error("Failed order processing : ${e.message}")
         }
     }
 
-    override fun stopOrderProcessing() {
-        orderProcessingEnabled.set(false)
-        logger.info("Stopping order processing")
-    }
-
     override fun terminateRemainingOrders(contest: Contest) {
-        orderProcessingEnabled.set(false)
         logger.info("Terminating remaining orders")
 
         investmentOrderRepository.findAllByOrderStatus(ACTIVE)
@@ -63,31 +59,9 @@ class DefaultOrderProcessingService(
             .let { investmentOrderRepository.saveAll(it) }
     }
 
-    private fun orderProcessingIsEnabled(): Boolean =
-        orderProcessingEnabled.get()
-
     private fun markInvestmentOrderAsTerminated(investmentOrder: InvestmentOrder): InvestmentOrder =
         investmentOrder.apply { this.orderStatus = TERMINATED }
 
-    private suspend fun iterateProcessingOrders() {
-        while (orderProcessingEnabled.get()) {
-            try {
-                investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
-                    .also { gaugeOrders(it) }
-                    .groupBy { it.symbol }
-                    .forEach { (symbol, orders) ->
-                        run {
-                            delay(15000L)
-                            processOrdersForSymbol(symbol, orders)
-                            logger.info("Processing order for symbol $symbol")
-                        }
-                    }
-            } catch (e: Exception) {
-                logger.error("Failed order processing : ${e.message}")
-            }
-        }
-        logger.info("Order processing is now stopped")
-    }
 
     private fun gaugeOrders(orders: List<InvestmentOrder>) {
         Gauge.builder("active.orders", orders) { list -> list.size.toDouble() }

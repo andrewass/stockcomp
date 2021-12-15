@@ -6,8 +6,8 @@ import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.DefaultUserService
+import com.stockcomp.tasks.DefaultContestTasks
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -33,10 +33,10 @@ internal class DefaultContestServiceTest {
     private lateinit var participantRepository: ParticipantRepository
 
     @MockK
-    private lateinit var orderProcessingService: OrderProcessingService
+    private lateinit var contestTasks: DefaultContestTasks
 
     @InjectMockKs
-    private lateinit var defaultContestService: DefaultContestService
+    private lateinit var contestService: DefaultContestService
 
     private val contestNumber = 33
     private val username = "testUser"
@@ -59,11 +59,11 @@ internal class DefaultContestServiceTest {
         } returns contest
 
         every {
-            orderProcessingService.startOrderProcessing()
+            contestTasks.startOrderProcessing()
         } returns Unit
 
         every {
-            orderProcessingService.stopOrderProcessing()
+            contestTasks.stopOrderProcessing()
         } returns Unit
     }
 
@@ -73,7 +73,7 @@ internal class DefaultContestServiceTest {
             contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.AWAITING_START)
         } returns createFutureContest()
 
-        defaultContestService.startContest(contestNumber)
+        contestService.startContest(contestNumber)
 
         assertEquals(ContestStatus.RUNNING, contestSlot.captured.contestStatus)
     }
@@ -85,7 +85,7 @@ internal class DefaultContestServiceTest {
         } returns null
 
         assertThrows<NoSuchElementException> {
-            defaultContestService.startContest(contestNumber)
+            contestService.startContest(contestNumber)
         }
     }
 
@@ -95,7 +95,7 @@ internal class DefaultContestServiceTest {
             contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
         } returns createRunningContest()
 
-        defaultContestService.stopContest(contestNumber)
+        contestService.stopContest(contestNumber)
 
         assertEquals(ContestStatus.STOPPED, contestSlot.captured.contestStatus)
     }
@@ -107,7 +107,7 @@ internal class DefaultContestServiceTest {
         } returns null
 
         assertThrows<NoSuchElementException> {
-            defaultContestService.startContest(contestNumber)
+            contestService.startContest(contestNumber)
         }
     }
 
@@ -117,7 +117,7 @@ internal class DefaultContestServiceTest {
             contestRepository.findByContestNumber(contestNumber)
         } returns createRunningContest()
 
-        defaultContestService.completeContest(contestNumber)
+        contestService.completeContest(contestNumber)
 
         assertEquals(ContestStatus.COMPLETED, contestSlot.captured.contestStatus)
     }
@@ -129,7 +129,7 @@ internal class DefaultContestServiceTest {
         } returns null
 
         assertThrows<NoSuchElementException> {
-            defaultContestService.completeContest(contestNumber)
+            contestService.completeContest(contestNumber)
         }
     }
 
@@ -149,7 +149,7 @@ internal class DefaultContestServiceTest {
             participantRepository.save(capture(participantSlot))
         } returns participant
 
-        defaultContestService.signUpUser(username, contestNumber)
+        contestService.signUpUser(username, contestNumber)
 
         assertEquals(participantSlot.captured.contest, runningContest)
         assertEquals(participantSlot.captured.user, user)
@@ -162,7 +162,7 @@ internal class DefaultContestServiceTest {
         } returns null
 
         assertThrows<NoSuchElementException> {
-            defaultContestService.signUpUser(username, contestNumber)
+            contestService.signUpUser(username, contestNumber)
         }
     }
 
@@ -178,7 +178,7 @@ internal class DefaultContestServiceTest {
             participantRepository.findParticipantFromUsernameAndContest(username, runningContest)
         } returns listOf(participant)
 
-        val upcomingContests = defaultContestService.getUpcomingContestsParticipant(username)
+        val upcomingContests = contestService.getUpcomingContestsParticipant(username)
 
         assertEquals(upcomingContests.size, 1)
         upcomingContests[0].let {

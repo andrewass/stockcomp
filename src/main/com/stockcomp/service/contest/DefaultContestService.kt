@@ -8,8 +8,8 @@ import com.stockcomp.dto.ParticipantDto
 import com.stockcomp.dto.UpcomingContestParticipantDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.service.order.OrderProcessingService
 import com.stockcomp.service.user.UserService
+import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.mapToUpcomingContestParticipantDto
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toParticipantDto
@@ -23,7 +23,7 @@ class DefaultContestService(
     private val contestRepository: ContestRepository,
     private val userService: UserService,
     private val participantRepository: ParticipantRepository,
-    private val orderProcessingService: OrderProcessingService
+    private val contestTasks: ContestTasks
 ) : ContestService {
     private val logger = LoggerFactory.getLogger(DefaultContestService::class.java)
 
@@ -31,7 +31,7 @@ class DefaultContestService(
         contestRepository.findByContestNumberAndContestStatus(contestNumber, AWAITING_START)?.also {
             it.contestStatus = RUNNING
             contestRepository.save(it)
-            orderProcessingService.startOrderProcessing()
+            contestTasks.startOrderProcessing()
             logger.info("Starting contest $contestNumber")
         } ?: throw NoSuchElementException("Unable to start contest. Contest with number $contestNumber not found")
     }
@@ -41,7 +41,7 @@ class DefaultContestService(
             ?.also {
                 it.contestStatus = STOPPED
                 contestRepository.save(it)
-                orderProcessingService.stopOrderProcessing()
+                contestTasks.stopOrderProcessing()
                 logger.info("Stopping contest $contestNumber")
             }
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
@@ -53,7 +53,7 @@ class DefaultContestService(
             ?.also {
                 it.contestStatus = COMPLETED
                 contestRepository.save(it)
-                orderProcessingService.stopOrderProcessing()
+                contestTasks.stopOrderProcessing()
                 logger.info("Completing contest $contestNumber")
             }
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
@@ -64,7 +64,7 @@ class DefaultContestService(
             ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START) }
             ?.also {
                 val user = userService.findUserByUsername(username)!!
-                val participant = Participant(user = user, contest = it, rank = it.participantCount+1)
+                val participant = Participant(user = user, contest = it, rank = it.participantCount + 1)
                 participantRepository.save(participant)
                 it.participantCount++
                 contestRepository.save(it)

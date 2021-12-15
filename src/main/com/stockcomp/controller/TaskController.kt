@@ -1,8 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.service.contest.DefaultContestService
-import com.stockcomp.service.investment.MaintainParticipantsService
-import com.stockcomp.service.order.OrderProcessingService
+import com.stockcomp.tasks.ContestTasks
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,8 +11,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/task")
 class TaskController(
     private val contestService: DefaultContestService,
-    private val orderProcessingService: OrderProcessingService,
-    private val maintainParticipantsService: MaintainParticipantsService
+    private val contestTasks: ContestTasks
 ) {
 
     @PostMapping("/start-contest")
@@ -31,27 +29,27 @@ class TaskController(
     @PostMapping("/start-order-process")
     @ApiOperation(value = "Start processing of investment orders")
     fun startOrderProcessing(): ResponseEntity<HttpStatus> =
-        orderProcessingService.startOrderProcessing()
+        contestTasks.startOrderProcessing()
             .run { ResponseEntity(HttpStatus.OK) }
 
 
     @PostMapping("/stop-order-process")
     @ApiOperation(value = "Stop processing of investment orders")
     fun stopOrderProcessing(): ResponseEntity<HttpStatus> =
-        orderProcessingService.stopOrderProcessing()
+        contestTasks.stopOrderProcessing()
             .run { ResponseEntity(HttpStatus.OK) }
 
 
-    @PostMapping("/start-participants-maintenance")
+    @PostMapping("/start-investment-maintenance")
     @ApiOperation("Start maintenance of all participants of a running contest")
     fun startParticipantsMaintenance(): ResponseEntity<HttpStatus> =
-        maintainParticipantsService.startParticipantsMaintenance()
+        contestTasks.startInvestmentProcessing()
             .run { ResponseEntity(HttpStatus.OK) }
 
 
-    @PostMapping("/stop-participants-maintenance")
+    @PostMapping("/stop-investment-maintenance")
     @ApiOperation("Stop maintenance of all participants of a running contest")
     fun stopParticipantsMaintenance(): ResponseEntity<HttpStatus> =
-        maintainParticipantsService.stopParticipantsMaintenance()
+        contestTasks.stopInvestmentProcessing()
             .run { ResponseEntity(HttpStatus.OK) }
 }

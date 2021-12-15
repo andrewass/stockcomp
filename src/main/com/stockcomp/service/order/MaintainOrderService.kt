@@ -2,11 +2,9 @@ package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Contest
 
-interface OrderProcessingService {
+interface MaintainOrderService {
 
-    fun startOrderProcessing()
-
-    fun stopOrderProcessing()
+    suspend fun processInvestmentOrders()
 
     fun terminateRemainingOrders(contest: Contest)
 }
