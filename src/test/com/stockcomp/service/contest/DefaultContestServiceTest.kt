@@ -13,7 +13,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.slot
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -184,7 +184,7 @@ internal class DefaultContestServiceTest {
         upcomingContests[0].let {
             assertEquals(contestNumber, it.contestNumber)
             assertEquals(ContestStatus.RUNNING.decode, it.contestStatus)
-            assertEquals(true, it.userParticipating, )
+            assertEquals(true, it.userParticipating)
             assertEquals(runningContest.startTime, it.startTime)
         }
     }

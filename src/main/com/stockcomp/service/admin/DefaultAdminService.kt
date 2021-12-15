@@ -7,7 +7,9 @@ import com.stockcomp.dto.UserDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
@@ -20,7 +22,8 @@ class DefaultAdminService(
     private val leaderboardService: LeaderboardService,
     private val contestTasks: ContestTasks,
     private val contestRepository: ContestRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val investmentOrderService: InvestmentOrderService
 ) : AdminService {
 
     private val pass = Unit
@@ -59,16 +62,16 @@ class DefaultAdminService(
             .let {
                 when (ContestStatus.fromDecode(contestDto.contestStatus)) {
                     ContestStatus.COMPLETED -> {
-                        contestTasks.terminateRemainingOrders(it)
+                        investmentOrderService.terminateRemainingOrders(it)
                         leaderboardService.updateLeaderboard(it)
                     }
                     ContestStatus.STOPPED -> {
                         contestTasks.stopOrderProcessing()
-                        contestTasks.stopInvestmentProcessing()
+                        contestTasks.stopMaintainInvestments()
                     }
                     ContestStatus.RUNNING -> {
                         contestTasks.startOrderProcessing()
-                        contestTasks.startInvestmentProcessing()
+                        contestTasks.startMaintainInvestments()
                     }
                     ContestStatus.AWAITING_START -> pass
                     else -> pass

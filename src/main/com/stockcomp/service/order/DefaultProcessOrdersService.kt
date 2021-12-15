@@ -23,15 +23,15 @@ import java.lang.Integer.min
 
 @Service
 @Transactional
-class DefaultMaintainOrderService(
+class DefaultProcessOrdersService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
     private val symbolService: SymbolService,
     private val meterRegistry: SimpleMeterRegistry
-) : MaintainOrderService {
+) : ProcessOrdersService {
 
-    private val logger = LoggerFactory.getLogger(DefaultMaintainOrderService::class.java)
+    private val logger = LoggerFactory.getLogger(DefaultProcessOrdersService::class.java)
 
     override suspend fun processInvestmentOrders() {
         try {

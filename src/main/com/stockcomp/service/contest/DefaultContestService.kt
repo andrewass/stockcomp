@@ -32,6 +32,7 @@ class DefaultContestService(
             it.contestStatus = RUNNING
             contestRepository.save(it)
             contestTasks.startOrderProcessing()
+            contestTasks.startMaintainInvestments()
             logger.info("Starting contest $contestNumber")
         } ?: throw NoSuchElementException("Unable to start contest. Contest with number $contestNumber not found")
     }
@@ -42,6 +43,7 @@ class DefaultContestService(
                 it.contestStatus = STOPPED
                 contestRepository.save(it)
                 contestTasks.stopOrderProcessing()
+                contestTasks.stopMaintainInvestments()
                 logger.info("Stopping contest $contestNumber")
             }
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
@@ -54,6 +56,7 @@ class DefaultContestService(
                 it.contestStatus = COMPLETED
                 contestRepository.save(it)
                 contestTasks.stopOrderProcessing()
+                contestTasks.stopMaintainInvestments()
                 logger.info("Completing contest $contestNumber")
             }
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")

@@ -1,5 +1,6 @@
 package com.stockcomp.service.order
 
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
@@ -61,8 +62,7 @@ class DefaultInvestmentOrderService(
             ?: throw InvalidStateException("Attempting to delete order not tied to user : $orderId")
     }
 
-    override fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int)
-            : List<InvestmentOrderDto> =
+    override fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> =
         findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
 
 
@@ -78,6 +78,10 @@ class DefaultInvestmentOrderService(
     override fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
             : List<InvestmentOrderDto> =
         findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
+
+    override fun terminateRemainingOrders(contest: Contest) {
+        TODO("Not yet implemented")
+    }
 
 
     private fun findOrdersByParticipant(

@@ -1,5 +1,6 @@
 package com.stockcomp.service.order
 
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.dto.InvestmentOrderDto
 
@@ -20,4 +21,6 @@ interface InvestmentOrderService {
 
     fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
             : List<InvestmentOrderDto>
+
+    fun terminateRemainingOrders(contest: Contest)
 }

@@ -23,7 +23,7 @@ internal class DefaultOrderProcessingServiceTest {
     private lateinit var symbolService: DefaultSymbolService
 
     @InjectMockKs
-    private lateinit var maintainOrderService: DefaultMaintainOrderService
+    private lateinit var maintainOrderService: DefaultProcessOrdersService
 
     @BeforeAll
     private fun setUp() {

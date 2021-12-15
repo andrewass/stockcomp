@@ -13,6 +13,6 @@ class ContestTaskRunner(
 
     override fun run(args: ApplicationArguments?) {
         contestTasks.startOrderProcessing()
-        contestTasks.startInvestmentProcessing()
+        contestTasks.startMaintainInvestments()
     }
 }
