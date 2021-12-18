@@ -4,13 +4,10 @@ import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.service.investment.MaintainInvestmentService
 import com.stockcomp.service.order.ProcessOrdersService
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicBoolean
 
 @Component
 class DefaultContestTasks(
@@ -20,16 +17,16 @@ class DefaultContestTasks(
 ) : ContestTasks {
 
     private val logger = LoggerFactory.getLogger(DefaultContestTasks::class.java)
-    private var maintainInvestments = AtomicBoolean(false)
-    private var processOrders = AtomicBoolean(false)
+
+    private var orderJob: Job? = null
+    private var investmentJob: Job? = null
 
     override fun startOrderProcessing() {
-        if (!processOrdersIsEnabled() && existsRunningContest()) {
-            processOrders.set(true)
-            logger.info("Starting processing of investment orders")
+        assertJobNotAlreadyActive(orderJob)
 
-            CoroutineScope(Default).launch {
-                while (processOrdersIsEnabled()) {
+        if (existsRunningContest()) {
+            orderJob = CoroutineScope(Default).launch {
+                while (isActive) {
                     processOrdersService.processInvestmentOrders()
                     delay(15000L)
                 }
@@ -39,17 +36,18 @@ class DefaultContestTasks(
     }
 
     override fun stopOrderProcessing() {
-        maintainInvestments.set(false)
+        assertJobIsActive(orderJob).cancel()
+        orderJob = null
         logger.info("Stopping processing of investment orders")
     }
 
     override fun startMaintainInvestments() {
-        if (!maintainInvestmentsIsEnabled() && existsRunningContest()) {
-            maintainInvestments.set(true)
-            logger.info("Starting maintenance of investment returns")
+        assertJobNotAlreadyActive(investmentJob)
 
-            CoroutineScope(Default).launch {
-                while (maintainInvestmentsIsEnabled()) {
+        if (existsRunningContest()) {
+            investmentJob = CoroutineScope(Default).launch {
+                logger.info("Starting maintenance of investment returns")
+                while (isActive) {
                     maintainParticipantsService.maintainInvestments()
                     delay(15000L)
                 }
@@ -59,16 +57,24 @@ class DefaultContestTasks(
     }
 
     override fun stopMaintainInvestments() {
-        maintainInvestments.set(false)
+        assertJobIsActive(investmentJob).cancel()
+        investmentJob = null
         logger.info("Stopping maintenance of investment returns")
     }
 
-    private fun maintainInvestmentsIsEnabled(): Boolean = maintainInvestments.get()
+    private fun assertJobNotAlreadyActive(job: Job?) {
+        if (job?.isActive == true) {
+            throw IllegalStateException("Can not start already running job")
+        }
+    }
 
-    private fun processOrdersIsEnabled(): Boolean = processOrders.get()
-
+    private fun assertJobIsActive(job: Job?): Job {
+        if (job == null || !job.isActive) {
+            throw IllegalStateException("Can not stop a non-running job")
+        }
+        return job
+    }
 
     private fun existsRunningContest(): Boolean =
         contestRepository.findAllByContestStatus(ContestStatus.RUNNING).isNotEmpty()
-
 }

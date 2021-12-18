@@ -65,6 +65,14 @@ internal class DefaultContestServiceTest {
         every {
             contestTasks.stopOrderProcessing()
         } returns Unit
+
+        every {
+            contestTasks.startMaintainInvestments()
+        } returns Unit
+
+        every {
+            contestTasks.stopMaintainInvestments()
+        } returns Unit
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.stockcomp.configuration;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,5 +12,10 @@ public class CommonConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SimpleMeterRegistry simpleMeterRegistry() {
+        return new SimpleMeterRegistry();
     }
 }
