@@ -10,6 +10,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,10 +28,10 @@ internal class DefaultContestTasksTest {
     @MockK
     private lateinit var contestRepository: ContestRepository
 
-    @MockK
+    @RelaxedMockK
     private lateinit var maintainInvestmentService: MaintainInvestmentService
 
-    @MockK
+    @RelaxedMockK
     private lateinit var processOrdersService: ProcessOrdersService
 
     @InjectMockKs
@@ -43,14 +44,6 @@ internal class DefaultContestTasksTest {
         every {
             contestRepository.findAllByContestStatus(ContestStatus.RUNNING)
         } returns listOf(runningContest)
-
-        coEvery {
-            processOrdersService.processInvestmentOrders()
-        } returns Unit
-
-        every {
-            maintainInvestmentService.maintainInvestments()
-        } returns Unit
     }
 
     @Test

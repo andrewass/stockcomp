@@ -22,7 +22,7 @@
         <kotlinx.coroutines.version>1.6.0-RC3</kotlinx.coroutines.version>
         <mockk.version>1.12.1</mockk.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
-        <micrometer.version>1.8.0</micrometer.version>
+        <micrometer.version>1.8.1</micrometer.version>
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
     </properties>
 
@@ -156,6 +156,7 @@
                 <configuration>
                     <args>
                         <arg>-Xjsr305=strict</arg>
+                        <arg>-opt-in=kotlin.RequiresOptIn</arg>
                     </args>
                     <compilerPlugins>
                         <plugin>spring</plugin>
