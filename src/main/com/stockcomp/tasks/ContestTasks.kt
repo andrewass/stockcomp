@@ -8,5 +8,9 @@ interface ContestTasks {
 
     fun startMaintainInvestments()
 
+    fun startContestTasks()
+
+    fun stopContestTasks()
+
     fun stopMaintainInvestments()
 }

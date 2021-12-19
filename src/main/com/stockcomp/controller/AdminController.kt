@@ -65,6 +65,7 @@ class AdminController(
         adminService.updateLeaderboard(contestNumber)
             .run { ResponseEntity(HttpStatus.OK) }
 
+
     @PostMapping("/start-contest")
     fun startContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.startContest(contestNumber)
@@ -77,31 +78,17 @@ class AdminController(
             .run { ResponseEntity(HttpStatus.OK) }
 
 
-    @PostMapping("/start-order-processing")
-    @ApiOperation(value = "Start processing of investment orders")
-    fun startOrderProcessing(): ResponseEntity<HttpStatus> =
-        contestTasks.startOrderProcessing()
+    @PostMapping("/start-contest-tasks")
+    @ApiOperation("Start tasks for processing orders and investments of a contest")
+    fun startContestTasks(): ResponseEntity<HttpStatus> =
+        contestTasks.startContestTasks()
             .run { ResponseEntity(HttpStatus.OK) }
 
 
-    @PostMapping("/stop-order-processing")
-    @ApiOperation(value = "Stop processing of investment orders")
-    fun stopOrderProcessing(): ResponseEntity<HttpStatus> =
-        contestTasks.stopOrderProcessing()
-            .run { ResponseEntity(HttpStatus.OK) }
-
-
-    @PostMapping("/start-investment-processing")
-    @ApiOperation("Start maintenance of all participants of a running contest")
-    fun startParticipantsMaintenance(): ResponseEntity<HttpStatus> =
-        contestTasks.startMaintainInvestments()
-            .run { ResponseEntity(HttpStatus.OK) }
-
-
-    @PostMapping("/stop-investment-processing")
-    @ApiOperation("Stop maintenance of all participants of a running contest")
-    fun stopParticipantsMaintenance(): ResponseEntity<HttpStatus> =
-        contestTasks.stopMaintainInvestments()
+    @PostMapping("/stop-contest-tasks")
+    @ApiOperation("Stop tasks for processing orders and investments of a contest")
+    fun stopContestTasks(): ResponseEntity<HttpStatus> =
+        contestTasks.stopContestTasks()
             .run { ResponseEntity(HttpStatus.OK) }
 
 

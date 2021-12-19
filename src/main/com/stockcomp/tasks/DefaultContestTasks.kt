@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class DefaultContestTasks(
     private val contestRepository: ContestRepository,
-    private val maintainParticipantsService: MaintainInvestmentService,
+    private val maintainInvestmentService: MaintainInvestmentService,
     private val processOrdersService: ProcessOrdersService
 ) : ContestTasks {
 
@@ -21,16 +21,26 @@ class DefaultContestTasks(
     private var orderJob: Job? = null
     private var investmentJob: Job? = null
 
+    override fun startContestTasks() {
+        startOrderProcessing()
+        startMaintainInvestments()
+    }
+
+    override fun stopContestTasks() {
+        stopOrderProcessing()
+        stopMaintainInvestments()
+    }
+
     override fun startOrderProcessing() {
         assertJobNotAlreadyActive(orderJob)
 
         if (existsRunningContest()) {
             orderJob = CoroutineScope(Default).launch {
+                logger.info("Starting maintenance of investment orders")
                 while (isActive) {
                     processOrdersService.processInvestmentOrders()
                     delay(15000L)
                 }
-                logger.info("Processing of investment orders stopped")
             }
         }
     }
@@ -48,10 +58,9 @@ class DefaultContestTasks(
             investmentJob = CoroutineScope(Default).launch {
                 logger.info("Starting maintenance of investment returns")
                 while (isActive) {
-                    maintainParticipantsService.maintainInvestments()
+                    maintainInvestmentService.maintainInvestments()
                     delay(15000L)
                 }
-                logger.info("Maintenance of investment returns stopped")
             }
         }
     }

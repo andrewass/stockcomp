@@ -19,7 +19,7 @@
         <kotlin.version>1.6.10</kotlin.version>
         <testcontainers.version>1.16.2</testcontainers.version>
         <springfox.version>3.0.0</springfox.version>
-        <kotlinx.coroutines.version>1.5.2</kotlinx.coroutines.version>
+        <kotlinx.coroutines.version>1.6.0-RC3</kotlinx.coroutines.version>
         <mockk.version>1.12.1</mockk.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <micrometer.version>1.8.0</micrometer.version>
@@ -81,6 +81,12 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>${kotlinx.coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-test</artifactId>
+            <version>${kotlinx.coroutines.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
