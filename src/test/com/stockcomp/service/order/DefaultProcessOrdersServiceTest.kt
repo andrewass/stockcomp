@@ -4,8 +4,8 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
+import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
 import com.stockcomp.domain.user.User
@@ -35,7 +35,7 @@ internal class DefaultProcessOrdersServiceTest {
     @MockK
     private lateinit var participantRepository: ParticipantRepository
 
-    @MockK
+    @RelaxedMockK
     private lateinit var investmentOrderRepository: InvestmentOrderRepository
 
     @RelaxedMockK
@@ -59,9 +59,9 @@ internal class DefaultProcessOrdersServiceTest {
     private val firstParticipant = Participant(contest = contest, rank = 1, user = firstUser)
     private val secParticipant = Participant(contest = contest, rank = 2, user = secondUser)
 
-    private val AAPL : String = "AAPL";
-    private val MSFT  : String = "MSFT"
-    private val NFLX : String = "NFLX"
+    private val AAPL: String = "AAPL"
+    private val MSFT: String = "MSFT"
+    private val NFLX: String = "NFLX"
 
     private val investmentOrders = createInvestmentOrders()
 
@@ -105,25 +105,60 @@ internal class DefaultProcessOrdersServiceTest {
     @Test
     fun `should process active investment orders`() = runTest {
         every {
-            investmentOrderRepository.findAllByOrderAndContestStatus(OrderStatus.ACTIVE, ContestStatus.RUNNING)
+            investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
         } returns investmentOrders.subList(0, 4)
 
         processOrdersService.processInvestmentOrders()
 
-        assertEquals(10,investmentOrders[0].remainingAmount )
-        assertEquals(OrderStatus.ACTIVE, investmentOrders[0].orderStatus)
+        assertEquals(10, investmentOrders[0].remainingAmount)
+        assertEquals(ACTIVE, investmentOrders[0].orderStatus)
 
-        assertEquals(0, investmentOrders[1].remainingAmount )
-        assertEquals(OrderStatus.COMPLETED, investmentOrders[1].orderStatus)
+        assertEquals(0, investmentOrders[1].remainingAmount)
+        assertEquals(COMPLETED, investmentOrders[1].orderStatus)
 
-        assertEquals(0, investmentOrders[2].remainingAmount )
-        assertEquals(OrderStatus.COMPLETED, investmentOrders[2].orderStatus)
+        assertEquals(0, investmentOrders[2].remainingAmount)
+        assertEquals(COMPLETED, investmentOrders[2].orderStatus)
 
-        assertEquals(10, investmentOrders[3].remainingAmount )
-        assertEquals(OrderStatus.ACTIVE, investmentOrders[3].orderStatus)
+        assertEquals(10, investmentOrders[3].remainingAmount)
+        assertEquals(ACTIVE, investmentOrders[3].orderStatus)
 
-        assertEquals(21100.00, firstParticipant.remainingFund)
-        assertEquals(18900.00, secParticipant.remainingFund)
+        assertEquals(21_100.00, firstParticipant.remainingFund)
+        assertEquals(18_900.00, secParticipant.remainingFund)
+    }
+
+    @Test
+    fun `should process sell order where current price is above remaining funds`() = runTest {
+        every {
+            symbolService.getRealTimePrice(AAPL)
+        } returns RealTimePrice(
+            currency = "USD", dayHigh = 150_000.00, dayLow = 50_000.00, openPrice = 50_000.00,
+            previousClose = 50_000.00, price = 110_000.00, usdPrice = 110_000.00
+        )
+
+        every {
+            investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
+        } returns investmentOrders.subList(4, 5)
+
+        processOrdersService.processInvestmentOrders()
+
+        assertEquals(5, investmentOrders[4].remainingAmount)
+        assertEquals(ACTIVE, investmentOrders[4].orderStatus)
+        assertEquals(20_000.00, firstParticipant.remainingFund)
+    }
+
+    @Test
+    fun `should terminate all remaining orders`() = runTest {
+        every {
+            investmentOrderRepository.findAllByOrderStatus(ACTIVE)
+        } returns investmentOrders.subList(0, 2)
+
+        processOrdersService.terminateRemainingOrders(contest)
+
+        assertEquals(10, investmentOrders[0].remainingAmount)
+        assertEquals(TERMINATED, investmentOrders[0].orderStatus)
+
+        assertEquals(10, investmentOrders[1].remainingAmount)
+        assertEquals(TERMINATED, investmentOrders[1].orderStatus)
     }
 
     private fun createInvestmentOrders() =
@@ -145,12 +180,8 @@ internal class DefaultProcessOrdersServiceTest {
                 participant = secParticipant, symbol = MSFT, totalAmount = 10, transactionType = SELL
             ),
             InvestmentOrder(
-                acceptedPrice = 10_0000.00, currency = "USD", expirationTime = LocalDateTime.now().plusWeeks(1),
-                participant = firstParticipant, symbol = NFLX, totalAmount = 10, transactionType = BUY
-            ),
-            InvestmentOrder(
-                acceptedPrice = 100.00, currency = "USD", expirationTime = LocalDateTime.now().plusWeeks(1),
-                participant = firstParticipant, symbol = NFLX, totalAmount = 10, transactionType = SELL
+                acceptedPrice = 120_000.00, currency = "USD", expirationTime = LocalDateTime.now().plusWeeks(1),
+                participant = firstParticipant, symbol = "AAPL", totalAmount = 5, transactionType = BUY
             )
         )
 }
