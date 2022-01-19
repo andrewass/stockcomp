@@ -2,10 +2,11 @@ package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.ContestStatus.*
 import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.ContestParticipantDto
 import com.stockcomp.dto.ParticipantDto
-import com.stockcomp.dto.UpcomingContestParticipantDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
@@ -81,7 +82,15 @@ class DefaultContestService(
             .map { it.toContestDto() }
 
 
-    override fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto> =
+    override fun getContestParticipantsByStatus(
+        statusList: List<String>, username: String
+    ): List<ContestParticipantDto> =
+        contestRepository.findAllByContestStatusList(
+            statusList.map { ContestStatus.fromDecode(it) }
+        ).map { createUpcomingContestParticipantDto(username, it) }
+
+
+    override fun getUpcomingContestsParticipant(username: String): List<ContestParticipantDto> =
         contestRepository.findAll()
             .filter { listOf(RUNNING, AWAITING_START).contains(it.contestStatus) }
             .map { createUpcomingContestParticipantDto(username, it) }
@@ -120,7 +129,7 @@ class DefaultContestService(
             ?: throw NoSuchElementException("User not found for username $username")
 
 
-    private fun createUpcomingContestParticipantDto(username: String, contest: Contest): UpcomingContestParticipantDto =
+    private fun createUpcomingContestParticipantDto(username: String, contest: Contest): ContestParticipantDto =
         mapToUpcomingContestParticipantDto(
             contest,
             participantRepository.findParticipantFromUsernameAndContest(username, contest)

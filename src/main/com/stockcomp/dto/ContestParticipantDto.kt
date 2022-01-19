@@ -2,7 +2,7 @@ package com.stockcomp.dto
 
 import java.time.LocalDateTime
 
-data class UpcomingContestParticipantDto(
+data class ContestParticipantDto(
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
     val contestNumber: Int,

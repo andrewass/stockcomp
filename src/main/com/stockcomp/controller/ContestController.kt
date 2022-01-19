@@ -3,8 +3,8 @@ package com.stockcomp.controller
 import com.stockcomp.controller.common.CustomExceptionHandler
 import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.ContestParticipantDto
 import com.stockcomp.dto.ParticipantDto
-import com.stockcomp.dto.UpcomingContestParticipantDto
 import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.investment.InvestmentService
 import com.stockcomp.service.security.JwtService
@@ -25,8 +25,8 @@ class ContestController(
 ) : CustomExceptionHandler() {
 
     @GetMapping("/upcoming-contests")
-    @ApiOperation(value = "Return a list of upcoming contests")
-    fun upcomingContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<UpcomingContestParticipantDto>> =
+    @ApiOperation(value = "Return a list of upcoming contests with participant status")
+    fun upcomingContestsParticipant(httpServletRequest: HttpServletRequest): ResponseEntity<List<ContestParticipantDto>> =
         extractUsernameFromRequest(httpServletRequest)
             .let { contestService.getUpcomingContestsParticipant(it) }
             .let { ResponseEntity.ok(it) }
@@ -36,6 +36,16 @@ class ContestController(
     @ApiOperation(value = "Return a list of all contests")
     fun allContests(httpServletRequest: HttpServletRequest): ResponseEntity<List<ContestDto>> =
         contestService.getAllContests()
+            .let { ResponseEntity.ok(it) }
+
+
+    @PostMapping("/contests-by-status")
+    @ApiOperation(value = "Return a list of contest with participant status for a given list of contest status")
+    fun contestsByStatus(
+        httpServletRequest: HttpServletRequest, @RequestBody statusList: List<String>
+    ): ResponseEntity<List<ContestParticipantDto>> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { contestService.getContestParticipantsByStatus(statusList, it) }
             .let { ResponseEntity.ok(it) }
 
 

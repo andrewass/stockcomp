@@ -98,7 +98,7 @@ fun mapToInvestmentOrderDto(order: InvestmentOrder) =
     )
 
 fun mapToUpcomingContestParticipantDto(contest: Contest, participant: List<Participant>) =
-    UpcomingContestParticipantDto(
+    ContestParticipantDto(
         contestNumber = contest.contestNumber,
         startTime = contest.startTime,
         endTime = contest.endTime,

@@ -78,6 +78,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         var cors = new CorsConfiguration();
         cors.addAllowedOrigin("http://localhost:8000");
         cors.addAllowedOrigin("http://stockclient-service:80");
+        cors.addAllowedOrigin("http://localhost:80");
         cors.setAllowCredentials(true);
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cors.setAllowedHeaders(List.of("Origin", "Access-Control-Allow-Origin", "Access-Control-Expose-Headers",

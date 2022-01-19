@@ -2,7 +2,7 @@ package com.stockcomp.service.contest
 
 import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.ParticipantDto
-import com.stockcomp.dto.UpcomingContestParticipantDto
+import com.stockcomp.dto.ContestParticipantDto
 
 interface ContestService {
 
@@ -16,7 +16,9 @@ interface ContestService {
 
     fun getAllContests() : List<ContestDto>
 
-    fun getUpcomingContestsParticipant(username: String): List<UpcomingContestParticipantDto>
+    fun getContestParticipantsByStatus(statusList : List<String>, username: String) : List<ContestParticipantDto>
+
+    fun getUpcomingContestsParticipant(username: String): List<ContestParticipantDto>
 
     fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto>
 
