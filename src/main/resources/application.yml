@@ -1,0 +1,45 @@
+access:
+    token:
+        duration: 60000
+consumer:
+    base:
+        url: http://stock-analyzer:8088
+cookie:
+    duration: 3600000
+management:
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: health,info,prometheus,env
+refresh:
+    token:
+        duration: 30
+spring:
+    datasource:
+        password: ${SPRING_DATASOURCE_PASSWORD}
+        url: ${SPRING_DATASOURCE_URL}
+        username: ${SPRING_DATASOURCE_USERNAME}
+    jpa:
+        generate-ddl: false
+        hibernate:
+            ddl-auto: none
+        open-in-view: false
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    security:
+        oauth2:
+            client:
+                registration:
+                    google:
+                        client-id: ${GOOGLE_CLIENT_ID}
+                        client-secret: ${GOOGLE_CLIENT_SECRET}
+symbol:
+    search:
+        delay:
+            time: 3600000
+token:
+    name: accessToken
