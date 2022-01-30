@@ -66,6 +66,12 @@ class AuthenticationController internal constructor(
             }
 
 
+    @PostMapping("/sign-in-google")
+    @ApiOperation(value = "Sign in with existing Google account")
+    fun signInWithGoogle(){
+
+    }
+
     @PostMapping("/sign-out")
     @ApiOperation("Sign out signed in user")
     fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
