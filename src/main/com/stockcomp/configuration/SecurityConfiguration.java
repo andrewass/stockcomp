@@ -4,7 +4,9 @@ import com.stockcomp.controller.common.ExceptionHandlerFilter;
 import com.stockcomp.controller.common.TokenAuthenticationFilter;
 import com.stockcomp.domain.user.Role;
 import com.stockcomp.request.SignUpRequest;
+import com.stockcomp.service.user.CustomOAuth2UserService;
 import com.stockcomp.service.user.DefaultUserService;
+import com.stockcomp.service.user.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,8 @@ import java.util.List;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final DefaultUserService userService;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final PasswordEncoder passwordEncoder;
@@ -37,10 +41,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String adminEmail;
 
     public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter tokenAuthenticationFilter,
-                                 DefaultUserService userService, ExceptionHandlerFilter exceptionHandlerFilter) {
+                                 DefaultUserService userService, CustomOAuth2UserService oAuth2UserService,
+                                 OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, ExceptionHandlerFilter exceptionHandlerFilter) {
         this.passwordEncoder = passwordEncoder;
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
         this.userService = userService;
+        this.oAuth2UserService = oAuth2UserService;
+        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
         this.exceptionHandlerFilter = exceptionHandlerFilter;
     }
 
@@ -58,12 +65,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/*",
+                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/*","/login/oauth2/code/google",
                         "/admin/*/*", "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
+                .and()
+                .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -85,7 +96,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cors.setAllowedHeaders(List.of("Origin", "Access-Control-Allow-Origin", "Access-Control-Expose-Headers",
                 "Content-Type", "Accept", "Authorization", "Origin,Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers","Range"));
+                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Range"));
         cors.setExposedHeaders(List.of("Content-Range"));
 
         return cors;
