@@ -59,13 +59,6 @@ class AdminController(
         createListResponse(adminService.getUsers())
 
 
-    @PostMapping("/update-leaderboard")
-    @ApiOperation(value = "Update leaderboard based on a given contest")
-    fun updateLeaderboardFromContest(@RequestParam contestNumber: Int): ResponseEntity<HttpStatus> =
-        adminService.updateLeaderboard(contestNumber)
-            .run { ResponseEntity(HttpStatus.OK) }
-
-
     @PostMapping("/start-contest")
     fun startContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.startContest(contestNumber)
@@ -89,6 +82,13 @@ class AdminController(
     @ApiOperation("Stop tasks for processing orders and investments of a contest")
     fun stopContestTasks(): ResponseEntity<HttpStatus> =
         contestTasks.stopContestTasks()
+            .run { ResponseEntity(HttpStatus.OK) }
+
+
+    @PostMapping("/complete-contest-tasks")
+    @ApiOperation("Complete running contest tasks and update contest leaderboard")
+    fun completeContestTasks(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
+        contestTasks.completeContestTasks(contestNumber)
             .run { ResponseEntity(HttpStatus.OK) }
 
 

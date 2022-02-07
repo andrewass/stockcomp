@@ -38,21 +38,23 @@ class DefaultInvestmentOrderService(
 
 
     override fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String) {
-        buyOrderCounter.increment()
         mapToInvestmentOrder(
             getParticipant(username, investmentRequest.contestNumber),
             investmentRequest,
             TransactionType.BUY
-        ).also { investmentOrderRepository.save(it) }
+        )
+            .also { investmentOrderRepository.save(it) }
+            .also { buyOrderCounter.increment() }
     }
 
     override fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String) {
-        sellOrderCounter.increment()
         mapToInvestmentOrder(
             getParticipant(username, investmentRequest.contestNumber),
             investmentRequest,
             TransactionType.SELL
-        ).also { investmentOrderRepository.save(it) }
+        )
+            .also { investmentOrderRepository.save(it) }
+            .also { sellOrderCounter.increment() }
     }
 
     override fun deleteActiveInvestmentOrder(username: String, orderId: Long) {
@@ -98,11 +100,8 @@ class DefaultInvestmentOrderService(
     ): List<InvestmentOrderDto> =
         contestRepository.findByContestNumber(contestNumber)
             .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
-            .let {
-                investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(
-                    it, symbol, orderStatus
-                )
-            }.let { it.map { order -> mapToInvestmentOrderDto(order) } }
+            .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, orderStatus) }
+            .let { it.map { order -> mapToInvestmentOrderDto(order) } }
 
 
     private fun getParticipant(username: String, contestNumber: Int): Participant =

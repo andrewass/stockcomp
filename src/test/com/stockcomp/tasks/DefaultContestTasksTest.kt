@@ -4,8 +4,9 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.service.investment.MaintainInvestmentService
+import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.order.ProcessOrdersService
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -33,6 +34,12 @@ internal class DefaultContestTasksTest {
 
     @RelaxedMockK
     private lateinit var processOrdersService: ProcessOrdersService
+
+    @RelaxedMockK
+    private lateinit var investmentOrderService: InvestmentOrderService
+
+    @RelaxedMockK
+    private lateinit var leaderboardService: LeaderboardService
 
     @InjectMockKs
     private lateinit var contestTasks: DefaultContestTasks
@@ -78,7 +85,6 @@ internal class DefaultContestTasksTest {
         coVerify(exactly = 0) {
             processOrdersService.processInvestmentOrders()
         }
-
     }
 
     @Test
@@ -87,13 +93,6 @@ internal class DefaultContestTasksTest {
 
         assertThrows<IllegalStateException> {
             contestTasks.startContestTasks()
-        }
-    }
-
-    @Test
-    fun `should throw exception when trying to stop non-started tasks`() = runTest{
-        assertThrows<java.lang.IllegalStateException> {
-            contestTasks.stopContestTasks()
         }
     }
 

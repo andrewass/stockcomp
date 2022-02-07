@@ -7,9 +7,6 @@ import com.stockcomp.dto.UserDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.service.contest.ContestService
-import com.stockcomp.service.leaderboard.LeaderboardService
-import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDto
@@ -19,11 +16,9 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class DefaultAdminService(
-    private val leaderboardService: LeaderboardService,
     private val contestTasks: ContestTasks,
     private val contestRepository: ContestRepository,
     private val userRepository: UserRepository,
-    private val investmentOrderService: InvestmentOrderService
 ) : AdminService {
 
     private val pass = Unit
@@ -52,18 +47,13 @@ class DefaultAdminService(
         contestRepository.findAllByContestStatus(ContestStatus.COMPLETED)
             .map { it.toContestDto() }
 
-    override fun updateLeaderboard(contestNumber: Int) {
-        contestRepository.findByContestNumber(contestNumber)
-            .also { leaderboardService.updateLeaderboard(it) }
-    }
 
     override fun updateContestStatus(contestDto: ContestDto): ContestDto =
         contestRepository.findById(contestDto.id).get()
             .let {
                 when (ContestStatus.fromDecode(contestDto.contestStatus)) {
                     ContestStatus.COMPLETED -> {
-                        investmentOrderService.terminateRemainingOrders(it)
-                        leaderboardService.updateLeaderboard(it)
+                        contestTasks.completeContestTasks(contestDto.contestNumber)
                     }
                     ContestStatus.STOPPED -> {
                         contestTasks.stopOrderProcessing()

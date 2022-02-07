@@ -3,6 +3,8 @@ package com.stockcomp.tasks
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.service.investment.MaintainInvestmentService
+import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.order.ProcessOrdersService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Default
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Component
 class DefaultContestTasks(
     private val contestRepository: ContestRepository,
     private val maintainInvestmentService: MaintainInvestmentService,
-    private val processOrdersService: ProcessOrdersService
+    private val processOrdersService: ProcessOrdersService,
+    private val investmentOrderService: InvestmentOrderService,
+    private val leaderboardService: LeaderboardService
 ) : ContestTasks {
 
     private val logger = LoggerFactory.getLogger(DefaultContestTasks::class.java)
@@ -31,6 +35,16 @@ class DefaultContestTasks(
         stopMaintainInvestments()
     }
 
+    override fun completeContestTasks(contestNumber: Int) {
+        CoroutineScope(Default).launch {
+            completeOrderProcessing()
+            completeMaintainInvestments()
+            contestRepository.findByContestNumber(contestNumber)
+                .also { investmentOrderService.terminateRemainingOrders(it) }
+                .also { leaderboardService.updateLeaderboard(it) }
+        }
+    }
+
     override fun startOrderProcessing() {
         assertJobNotAlreadyActive(orderJob)
 
@@ -46,7 +60,7 @@ class DefaultContestTasks(
     }
 
     override fun stopOrderProcessing() {
-        assertJobIsActive(orderJob).cancel()
+        orderJob?.cancel()
         orderJob = null
         logger.info("Stopping processing of investment orders")
     }
@@ -66,22 +80,23 @@ class DefaultContestTasks(
     }
 
     override fun stopMaintainInvestments() {
-        assertJobIsActive(investmentJob).cancel()
+        investmentJob?.cancel()
         investmentJob = null
         logger.info("Stopping maintenance of investment returns")
     }
 
-    private fun assertJobNotAlreadyActive(job: Job?) {
-        if (job?.isActive == true) {
-            throw IllegalStateException("Can not start already running job")
-        }
+    private suspend fun completeOrderProcessing() {
+        orderJob?.also { it.cancelAndJoin() }
     }
 
-    private fun assertJobIsActive(job: Job?): Job {
-        if (job == null || !job.isActive) {
-            throw IllegalStateException("Can not stop a non-running job")
+    private suspend fun completeMaintainInvestments() {
+        investmentJob?.also { it.cancelAndJoin() }
+    }
+
+    private fun assertJobNotAlreadyActive(job: Job?) {
+        if (job?.isActive == true) {
+            throw IllegalStateException("Cannot start already running job")
         }
-        return job
     }
 
     private fun existsRunningContest(): Boolean =
