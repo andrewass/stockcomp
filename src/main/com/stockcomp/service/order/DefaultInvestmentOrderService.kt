@@ -82,7 +82,9 @@ class DefaultInvestmentOrderService(
         findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
 
     override fun terminateRemainingOrders(contest: Contest) {
-        TODO("Not yet implemented")
+        investmentOrderRepository.findAllByContestAndOrderStatus(contest, ACTIVE)
+            .onEach { it.orderStatus = TERMINATED }
+            .also { investmentOrderRepository.saveAll(it) }
     }
 
 

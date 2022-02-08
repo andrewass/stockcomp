@@ -1,6 +1,5 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
@@ -49,19 +48,6 @@ class DefaultProcessOrdersService(
             logger.error("Failed order processing : ${e.message}")
         }
     }
-
-    override fun terminateRemainingOrders(contest: Contest) {
-        logger.info("Terminating remaining orders")
-
-        investmentOrderRepository.findAllByOrderStatus(ACTIVE)
-            .filter { it.participant.contest == contest }
-            .map { markInvestmentOrderAsTerminated(it) }
-            .let { investmentOrderRepository.saveAll(it) }
-    }
-
-    private fun markInvestmentOrderAsTerminated(investmentOrder: InvestmentOrder): InvestmentOrder =
-        investmentOrder.apply { this.orderStatus = TERMINATED }
-
 
     private fun gaugeOrders(orders: List<InvestmentOrder>) {
         Gauge.builder("active.orders", orders) { list -> list.size.toDouble() }

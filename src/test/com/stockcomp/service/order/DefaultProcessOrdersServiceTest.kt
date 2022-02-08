@@ -61,7 +61,6 @@ internal class DefaultProcessOrdersServiceTest {
 
     private val AAPL: String = "AAPL"
     private val MSFT: String = "MSFT"
-    private val NFLX: String = "NFLX"
 
     private val investmentOrders = createInvestmentOrders()
 
@@ -144,21 +143,6 @@ internal class DefaultProcessOrdersServiceTest {
         assertEquals(5, investmentOrders[4].remainingAmount)
         assertEquals(ACTIVE, investmentOrders[4].orderStatus)
         assertEquals(20_000.00, firstParticipant.remainingFund)
-    }
-
-    @Test
-    fun `should terminate all remaining orders`() = runTest {
-        every {
-            investmentOrderRepository.findAllByOrderStatus(ACTIVE)
-        } returns investmentOrders.subList(0, 2)
-
-        processOrdersService.terminateRemainingOrders(contest)
-
-        assertEquals(10, investmentOrders[0].remainingAmount)
-        assertEquals(TERMINATED, investmentOrders[0].orderStatus)
-
-        assertEquals(10, investmentOrders[1].remainingAmount)
-        assertEquals(TERMINATED, investmentOrders[1].orderStatus)
     }
 
     private fun createInvestmentOrders() =
