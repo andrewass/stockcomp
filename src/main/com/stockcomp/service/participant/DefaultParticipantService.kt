@@ -1,4 +1,4 @@
-package com.stockcomp.service.investment
+package com.stockcomp.service.participant
 
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class DefaultInvestmentService(
+class DefaultParticipantService(
     private val contestRepository: ContestRepository,
     private val participantRepository: ParticipantRepository
-) : InvestmentService {
+) : ParticipantService {
 
     override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
         val participant = getParticipant(username, contestNumber)

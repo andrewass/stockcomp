@@ -3,7 +3,7 @@ package com.stockcomp.tasks
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.service.investment.MaintainInvestmentService
+import com.stockcomp.service.participant.MaintainParticipantService
 import com.stockcomp.service.leaderboard.LeaderboardService
 import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.order.ProcessOrdersService
@@ -30,7 +30,7 @@ internal class DefaultContestTasksTest {
     private lateinit var contestRepository: ContestRepository
 
     @RelaxedMockK
-    private lateinit var maintainInvestmentService: MaintainInvestmentService
+    private lateinit var maintainParticipantService: MaintainParticipantService
 
     @RelaxedMockK
     private lateinit var processOrdersService: ProcessOrdersService
@@ -58,7 +58,7 @@ internal class DefaultContestTasksTest {
         contestTasks.startContestTasks()
 
         verify {
-            maintainInvestmentService.maintainInvestments()
+            maintainParticipantService.maintainParticipant()
         }
         coVerify {
             processOrdersService.processInvestmentOrders()
@@ -80,7 +80,7 @@ internal class DefaultContestTasksTest {
         contestTasks.startContestTasks()
 
         verify(exactly = 0) {
-            maintainInvestmentService.maintainInvestments()
+            maintainParticipantService.maintainParticipant()
         }
         coVerify(exactly = 0) {
             processOrdersService.processInvestmentOrders()

@@ -6,7 +6,7 @@ import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.ContestParticipantDto
 import com.stockcomp.dto.ParticipantDto
 import com.stockcomp.service.contest.ContestService
-import com.stockcomp.service.investment.InvestmentService
+import com.stockcomp.service.participant.ParticipantService
 import com.stockcomp.service.security.JwtService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest
 @Api(description = "Endpoints for contest related operations")
 class ContestController(
     private val contestService: ContestService,
-    private val investmentService: InvestmentService,
+    private val participantService: ParticipantService,
     private val defaultJwtService: JwtService
 ) : CustomExceptionHandler() {
 
@@ -66,7 +66,7 @@ class ContestController(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<Double> =
         extractUsernameFromRequest(httpServletRequest)
-            .let { investmentService.getRemainingFunds(it, contestNumber) }
+            .let { participantService.getRemainingFunds(it, contestNumber) }
             .let { ResponseEntity.ok(it) }
 
 

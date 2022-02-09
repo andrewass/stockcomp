@@ -1,8 +1,8 @@
-package com.stockcomp.service.investment
+package com.stockcomp.service.participant
 
 import com.stockcomp.dto.InvestmentDto
 
-interface InvestmentService {
+interface ParticipantService {
 
     fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto?
 

@@ -1,4 +1,4 @@
-package com.stockcomp.service.investment
+package com.stockcomp.service.participant
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
@@ -26,7 +26,7 @@ internal class DefaultInvestmentServiceTest {
     private lateinit var participantRepository: ParticipantRepository
 
     @InjectMockKs
-    private lateinit var investmentService: DefaultInvestmentService
+    private lateinit var investmentService: DefaultParticipantService
 
     private val username = "testUser"
     private val contestNumber = 100

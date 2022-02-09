@@ -2,7 +2,7 @@ package com.stockcomp.controller
 
 import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.dto.InvestmentDto
-import com.stockcomp.service.investment.InvestmentService
+import com.stockcomp.service.participant.ParticipantService
 import com.stockcomp.service.security.DefaultJwtService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/investment")
 class InvestmentController(
-    private val investmentService: InvestmentService,
+    private val participantService: ParticipantService,
     private val defaultJwtService: DefaultJwtService
 ) {
 
@@ -23,7 +23,7 @@ class InvestmentController(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int, @RequestParam symbol: String
     ): ResponseEntity<InvestmentDto> =
         extractUsernameFromRequest(httpServletRequest)
-            .let { investmentService.getInvestmentForSymbol(it, contestNumber, symbol) }
+            .let { participantService.getInvestmentForSymbol(it, contestNumber, symbol) }
             ?.let { ResponseEntity.ok(it) }
             ?: ResponseEntity(HttpStatus.OK)
 
@@ -34,7 +34,7 @@ class InvestmentController(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentDto>> =
         extractUsernameFromRequest(httpServletRequest)
-            .let { investmentService.getAllInvestmentsForContest(it, contestNumber) }
+            .let { participantService.getAllInvestmentsForContest(it, contestNumber) }
             .let { ResponseEntity.ok(it) }
 
 
@@ -44,7 +44,7 @@ class InvestmentController(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<Double> =
         extractUsernameFromRequest(httpServletRequest)
-            .let { investmentService.getTotalValue(it, contestNumber) }
+            .let { participantService.getTotalValue(it, contestNumber) }
             .let { ResponseEntity.ok(it) }
 
 

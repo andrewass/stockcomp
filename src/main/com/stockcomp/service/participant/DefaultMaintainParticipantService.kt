@@ -1,4 +1,4 @@
-package com.stockcomp.service.investment
+package com.stockcomp.service.participant
 
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
@@ -11,29 +11,40 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class DefaultMaintainInvestmentService(
+class DefaultMaintainParticipantService(
     private val investmentRepository: InvestmentRepository,
     private val participantRepository: ParticipantRepository,
     private val contestRepository: ContestRepository,
     private val symbolService: SymbolService
-) : MaintainInvestmentService {
+) : MaintainParticipantService {
 
-    private val logger = LoggerFactory.getLogger(DefaultMaintainInvestmentService::class.java)
+    private val logger = LoggerFactory.getLogger(DefaultMaintainParticipantService::class.java)
 
-    override fun maintainInvestments() {
+    override fun maintainParticipant() {
         try {
             investmentRepository.findAllInvestmentsByContestStatus(RUNNING)
                 .groupBy { it.symbol }
                 .forEach { (symbol, investment) ->
                     logger.info("Maintaining returns for symbol $symbol")
-                    investment.forEach {
-                        updateInvestmentAndParticipant(it, symbolService.getRealTimePrice(symbol))
-                    }
+                    investment.forEach { updateInvestmentAndParticipant(it, symbolService.getRealTimePrice(symbol)) }
                 }
             maintainRanking()
         } catch (e: Exception) {
             logger.error("Failed return maintenance : ${e.message}")
         }
+    }
+
+    private fun updateInvestmentAndParticipant(investment: Investment, realTimePrice: RealTimePrice) {
+        val oldTotalValueInvestment = investment.totalValue
+        val newTotalValueInvestment = (investment.amount * realTimePrice.usdPrice)
+        investment.apply {
+            totalValue = newTotalValueInvestment
+            totalProfit = newTotalValueInvestment - (amount * averageUnitCost)
+        }
+        val participant = investment.participant
+        participant.totalValue += (newTotalValueInvestment - oldTotalValueInvestment)
+        investmentRepository.save(investment)
+        participantRepository.save(participant)
     }
 
     private fun maintainRanking() {
@@ -43,15 +54,4 @@ class DefaultMaintainInvestmentService(
             .also { participantRepository.saveAll(it) }
     }
 
-    private fun updateInvestmentAndParticipant(investment: Investment, realTimePrice: RealTimePrice) {
-        val gains = (investment.amount * realTimePrice.usdPrice) - investment.totalValue
-        val participant = investment.participant
-        participant.totalValue += gains
-        investment.apply {
-            totalValue += gains
-            totalProfit = totalValue - (amount * averageUnitCost)
-        }
-        investmentRepository.save(investment)
-        participantRepository.save(participant)
-    }
 }

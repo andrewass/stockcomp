@@ -4,7 +4,6 @@ import com.stockcomp.dto.ContestDto
 import com.stockcomp.dto.UserDto
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.admin.AdminService
-import com.stockcomp.service.contest.ContestService
 import com.stockcomp.tasks.ContestTasks
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -19,8 +18,7 @@ import org.springframework.web.bind.annotation.*
 @Api(description = "Endpoints available for admin users")
 class AdminController(
     private val adminService: AdminService,
-    private val contestTasks: ContestTasks,
-    private val contestService: ContestService
+    private val contestTasks: ContestTasks
 ) {
 
     @GetMapping("/contests")
@@ -57,18 +55,6 @@ class AdminController(
     @ApiOperation(value = "Get all signed-up users")
     fun getUsers(): HttpEntity<List<UserDto>> =
         createListResponse(adminService.getUsers())
-
-
-    @PostMapping("/start-contest")
-    fun startContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
-        contestService.startContest(contestNumber)
-            .run { ResponseEntity(HttpStatus.OK) }
-
-
-    @PostMapping("/stop-contest")
-    fun stopContest(@RequestParam("contestNumber") contestNumber: Int): ResponseEntity<HttpStatus> =
-        contestService.stopContest(contestNumber)
-            .run { ResponseEntity(HttpStatus.OK) }
 
 
     @PostMapping("/start-contest-tasks")

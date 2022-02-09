@@ -2,7 +2,7 @@ package com.stockcomp.tasks
 
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.service.investment.MaintainInvestmentService
+import com.stockcomp.service.participant.MaintainParticipantService
 import com.stockcomp.service.leaderboard.LeaderboardService
 import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.order.ProcessOrdersService
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 @Component
 class DefaultContestTasks(
     private val contestRepository: ContestRepository,
-    private val maintainInvestmentService: MaintainInvestmentService,
+    private val maintainParticipantService: MaintainParticipantService,
     private val processOrdersService: ProcessOrdersService,
     private val investmentOrderService: InvestmentOrderService,
     private val leaderboardService: LeaderboardService
@@ -72,7 +72,7 @@ class DefaultContestTasks(
             investmentJob = CoroutineScope(Default).launch {
                 logger.info("Starting maintenance of investment returns")
                 while (isActive) {
-                    maintainInvestmentService.maintainInvestments()
+                    maintainParticipantService.maintainParticipant()
                     delay(15000L)
                 }
             }
