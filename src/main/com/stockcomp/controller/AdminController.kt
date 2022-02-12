@@ -1,6 +1,7 @@
 package com.stockcomp.controller
 
 import com.stockcomp.dto.ContestDto
+import com.stockcomp.dto.UserDetailsDto
 import com.stockcomp.dto.UserDto
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.admin.AdminService
@@ -52,8 +53,8 @@ class AdminController(
 
 
     @GetMapping("/users")
-    @ApiOperation(value = "Get all signed-up users")
-    fun getUsers(): HttpEntity<List<UserDto>> =
+    @ApiOperation(value = "Get all users with an account")
+    fun getUsers(): HttpEntity<List<UserDetailsDto>> =
         createListResponse(adminService.getUsers())
 
 

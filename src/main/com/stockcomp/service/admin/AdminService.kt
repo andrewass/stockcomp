@@ -1,14 +1,14 @@
 package com.stockcomp.service.admin
 
-import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.dto.ContestDto
-import com.stockcomp.dto.UserDto
+import com.stockcomp.dto.UserDetailsDto
+import com.stockcomp.request.CreateContestRequest
 
 interface AdminService {
 
     fun getAllContests(): List<ContestDto>
 
-    fun getUsers(): List<UserDto>
+    fun getUsers(): List<UserDetailsDto>
 
     fun getContest(id: Long): ContestDto
 

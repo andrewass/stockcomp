@@ -3,13 +3,13 @@ package com.stockcomp.service.admin
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.dto.ContestDto
-import com.stockcomp.dto.UserDto
+import com.stockcomp.dto.UserDetailsDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
-import com.stockcomp.util.toUserDto
+import com.stockcomp.util.toUserDetailsDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -70,7 +70,7 @@ class DefaultAdminService(
                 contestRepository.save(it).toContestDto()
             }
 
-    override fun getUsers(): List<UserDto> =
+    override fun getUsers(): List<UserDetailsDto> =
         userRepository.findAll()
-            .map { it.toUserDto() }
+            .map { it.toUserDetailsDto() }
 }

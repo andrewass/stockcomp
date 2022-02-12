@@ -20,19 +20,13 @@ fun Investment.toInvestmentDto() =
         averageUnitCost = this.averageUnitCost
     )
 
-fun User.toUserDto() =
-    UserDto(
-        id = this.id!!,
-        username = this.username,
-        email = this.email,
-        userRole = this.userRole.name
-    )
-
 fun User.toUserDetailsDto() =
     UserDetailsDto(
+        id = this.id!!,
         username = this.username,
         country = this.country,
-        fullName = this.fullName
+        fullName = this.fullName,
+        userRole = this.userRole.name
     )
 
 fun Contest.toContestDto() =
