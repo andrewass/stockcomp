@@ -11,7 +11,7 @@ import org.testcontainers.utility.DockerImageName;
         "admin.password=admin",
         "admin.email=admin@admin.com",
         "application.runner.enabled=false"
-})
+}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class IntegrationTest {
 
     public static final PostgreSQLContainer POSTGRESQL_CONTAINER;

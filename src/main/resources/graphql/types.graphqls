@@ -1,0 +1,16 @@
+scalar GraphQLLong
+
+enum Role {
+    USER
+    ADMIN
+}
+
+type UserDetails {
+    id: ID!
+    username: String!
+    fullName: String
+    country: String
+    #userRole: Role!
+    contestCount: Int!
+    leaderboardRanking: Int
+}

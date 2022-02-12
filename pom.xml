@@ -24,6 +24,7 @@
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <micrometer.version>1.8.2</micrometer.version>
         <graphql.version>12.0.0</graphql.version>
+        <graphql.scalars.version>2022-01-08T22-46-25-c2e844f</graphql.scalars.version>
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
     </properties>
 
@@ -82,6 +83,12 @@
             <artifactId>graphql-spring-boot-starter</artifactId>
             <version>${graphql.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>${graphql.scalars.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
