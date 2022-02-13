@@ -23,6 +23,7 @@ fun Investment.toInvestmentDto() =
 
 fun User.toUserDetailsDto() =
     UserDetailsDto(
+        id = this.id,
         username = this.username,
         country = this.country,
         fullName = this.fullName,

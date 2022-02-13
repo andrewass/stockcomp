@@ -1,4 +1,6 @@
 
 type Query {
     getUserDetails(username : String) : UserDetails
+
+    #getLeaderboardEntry(username: String) : LeaderboardEntry
 }

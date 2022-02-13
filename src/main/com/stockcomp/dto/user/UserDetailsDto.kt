@@ -1,6 +1,6 @@
 package com.stockcomp.dto.user
 
-import com.stockcomp.domain.leaderboard.Medal
+import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 
 data class UserDetailsDto(
     val id: Long? = null,
@@ -8,8 +8,5 @@ data class UserDetailsDto(
     val fullName: String? = null,
     val country: String? = null,
     val userRole: String,
-
-    val contestCount: Int = 0,
-    val leaderboardRanking: Int? = null,
-    val medals: List<Medal> = emptyList()
+    val leaderboardEntryDto: LeaderboardEntryDto? = null
 )

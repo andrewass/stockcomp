@@ -1,8 +1,11 @@
-scalar GraphQLLong
 
-enum Role {
-    USER
-    ADMIN
+type LeaderboardEntry {
+    ranking: Int!
+    score: Int!
+    username: String!
+    country: String,
+    contestCount: Int!
+    medals: [String]
 }
 
 type UserDetails {
@@ -10,7 +13,6 @@ type UserDetails {
     username: String!
     fullName: String
     country: String
-    #userRole: Role!
-    contestCount: Int!
-    leaderboardRanking: Int
+    userRole: String!
+    leaderboardEntry: LeaderboardEntry
 }

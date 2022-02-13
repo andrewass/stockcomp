@@ -83,11 +83,6 @@
             <artifactId>graphql-spring-boot-starter</artifactId>
             <version>${graphql.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java-extended-scalars</artifactId>
-            <version>${graphql.scalars.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>io.springfox</groupId>
