@@ -1,4 +1,4 @@
-package com.stockcomp.controller
+package com.stockcomp.producer
 
 import com.stockcomp.IntegrationTest
 import com.stockcomp.domain.contest.Contest

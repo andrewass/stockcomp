@@ -1,4 +1,4 @@
-package com.stockcomp.controller
+package com.stockcomp.producer.rest
 
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto

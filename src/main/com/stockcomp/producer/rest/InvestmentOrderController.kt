@@ -1,7 +1,7 @@
-package com.stockcomp.controller
+package com.stockcomp.producer.rest
 
-import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.dto.contest.InvestmentOrderDto
+import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.security.DefaultJwtService

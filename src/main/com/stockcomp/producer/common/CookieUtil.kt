@@ -1,4 +1,4 @@
-package com.stockcomp.controller.common
+package com.stockcomp.producer.common
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest

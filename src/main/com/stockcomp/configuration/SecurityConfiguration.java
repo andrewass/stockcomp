@@ -1,7 +1,7 @@
 package com.stockcomp.configuration;
 
-import com.stockcomp.controller.common.ExceptionHandlerFilter;
-import com.stockcomp.controller.common.TokenAuthenticationFilter;
+import com.stockcomp.producer.common.ExceptionHandlerFilter;
+import com.stockcomp.producer.common.TokenAuthenticationFilter;
 import com.stockcomp.domain.user.Role;
 import com.stockcomp.request.SignUpRequest;
 import com.stockcomp.service.user.CustomOAuth2UserService;

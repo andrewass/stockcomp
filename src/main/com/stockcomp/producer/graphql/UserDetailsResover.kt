@@ -1,4 +1,4 @@
-package com.stockcomp.controller.graphql
+package com.stockcomp.producer.graphql
 
 import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.service.user.UserService

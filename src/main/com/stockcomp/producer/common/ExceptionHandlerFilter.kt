@@ -1,4 +1,4 @@
-package com.stockcomp.controller.common
+package com.stockcomp.producer.common
 
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.HttpStatus

@@ -1,4 +1,4 @@
-package com.stockcomp.controller.common
+package com.stockcomp.producer.common
 
 import com.stockcomp.exception.InsufficientFundsException
 import io.jsonwebtoken.ExpiredJwtException

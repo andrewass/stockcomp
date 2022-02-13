@@ -1,7 +1,7 @@
-package com.stockcomp.controller
+package com.stockcomp.producer
 
 import com.stockcomp.IntegrationTest
-import com.stockcomp.controller.common.createCookie
+import com.stockcomp.producer.common.createCookie
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus

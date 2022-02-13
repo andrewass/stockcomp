@@ -1,8 +1,8 @@
-package com.stockcomp.controller
+package com.stockcomp.producer.rest
 
-import com.stockcomp.controller.common.createCookie
-import com.stockcomp.controller.common.getAccessTokenFromCookie
-import com.stockcomp.controller.common.getRefreshTokenFromCookie
+import com.stockcomp.producer.common.createCookie
+import com.stockcomp.producer.common.getAccessTokenFromCookie
+import com.stockcomp.producer.common.getRefreshTokenFromCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 import com.stockcomp.service.security.DefaultJwtService

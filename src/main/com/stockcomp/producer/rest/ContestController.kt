@@ -1,10 +1,10 @@
-package com.stockcomp.controller
+package com.stockcomp.producer.rest
 
-import com.stockcomp.controller.common.CustomExceptionHandler
-import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.contest.ContestParticipantDto
 import com.stockcomp.dto.contest.ParticipantDto
+import com.stockcomp.producer.common.CustomExceptionHandler
+import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.participant.ParticipantService
 import com.stockcomp.service.security.JwtService

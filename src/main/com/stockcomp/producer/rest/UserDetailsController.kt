@@ -1,7 +1,7 @@
-package com.stockcomp.controller
+package com.stockcomp.producer.rest
 
-import com.stockcomp.controller.common.getAccessTokenFromCookie
 import com.stockcomp.dto.user.UserDetailsDto
+import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.security.JwtService
 import com.stockcomp.service.user.UserService
 import io.swagger.annotations.Api
