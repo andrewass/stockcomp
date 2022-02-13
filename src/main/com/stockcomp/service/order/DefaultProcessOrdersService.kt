@@ -7,7 +7,7 @@ import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
 import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
-import com.stockcomp.dto.RealTimePrice
+import com.stockcomp.dto.stock.RealTimePriceDto
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -62,50 +62,50 @@ class DefaultProcessOrdersService(
             }
     }
 
-    private fun processOrder(investmentOrder: InvestmentOrder, realTimePrice: RealTimePrice) {
+    private fun processOrder(investmentOrder: InvestmentOrder, realTimePriceDto: RealTimePriceDto) {
         val participant = investmentOrder.participant
-        if (investmentOrder.transactionType == BUY && participant.remainingFund >= realTimePrice.usdPrice) {
-            processBuyOrder(participant, realTimePrice, investmentOrder)
+        if (investmentOrder.transactionType == BUY && participant.remainingFund >= realTimePriceDto.usdPrice) {
+            processBuyOrder(participant, realTimePriceDto, investmentOrder)
         } else {
-            processSellOrder(participant, realTimePrice, investmentOrder)
+            processSellOrder(participant, realTimePriceDto, investmentOrder)
         }
     }
 
-    private fun processBuyOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
-        if (realTimePrice.price <= order.acceptedPrice) {
+    private fun processBuyOrder(participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder) {
+        if (realTimePriceDto.price <= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
                 ?: Investment(symbol = order.symbol, participant = participant)
-            val amountToBuy = getAvailableAmountToBuy(participant, realTimePrice, order)
-            investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePrice, amountToBuy)
+            val amountToBuy = getAvailableAmountToBuy(participant, realTimePriceDto, order)
+            investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePriceDto, amountToBuy)
             investment.amount += amountToBuy
-            participant.remainingFund -= amountToBuy * realTimePrice.usdPrice
+            participant.remainingFund -= amountToBuy * realTimePriceDto.usdPrice
             postProcessOrder(order, amountToBuy, participant, investment)
         }
     }
 
-    private fun processSellOrder(participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder) {
-        if (realTimePrice.price >= order.acceptedPrice) {
+    private fun processSellOrder(participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder) {
+        if (realTimePriceDto.price >= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
             val amountToSell = min(investment.amount, order.totalAmount)
             investment.amount -= amountToSell
-            participant.remainingFund += amountToSell * realTimePrice.usdPrice
+            participant.remainingFund += amountToSell * realTimePriceDto.usdPrice
             postProcessOrder(order, amountToSell, participant, investment)
         }
     }
 
     private fun calculateAverageUnitCost(
-        investment: Investment, realTimePrice: RealTimePrice, amountToBuy: Int
+        investment: Investment, realTimePriceDto: RealTimePriceDto, amountToBuy: Int
     ): Double {
-        val totalCost = (investment.amount * investment.averageUnitCost) + (amountToBuy * realTimePrice.usdPrice)
+        val totalCost = (investment.amount * investment.averageUnitCost) + (amountToBuy * realTimePriceDto.usdPrice)
         val totalAmount = investment.amount + amountToBuy
 
         return totalCost / totalAmount
     }
 
     private fun getAvailableAmountToBuy(
-        participant: Participant, realTimePrice: RealTimePrice, order: InvestmentOrder
+        participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder
     ): Int {
-        val maxAvailAmount = participant.remainingFund / realTimePrice.usdPrice
+        val maxAvailAmount = participant.remainingFund / realTimePriceDto.usdPrice
 
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }

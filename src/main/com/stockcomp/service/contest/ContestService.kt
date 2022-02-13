@@ -1,8 +1,8 @@
 package com.stockcomp.service.contest
 
-import com.stockcomp.dto.ContestDto
-import com.stockcomp.dto.ParticipantDto
-import com.stockcomp.dto.ContestParticipantDto
+import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.dto.contest.ParticipantDto
+import com.stockcomp.dto.contest.ContestParticipantDto
 
 interface ContestService {
 

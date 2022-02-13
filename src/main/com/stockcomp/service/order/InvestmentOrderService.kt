@@ -2,7 +2,7 @@ package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.dto.InvestmentOrderDto
+import com.stockcomp.dto.contest.InvestmentOrderDto
 
 interface InvestmentOrderService {
 

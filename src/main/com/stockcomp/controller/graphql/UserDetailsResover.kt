@@ -1,6 +1,6 @@
 package com.stockcomp.controller.graphql
 
-import com.stockcomp.dto.UserDetailsDto
+import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.service.user.UserService
 import graphql.kickstart.tools.GraphQLQueryResolver
 import org.springframework.stereotype.Component

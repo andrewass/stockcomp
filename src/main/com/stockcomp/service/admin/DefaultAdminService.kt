@@ -2,8 +2,8 @@ package com.stockcomp.service.admin
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.dto.ContestDto
-import com.stockcomp.dto.UserDetailsDto
+import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.CreateContestRequest

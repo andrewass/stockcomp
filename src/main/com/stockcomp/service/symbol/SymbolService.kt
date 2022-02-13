@@ -1,7 +1,7 @@
 package com.stockcomp.service.symbol
 
-import com.stockcomp.dto.RealTimePrice
+import com.stockcomp.dto.stock.RealTimePriceDto
 
 interface SymbolService {
-    fun getRealTimePrice(symbol: String): RealTimePrice
+    fun getRealTimePrice(symbol: String): RealTimePriceDto
 }

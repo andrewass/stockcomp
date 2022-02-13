@@ -19,8 +19,6 @@ internal class TaskControllerTest : IntegrationTest() {
     @Autowired
     lateinit var contestRepository: ContestRepository
 
-    private val username = "testUser"
-
     @Test
     fun `should start contest`() {
         createContest(ContestStatus.AWAITING_START)

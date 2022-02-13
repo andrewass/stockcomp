@@ -1,4 +1,4 @@
-package com.stockcomp.dto
+package com.stockcomp.dto.contest
 
 import java.time.LocalDateTime
 

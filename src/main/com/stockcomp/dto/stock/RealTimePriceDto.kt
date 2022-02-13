@@ -1,6 +1,6 @@
-package com.stockcomp.dto
+package com.stockcomp.dto.stock
 
-data class RealTimePrice(
+data class RealTimePriceDto(
     val price: Double,
     val openPrice: Double,
     val previousClose: Double,

@@ -1,6 +1,6 @@
 package com.stockcomp.service.participant
 
-import com.stockcomp.dto.InvestmentDto
+import com.stockcomp.dto.contest.InvestmentDto
 
 interface ParticipantService {
 

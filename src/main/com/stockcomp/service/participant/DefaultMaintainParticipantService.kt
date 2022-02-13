@@ -2,7 +2,7 @@ package com.stockcomp.service.participant
 
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
-import com.stockcomp.dto.RealTimePrice
+import com.stockcomp.dto.stock.RealTimePriceDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
@@ -34,9 +34,9 @@ class DefaultMaintainParticipantService(
         }
     }
 
-    private fun updateInvestmentAndParticipant(investment: Investment, realTimePrice: RealTimePrice) {
+    private fun updateInvestmentAndParticipant(investment: Investment, realTimePriceDto: RealTimePriceDto) {
         val oldTotalValueInvestment = investment.totalValue
-        val newTotalValueInvestment = (investment.amount * realTimePrice.usdPrice)
+        val newTotalValueInvestment = (investment.amount * realTimePriceDto.usdPrice)
         investment.apply {
             totalValue = newTotalValueInvestment
             totalProfit = newTotalValueInvestment - (amount * averageUnitCost)

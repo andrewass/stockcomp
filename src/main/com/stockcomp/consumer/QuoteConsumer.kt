@@ -1,7 +1,7 @@
 package com.stockcomp.consumer
 
-import com.stockcomp.dto.RealTimePrice
+import com.stockcomp.dto.stock.RealTimePriceDto
 
 interface QuoteConsumer {
-    fun getRealTimePrice(symbol: String): RealTimePrice
+    fun getRealTimePrice(symbol: String): RealTimePriceDto
 }

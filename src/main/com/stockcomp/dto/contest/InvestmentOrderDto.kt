@@ -1,4 +1,4 @@
-package com.stockcomp.dto
+package com.stockcomp.dto.contest
 
 data class InvestmentOrderDto(
     val orderId: Long,

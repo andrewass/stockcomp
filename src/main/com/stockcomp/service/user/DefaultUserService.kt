@@ -1,7 +1,7 @@
 package com.stockcomp.service.user
 
 import com.stockcomp.domain.user.Role
-import com.stockcomp.dto.UserDetailsDto
+import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.AuthenticationRequest

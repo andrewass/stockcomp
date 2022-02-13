@@ -1,4 +1,4 @@
-package com.stockcomp.dto
+package com.stockcomp.dto.contest
 
 data class InvestmentDto(
     val id: Long,

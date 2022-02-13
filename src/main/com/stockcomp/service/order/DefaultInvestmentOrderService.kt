@@ -6,7 +6,7 @@ import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType
-import com.stockcomp.dto.InvestmentOrderDto
+import com.stockcomp.dto.contest.InvestmentOrderDto
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository

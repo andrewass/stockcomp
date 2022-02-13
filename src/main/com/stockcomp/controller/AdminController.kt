@@ -1,8 +1,7 @@
 package com.stockcomp.controller
 
-import com.stockcomp.dto.ContestDto
-import com.stockcomp.dto.UserDetailsDto
-import com.stockcomp.dto.UserDto
+import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.request.CreateContestRequest
 import com.stockcomp.service.admin.AdminService
 import com.stockcomp.tasks.ContestTasks

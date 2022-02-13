@@ -1,11 +1,26 @@
 access:
     token:
         duration: 60000
+
+refresh:
+    token:
+        duration: 30
+
+token:
+    name: accessToken
+
 consumer:
     base:
         url: http://stock-analyzer:8088
+
 cookie:
     duration: 3600000
+
+symbol:
+    search:
+        delay:
+            time: 3600000
+
 management:
     endpoint:
         health:
@@ -14,9 +29,7 @@ management:
         web:
             exposure:
                 include: health,info,prometheus,env
-refresh:
-    token:
-        duration: 30
+
 spring:
     datasource:
         password: ${SPRING_DATASOURCE_PASSWORD}
@@ -37,9 +50,9 @@ spring:
                     google:
                         client-id: ${GOOGLE_CLIENT_ID}
                         client-secret: ${GOOGLE_CLIENT_SECRET}
-symbol:
-    search:
-        delay:
-            time: 3600000
-token:
-    name: accessToken
+
+graphql:
+    servlet:
+        maxQueryDepth: 5
+
+
