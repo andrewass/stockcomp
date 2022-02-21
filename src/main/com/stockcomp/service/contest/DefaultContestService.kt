@@ -76,6 +76,11 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
+    override fun getContest(contestNumber: Int): ContestDto =
+        contestRepository.findByContestNumber(contestNumber)
+            .toContestDto()
+
+
     override fun getAllContests(): List<ContestDto> =
         contestRepository.findAll()
             .sortedByDescending { it.startTime }

@@ -14,6 +14,8 @@ interface ContestService {
 
     fun signUpUser(username: String, contestNumber: Int)
 
+    fun getContest(contestNumber: Int): ContestDto
+
     fun getAllContests() : List<ContestDto>
 
     fun getContestParticipantsByStatus(statusList : List<String>, username: String) : List<ContestParticipantDto>

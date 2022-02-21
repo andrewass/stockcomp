@@ -1,3 +1,4 @@
+scalar LocalDateTime
 
 type LeaderboardEntry {
     ranking: Int!
@@ -15,4 +16,14 @@ type UserDetails {
     country: String
     userRole: String!
     leaderboardEntry: LeaderboardEntry
+}
+
+type Contest{
+    id: ID!
+    startTime: LocalDateTime
+    endTime: LocalDateTime
+    contestNumber: Int
+    participantCount: Int
+    contestStatus: String
+    leaderboardUpdateStatus: String
 }
