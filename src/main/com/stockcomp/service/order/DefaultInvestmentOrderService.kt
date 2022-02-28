@@ -64,6 +64,19 @@ class DefaultInvestmentOrderService(
             ?: throw InvalidStateException("Attempting to delete order not tied to user : $orderId")
     }
 
+    override fun getOrdersByStatus(
+        username: String, contestNumber: Int, status: List<OrderStatus>
+    ) : List<InvestmentOrderDto> =
+        findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
+
+
+    override fun getSymbolOrdersByStatus(
+        username: String, contestNumber: Int,
+        status: List<OrderStatus>, symbol: String
+    ): List<InvestmentOrderDto> =
+        findOrdersByParticipantAndSymbol(username, contestNumber, symbol, status)
+
+
     override fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> =
         findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
 

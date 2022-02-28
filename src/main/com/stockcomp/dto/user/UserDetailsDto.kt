@@ -7,6 +7,6 @@ data class UserDetailsDto(
     val username: String,
     val fullName: String? = null,
     val country: String? = null,
-    val userRole: String,
+    val userRole: String? = null,
     val leaderboardEntryDto: LeaderboardEntryDto? = null
 )

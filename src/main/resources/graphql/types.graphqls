@@ -14,7 +14,7 @@ type UserDetails {
     username: String!
     fullName: String
     country: String
-    userRole: String!
+    userRole: String
     leaderboardEntry: LeaderboardEntry
 }
 

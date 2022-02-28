@@ -8,17 +8,28 @@ import com.stockcomp.service.leaderboard.LeaderboardService
 import com.stockcomp.service.user.UserService
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
+import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 
 @Component
 class Query(
     private val userService: UserService,
-    private val contestService: ContestService
+    private val contestService: ContestService,
+    private val leaderboardService: LeaderboardService
 ) : GraphQLQueryResolver {
 
-    fun userDetails(username: String): UserDetailsDto = userService.getUserDetails(username)
+    fun userDetails(username: String?, env : DataFetchingEnvironment): UserDetailsDto {
+        return if(username != null) {
+            userService.getUserDetails(username)
+        } else {
+            userService.getUserDetails(extractUsername(env))
+        }
+    }
 
     fun contest(contestNumber: Int): ContestDto = contestService.getContest(contestNumber)
+
+    fun sortedLeaderboardEntries(env : DataFetchingEnvironment) : List<LeaderboardEntryDto> =
+        leaderboardService.getSortedLeaderboardEntries()
 }
 
 
@@ -30,3 +41,5 @@ class UserDetailsLeaderboardEntryResolver(
     fun leaderboardEntry(userDetails: UserDetailsDto): LeaderboardEntryDto? =
         leaderboardService.getLeaderboardEntryForUser(userDetails.username)
 }
+
+private fun extractUsername(env: DataFetchingEnvironment) : String = ""
