@@ -1,0 +1,9 @@
+
+extend type Query {
+    contest(contestNumber : Int) : Contest
+}
+
+
+type Mutation {
+    signUpContest(contestNumber : Int) : Boolean
+}

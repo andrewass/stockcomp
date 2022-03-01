@@ -15,7 +15,6 @@ type UserDetails {
     fullName: String
     country: String
     userRole: String
-    leaderboardEntry: LeaderboardEntry
 }
 
 type Contest{
