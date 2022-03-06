@@ -1,6 +1,42 @@
+enum ContestStatus {
+    AWAITING_START
+    RUNNING
+    STOPPED
+    COMPLETED
+}
+
+enum LeaderboardUpdateStatus {
+    AWAITING
+    IN_PROGRESS
+    COMPLETED
+}
+
+type Participant{
+    username : String!
+    rank: Int!
+    totalValue: Float
+    country: String,
+}
+
+type Contest{
+    id: ID
+    startTime: LocalDateTime!
+    endTime: LocalDateTime
+    contestNumber: Int!
+    participantCount: Int
+    contestStatus: ContestStatus!
+    leaderboardUpdateStatus: String!
+}
+
+type ContestParticipant{
+    contest: Contest!
+    participant: Participant
+}
 
 extend type Query {
     contest(contestNumber : Int) : Contest
+
+    contestParticipants(statusList: [ContestStatus!]) : [ContestParticipant!]
 }
 
 type Mutation {

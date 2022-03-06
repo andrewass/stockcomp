@@ -35,8 +35,8 @@ fun Contest.toContestDto() =
         id = this.id!!,
         contestNumber = this.contestNumber,
         participantCount = this.participantCount,
-        contestStatus = this.contestStatus.decode,
-        leaderboardUpdateStatus = this.leaderboardUpdateStatus.decode,
+        contestStatus = this.contestStatus,
+        leaderboardUpdateStatus = this.leaderboardUpdateStatus,
         startTime = this.startTime,
         endTime = this.endTime
     )
@@ -90,15 +90,4 @@ fun mapToInvestmentOrderDto(order: InvestmentOrder) =
         transactionType = order.transactionType.decode,
         acceptedPrice = order.acceptedPrice,
         currency = order.currency
-    )
-
-fun mapToUpcomingContestParticipantDto(contest: Contest, participant: List<Participant>) =
-    ContestParticipantDto(
-        contestNumber = contest.contestNumber,
-        startTime = contest.startTime,
-        endTime = contest.endTime,
-        contestStatus = contest.contestStatus.decode,
-        userParticipating = participant.isNotEmpty(),
-        rank = participant.firstOrNull()?.rank,
-        participantCount = contest.participantCount
     )

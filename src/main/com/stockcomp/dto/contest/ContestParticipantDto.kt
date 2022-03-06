@@ -1,13 +1,6 @@
 package com.stockcomp.dto.contest
 
-import java.time.LocalDateTime
-
 data class ContestParticipantDto(
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime,
-    val contestNumber: Int,
-    val contestStatus: String,
-    val userParticipating : Boolean,
-    val rank : Int?,
-    val participantCount: Int
+    private val contest: ContestDto,
+    private var participant: ParticipantDto? = null
 )

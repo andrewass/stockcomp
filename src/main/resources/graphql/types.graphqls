@@ -18,12 +18,4 @@ type UserDetails {
     userRole: String
 }
 
-type Contest{
-    id: ID!
-    startTime: LocalDateTime
-    endTime: LocalDateTime
-    contestNumber: Int
-    participantCount: Int
-    contestStatus: String
-    leaderboardUpdateStatus: String
-}
+

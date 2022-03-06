@@ -74,18 +74,6 @@ internal class ContestControllerIT : IntegrationTest() {
     }
 
     @Test
-    fun `should get list of upcoming contests`() {
-        createTestData(ContestStatus.RUNNING)
-        val accessToken = jwtService.generateTokenPair(username).first
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/contest/upcoming-contests")
-                .cookie(createCookie("accessToken", accessToken, 1000))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk)
-    }
-
-    @Test
     fun `should get remaining funds for a contest participant`() {
         createTestData(ContestStatus.RUNNING)
         val accessToken = jwtService.generateTokenPair(username).first

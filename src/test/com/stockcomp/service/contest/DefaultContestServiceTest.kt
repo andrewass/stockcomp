@@ -172,29 +172,6 @@ internal class DefaultContestServiceTest {
         }
     }
 
-    @Test
-    fun `should get upcoming contests`() {
-        val runningContest = createRunningContest()
-
-        every {
-            contestRepository.findAll()
-        } returns listOf(runningContest)
-
-        every {
-            participantRepository.findParticipantFromUsernameAndContest(username, runningContest)
-        } returns listOf(participant)
-
-        val upcomingContests = contestService.getUpcomingContestsParticipant(username)
-
-        assertEquals(upcomingContests.size, 1)
-        upcomingContests[0].let {
-            assertEquals(contestNumber, it.contestNumber)
-            assertEquals(ContestStatus.RUNNING.decode, it.contestStatus)
-            assertEquals(true, it.userParticipating)
-            assertEquals(runningContest.startTime, it.startTime)
-        }
-    }
-
     private fun createFutureContest() =
         Contest(
             startTime = LocalDateTime.now().plusWeeks(1L), endTime = LocalDateTime.now().plusWeeks(5L),

@@ -1,6 +1,5 @@
 package com.stockcomp.service.contest
 
-import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.ContestStatus.*
@@ -11,7 +10,6 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.tasks.ContestTasks
-import com.stockcomp.util.mapToUpcomingContestParticipantDto
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toParticipantDto
 import org.slf4j.LoggerFactory
@@ -63,7 +61,7 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
-    override fun signUpUser(username: String, contestNumber: Int) : Long {
+    override fun signUpUser(username: String, contestNumber: Int): Long {
         return contestRepository.findByContestNumber(contestNumber)
             ?.takeIf { contest -> contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START) }
             ?.let {
@@ -82,25 +80,15 @@ class DefaultContestService(
             .toContestDto()
 
 
-    override fun getAllContests(): List<ContestDto> =
-        contestRepository.findAll()
-            .sortedByDescending { it.startTime }
-            .map { it.toContestDto() }
+    override fun getContests(statusList: List<ContestStatus>): List<ContestDto> {
+        TODO("Not yet implemented")
+    }
 
-
-    override fun getContestParticipantsByStatus(
-        statusList: List<String>, username: String
-    ): List<ContestParticipantDto> =
-        contestRepository.findAllByContestStatusList(
-            statusList.map { ContestStatus.fromDecode(it) }
-        ).map { createUpcomingContestParticipantDto(username, it) }
-
-
-    override fun getUpcomingContestsParticipant(username: String): List<ContestParticipantDto> =
-        contestRepository.findAll()
-            .filter { listOf(RUNNING, AWAITING_START).contains(it.contestStatus) }
-            .map { createUpcomingContestParticipantDto(username, it) }
-
+    override fun getContestsParticipant(
+        statusList: List<ContestStatus>, username: String
+    ): List<ContestParticipantDto> {
+        TODO("Not yet implemented")
+    }
 
     override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> =
         contestRepository.findByContestNumber(contestNumber)
@@ -134,10 +122,4 @@ class DefaultContestService(
             ?.map { it.toParticipantDto() }
             ?: throw NoSuchElementException("User not found for username $username")
 
-
-    private fun createUpcomingContestParticipantDto(username: String, contest: Contest): ContestParticipantDto =
-        mapToUpcomingContestParticipantDto(
-            contest,
-            participantRepository.findParticipantFromUsernameAndContest(username, contest)
-        )
 }

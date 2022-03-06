@@ -1,5 +1,6 @@
 package com.stockcomp.service.contest
 
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.contest.ParticipantDto
 import com.stockcomp.dto.contest.ContestParticipantDto
@@ -16,11 +17,9 @@ interface ContestService {
 
     fun getContest(contestNumber: Int): ContestDto
 
-    fun getAllContests() : List<ContestDto>
+    fun getContests(statusList: List<ContestStatus>) : List<ContestDto>
 
-    fun getContestParticipantsByStatus(statusList : List<String>, username: String) : List<ContestParticipantDto>
-
-    fun getUpcomingContestsParticipant(username: String): List<ContestParticipantDto>
+    fun getContestsParticipant(statusList: List<ContestStatus>, username: String) : List<ContestParticipantDto>
 
     fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto>
 

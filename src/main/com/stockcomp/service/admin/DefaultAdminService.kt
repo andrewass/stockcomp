@@ -51,7 +51,7 @@ class DefaultAdminService(
     override fun updateContestStatus(contestDto: ContestDto): ContestDto =
         contestRepository.findById(contestDto.id).get()
             .let {
-                when (ContestStatus.fromDecode(contestDto.contestStatus)) {
+                when (it.contestStatus) {
                     ContestStatus.COMPLETED -> {
                         contestTasks.completeContestTasks(contestDto.contestNumber)
                     }
@@ -66,7 +66,7 @@ class DefaultAdminService(
                     ContestStatus.AWAITING_START -> pass
                     else -> pass
                 }
-                it.contestStatus = ContestStatus.fromDecode(contestDto.contestStatus)!!
+                it.contestStatus = contestDto.contestStatus
                 contestRepository.save(it).toContestDto()
             }
 
