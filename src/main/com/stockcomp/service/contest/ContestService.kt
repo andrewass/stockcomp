@@ -12,7 +12,7 @@ interface ContestService {
 
     fun completeContest(contestNumber: Int)
 
-    fun signUpUser(username: String, contestNumber: Int)
+    fun signUpUser(username: String, contestNumber: Int): Long?
 
     fun getContest(contestNumber: Int): ContestDto
 

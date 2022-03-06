@@ -1,4 +1,5 @@
 scalar LocalDateTime
+scalar Long
 
 type LeaderboardEntry {
     ranking: Int!

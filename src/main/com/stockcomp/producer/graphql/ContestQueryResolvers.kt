@@ -2,6 +2,7 @@ package com.stockcomp.producer.graphql
 
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.service.contest.ContestService
+import com.stockcomp.service.security.DefaultJwtService
 import graphql.kickstart.tools.GraphQLMutationResolver
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.schema.DataFetchingEnvironment
@@ -18,10 +19,11 @@ class ContestQueryResolvers(
 
 @Component
 class ContestMutationResolvers(
-    private val contestService: ContestService
+    private val contestService: ContestService,
+    private val jwtService: DefaultJwtService
 ) : GraphQLMutationResolver {
 
     fun signUpContest(contestNumber: Int, env: DataFetchingEnvironment) {
-        contestService.signUpUser("", contestNumber)
+        contestService.signUpUser(extractUsername(env, jwtService), contestNumber)
     }
 }
