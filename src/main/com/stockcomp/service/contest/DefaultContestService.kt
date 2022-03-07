@@ -10,6 +10,7 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.tasks.ContestTasks
+import com.stockcomp.util.mapToContestParticipant
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toParticipantDto
 import org.slf4j.LoggerFactory
@@ -80,14 +81,20 @@ class DefaultContestService(
             .toContestDto()
 
 
-    override fun getContests(statusList: List<ContestStatus>): List<ContestDto> {
-        TODO("Not yet implemented")
-    }
+    override fun getContests(statusList: List<ContestStatus>): List<ContestDto> =
+        contestRepository.findAllByContestStatusList(statusList)
+            .map { it.toContestDto() }
 
-    override fun getContestsParticipant(
+
+    override fun getContestParticipants(
         statusList: List<ContestStatus>, username: String
     ): List<ContestParticipantDto> {
-        TODO("Not yet implemented")
+        val user = userService.findUserByUsername(username)
+        return contestRepository.findAllByContestStatusList(statusList)
+            .map {
+                val participant: Participant? = participantRepository.findByContestAndUser(it, user)
+                mapToContestParticipant(it, participant)
+            }
     }
 
     override fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto> =

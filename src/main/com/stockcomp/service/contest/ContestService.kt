@@ -19,7 +19,7 @@ interface ContestService {
 
     fun getContests(statusList: List<ContestStatus>) : List<ContestDto>
 
-    fun getContestsParticipant(statusList: List<ContestStatus>, username: String) : List<ContestParticipantDto>
+    fun getContestParticipants(statusList: List<ContestStatus>, username: String) : List<ContestParticipantDto>
 
     fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto>
 

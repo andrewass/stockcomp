@@ -59,6 +59,7 @@ internal class DefaultInvestmentServiceTest {
         participant.remainingFund = 20000.00
     }
 
+    @Disabled
     @Test
     fun `should get investment for a given symbol`() {
         participant.investments.add(
@@ -70,6 +71,7 @@ internal class DefaultInvestmentServiceTest {
         Assertions.assertEquals(totalAmount, investment.amount)
     }
 
+    @Disabled
     @Test
     fun `should get remaining funds`() {
         participant.remainingFund = 1400.00

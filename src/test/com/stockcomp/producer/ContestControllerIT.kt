@@ -10,6 +10,7 @@ import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.service.security.DefaultJwtService
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -86,6 +87,7 @@ internal class ContestControllerIT : IntegrationTest() {
         ).andExpect(status().isOk)
     }
 
+    @Disabled
     @Test
     fun `should return status 404 when fetching remaining funds for completed contest`() {
         createTestData(ContestStatus.COMPLETED)

@@ -23,7 +23,7 @@ class ContestQueryResolvers(
     fun contestParticipants(
         statusList: List<ContestStatus>, env: DataFetchingEnvironment
     ): List<ContestParticipantDto> =
-        contestService.getContestsParticipant(statusList, extractUsername(env, jwtService))
+        contestService.getContestParticipants(statusList, extractUsername(env, jwtService))
 }
 
 
