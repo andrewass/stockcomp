@@ -82,8 +82,13 @@ class DefaultContestService(
 
 
     override fun getContests(statusList: List<ContestStatus>): List<ContestDto> =
-        contestRepository.findAllByContestStatusList(statusList)
-            .map { it.toContestDto() }
+        if (statusList.isEmpty()) {
+            contestRepository.findAll()
+                .map { it.toContestDto() }
+        } else {
+            contestRepository.findAllByContestStatusList(statusList)
+                .map { it.toContestDto() }
+        }
 
 
     override fun getContestParticipants(

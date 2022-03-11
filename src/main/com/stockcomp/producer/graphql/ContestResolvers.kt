@@ -20,6 +20,8 @@ class ContestQueryResolvers(
 
     fun contest(contestNumber: Int): ContestDto = contestService.getContest(contestNumber)
 
+    fun contests(statusList: List<ContestStatus>) = contestService.getContests(statusList)
+
     fun contestParticipants(
         statusList: List<ContestStatus>, env: DataFetchingEnvironment
     ): List<ContestParticipantDto> =
@@ -42,4 +44,13 @@ class ContestMutationResolvers(
 class ContestResolver : GraphQLResolver<ContestDto> {
 
     fun contestStatus(contestDto: ContestDto) = contestDto.contestStatus
+}
+
+
+@Component
+class InvestmentResolver: GraphQLQueryResolver {
+
+    fun investment(symbol : String, contestNumber: Int, env : DataFetchingEnvironment) {
+        
+    }
 }

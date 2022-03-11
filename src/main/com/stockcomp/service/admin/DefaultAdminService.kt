@@ -6,7 +6,7 @@ import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
-import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.request.ContestUpdateRequest
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDetailsDto
@@ -30,7 +30,7 @@ class DefaultAdminService(
     override fun getContest(id: Long): ContestDto =
         contestRepository.findById(id).get().toContestDto()
 
-    override fun createContest(request: CreateContestRequest): ContestDto =
+    override fun createContest(request: ContestUpdateRequest): ContestDto =
         Contest(
             contestNumber = request.contestNumber,
             startTime = request.startTime,
@@ -48,12 +48,12 @@ class DefaultAdminService(
             .map { it.toContestDto() }
 
 
-    override fun updateContestStatus(contestDto: ContestDto): ContestDto =
-        contestRepository.findById(contestDto.id).get()
+    override fun updateContestStatus(request: ContestUpdateRequest): ContestDto =
+        contestRepository.findById(request.id!!).get()
             .let {
                 when (it.contestStatus) {
                     ContestStatus.COMPLETED -> {
-                        contestTasks.completeContestTasks(contestDto.contestNumber)
+                        contestTasks.completeContestTasks(request.contestNumber)
                     }
                     ContestStatus.STOPPED -> {
                         contestTasks.stopOrderProcessing()
@@ -64,9 +64,8 @@ class DefaultAdminService(
                         contestTasks.startMaintainInvestments()
                     }
                     ContestStatus.AWAITING_START -> pass
-                    else -> pass
                 }
-                it.contestStatus = contestDto.contestStatus
+                it.contestStatus = request.contestStatus
                 contestRepository.save(it).toContestDto()
             }
 

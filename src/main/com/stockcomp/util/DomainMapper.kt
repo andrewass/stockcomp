@@ -55,6 +55,7 @@ fun Participant.toParticipantDto() =
         username = this.user.username,
         rank = this.rank,
         totalValue = this.totalValue,
+        remainingFunds = this.remainingFund,
         country = this.user.country,
         startTime = this.contest.startTime,
         contestNumber = this.contest.contestNumber

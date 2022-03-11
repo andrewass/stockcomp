@@ -2,7 +2,7 @@ package com.stockcomp.service.admin
 
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto
-import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.request.ContestUpdateRequest
 
 interface AdminService {
 
@@ -12,9 +12,9 @@ interface AdminService {
 
     fun getContest(id: Long): ContestDto
 
-    fun updateContestStatus(contestDto: ContestDto): ContestDto
+    fun updateContestStatus(request: ContestUpdateRequest): ContestDto
 
-    fun createContest(request: CreateContestRequest): ContestDto
+    fun createContest(request: ContestUpdateRequest): ContestDto
 
     fun deleteContest(id: Long): ContestDto
 
