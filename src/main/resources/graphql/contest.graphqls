@@ -5,12 +5,6 @@ enum ContestStatus {
     COMPLETED
 }
 
-enum LeaderboardUpdateStatus {
-    AWAITING
-    IN_PROGRESS
-    COMPLETED
-}
-
 type Participant{
     username : String!
     rank: Int!
@@ -34,12 +28,24 @@ type ContestParticipant{
     participant: Participant
 }
 
+type Investment{
+    symbol: String!
+    amount: Int!
+    averageUnitCost: Float!
+    totalValue: Float!
+    totalProfit: Float!
+}
+
 extend type Query {
     contest(contestNumber : Int) : Contest
 
     contests(statusList: [ContestStatus!]) : [Contest!]
 
     contestParticipants(statusList: [ContestStatus!]) : [ContestParticipant!]
+
+    investment(symbol: String, contestNumber : Int) : Investment
+
+    investments(contestNumber : Int) : [Investment!]
 }
 
 type Mutation {

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component
 class ContestQueryResolvers(
     private val contestService: ContestService,
     private val jwtService: JwtService
-
 ) : GraphQLQueryResolver {
 
     fun contest(contestNumber: Int): ContestDto = contestService.getContest(contestNumber)
@@ -47,10 +46,3 @@ class ContestResolver : GraphQLResolver<ContestDto> {
 }
 
 
-@Component
-class InvestmentResolver: GraphQLQueryResolver {
-
-    fun investment(symbol : String, contestNumber: Int, env : DataFetchingEnvironment) {
-        
-    }
-}

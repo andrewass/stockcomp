@@ -3,7 +3,6 @@ package com.stockcomp.producer.graphql
 import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.service.security.JwtService
 import com.stockcomp.service.user.UserService
-import graphql.kickstart.tools.GraphQLMutationResolver
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
@@ -22,11 +21,4 @@ class UserQueryResolver(
             userService.getUserDetails(extractUsername(env, jwtService))
         }
     }
-}
-
-@Component
-class UserMutationResolver(
-    private val userService: UserService
-) : GraphQLMutationResolver {
-
 }
