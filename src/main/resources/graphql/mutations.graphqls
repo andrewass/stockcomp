@@ -1,0 +1,5 @@
+
+type Mutation {
+
+    signUpContest(contestNumber : Int) : Long
+}

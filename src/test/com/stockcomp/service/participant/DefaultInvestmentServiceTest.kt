@@ -71,15 +71,6 @@ internal class DefaultInvestmentServiceTest {
         Assertions.assertEquals(totalAmount, investment.amount)
     }
 
-    @Disabled
-    @Test
-    fun `should get remaining funds`() {
-        participant.remainingFund = 1400.00
-        val remainingFunds = investmentService.getRemainingFunds(username, contestNumber)
-
-        Assertions.assertEquals(1400.00, remainingFunds)
-    }
-
     private fun verifyCommonFields(investmentOrder: InvestmentOrder) {
         Assertions.assertTrue(participant.investmentOrders.size == 1)
         Assertions.assertEquals(symbol, investmentOrder.symbol)

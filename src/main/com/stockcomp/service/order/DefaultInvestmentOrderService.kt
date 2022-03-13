@@ -94,12 +94,12 @@ class DefaultInvestmentOrderService(
             : List<InvestmentOrderDto> =
         findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
 
+
     override fun terminateRemainingOrders(contest: Contest) {
         investmentOrderRepository.findAllByContestAndOrderStatus(contest, ACTIVE)
             .onEach { it.orderStatus = TERMINATED }
             .also { investmentOrderRepository.saveAll(it) }
     }
-
 
     private fun findOrdersByParticipant(
         username: String, contestNumber: Int, orderStatus: List<OrderStatus>
@@ -107,7 +107,7 @@ class DefaultInvestmentOrderService(
         contestRepository.findByContestNumber(contestNumber)
             .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndOrderStatusIn(it, orderStatus) }
-            .let { it.map { order -> mapToInvestmentOrderDto(order) } }
+            .let { it.map { order -> order.mapToInvestmentOrderDto() } }
 
 
     private fun findOrdersByParticipantAndSymbol(
@@ -116,7 +116,7 @@ class DefaultInvestmentOrderService(
         contestRepository.findByContestNumber(contestNumber)
             .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, orderStatus) }
-            .let { it.map { order -> mapToInvestmentOrderDto(order) } }
+            .let { it.map { order -> order.mapToInvestmentOrderDto() } }
 
 
     private fun getParticipant(username: String, contestNumber: Int): Participant =

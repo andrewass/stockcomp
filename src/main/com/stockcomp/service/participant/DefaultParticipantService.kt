@@ -27,10 +27,6 @@ class DefaultParticipantService(
         return participant.investments.map { it.toInvestmentDto() }
     }
 
-    override fun getRemainingFunds(username: String, contestNumber: Int) =
-        getParticipant(username, contestNumber).remainingFund
-
-
     override fun getTotalValue(username: String, contestNumber: Int): Double =
         getParticipant(username, contestNumber).investments
             .sumOf { it.totalValue }

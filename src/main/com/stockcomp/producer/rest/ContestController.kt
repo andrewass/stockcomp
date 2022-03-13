@@ -33,16 +33,6 @@ class ContestController(
             .let { ResponseEntity(HttpStatus.OK) }
 
 
-    @GetMapping("/remaining-funds")
-    @ApiOperation(value = "Get remaining funds for a participant")
-    fun getRemainingFunds(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<Double> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { participantService.getRemainingFunds(it, contestNumber) }
-            .let { ResponseEntity.ok(it) }
-
-
     @GetMapping("/participants-by-rank")
     @ApiOperation(value = "Get contest participants sorted by ranking")
     fun getParticipantsByRanking(

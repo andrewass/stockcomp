@@ -1,0 +1,19 @@
+type Query {
+    contest(contestNumber: Int) : Contest
+
+    contests(statusList: [ContestStatus!]) : [Contest!]
+
+    contestParticipants(statusList: [ContestStatus!]) : [ContestParticipant!]
+
+    investment(symbol: String, contestNumber : Int) : Investment
+
+    investments(contestNumber: Int) : [Investment!]
+
+    investmentOrders(contestNumber: Int, statusList: [OrderStatus!]) : [InvestmentOrder!]
+
+    investmentOrdersSymbol(symbol: String, contestNumber: Int, statusList: [OrderStatus!]) : [InvestmentOrder!]
+
+    userDetails(username: String) : UserDetails
+
+    sortedLeaderboardEntries : [LeaderboardEntry]
+}

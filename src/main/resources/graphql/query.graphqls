@@ -1,7 +1,0 @@
-
-type Query {
-    userDetails(username : String) : UserDetails
-
-
-    sortedLeaderboardEntries : [LeaderboardEntry]
-}

@@ -1,6 +1,26 @@
 scalar LocalDateTime
 scalar Long
 
+
+enum ContestStatus {
+    AWAITING_START
+    RUNNING
+    STOPPED
+    COMPLETED
+}
+
+enum OrderStatus {
+    ACTIVE
+    COMPLETED
+    FAILED
+    TERMINATED
+}
+
+enum TransactionType {
+    SELL
+    BUY
+}
+
 type LeaderboardEntry {
     ranking: Int!
     score: Int!
@@ -18,4 +38,43 @@ type UserDetails {
     userRole: String
 }
 
+type Participant{
+    username : String!
+    rank: Int!
+    totalValue: Float
+    remainingFunds: Float,
+    country: String,
+}
 
+type Contest{
+    id: ID
+    startTime: LocalDateTime!
+    endTime: LocalDateTime
+    contestNumber: Int!
+    participantCount: Int
+    contestStatus: ContestStatus!
+    leaderboardUpdateStatus: String!
+}
+
+type ContestParticipant{
+    contest: Contest!
+    participant: Participant
+}
+
+type Investment{
+    symbol: String!
+    amount: Int!
+    averageUnitCost: Float!
+    totalValue: Float!
+    totalProfit: Float!
+}
+
+type InvestmentOrder{
+    orderStatus: OrderStatus!
+    remainingAmount: Int!
+    totalAmount: Int!
+    transactionType: TransactionType!
+    symbol: String!
+    acceptedPrice: Float!
+    currency: String!
+}

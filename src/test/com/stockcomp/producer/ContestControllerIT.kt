@@ -74,19 +74,6 @@ internal class ContestControllerIT : IntegrationTest() {
         ).andExpect(status().isNotFound)
     }
 
-    @Test
-    fun `should get remaining funds for a contest participant`() {
-        createTestData(ContestStatus.RUNNING)
-        val accessToken = jwtService.generateTokenPair(username).first
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/contest/remaining-funds")
-                .param("contestNumber", contestNumber)
-                .cookie(createCookie("accessToken", accessToken, 1000))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk)
-    }
-
     @Disabled
     @Test
     fun `should return status 404 when fetching remaining funds for completed contest`() {
