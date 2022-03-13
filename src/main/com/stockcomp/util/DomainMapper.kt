@@ -1,14 +1,15 @@
 package com.stockcomp.util
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.user.User
-import com.stockcomp.dto.contest.*
+import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.dto.contest.ContestParticipantDto
+import com.stockcomp.dto.contest.ParticipantDto
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.dto.leaderboard.MedalDto
 import com.stockcomp.dto.user.UserDetailsDto
@@ -16,18 +17,8 @@ import com.stockcomp.request.InvestmentOrderRequest
 
 fun mapToContestParticipant(contest: Contest, participant: Participant?): ContestParticipantDto =
     ContestParticipantDto(
-        contest = contest.toContestDto(),
+        contest = contest,
         participant = participant?.toParticipantDto()
-    )
-
-fun Investment.toInvestmentDto() =
-    InvestmentDto(
-        id = this.id!!,
-        symbol = this.symbol,
-        totalProfit = this.totalProfit,
-        totalValue = this.totalValue,
-        amount = this.amount,
-        averageUnitCost = this.averageUnitCost
     )
 
 fun User.toUserDetailsDto() =

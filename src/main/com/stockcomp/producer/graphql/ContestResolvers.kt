@@ -1,7 +1,7 @@
 package com.stockcomp.producer.graphql
 
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.contest.ContestParticipantDto
 import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.security.JwtService
@@ -17,7 +17,7 @@ class ContestQueryResolvers(
     private val jwtService: JwtService
 ) : GraphQLQueryResolver {
 
-    fun contest(contestNumber: Int): ContestDto = contestService.getContest(contestNumber)
+    fun contest(contestNumber: Int): Contest = contestService.getContest(contestNumber)
 
     fun contests(statusList: List<ContestStatus>) = contestService.getContests(statusList)
 
@@ -40,9 +40,9 @@ class ContestMutationResolvers(
 }
 
 @Component
-class ContestResolver : GraphQLResolver<ContestDto> {
+class ContestResolver : GraphQLResolver<Contest> {
 
-    fun contestStatus(contestDto: ContestDto) = contestDto.contestStatus
+    fun contestStatus(contest: Contest) = contest.contestStatus
 }
 
 

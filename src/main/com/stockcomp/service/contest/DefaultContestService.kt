@@ -1,9 +1,9 @@
 package com.stockcomp.service.contest
 
+import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.ContestStatus.*
-import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.contest.ContestParticipantDto
 import com.stockcomp.dto.contest.ParticipantDto
 import com.stockcomp.repository.ContestRepository
@@ -11,7 +11,6 @@ import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.mapToContestParticipant
-import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toParticipantDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -76,18 +75,15 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
-    override fun getContest(contestNumber: Int): ContestDto =
-        contestRepository.findByContestNumber(contestNumber)
-            .toContestDto()
+
+    override fun getContest(contestNumber: Int): Contest = contestRepository.findByContestNumber(contestNumber)
 
 
-    override fun getContests(statusList: List<ContestStatus>): List<ContestDto> =
+    override fun getContests(statusList: List<ContestStatus>): List<Contest> =
         if (statusList.isEmpty()) {
             contestRepository.findAll()
-                .map { it.toContestDto() }
         } else {
             contestRepository.findAllByContestStatusList(statusList)
-                .map { it.toContestDto() }
         }
 
 
@@ -133,5 +129,4 @@ class DefaultContestService(
             ?.filter { it.contest.contestStatus in listOf(RUNNING, STOPPED, COMPLETED) }
             ?.map { it.toParticipantDto() }
             ?: throw NoSuchElementException("User not found for username $username")
-
 }

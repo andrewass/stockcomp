@@ -1,10 +1,9 @@
 package com.stockcomp.service.participant
 
+import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.dto.contest.InvestmentDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.util.toInvestmentDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,17 +14,14 @@ class DefaultParticipantService(
     private val participantRepository: ParticipantRepository
 ) : ParticipantService {
 
-    override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): InvestmentDto? {
-        val participant = getParticipant(username, contestNumber)
+    override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): Investment? =
+        getParticipant(username, contestNumber)
+            .investments.firstOrNull { it.symbol == symbol }
 
-        return participant.investments.firstOrNull { it.symbol == symbol }?.toInvestmentDto()
-    }
 
-    override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<InvestmentDto> {
-        val participant = getParticipant(username, contestNumber)
+    override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<Investment> =
+        getParticipant(username, contestNumber).investments
 
-        return participant.investments.map { it.toInvestmentDto() }
-    }
 
     override fun getTotalValue(username: String, contestNumber: Int): Double =
         getParticipant(username, contestNumber).investments
