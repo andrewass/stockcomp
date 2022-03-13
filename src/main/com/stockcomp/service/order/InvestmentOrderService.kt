@@ -1,8 +1,8 @@
 package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.dto.contest.InvestmentOrderDto
 import com.stockcomp.request.InvestmentOrderRequest
 
 interface InvestmentOrderService {
@@ -13,10 +13,10 @@ interface InvestmentOrderService {
 
     fun deleteActiveInvestmentOrder(username: String, orderId: Long)
 
-    fun getOrdersByStatus(username: String, contestNumber: Int, status: List<OrderStatus>): List<InvestmentOrderDto>
+    fun getOrdersByStatus(username: String, contestNumber: Int, status: List<OrderStatus>): List<InvestmentOrder>
 
     fun getSymbolOrdersByStatus(username: String, contestNumber: Int, status: List<OrderStatus>, symbol: String):
-            List<InvestmentOrderDto>
+            List<InvestmentOrder>
 
     fun terminateRemainingOrders(contest: Contest)
 }

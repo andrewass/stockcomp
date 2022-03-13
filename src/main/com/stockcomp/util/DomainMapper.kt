@@ -77,18 +77,6 @@ fun LeaderboardEntry.toLeaderboardEntryDto() =
         medals = this.medals.map { it.toMedalDto() }
     )
 
-fun InvestmentOrder.mapToInvestmentOrderDto() =
-    InvestmentOrderDto(
-        orderId = this.id!!,
-        symbol = this.symbol,
-        totalAmount = this.totalAmount,
-        remainingAmount = this.remainingAmount,
-        orderStatus = this.orderStatus,
-        transactionType = this.transactionType,
-        acceptedPrice = this.acceptedPrice,
-        currency = this.currency
-    )
-
 fun mapToInvestmentOrder(
     participant: Participant, request: InvestmentOrderRequest, transactionType: TransactionType
 ) =

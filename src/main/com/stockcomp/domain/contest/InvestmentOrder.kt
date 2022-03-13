@@ -13,7 +13,7 @@ class InvestmentOrder(
     @Id
     @Column(name = "INVESTMENT_ORDER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val orderId: Long? = null,
 
     val symbol: String,
 

@@ -1,7 +1,7 @@
 package com.stockcomp.producer.graphql
 
+import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.dto.contest.InvestmentOrderDto
 import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.security.JwtService
 import graphql.kickstart.tools.GraphQLQueryResolver
@@ -16,14 +16,14 @@ class InvestmentOrderQueryResolvers(
 ) : GraphQLQueryResolver {
 
     fun investmentOrders(contestNumber: Int, statusList: List<OrderStatus>, env: DataFetchingEnvironment):
-            List<InvestmentOrderDto> =
+            List<InvestmentOrder> =
         investmentOrderService.getOrdersByStatus(extractUsername(env, jwtService), contestNumber, statusList)
 
 
     fun investmentOrdersSymbol(
         symbol: String, contestNumber: Int,
         statusList: List<OrderStatus>, env: DataFetchingEnvironment
-    ): List<InvestmentOrderDto> =
+    ): List<InvestmentOrder> =
         investmentOrderService.getSymbolOrdersByStatus(
             extractUsername(env, jwtService),
             contestNumber,
@@ -33,9 +33,9 @@ class InvestmentOrderQueryResolvers(
 }
 
 @Component
-class InvestmentOrderResolver : GraphQLResolver<InvestmentOrderDto> {
+class InvestmentOrderResolver : GraphQLResolver<InvestmentOrder> {
 
-    fun orderStatus(investmentOrder: InvestmentOrderDto) = investmentOrder.orderStatus
+    fun orderStatus(investmentOrder: InvestmentOrder) = investmentOrder.orderStatus
 
-    fun transactionType(investmentOrder: InvestmentOrderDto) = investmentOrder.transactionType
+    fun transactionType(investmentOrder: InvestmentOrder) = investmentOrder.transactionType
 }

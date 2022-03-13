@@ -1,19 +1,19 @@
 package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Contest
+import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.domain.contest.enums.OrderStatus.*
+import com.stockcomp.domain.contest.enums.OrderStatus.ACTIVE
+import com.stockcomp.domain.contest.enums.OrderStatus.TERMINATED
 import com.stockcomp.domain.contest.enums.TransactionType
-import com.stockcomp.dto.contest.InvestmentOrderDto
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.util.mapToInvestmentOrder
-import com.stockcomp.util.mapToInvestmentOrderDto
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import org.springframework.stereotype.Service
@@ -66,14 +66,14 @@ class DefaultInvestmentOrderService(
 
     override fun getOrdersByStatus(
         username: String, contestNumber: Int, status: List<OrderStatus>
-    ) : List<InvestmentOrderDto> =
+    ) : List<InvestmentOrder> =
         findOrdersByParticipant(username, contestNumber, status)
 
 
     override fun getSymbolOrdersByStatus(
         username: String, contestNumber: Int,
         status: List<OrderStatus>, symbol: String
-    ): List<InvestmentOrderDto> =
+    ): List<InvestmentOrder> =
         findOrdersByParticipantAndSymbol(username, contestNumber, symbol, status)
 
 
@@ -85,20 +85,18 @@ class DefaultInvestmentOrderService(
 
     private fun findOrdersByParticipant(
         username: String, contestNumber: Int, orderStatus: List<OrderStatus>
-    ): List<InvestmentOrderDto> =
+    ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
             .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndOrderStatusIn(it, orderStatus) }
-            .let { it.map { order -> order.mapToInvestmentOrderDto() } }
 
 
     private fun findOrdersByParticipantAndSymbol(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
-    ): List<InvestmentOrderDto> =
+    ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
             .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, orderStatus) }
-            .let { it.map { order -> order.mapToInvestmentOrderDto() } }
 
 
     private fun getParticipant(username: String, contestNumber: Int): Participant =
