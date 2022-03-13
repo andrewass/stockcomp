@@ -1,6 +1,5 @@
 package com.stockcomp.producer.rest
 
-import com.stockcomp.dto.contest.InvestmentOrderDto
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.service.order.InvestmentOrderService
@@ -51,52 +50,6 @@ class InvestmentOrderController(
         extractUsernameFromRequest(httpServletRequest)
             .let { investmentOrderService.deleteActiveInvestmentOrder(it, orderId) }
             .let { ResponseEntity(HttpStatus.OK) }
-
-
-    @GetMapping("/active-orders-participant")
-    @ApiOperation(value = "Get all active investment orders for a participant")
-    fun getAllActiveOrdersForParticiapant(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { investmentOrderService.getAllActiveOrdersForParticipant(it, contestNumber) }
-            .let { ResponseEntity.ok(it) }
-
-
-    @GetMapping("/completed-orders-participant")
-    @ApiOperation(value = "Get all completed investment orders for a participant")
-    fun getAllCompletedOrdersForParticipant(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { investmentOrderService.getAllCompletedOrdersForParticipant(it, contestNumber) }
-            .let { ResponseEntity.ok(it) }
-
-
-    @GetMapping("/completed-orders-symbol-participant")
-    @ApiOperation(value = "Get all completed investment orders for a given symbol and participant")
-    fun getAllCompletedOrdersForSymbolForParticipant(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam symbol: String,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { investmentOrderService.getAllCompletedOrdersForSymbolForParticipant(it, symbol, contestNumber) }
-            .let { ResponseEntity.ok(it) }
-
-
-    @GetMapping("/active-orders-symbol-participant")
-    @ApiOperation(value = "Get all active investment orders for a given symbol and participant")
-    fun getAllActiveOrdersForSymbolForParticipant(
-        httpServletRequest: HttpServletRequest,
-        @RequestParam symbol: String,
-        @RequestParam contestNumber: Int
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { investmentOrderService.getAllActiveOrdersForSymbolForParticipant(it, symbol, contestNumber) }
-            .let { ResponseEntity.ok(it) }
 
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String =

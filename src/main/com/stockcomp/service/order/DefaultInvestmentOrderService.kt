@@ -67,7 +67,7 @@ class DefaultInvestmentOrderService(
     override fun getOrdersByStatus(
         username: String, contestNumber: Int, status: List<OrderStatus>
     ) : List<InvestmentOrderDto> =
-        findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
+        findOrdersByParticipant(username, contestNumber, status)
 
 
     override fun getSymbolOrdersByStatus(
@@ -75,24 +75,6 @@ class DefaultInvestmentOrderService(
         status: List<OrderStatus>, symbol: String
     ): List<InvestmentOrderDto> =
         findOrdersByParticipantAndSymbol(username, contestNumber, symbol, status)
-
-
-    override fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> =
-        findOrdersByParticipant(username, contestNumber, listOf(COMPLETED, FAILED))
-
-
-    override fun getAllCompletedOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
-            : List<InvestmentOrderDto> =
-        findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(COMPLETED, FAILED))
-
-
-    override fun getAllActiveOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto> =
-        findOrdersByParticipant(username, contestNumber, listOf(ACTIVE))
-
-
-    override fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
-            : List<InvestmentOrderDto> =
-        findOrdersByParticipantAndSymbol(username, contestNumber, symbol, listOf(ACTIVE))
 
 
     override fun terminateRemainingOrders(contest: Contest) {

@@ -18,15 +18,5 @@ interface InvestmentOrderService {
     fun getSymbolOrdersByStatus(username: String, contestNumber: Int, status: List<OrderStatus>, symbol: String):
             List<InvestmentOrderDto>
 
-    fun getAllCompletedOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto>
-
-    fun getAllCompletedOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
-            : List<InvestmentOrderDto>
-
-    fun getAllActiveOrdersForParticipant(username: String, contestNumber: Int): List<InvestmentOrderDto>
-
-    fun getAllActiveOrdersForSymbolForParticipant(username: String, symbol: String, contestNumber: Int)
-            : List<InvestmentOrderDto>
-
     fun terminateRemainingOrders(contest: Contest)
 }

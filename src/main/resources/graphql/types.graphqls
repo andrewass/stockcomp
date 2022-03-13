@@ -70,6 +70,7 @@ type Investment{
 }
 
 type InvestmentOrder{
+    orderId: Long!
     orderStatus: OrderStatus!
     remainingAmount: Int!
     totalAmount: Int!
