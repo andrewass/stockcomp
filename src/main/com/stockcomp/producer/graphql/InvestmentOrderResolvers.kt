@@ -2,8 +2,10 @@ package com.stockcomp.producer.graphql
 
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.request.InvestmentOrderRequest
 import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.security.JwtService
+import graphql.kickstart.tools.GraphQLMutationResolver
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
 import graphql.schema.DataFetchingEnvironment
@@ -19,18 +21,26 @@ class InvestmentOrderQueryResolvers(
             List<InvestmentOrder> =
         investmentOrderService.getOrdersByStatus(extractUsername(env, jwtService), contestNumber, statusList)
 
-
     fun investmentOrdersSymbol(
         symbol: String, contestNumber: Int,
         statusList: List<OrderStatus>, env: DataFetchingEnvironment
     ): List<InvestmentOrder> =
         investmentOrderService.getSymbolOrdersByStatus(
-            extractUsername(env, jwtService),
-            contestNumber,
-            statusList,
-            symbol
+            extractUsername(env, jwtService), contestNumber,
+            statusList, symbol
         )
 }
+
+@Component
+class InvestmentOrderMutationResolvers(
+    private val investmentOrderService: InvestmentOrderService,
+    private val jwtService: JwtService
+) : GraphQLMutationResolver {
+
+    fun placeInvestmentOrder(input: InvestmentOrderRequest, env: DataFetchingEnvironment): Long =
+        investmentOrderService.placeInvestmentOrder(input, extractUsername(env, jwtService))
+}
+
 
 @Component
 class InvestmentOrderResolver : GraphQLResolver<InvestmentOrder> {

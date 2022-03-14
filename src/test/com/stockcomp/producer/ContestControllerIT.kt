@@ -48,31 +48,6 @@ internal class ContestControllerIT : IntegrationTest() {
     private val country = "Canada"
     private val contestNumber = "100"
 
-    @Test
-    fun `should sign up for running contest`() {
-        createTestData(ContestStatus.RUNNING)
-        val accessToken = jwtService.generateTokenPair(username).first
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/contest/sign-up")
-                .param("contestNumber", contestNumber)
-                .cookie(createCookie("accessToken", accessToken, 1000))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk)
-    }
-
-    @Test
-    fun `should return status 404 when signing up for completed contest`() {
-        createTestData(ContestStatus.COMPLETED)
-        val accessToken = jwtService.generateTokenPair(username).first
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/contest/sign-up")
-                .param("contestNumber", contestNumber)
-                .cookie(createCookie("accessToken", accessToken, 1000))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound)
-    }
 
     @Disabled
     @Test

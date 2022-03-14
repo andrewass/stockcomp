@@ -7,7 +7,6 @@ import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.OrderStatus.ACTIVE
 import com.stockcomp.domain.contest.enums.OrderStatus.TERMINATED
-import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentOrderRepository
@@ -37,25 +36,10 @@ class DefaultInvestmentOrderService(
         .register(meterRegistry)
 
 
-    override fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String) {
-        mapToInvestmentOrder(
-            getParticipant(username, investmentRequest.contestNumber),
-            investmentRequest,
-            TransactionType.BUY
-        )
-            .also { investmentOrderRepository.save(it) }
-            .also { buyOrderCounter.increment() }
-    }
+    override fun placeInvestmentOrder(investmentRequest: InvestmentOrderRequest, username: String): Long =
+        mapToInvestmentOrder(getParticipant(username, investmentRequest.contestNumber), investmentRequest)
+            .let { investmentOrderRepository.save(it) }.orderId!!
 
-    override fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String) {
-        mapToInvestmentOrder(
-            getParticipant(username, investmentRequest.contestNumber),
-            investmentRequest,
-            TransactionType.SELL
-        )
-            .also { investmentOrderRepository.save(it) }
-            .also { sellOrderCounter.increment() }
-    }
 
     override fun deleteActiveInvestmentOrder(username: String, orderId: Long) {
         investmentOrderRepository.findById(orderId).get()
@@ -66,7 +50,7 @@ class DefaultInvestmentOrderService(
 
     override fun getOrdersByStatus(
         username: String, contestNumber: Int, status: List<OrderStatus>
-    ) : List<InvestmentOrder> =
+    ): List<InvestmentOrder> =
         findOrdersByParticipant(username, contestNumber, status)
 
 

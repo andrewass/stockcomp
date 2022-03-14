@@ -7,9 +7,7 @@ import com.stockcomp.request.InvestmentOrderRequest
 
 interface InvestmentOrderService {
 
-    fun placeBuyOrder(investmentRequest: InvestmentOrderRequest, username: String)
-
-    fun placeSellOrder(investmentRequest: InvestmentOrderRequest, username: String)
+    fun placeInvestmentOrder(investmentRequest: InvestmentOrderRequest, username: String) : Long
 
     fun deleteActiveInvestmentOrder(username: String, orderId: Long)
 

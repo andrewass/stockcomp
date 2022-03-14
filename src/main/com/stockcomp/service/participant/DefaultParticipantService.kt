@@ -3,6 +3,7 @@ package com.stockcomp.service.participant
 import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultParticipantService(
     private val contestRepository: ContestRepository,
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val investmentRepository: InvestmentRepository
 ) : ParticipantService {
 
     override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): Investment? =
@@ -20,7 +22,8 @@ class DefaultParticipantService(
 
 
     override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<Investment> =
-        getParticipant(username, contestNumber).investments
+        getParticipant(username, contestNumber)
+            .let { investmentRepository.findAllByParticipant(it) }
 
 
     override fun getTotalValue(username: String, contestNumber: Int): Double =

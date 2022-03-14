@@ -1,5 +1,16 @@
 
-type Mutation {
+input OrderInput {
+    expirationTime: LocalDateTime!
+    acceptedPrice: Float!
+    symbol: String!
+    amount: Int!
+    contestNumber: Int!
+    currency: String!
+    transactionType: TransactionType!
+}
 
+type Mutation {
     signUpContest(contestNumber : Int) : Long
+
+    placeInvestmentOrder(input : OrderInput!) : Long
 }

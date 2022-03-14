@@ -1,5 +1,6 @@
 package com.stockcomp.request
 
+import com.stockcomp.domain.contest.enums.TransactionType
 import java.time.LocalDateTime
 
 data class InvestmentOrderRequest(
@@ -8,5 +9,6 @@ data class InvestmentOrderRequest(
     val amount: Int,
     val currency: String,
     val expirationTime: LocalDateTime,
-    val acceptedPrice: Double
+    val acceptedPrice: Double,
+    val transactionType: TransactionType
 )

@@ -3,7 +3,6 @@ package com.stockcomp.util
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.domain.leaderboard.LeaderboardEntry
 import com.stockcomp.domain.leaderboard.Medal
 import com.stockcomp.domain.user.User
@@ -68,16 +67,14 @@ fun LeaderboardEntry.toLeaderboardEntryDto() =
         medals = this.medals.map { it.toMedalDto() }
     )
 
-fun mapToInvestmentOrder(
-    participant: Participant, request: InvestmentOrderRequest, transactionType: TransactionType
-) =
+fun mapToInvestmentOrder(participant: Participant, request: InvestmentOrderRequest) =
     InvestmentOrder(
         symbol = request.symbol,
         acceptedPrice = request.acceptedPrice,
         currency = request.currency,
         expirationTime = request.expirationTime,
         totalAmount = request.amount,
-        transactionType = transactionType,
+        transactionType = request.transactionType,
         participant = participant
     )
 

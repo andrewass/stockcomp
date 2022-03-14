@@ -5,8 +5,10 @@ import com.stockcomp.domain.contest.Investment
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
+import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.request.InvestmentOrderRequest
 import io.mockk.MockKAnnotations
@@ -24,6 +26,9 @@ internal class DefaultInvestmentServiceTest {
 
     @MockK
     private lateinit var participantRepository: ParticipantRepository
+
+    @MockK
+    private lateinit var investmentRepository: InvestmentRepository
 
     @InjectMockKs
     private lateinit var investmentService: DefaultParticipantService
@@ -88,7 +93,8 @@ internal class DefaultInvestmentServiceTest {
             amount = totalAmount,
             currency = "USD",
             expirationTime = expirationTime,
-            acceptedPrice = acceptedPrice
+            acceptedPrice = acceptedPrice,
+            transactionType = TransactionType.BUY
         )
 
     private fun createContest() =
