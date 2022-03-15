@@ -121,8 +121,8 @@ internal class DefaultProcessOrdersServiceTest {
         assertEquals(10, investmentOrders[3].remainingAmount)
         assertEquals(ACTIVE, investmentOrders[3].orderStatus)
 
-        assertEquals(21_100.00, firstParticipant.remainingFund)
-        assertEquals(18_900.00, secParticipant.remainingFund)
+        assertEquals(21_100.00, firstParticipant.remainingFunds)
+        assertEquals(18_900.00, secParticipant.remainingFunds)
     }
 
     @Test
@@ -142,7 +142,7 @@ internal class DefaultProcessOrdersServiceTest {
 
         assertEquals(5, investmentOrders[4].remainingAmount)
         assertEquals(ACTIVE, investmentOrders[4].orderStatus)
-        assertEquals(20_000.00, firstParticipant.remainingFund)
+        assertEquals(20_000.00, firstParticipant.remainingFunds)
     }
 
     private fun createInvestmentOrders() =

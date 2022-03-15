@@ -10,7 +10,9 @@ input OrderInput {
 }
 
 type Mutation {
-    signUpContest(contestNumber : Int) : Long
+    signUpContest(contestNumber: Int!) : Long
 
-    placeInvestmentOrder(input : OrderInput!) : Long
+    placeInvestmentOrder(input: OrderInput!) : Long
+
+    deleteInvestmentOrder(orderId: Long!) : Long
 }

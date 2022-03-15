@@ -17,7 +17,7 @@ import com.stockcomp.request.InvestmentOrderRequest
 fun mapToContestParticipant(contest: Contest, participant: Participant?): ContestParticipantDto =
     ContestParticipantDto(
         contest = contest,
-        participant = participant?.toParticipantDto()
+        participant = participant
     )
 
 fun User.toUserDetailsDto() =
@@ -45,7 +45,7 @@ fun Participant.toParticipantDto() =
         username = this.user.username,
         rank = this.rank,
         totalValue = this.totalValue,
-        remainingFunds = this.remainingFund,
+        remainingFunds = this.remainingFunds,
         country = this.user.country,
         startTime = this.contest.startTime,
         contestNumber = this.contest.contestNumber

@@ -19,14 +19,6 @@ class ContestController(
     private val defaultJwtService: JwtService
 ) : CustomExceptionHandler() {
 
-    @GetMapping("/participants-by-rank")
-    @ApiOperation(value = "Get contest participants sorted by ranking")
-    fun getParticipantsByRanking(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<List<ParticipantDto>> =
-        contestService.getParticipantsByRank(contestNumber)
-            .let { ResponseEntity.ok(it) }
-
 
     @GetMapping("/participant")
     @ApiOperation("Get participant of a given contest")

@@ -61,7 +61,7 @@ internal class DefaultInvestmentServiceTest {
     @BeforeEach
     private fun resetData() {
         participant.investmentOrders.clear()
-        participant.remainingFund = 20000.00
+        participant.remainingFunds = 20000.00
     }
 
     @Disabled

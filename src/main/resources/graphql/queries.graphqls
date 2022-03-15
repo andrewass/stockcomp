@@ -5,6 +5,8 @@ type Query {
 
     contestParticipants(statusList: [ContestStatus!]) : [ContestParticipant!]
 
+    sortedParticipants(contestNumber: Int!) : [Participant!]
+
     investment(symbol: String, contestNumber : Int) : Investment
 
     investments(contestNumber: Int) : [Investment!]

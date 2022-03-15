@@ -27,7 +27,8 @@ class Participant(
     @JoinColumn(name = "CONTEST_ID")
     val contest: Contest,
 
-    var remainingFund: Double = 20000.00,
+    @Column(name = "REMAINING_FUND")
+    var remainingFunds: Double = 20000.00,
 
     @Column(name = "PARTICIPANT_RANK")
     var rank: Int,

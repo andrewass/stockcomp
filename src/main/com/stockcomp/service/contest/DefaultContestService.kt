@@ -105,10 +105,9 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
 
 
-    override fun getParticipantsByRank(contestNumber: Int): List<ParticipantDto> =
+    override fun getSortedParticipantsByRank(contestNumber: Int): List<Participant> =
         contestRepository.findByContestNumber(contestNumber)
             ?.let { participantRepository.findAllByContestOrderByRankAsc(it) }
-            ?.let { it.map { participant -> participant.toParticipantDto() } }
             ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
 
 

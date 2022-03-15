@@ -41,11 +41,13 @@ class DefaultInvestmentOrderService(
             .let { investmentOrderRepository.save(it) }.orderId!!
 
 
-    override fun deleteActiveInvestmentOrder(username: String, orderId: Long) {
+    override fun deleteInvestmentOrder(username: String, orderId: Long): Long {
         investmentOrderRepository.findById(orderId).get()
             .takeIf { it.participant.user.username == username }
             ?.also { investmentOrderRepository.delete(it) }
             ?: throw InvalidStateException("Attempting to delete order not tied to user : $orderId")
+
+        return orderId
     }
 
     override fun getOrdersByStatus(

@@ -39,6 +39,9 @@ class InvestmentOrderMutationResolvers(
 
     fun placeInvestmentOrder(input: InvestmentOrderRequest, env: DataFetchingEnvironment): Long =
         investmentOrderService.placeInvestmentOrder(input, extractUsername(env, jwtService))
+
+    fun deleteInvestmentOrder(orderId: Long, env: DataFetchingEnvironment): Long =
+        investmentOrderService.deleteInvestmentOrder(extractUsername(env, jwtService), orderId)
 }
 
 

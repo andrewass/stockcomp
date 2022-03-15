@@ -64,7 +64,7 @@ class DefaultProcessOrdersService(
 
     private fun processOrder(investmentOrder: InvestmentOrder, realTimePriceDto: RealTimePriceDto) {
         val participant = investmentOrder.participant
-        if (investmentOrder.transactionType == BUY && participant.remainingFund >= realTimePriceDto.usdPrice) {
+        if (investmentOrder.transactionType == BUY && participant.remainingFunds >= realTimePriceDto.usdPrice) {
             processBuyOrder(participant, realTimePriceDto, investmentOrder)
         } else {
             processSellOrder(participant, realTimePriceDto, investmentOrder)
@@ -78,7 +78,7 @@ class DefaultProcessOrdersService(
             val amountToBuy = getAvailableAmountToBuy(participant, realTimePriceDto, order)
             investment.averageUnitCost = calculateAverageUnitCost(investment, realTimePriceDto, amountToBuy)
             investment.amount += amountToBuy
-            participant.remainingFund -= amountToBuy * realTimePriceDto.usdPrice
+            participant.remainingFunds -= amountToBuy * realTimePriceDto.usdPrice
             postProcessOrder(order, amountToBuy, participant, investment)
         }
     }
@@ -88,7 +88,7 @@ class DefaultProcessOrdersService(
             val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
             val amountToSell = min(investment.amount, order.totalAmount)
             investment.amount -= amountToSell
-            participant.remainingFund += amountToSell * realTimePriceDto.usdPrice
+            participant.remainingFunds += amountToSell * realTimePriceDto.usdPrice
             postProcessOrder(order, amountToSell, participant, investment)
         }
     }
@@ -105,7 +105,7 @@ class DefaultProcessOrdersService(
     private fun getAvailableAmountToBuy(
         participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder
     ): Int {
-        val maxAvailAmount = participant.remainingFund / realTimePriceDto.usdPrice
+        val maxAvailAmount = participant.remainingFunds / realTimePriceDto.usdPrice
 
         return min(maxAvailAmount.toInt(), order.remainingAmount)
     }

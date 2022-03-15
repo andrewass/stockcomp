@@ -42,8 +42,8 @@ type Participant{
     username : String!
     rank: Int!
     totalValue: Float
-    remainingFunds: Float,
-    country: String,
+    remainingFunds: Float!
+    country: String
 }
 
 type Contest{
