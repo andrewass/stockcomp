@@ -26,7 +26,7 @@ create table t_participant(
     participant_id      bigserial primary key,
     contest_id          bigserial not null,
     user_id             bigserial not null,
-    remaining_fund      double precision,
+    remaining_funds      double precision,
     participant_rank    int,
     total_value         double precision not null,
     date_created    	timestamp not null,

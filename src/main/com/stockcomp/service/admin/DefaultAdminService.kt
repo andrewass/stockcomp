@@ -6,7 +6,8 @@ import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
-import com.stockcomp.request.ContestUpdateRequest
+import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.request.UpdateContestRequest
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDetailsDto
@@ -30,7 +31,7 @@ class DefaultAdminService(
     override fun getContest(id: Long): ContestDto =
         contestRepository.findById(id).get().toContestDto()
 
-    override fun createContest(request: ContestUpdateRequest): ContestDto =
+    override fun createContest(request: CreateContestRequest): ContestDto =
         Contest(
             contestNumber = request.contestNumber,
             startTime = request.startTime,
@@ -48,8 +49,8 @@ class DefaultAdminService(
             .map { it.toContestDto() }
 
 
-    override fun updateContestStatus(request: ContestUpdateRequest): ContestDto =
-        contestRepository.findById(request.id!!).get()
+    override fun updateContestStatus(request: UpdateContestRequest): ContestDto =
+        contestRepository.findByContestNumber(request.contestNumber)
             .let {
                 when (it.contestStatus) {
                     ContestStatus.COMPLETED -> {

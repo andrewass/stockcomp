@@ -2,7 +2,8 @@ package com.stockcomp.producer.rest
 
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto
-import com.stockcomp.request.ContestUpdateRequest
+import com.stockcomp.request.CreateContestRequest
+import com.stockcomp.request.UpdateContestRequest
 import com.stockcomp.service.admin.AdminService
 import com.stockcomp.tasks.ContestTasks
 import io.swagger.annotations.Api
@@ -35,13 +36,13 @@ class AdminController(
 
     @PostMapping("/contests")
     @ApiOperation(value = "Create a new contest")
-    fun createContest(@RequestBody request: ContestUpdateRequest): ResponseEntity<ContestDto> =
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<ContestDto> =
         ResponseEntity.ok(adminService.createContest(request))
 
 
     @PutMapping("/contests/{id}")
     @ApiOperation(value = "Update status of an existing contest")
-    fun updateContest(@RequestBody request: ContestUpdateRequest): ResponseEntity<ContestDto> =
+    fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<ContestDto> =
         ResponseEntity.ok(adminService.updateContestStatus(request))
 
 
