@@ -5,15 +5,12 @@ import com.stockcomp.producer.common.CustomExceptionHandler
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.contest.ContestService
 import com.stockcomp.service.security.JwtService
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/contest")
-@Api(description = "Endpoints for contest related operations")
 class ContestController(
     private val contestService: ContestService,
     private val defaultJwtService: JwtService
@@ -21,7 +18,6 @@ class ContestController(
 
 
     @GetMapping("/participant")
-    @ApiOperation("Get participant of a given contest")
     fun getParticipant(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<ParticipantDto> =
@@ -31,7 +27,6 @@ class ContestController(
 
 
     @GetMapping("/participant-history")
-    @ApiOperation("Get participant history for a given user")
     fun getParticipantHistory(
         httpServletRequest: HttpServletRequest, @RequestParam username: String
     ): ResponseEntity<List<ParticipantDto>> =

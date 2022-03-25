@@ -9,8 +9,6 @@ import com.stockcomp.service.security.DefaultJwtService
 import com.stockcomp.service.user.DefaultUserService
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/auth")
-@Api(description = "Endpoints for user authentication")
 class AuthenticationController internal constructor(
     private val authenticationManager: AuthenticationManager,
     private val userService: DefaultUserService,
@@ -38,7 +35,6 @@ class AuthenticationController internal constructor(
     private val refreshToken = "refreshToken"
 
     @PostMapping("/sign-up")
-    @ApiOperation(value = "Sign up a new user")
     fun signUpUser(@RequestBody request: SignUpRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
         userService.signUpUser(request)
             .let { jwtService.generateTokenPair(request.username) }
@@ -51,7 +47,6 @@ class AuthenticationController internal constructor(
 
 
     @PostMapping("/sign-in")
-    @ApiOperation(value = "Sign in existing user")
     fun signInUser(
         @RequestBody request: AuthenticationRequest, response: HttpServletResponse
     ): ResponseEntity<String> =
@@ -67,13 +62,11 @@ class AuthenticationController internal constructor(
 
 
     @PostMapping("/sign-in-google")
-    @ApiOperation(value = "Sign in with existing Google account")
     fun signInWithGoogle(){
 
     }
 
     @PostMapping("/sign-out")
-    @ApiOperation("Sign out signed in user")
     fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
         extractUsernameFromRequest(request)
             .let { jwtService.generateTokenPair(it) }
@@ -85,7 +78,6 @@ class AuthenticationController internal constructor(
 
 
     @GetMapping("verify-admin")
-    @ApiOperation("Verify requested user has admin role ")
     fun verifyAdmin(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Boolean> =
         extractUsernameFromRequest(request)
             .let { userService.verifyAdminUser(it) }
@@ -93,7 +85,6 @@ class AuthenticationController internal constructor(
 
 
     @GetMapping("/refresh-token")
-    @ApiOperation("Refresh the access token")
     fun refreshToken(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
         getRefreshTokenFromCookie(request)
             .let { jwtService.refreshTokenPair(it) }

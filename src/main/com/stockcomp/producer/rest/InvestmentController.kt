@@ -3,7 +3,6 @@ package com.stockcomp.producer.rest
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.participant.ParticipantService
 import com.stockcomp.service.security.DefaultJwtService
-import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,7 +18,6 @@ class InvestmentController(
 ) {
 
     @GetMapping("/total-investment-value")
-    @ApiOperation(value = "Get total investment value for participant")
     fun getTotalInvestmentValue(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<Double> =
