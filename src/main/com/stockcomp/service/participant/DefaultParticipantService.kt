@@ -26,13 +26,8 @@ class DefaultParticipantService(
             .let { investmentRepository.findAllByParticipant(it) }
 
 
-    override fun getTotalValue(username: String, contestNumber: Int): Double =
-        getParticipant(username, contestNumber).investments
-            .sumOf { it.totalValue }
-
-
     private fun getParticipant(username: String, contestNumber: Int): Participant =
         contestRepository.findByContestNumber(contestNumber)
-            .let { participantRepository.findParticipantFromUsernameAndContest(username, it) }
+            .let { participantRepository.findAllByUsernameAndContest(username, it) }
             .first()
 }

@@ -17,5 +17,5 @@ public interface InvestmentRepository extends JpaRepository<Investment, Long> {
     List<Investment> findAllByParticipant(Participant participant);
 
     @Query("SELECT i FROM Investment i join i.participant p join p.contest c where c.contestStatus  = ?1")
-    List<Investment> findAllInvestmentsByContestStatus(ContestStatus contestStatus);
+    List<Investment> findAllByContestStatus(ContestStatus contestStatus);
 }

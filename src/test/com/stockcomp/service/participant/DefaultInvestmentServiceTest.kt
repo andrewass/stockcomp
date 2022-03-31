@@ -50,7 +50,7 @@ internal class DefaultInvestmentServiceTest {
         } returns contest
 
         every {
-            participantRepository.findParticipantFromUsernameAndContest(username, contest)
+            participantRepository.findAllByUsernameAndContest(username, contest)
         } returns listOf(participant)
 
         every {

@@ -73,7 +73,7 @@ class DefaultInvestmentOrderService(
         username: String, contestNumber: Int, orderStatus: List<OrderStatus>
     ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
-            .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
+            .let { participantRepository.findAllByUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndOrderStatusIn(it, orderStatus) }
 
 
@@ -81,11 +81,11 @@ class DefaultInvestmentOrderService(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
     ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
-            .let { participantRepository.findParticipantFromUsernameAndContest(username, it).first() }
+            .let { participantRepository.findAllByUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, orderStatus) }
 
 
     private fun getParticipant(username: String, contestNumber: Int): Participant =
         contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
-            .let { participantRepository.findParticipantFromUsernameAndContest(username, it) }.first()
+            .let { participantRepository.findAllByUsernameAndContest(username, it) }.first()
 }

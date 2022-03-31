@@ -58,7 +58,7 @@ internal class DefaultContestTasksTest {
         contestTasks.startContestTasks()
 
         verify {
-            maintainParticipantService.maintainParticipant()
+            maintainParticipantService.maintainParticipants()
         }
         coVerify {
             processOrdersService.processInvestmentOrders()
@@ -80,7 +80,7 @@ internal class DefaultContestTasksTest {
         contestTasks.startContestTasks()
 
         verify(exactly = 0) {
-            maintainParticipantService.maintainParticipant()
+            maintainParticipantService.maintainParticipants()
         }
         coVerify(exactly = 0) {
             processOrdersService.processInvestmentOrders()

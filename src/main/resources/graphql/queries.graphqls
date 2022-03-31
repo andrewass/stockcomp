@@ -1,5 +1,5 @@
 type Query {
-    contest(contestNumber: Int) : Contest
+    contest(contestNumber: Int!) : Contest
 
     contests(statusList: [ContestStatus!]) : [Contest!]
 
@@ -9,13 +9,15 @@ type Query {
 
     investment(symbol: String, contestNumber : Int) : Investment
 
-    investments(contestNumber: Int) : [Investment!]
+    investments(contestNumber: Int!) : [Investment!]
 
     investmentOrders(contestNumber: Int, statusList: [OrderStatus!]) : [InvestmentOrder!]
 
     investmentOrdersSymbol(symbol: String, contestNumber: Int, statusList: [OrderStatus!]) : [InvestmentOrder!]
 
     userDetails(username: String) : UserDetails
+
+    leaderboardEntry : LeaderboardEntry
 
     sortedLeaderboardEntries : [LeaderboardEntry]
 }

@@ -57,7 +57,7 @@ class DefaultLeaderboardService(
 
     override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto? =
         userService.findUserByUsername(username)
-            .let { leaderboardEntryRepository.findByUser(it)?.toLeaderboardEntryDto() }
+                .let { leaderboardEntryRepository.findByUser(it) }?.toLeaderboardEntryDto()
 
 
     private fun updateRankingForEntries() {
@@ -66,9 +66,9 @@ class DefaultLeaderboardService(
             .onEach { it.ranking = rank++ }
             .also { leaderboardEntryRepository.saveAll(it) }
     }
-
+    
     private fun updateScoreForParticipants(contest: Contest) {
-        participantRepository.findParticipantsByContest(contest)
+        participantRepository.findAllByContest(contest)
             .forEach { participant ->
                 val entry = leaderboardEntryRepository.findByUser(participant.user)
                     ?: LeaderboardEntry(user = participant.user)

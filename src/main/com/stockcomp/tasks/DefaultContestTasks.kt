@@ -72,7 +72,7 @@ class DefaultContestTasks(
             investmentJob = CoroutineScope(Default).launch {
                 logger.info("Starting maintenance of investment returns")
                 while (isActive) {
-                    maintainParticipantService.maintainParticipant()
+                    maintainParticipantService.maintainParticipants()
                     delay(15000L)
                 }
             }

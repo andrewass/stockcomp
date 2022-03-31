@@ -15,15 +15,17 @@
     <description>Stock Competition project</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <kotlin.version>1.6.10</kotlin.version>
         <testcontainers.version>1.16.3</testcontainers.version>
         <kotlinx.coroutines.version>1.6.0</kotlinx.coroutines.version>
         <mockk.version>1.12.3</mockk.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
-        <micrometer.version>1.8.2</micrometer.version>
+        <micrometer.version>1.8.3</micrometer.version>
         <graphql.version>12.0.0</graphql.version>
         <graphql.datetime.verison>4.1.0</graphql.datetime.verison>
+        <logstash.version>7.0.1</logstash.version>
+        <postgresql.version>42.3.3</postgresql.version>
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
     </properties>
 
@@ -119,12 +121,13 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.0.1</version>
+            <version>${logstash.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
