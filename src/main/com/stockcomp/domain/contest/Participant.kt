@@ -32,6 +32,8 @@ class Participant(
     @Column(name = "PARTICIPANT_RANK")
     var rank: Int,
 
-    var totalValue: Double = 20000.00
+    var totalValue: Double = 20000.00,
+
+    var totalInvestmentValue: Double = 0.00
 
 ) : BaseEntity()

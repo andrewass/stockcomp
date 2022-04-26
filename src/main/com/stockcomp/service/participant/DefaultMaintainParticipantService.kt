@@ -36,20 +36,7 @@ class DefaultMaintainParticipantService(
         }
     }
 
-    private fun updateInvestmentAndParticipant(investment: Investment, realTimePriceDto: RealTimePriceDto) {
-        val oldTotalValueInvestment = investment.totalValue
-        val newTotalValueInvestment = (investment.amount * realTimePriceDto.usdPrice)
-        investment.apply {
-            totalValue = newTotalValueInvestment
-            totalProfit = newTotalValueInvestment - (amount * averageUnitCost)
-        }
-        val participant = investment.participant
-        participant.totalValue = participant.remainingFunds + (newTotalValueInvestment - oldTotalValueInvestment)
-        investmentRepository.save(investment)
-        participantRepository.save(participant)
-    }
-
-    private fun updateInvestment(investment: Investment, realTimePrice: RealTimePriceDto){
+    private fun updateInvestment(investment: Investment, realTimePrice: RealTimePriceDto) {
         val newTotalValueInvestment = (investment.amount * realTimePrice.usdPrice)
         investment.apply {
             totalValue = newTotalValueInvestment
@@ -60,7 +47,12 @@ class DefaultMaintainParticipantService(
 
     private fun updateParticipants() {
         participantRepository.findAllByContestStatus(RUNNING)
-            .onEach { it.totalValue  }
+            .onEach { participant ->
+                val totalInvestmentsValue = participant.investments.sumOf { it.totalValue }
+                participant.totalInvestmentValue = totalInvestmentsValue
+                participant.totalValue = participant.remainingFunds + totalInvestmentsValue
+            }
+            .also { participantRepository.saveAll(it) }
     }
 
     private fun updateRanking() {

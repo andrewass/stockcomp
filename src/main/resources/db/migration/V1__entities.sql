@@ -16,21 +16,22 @@ create table t_contest(
 	participant_count       int not null,
 	start_time              timestamp,
 	end_time                timestamp,
-	contest_status         varchar(20),
+	contest_status          varchar(20),
 	leaderboard_update      varchar(20),
 	date_created    	    timestamp not null,
 	date_updated    	    timestamp not null
 );
 
 create table t_participant(
-    participant_id      bigserial primary key,
-    contest_id          bigserial not null,
-    user_id             bigserial not null,
-    remaining_funds      double precision,
-    participant_rank    int,
-    total_value         double precision not null,
-    date_created    	timestamp not null,
-    date_updated    	timestamp not null,
+    participant_id          bigserial primary key,
+    contest_id              bigserial not null,
+    user_id                 bigserial not null,
+    remaining_funds         double precision,
+    participant_rank        int,
+    total_value             double precision not null,
+    total_investment_value  double precision not null,
+    date_created    	    timestamp not null,
+    date_updated    	    timestamp not null,
     foreign key (contest_id) references t_contest(contest_id),
     foreign key (user_id) references t_user(user_id)
 );

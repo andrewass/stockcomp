@@ -22,8 +22,6 @@ interface ContestService {
 
     fun getContestParticipants(statusList: List<ContestStatus>, username: String): List<ContestParticipantDto>
 
-    fun getParticipantsByTotalValue(contestNumber: Int): List<ParticipantDto>
-
     fun getSortedParticipantsByRank(contestNumber: Int): List<Participant>
 
     fun getParticipant(contestNumber: Int, username: String): ParticipantDto
