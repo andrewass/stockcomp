@@ -3,8 +3,8 @@ package com.stockcomp.util
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.leaderboard.LeaderboardEntry
-import com.stockcomp.domain.leaderboard.Medal
+import com.stockcomp.leaderboard.domain.LeaderboardEntry
+import com.stockcomp.leaderboard.domain.Medal
 import com.stockcomp.domain.user.User
 import com.stockcomp.dto.contest.ContestDto
 import com.stockcomp.dto.contest.ContestParticipantDto

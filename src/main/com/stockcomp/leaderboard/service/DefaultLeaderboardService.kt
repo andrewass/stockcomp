@@ -1,11 +1,11 @@
-package com.stockcomp.service.leaderboard
+package com.stockcomp.leaderboard.service
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
-import com.stockcomp.domain.leaderboard.LeaderboardEntry
-import com.stockcomp.domain.leaderboard.Medal
-import com.stockcomp.domain.leaderboard.MedalValue
+import com.stockcomp.leaderboard.domain.LeaderboardEntry
+import com.stockcomp.leaderboard.domain.Medal
+import com.stockcomp.leaderboard.domain.MedalValue
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.LeaderboardEntryRepository
@@ -13,7 +13,7 @@ import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -41,7 +41,7 @@ class DefaultLeaderboardService(
             logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
             contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
 
-            CoroutineScope(Default).launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 updateScoreForParticipants(contest)
                 logger.info("Update of participant score completed")
                 updateRankingForEntries()
@@ -66,7 +66,7 @@ class DefaultLeaderboardService(
             .onEach { it.ranking = rank++ }
             .also { leaderboardEntryRepository.saveAll(it) }
     }
-    
+
     private fun updateScoreForParticipants(contest: Contest) {
         participantRepository.findAllByContest(contest)
             .forEach { participant ->

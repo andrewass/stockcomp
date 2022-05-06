@@ -4,7 +4,7 @@ import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.service.participant.MaintainParticipantService
-import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.service.order.InvestmentOrderService
 import com.stockcomp.service.order.ProcessOrdersService
 import io.mockk.coVerify

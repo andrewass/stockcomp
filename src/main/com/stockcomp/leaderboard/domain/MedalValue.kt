@@ -1,4 +1,4 @@
-package com.stockcomp.domain.leaderboard
+package com.stockcomp.leaderboard.domain
 
 enum class MedalValue(val decode : String) {
     GOLD("Gold"),

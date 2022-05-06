@@ -1,8 +1,8 @@
-package com.stockcomp.producer.rest
+package com.stockcomp.leaderboard.controller
 
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.producer.common.getAccessTokenFromCookie
-import com.stockcomp.service.leaderboard.LeaderboardService
+import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.service.security.DefaultJwtService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

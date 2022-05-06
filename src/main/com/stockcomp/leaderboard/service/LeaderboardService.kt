@@ -1,4 +1,4 @@
-package com.stockcomp.service.leaderboard
+package com.stockcomp.leaderboard.service
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
