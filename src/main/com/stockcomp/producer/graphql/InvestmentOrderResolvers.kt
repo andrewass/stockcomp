@@ -1,9 +1,9 @@
 package com.stockcomp.producer.graphql
 
-import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.investmentorder.domain.InvestmentOrder
 import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.request.InvestmentOrderRequest
-import com.stockcomp.service.order.InvestmentOrderService
+import com.stockcomp.investmentorder.controller.InvestmentOrderRequest
+import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.service.security.JwtService
 import graphql.kickstart.tools.GraphQLMutationResolver
 import graphql.kickstart.tools.GraphQLQueryResolver

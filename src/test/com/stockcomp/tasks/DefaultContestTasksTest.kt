@@ -5,8 +5,8 @@ import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.service.participant.MaintainParticipantService
 import com.stockcomp.leaderboard.service.LeaderboardService
-import com.stockcomp.service.order.InvestmentOrderService
-import com.stockcomp.service.order.ProcessOrdersService
+import com.stockcomp.investmentorder.service.InvestmentOrderService
+import com.stockcomp.investmentorder.service.ProcessOrdersService
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

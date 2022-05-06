@@ -2,7 +2,7 @@ package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
-import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.investmentorder.domain.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
 import com.stockcomp.domain.contest.enums.OrderStatus.*
@@ -10,7 +10,8 @@ import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
 import com.stockcomp.domain.user.User
 import com.stockcomp.dto.stock.RealTimePriceDto
-import com.stockcomp.repository.InvestmentOrderRepository
+import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
+import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService

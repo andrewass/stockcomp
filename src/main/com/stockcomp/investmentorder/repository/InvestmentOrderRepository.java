@@ -1,7 +1,7 @@
-package com.stockcomp.repository;
+package com.stockcomp.investmentorder.repository;
 
 import com.stockcomp.domain.contest.Contest;
-import com.stockcomp.domain.contest.InvestmentOrder;
+import com.stockcomp.investmentorder.domain.InvestmentOrder;
 import com.stockcomp.domain.contest.enums.ContestStatus;
 import com.stockcomp.domain.contest.enums.OrderStatus;
 import com.stockcomp.domain.contest.Participant;

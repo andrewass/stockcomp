@@ -8,7 +8,7 @@ import com.stockcomp.leaderboard.domain.Medal
 import com.stockcomp.leaderboard.domain.MedalValue
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.LeaderboardEntryRepository
+import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.toLeaderboardEntryDto

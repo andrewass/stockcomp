@@ -1,4 +1,4 @@
-package com.stockcomp.service.order
+package com.stockcomp.investmentorder.service
 
 interface ProcessOrdersService {
 

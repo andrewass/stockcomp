@@ -1,4 +1,4 @@
-package com.stockcomp.repository;
+package com.stockcomp.leaderboard.repository;
 
 
 import com.stockcomp.leaderboard.domain.LeaderboardEntry;

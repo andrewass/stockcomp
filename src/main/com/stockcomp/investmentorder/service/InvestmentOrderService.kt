@@ -1,9 +1,9 @@
-package com.stockcomp.service.order
+package com.stockcomp.investmentorder.service
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.investmentorder.domain.InvestmentOrder
 import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.request.InvestmentOrderRequest
+import com.stockcomp.investmentorder.controller.InvestmentOrderRequest
 
 interface InvestmentOrderService {
 

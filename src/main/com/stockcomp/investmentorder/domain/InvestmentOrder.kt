@@ -1,6 +1,7 @@
-package com.stockcomp.domain.contest
+package com.stockcomp.investmentorder.domain
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.TransactionType
 import java.time.LocalDateTime

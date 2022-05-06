@@ -1,6 +1,7 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.repository.InvestmentOrderRepository
+import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
+import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.symbol.DefaultSymbolService
 import io.mockk.MockKAnnotations

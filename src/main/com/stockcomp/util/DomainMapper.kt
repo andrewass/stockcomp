@@ -1,7 +1,7 @@
 package com.stockcomp.util
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.investmentorder.domain.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.leaderboard.domain.LeaderboardEntry
 import com.stockcomp.leaderboard.domain.Medal
@@ -12,7 +12,7 @@ import com.stockcomp.dto.contest.ParticipantDto
 import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
 import com.stockcomp.dto.leaderboard.MedalDto
 import com.stockcomp.dto.user.UserDetailsDto
-import com.stockcomp.request.InvestmentOrderRequest
+import com.stockcomp.investmentorder.controller.InvestmentOrderRequest
 
 fun mapToContestParticipant(contest: Contest, participant: Participant?): ContestParticipantDto =
     ContestParticipantDto(

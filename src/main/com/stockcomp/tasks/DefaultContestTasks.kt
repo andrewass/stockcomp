@@ -4,8 +4,8 @@ import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.service.participant.MaintainParticipantService
 import com.stockcomp.leaderboard.service.LeaderboardService
-import com.stockcomp.service.order.InvestmentOrderService
-import com.stockcomp.service.order.ProcessOrdersService
+import com.stockcomp.investmentorder.service.InvestmentOrderService
+import com.stockcomp.investmentorder.service.ProcessOrdersService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Default
 import org.slf4j.LoggerFactory

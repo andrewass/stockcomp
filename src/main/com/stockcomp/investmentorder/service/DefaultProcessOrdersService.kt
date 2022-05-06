@@ -1,14 +1,13 @@
-package com.stockcomp.service.order
+package com.stockcomp.investmentorder.service
 
 import com.stockcomp.domain.contest.Investment
-import com.stockcomp.domain.contest.InvestmentOrder
+import com.stockcomp.investmentorder.domain.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
-import com.stockcomp.domain.contest.enums.OrderStatus.*
-import com.stockcomp.domain.contest.enums.TransactionType.BUY
-import com.stockcomp.domain.contest.enums.TransactionType.SELL
+import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.domain.contest.enums.OrderStatus
+import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.dto.stock.RealTimePriceDto
-import com.stockcomp.repository.InvestmentOrderRepository
+import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService
@@ -18,7 +17,6 @@ import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.Integer.min
 
 @Service
 @Transactional
@@ -34,7 +32,7 @@ class DefaultProcessOrdersService(
 
     override suspend fun processInvestmentOrders() {
         try {
-            investmentOrderRepository.findAllByOrderAndContestStatus(ACTIVE, RUNNING)
+            investmentOrderRepository.findAllByOrderAndContestStatus(OrderStatus.ACTIVE, ContestStatus.RUNNING)
                 .also { gaugeOrders(it) }
                 .groupBy { it.symbol }
                 .forEach { (symbol, orders) ->
@@ -64,7 +62,7 @@ class DefaultProcessOrdersService(
 
     private fun processOrder(investmentOrder: InvestmentOrder, realTimePriceDto: RealTimePriceDto) {
         val participant = investmentOrder.participant
-        if (investmentOrder.transactionType == BUY && participant.remainingFunds >= realTimePriceDto.usdPrice) {
+        if (investmentOrder.transactionType == TransactionType.BUY && participant.remainingFunds >= realTimePriceDto.usdPrice) {
             processBuyOrder(participant, realTimePriceDto, investmentOrder)
         } else {
             processSellOrder(participant, realTimePriceDto, investmentOrder)
@@ -86,7 +84,7 @@ class DefaultProcessOrdersService(
     private fun processSellOrder(participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder) {
         if (realTimePriceDto.price >= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
-            val amountToSell = min(investment.amount, order.totalAmount)
+            val amountToSell = Integer.min(investment.amount, order.totalAmount)
             investment.amount -= amountToSell
             participant.remainingFunds += amountToSell * realTimePriceDto.usdPrice
             postProcessOrder(order, amountToSell, participant, investment)
@@ -107,7 +105,7 @@ class DefaultProcessOrdersService(
     ): Int {
         val maxAvailAmount = participant.remainingFunds / realTimePriceDto.usdPrice
 
-        return min(maxAvailAmount.toInt(), order.remainingAmount)
+        return Integer.min(maxAvailAmount.toInt(), order.remainingAmount)
     }
 
     private fun postProcessOrder(
@@ -115,10 +113,10 @@ class DefaultProcessOrdersService(
     ) {
         order.remainingAmount -= amountProcessed
         if (order.remainingAmount == 0) {
-            order.orderStatus = COMPLETED
-        } else if (order.transactionType == SELL && order.remainingAmount > 0) {
+            order.orderStatus = OrderStatus.COMPLETED
+        } else if (order.transactionType == TransactionType.SELL && order.remainingAmount > 0) {
             order.apply {
-                orderStatus = FAILED
+                orderStatus = OrderStatus.FAILED
                 errorMessage = "Failed to complete sell order. Remaining ${order.remainingAmount} " +
                         "shares not found in portfolio"
             }
