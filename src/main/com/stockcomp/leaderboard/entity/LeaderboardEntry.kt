@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.domain
+package com.stockcomp.leaderboard.entity
 
 import com.stockcomp.domain.BaseEntity
 import com.stockcomp.domain.contest.Contest

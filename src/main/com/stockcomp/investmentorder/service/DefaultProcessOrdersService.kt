@@ -1,15 +1,15 @@
 package com.stockcomp.investmentorder.service
 
-import com.stockcomp.domain.contest.Investment
+import com.stockcomp.participant.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.dto.stock.RealTimePriceDto
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
-import com.stockcomp.repository.InvestmentRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.InvestmentRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry

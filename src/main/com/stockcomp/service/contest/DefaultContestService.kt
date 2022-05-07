@@ -1,13 +1,13 @@
 package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.ContestStatus.*
-import com.stockcomp.dto.contest.ContestParticipantDto
+import com.stockcomp.participant.dto.ContestParticipantDto
 import com.stockcomp.dto.contest.ParticipantDto
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.mapToContestParticipant

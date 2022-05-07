@@ -1,15 +1,15 @@
 package com.stockcomp.leaderboard.service
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
-import com.stockcomp.leaderboard.domain.LeaderboardEntry
-import com.stockcomp.leaderboard.domain.Medal
-import com.stockcomp.leaderboard.domain.MedalValue
+import com.stockcomp.leaderboard.entity.LeaderboardEntry
+import com.stockcomp.leaderboard.entity.Medal
+import com.stockcomp.leaderboard.entity.MedalValue
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope

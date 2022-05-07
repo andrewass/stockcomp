@@ -3,7 +3,8 @@ package com.stockcomp.domain.contest
 import com.stockcomp.domain.BaseEntity
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
-import com.stockcomp.leaderboard.domain.Medal
+import com.stockcomp.leaderboard.entity.Medal
+import com.stockcomp.participant.entity.Participant
 import java.time.LocalDateTime
 import javax.persistence.*
 

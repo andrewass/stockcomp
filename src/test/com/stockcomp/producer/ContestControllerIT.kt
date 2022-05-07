@@ -3,11 +3,11 @@ package com.stockcomp.producer
 import com.stockcomp.IntegrationTest
 import com.stockcomp.producer.common.createCookie
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.service.security.DefaultJwtService
 import org.junit.jupiter.api.Disabled

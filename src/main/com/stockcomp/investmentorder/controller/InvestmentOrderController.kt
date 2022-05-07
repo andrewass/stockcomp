@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
     private val jwtService: JwtService
-
 ) {
 
     @PostMapping("/place-order")

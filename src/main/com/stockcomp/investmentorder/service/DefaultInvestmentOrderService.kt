@@ -2,13 +2,13 @@ package com.stockcomp.investmentorder.service
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
 import com.stockcomp.util.mapToInvestmentOrder
 import org.springframework.stereotype.Service

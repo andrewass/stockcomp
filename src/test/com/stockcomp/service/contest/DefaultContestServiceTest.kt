@@ -1,11 +1,11 @@
 package com.stockcomp.service.contest
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.user.DefaultUserService
 import com.stockcomp.tasks.DefaultContestTasks
 import io.mockk.MockKAnnotations

@@ -1,16 +1,17 @@
 package com.stockcomp.service.participant
 
 import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.Investment
+import com.stockcomp.participant.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.domain.contest.Participant
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.InvestmentRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.InvestmentRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
+import com.stockcomp.participant.service.DefaultParticipantService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

@@ -1,4 +1,4 @@
-package com.stockcomp.service.participant
+package com.stockcomp.participant.service
 
 interface MaintainParticipantService {
 

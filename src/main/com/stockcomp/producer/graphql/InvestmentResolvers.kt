@@ -1,7 +1,7 @@
 package com.stockcomp.producer.graphql
 
-import com.stockcomp.domain.contest.Investment
-import com.stockcomp.service.participant.ParticipantService
+import com.stockcomp.participant.entity.Investment
+import com.stockcomp.participant.service.ParticipantService
 import com.stockcomp.service.security.JwtService
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.schema.DataFetchingEnvironment

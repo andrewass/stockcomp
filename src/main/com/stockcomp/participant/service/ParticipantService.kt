@@ -1,6 +1,6 @@
-package com.stockcomp.service.participant
+package com.stockcomp.participant.service
 
-import com.stockcomp.domain.contest.Investment
+import com.stockcomp.participant.entity.Investment
 
 interface ParticipantService {
 

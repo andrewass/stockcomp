@@ -1,11 +1,11 @@
-package com.stockcomp.service.participant
+package com.stockcomp.participant.service
 
-import com.stockcomp.domain.contest.Investment
-import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
+import com.stockcomp.participant.entity.Investment
+import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.dto.stock.RealTimePriceDto
 import com.stockcomp.repository.ContestRepository
-import com.stockcomp.repository.InvestmentRepository
-import com.stockcomp.repository.ParticipantRepository
+import com.stockcomp.participant.repository.InvestmentRepository
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ class DefaultMaintainParticipantService(
 
     override fun maintainParticipants() {
         try {
-            investmentRepository.findAllByContestStatus(RUNNING)
+            investmentRepository.findAllByContestStatus(ContestStatus.RUNNING)
                 .groupBy { it.symbol }
                 .forEach { (symbol, investments) ->
                     logger.info("Maintaining returns for symbol $symbol")
@@ -46,7 +46,7 @@ class DefaultMaintainParticipantService(
     }
 
     private fun updateParticipants() {
-        participantRepository.findAllByContestStatus(RUNNING)
+        participantRepository.findAllByContestStatus(ContestStatus.RUNNING)
             .onEach { participant ->
                 val totalInvestmentsValue = participant.investments.sumOf { it.totalValue }
                 participant.totalInvestmentValue = totalInvestmentsValue
@@ -57,7 +57,7 @@ class DefaultMaintainParticipantService(
 
     private fun updateRanking() {
         var rankCounter = 1
-        participantRepository.findAllByContestOrderByTotalValueDesc(contestRepository.findByContestStatus(RUNNING))
+        participantRepository.findAllByContestOrderByTotalValueDesc(contestRepository.findByContestStatus(ContestStatus.RUNNING))
             .onEach { it.rank = rankCounter++ }
             .also { participantRepository.saveAll(it) }
     }
