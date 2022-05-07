@@ -1,6 +1,6 @@
 package com.stockcomp.leaderboard.controller
 
-import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.service.security.DefaultJwtService

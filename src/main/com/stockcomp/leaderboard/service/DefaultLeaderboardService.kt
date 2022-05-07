@@ -6,7 +6,7 @@ import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.leaderboard.domain.LeaderboardEntry
 import com.stockcomp.leaderboard.domain.Medal
 import com.stockcomp.leaderboard.domain.MedalValue
-import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.repository.ParticipantRepository

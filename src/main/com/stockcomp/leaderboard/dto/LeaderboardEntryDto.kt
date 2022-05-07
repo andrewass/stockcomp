@@ -1,4 +1,4 @@
-package com.stockcomp.dto.leaderboard
+package com.stockcomp.leaderboard.dto
 
 data class LeaderboardEntryDto(
     val ranking: Int,

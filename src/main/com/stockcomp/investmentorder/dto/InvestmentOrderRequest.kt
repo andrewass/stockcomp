@@ -1,4 +1,4 @@
-package com.stockcomp.investmentorder.controller
+package com.stockcomp.investmentorder.dto
 
 import com.stockcomp.domain.contest.enums.TransactionType
 import java.time.LocalDateTime

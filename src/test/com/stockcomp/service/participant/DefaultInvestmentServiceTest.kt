@@ -2,7 +2,7 @@ package com.stockcomp.service.participant
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
-import com.stockcomp.investmentorder.domain.InvestmentOrder
+import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.TransactionType
@@ -10,7 +10,7 @@ import com.stockcomp.domain.user.User
 import com.stockcomp.repository.ContestRepository
 import com.stockcomp.repository.InvestmentRepository
 import com.stockcomp.repository.ParticipantRepository
-import com.stockcomp.investmentorder.controller.InvestmentOrderRequest
+import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

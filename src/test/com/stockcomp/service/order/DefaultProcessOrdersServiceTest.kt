@@ -2,7 +2,7 @@ package com.stockcomp.service.order
 
 import com.stockcomp.domain.contest.Contest
 import com.stockcomp.domain.contest.Investment
-import com.stockcomp.investmentorder.domain.InvestmentOrder
+import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.domain.contest.Participant
 import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
 import com.stockcomp.domain.contest.enums.OrderStatus.*

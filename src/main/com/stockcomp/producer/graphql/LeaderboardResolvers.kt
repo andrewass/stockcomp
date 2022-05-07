@@ -1,6 +1,6 @@
 package com.stockcomp.producer.graphql
 
-import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.service.security.JwtService
 import graphql.kickstart.tools.GraphQLQueryResolver

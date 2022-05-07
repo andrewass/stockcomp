@@ -1,6 +1,6 @@
 package com.stockcomp.dto.user
 
-import com.stockcomp.dto.leaderboard.LeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 
 data class UserDetailsDto(
     val id: Long? = null,

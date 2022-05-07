@@ -1,4 +1,4 @@
-package com.stockcomp.investmentorder.domain
+package com.stockcomp.investmentorder.entity
 
 import com.stockcomp.domain.BaseEntity
 import com.stockcomp.domain.contest.Participant
