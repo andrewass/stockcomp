@@ -1,13 +1,13 @@
 package com.stockcomp.service.admin
 
-import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.repository.UserRepository
-import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.request.UpdateContestRequest
+import com.stockcomp.contest.dto.CreateContestRequest
+import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.toContestDto
 import com.stockcomp.util.toUserDetailsDto

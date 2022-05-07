@@ -1,10 +1,10 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus.RUNNING
+import com.stockcomp.contest.entity.ContestStatus.RUNNING
 import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL

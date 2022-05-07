@@ -1,6 +1,6 @@
 package com.stockcomp.participant.dto
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
 
 data class ContestParticipantDto(

@@ -1,7 +1,7 @@
 package com.stockcomp.tasks
 
-import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.service.MaintainParticipantService
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.investmentorder.service.InvestmentOrderService

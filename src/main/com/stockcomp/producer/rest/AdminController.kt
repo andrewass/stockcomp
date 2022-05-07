@@ -1,9 +1,9 @@
 package com.stockcomp.producer.rest
 
-import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.dto.user.UserDetailsDto
-import com.stockcomp.request.CreateContestRequest
-import com.stockcomp.request.UpdateContestRequest
+import com.stockcomp.contest.dto.CreateContestRequest
+import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.service.admin.AdminService
 import com.stockcomp.tasks.ContestTasks
 import org.springframework.http.HttpEntity

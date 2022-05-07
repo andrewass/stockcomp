@@ -1,10 +1,10 @@
-package com.stockcomp.service.contest
+package com.stockcomp.contest.service
 
-import com.stockcomp.domain.contest.Contest
-import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.participant.dto.ContestParticipantDto
-import com.stockcomp.dto.contest.ParticipantDto
+import com.stockcomp.participant.dto.ParticipantDto
+import com.stockcomp.participant.entity.Participant
 
 interface ContestService {
 

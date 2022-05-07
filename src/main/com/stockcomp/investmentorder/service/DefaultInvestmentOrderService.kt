@@ -1,12 +1,12 @@
 package com.stockcomp.investmentorder.service
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.exception.InvalidStateException
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.investmentorder.dto.InvestmentOrderRequest

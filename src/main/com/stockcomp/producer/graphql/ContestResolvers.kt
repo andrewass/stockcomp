@@ -1,10 +1,10 @@
 package com.stockcomp.producer.graphql
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.participant.dto.ContestParticipantDto
-import com.stockcomp.service.contest.ContestService
+import com.stockcomp.contest.service.ContestService
 import com.stockcomp.service.security.JwtService
 import graphql.kickstart.tools.GraphQLMutationResolver
 import graphql.kickstart.tools.GraphQLQueryResolver

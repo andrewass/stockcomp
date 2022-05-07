@@ -3,7 +3,7 @@ package com.stockcomp.investmentorder.service
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.domain.contest.enums.TransactionType
 import com.stockcomp.dto.stock.RealTimePriceDto

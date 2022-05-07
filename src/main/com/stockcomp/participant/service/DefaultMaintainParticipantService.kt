@@ -1,9 +1,9 @@
 package com.stockcomp.participant.service
 
 import com.stockcomp.participant.entity.Investment
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.dto.stock.RealTimePriceDto
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.symbol.SymbolService

@@ -1,10 +1,11 @@
 package com.stockcomp.service.contest
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.service.DefaultContestService
 import com.stockcomp.domain.user.User
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.user.DefaultUserService
 import com.stockcomp.tasks.DefaultContestTasks

@@ -1,6 +1,6 @@
-package com.stockcomp.dto.contest
+package com.stockcomp.contest.dto
 
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import java.time.LocalDateTime
 

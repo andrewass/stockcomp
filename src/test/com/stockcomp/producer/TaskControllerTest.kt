@@ -1,9 +1,9 @@
 package com.stockcomp.producer
 
 import com.stockcomp.IntegrationTest
-import com.stockcomp.domain.contest.Contest
-import com.stockcomp.domain.contest.enums.ContestStatus
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.repository.ContestRepository
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc

@@ -1,14 +1,14 @@
 package com.stockcomp.util
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.domain.user.User
-import com.stockcomp.dto.contest.ContestDto
+import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.participant.dto.ContestParticipantDto
-import com.stockcomp.dto.contest.ParticipantDto
+import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.leaderboard.dto.MedalDto
 import com.stockcomp.dto.user.UserDetailsDto

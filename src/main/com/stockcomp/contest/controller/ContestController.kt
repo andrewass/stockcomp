@@ -1,12 +1,15 @@
-package com.stockcomp.producer.rest
+package com.stockcomp.contest.controller
 
-import com.stockcomp.dto.contest.ParticipantDto
+import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.producer.common.CustomExceptionHandler
 import com.stockcomp.producer.common.getAccessTokenFromCookie
-import com.stockcomp.service.contest.ContestService
+import com.stockcomp.contest.service.ContestService
 import com.stockcomp.service.security.JwtService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 
 @RestController

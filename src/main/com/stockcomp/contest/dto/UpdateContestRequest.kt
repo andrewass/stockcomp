@@ -1,7 +1,7 @@
-package com.stockcomp.request
+package com.stockcomp.contest.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import java.time.LocalDateTime
 
 @JsonIgnoreProperties(ignoreUnknown = true)

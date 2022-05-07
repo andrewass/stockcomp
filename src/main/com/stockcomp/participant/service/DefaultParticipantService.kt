@@ -2,7 +2,7 @@ package com.stockcomp.participant.service
 
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import org.springframework.stereotype.Service

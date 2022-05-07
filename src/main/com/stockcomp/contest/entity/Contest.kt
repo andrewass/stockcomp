@@ -1,7 +1,6 @@
-package com.stockcomp.domain.contest
+package com.stockcomp.contest.entity
 
 import com.stockcomp.domain.BaseEntity
-import com.stockcomp.domain.contest.enums.ContestStatus
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.participant.entity.Participant

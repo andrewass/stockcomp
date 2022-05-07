@@ -1,6 +1,6 @@
 package com.stockcomp.investmentorder.service
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.domain.contest.enums.OrderStatus
 import com.stockcomp.investmentorder.dto.InvestmentOrderRequest

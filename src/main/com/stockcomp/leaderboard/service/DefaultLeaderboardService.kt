@@ -1,13 +1,13 @@
 package com.stockcomp.leaderboard.service
 
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.leaderboard.entity.MedalValue
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.service.user.UserService

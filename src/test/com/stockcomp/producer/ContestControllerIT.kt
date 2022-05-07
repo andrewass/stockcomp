@@ -2,11 +2,11 @@ package com.stockcomp.producer
 
 import com.stockcomp.IntegrationTest
 import com.stockcomp.producer.common.createCookie
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.domain.user.User
-import com.stockcomp.repository.ContestRepository
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.service.security.DefaultJwtService

@@ -1,7 +1,7 @@
 package com.stockcomp.leaderboard.entity
 
 import com.stockcomp.domain.BaseEntity
-import com.stockcomp.domain.contest.Contest
+import com.stockcomp.contest.entity.Contest
 import javax.persistence.*
 
 @Entity
