@@ -29,17 +29,6 @@ fun User.toUserDetailsDto() =
         userRole = this.userRole.name
     )
 
-fun Contest.toContestDto() =
-    ContestDto(
-        id = this.id!!,
-        contestNumber = this.contestNumber,
-        participantCount = this.participantCount,
-        contestStatus = this.contestStatus,
-        leaderboardUpdateStatus = this.leaderboardUpdateStatus,
-        startTime = this.startTime,
-        endTime = this.endTime
-    )
-
 fun Participant.toParticipantDto() =
     ParticipantDto(
         username = this.user.username,

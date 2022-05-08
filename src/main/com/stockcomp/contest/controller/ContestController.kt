@@ -1,15 +1,16 @@
 package com.stockcomp.contest.controller
 
-import com.stockcomp.participant.dto.ParticipantDto
+import com.stockcomp.contest.dto.ContestDto
+import com.stockcomp.contest.dto.CreateContestRequest
+import com.stockcomp.contest.dto.UpdateContestRequest
+import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.service.ContestService
 import com.stockcomp.producer.common.CustomExceptionHandler
 import com.stockcomp.producer.common.getAccessTokenFromCookie
-import com.stockcomp.contest.service.ContestService
 import com.stockcomp.service.security.JwtService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
@@ -19,22 +20,30 @@ class ContestController(
     private val defaultJwtService: JwtService
 ) : CustomExceptionHandler() {
 
-
-    @GetMapping("/participant")
-    fun getParticipant(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<ParticipantDto> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { contestService.getParticipant(contestNumber, it) }
-            .let { ResponseEntity.ok(it) }
+    @GetMapping("/get-by-status")
+    fun getContestsByStatus(@RequestBody statusList : List<ContestStatus>): ResponseEntity<List<ContestDto>> =
+        ResponseEntity.ok(contestService.getContests(statusList))
 
 
-    @GetMapping("/participant-history")
-    fun getParticipantHistory(
-        httpServletRequest: HttpServletRequest, @RequestParam username: String
-    ): ResponseEntity<List<ParticipantDto>> =
-        contestService.getParticipantHistory(username)
-            .let { ResponseEntity.ok(it) }
+    @GetMapping("/get-by-number/{contestNumber}")
+    fun getContest(@PathVariable contestNumber: Int): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(contestService.getContest(contestNumber))
+
+
+    @PostMapping("/create")
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(contestService.createContest(request))
+
+
+    @PutMapping("/update")
+    fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<ContestDto> =
+        ResponseEntity.ok(contestService.updateContest(request))
+
+
+    @DeleteMapping("/delete/{contestNumber}")
+    fun deleteContest(@PathVariable contestNumber: Int) : ResponseEntity<HttpStatus> =
+        contestService.deleteContest(contestNumber)
+            .let { ResponseEntity(HttpStatus.OK) }
 
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String =

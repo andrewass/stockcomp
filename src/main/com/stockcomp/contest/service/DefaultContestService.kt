@@ -1,16 +1,16 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.dto.ContestDto
+import com.stockcomp.contest.dto.CreateContestRequest
+import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.dto.ContestParticipantDto
-import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.service.user.UserService
 import com.stockcomp.tasks.ContestTasks
 import com.stockcomp.util.mapToContestParticipant
-import com.stockcomp.util.toParticipantDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -60,6 +60,22 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
+    override fun createContest(request: CreateContestRequest): ContestDto {
+        TODO("Not yet implemented")
+    }
+
+    override fun getContest(contestNumber: Int): ContestDto =
+        mapToContestDto(contestRepository.findByContestNumber(contestNumber))
+
+
+    override fun deleteContest(contestNumber: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateContest(updateContestRequest: UpdateContestRequest): ContestDto {
+        TODO("Not yet implemented")
+    }
+
     override fun signUpUser(username: String, contestNumber: Int): Long {
         return contestRepository.findByContestNumber(contestNumber)
             ?.takeIf { contest -> contest.contestStatus in listOf(
@@ -78,16 +94,12 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
-
-    override fun getContest(contestNumber: Int): Contest = contestRepository.findByContestNumber(contestNumber)
-
-
-    override fun getContests(statusList: List<ContestStatus>): List<Contest> =
+    override fun getContests(statusList: List<ContestStatus>): List<ContestDto> =
         if (statusList.isEmpty()) {
             contestRepository.findAll()
         } else {
             contestRepository.findAllByContestStatusList(statusList)
-        }
+        }.map { mapToContestDto(it) }
 
 
     override fun getContestParticipants(
@@ -100,32 +112,4 @@ class DefaultContestService(
                 mapToContestParticipant(it, participant)
             }
     }
-
-    override fun getSortedParticipantsByRank(contestNumber: Int): List<Participant> =
-        contestRepository.findByContestNumber(contestNumber)
-            ?.let { participantRepository.findAllByContestOrderByRankAsc(it) }
-            ?: throw NoSuchElementException("Unable to get participant list. Contest $contestNumber not found")
-
-
-    override fun getParticipant(contestNumber: Int, username: String): ParticipantDto =
-        contestRepository.findByContestNumber(contestNumber)
-            ?.let { contest ->
-                userService.findUserByUsername(username)
-                    ?.let { user ->
-                        participantRepository.findByContestAndUser(contest, user)?.toParticipantDto()
-                            ?: throw NoSuchElementException("Participant not found for given user and contest")
-                    }
-            } ?: throw NoSuchElementException("Contest $contestNumber not found")
-
-
-    override fun getParticipantHistory(username: String): List<ParticipantDto> =
-        userService.findUserByUsername(username)
-            ?.let { participantRepository.findAllByUser(it) }
-            ?.filter { it.contest.contestStatus in listOf(
-                ContestStatus.RUNNING,
-                ContestStatus.STOPPED,
-                ContestStatus.COMPLETED
-            ) }
-            ?.map { it.toParticipantDto() }
-            ?: throw NoSuchElementException("User not found for username $username")
 }
