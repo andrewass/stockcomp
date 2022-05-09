@@ -1,7 +1,7 @@
-package com.stockcomp.service.user
+package com.stockcomp.user.service
 
-import com.stockcomp.domain.user.User
-import com.stockcomp.dto.user.UserDetailsDto
+import com.stockcomp.user.entity.User
+import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
 

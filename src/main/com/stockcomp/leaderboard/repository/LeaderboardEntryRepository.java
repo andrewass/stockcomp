@@ -2,7 +2,7 @@ package com.stockcomp.leaderboard.repository;
 
 
 import com.stockcomp.leaderboard.entity.LeaderboardEntry;
-import com.stockcomp.domain.user.User;
+import com.stockcomp.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

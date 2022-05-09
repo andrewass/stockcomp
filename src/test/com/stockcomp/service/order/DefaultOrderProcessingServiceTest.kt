@@ -3,7 +3,7 @@ package com.stockcomp.service.order
 import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.service.symbol.DefaultSymbolService
+import com.stockcomp.contest.service.DefaultSymbolService
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK

@@ -1,6 +1,6 @@
 package com.stockcomp.request
 
-import com.stockcomp.domain.user.Role
+import com.stockcomp.user.entity.Role
 
 data class SignUpRequest(
     val username: String,

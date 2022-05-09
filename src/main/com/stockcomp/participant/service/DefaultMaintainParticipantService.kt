@@ -2,11 +2,11 @@ package com.stockcomp.participant.service
 
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.dto.stock.RealTimePriceDto
+import com.stockcomp.contest.dto.RealTimePriceDto
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.service.symbol.SymbolService
+import com.stockcomp.contest.service.SymbolService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

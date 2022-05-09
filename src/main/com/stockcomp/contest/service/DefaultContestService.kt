@@ -8,8 +8,8 @@ import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.dto.ContestParticipantDto
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.service.user.UserService
-import com.stockcomp.tasks.ContestTasks
+import com.stockcomp.user.service.UserService
+import com.stockcomp.contest.tasks.ContestTasks
 import com.stockcomp.util.mapToContestParticipant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

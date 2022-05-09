@@ -2,7 +2,7 @@ package com.stockcomp.leaderboard.entity
 
 import com.stockcomp.domain.BaseEntity
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.domain.user.User
+import com.stockcomp.user.entity.User
 import javax.persistence.*
 
 @Entity

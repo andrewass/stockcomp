@@ -1,4 +1,4 @@
-package com.stockcomp.tasks
+package com.stockcomp.contest.tasks
 
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner

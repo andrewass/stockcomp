@@ -10,7 +10,7 @@ import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.service.user.UserService
+import com.stockcomp.user.service.UserService
 import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

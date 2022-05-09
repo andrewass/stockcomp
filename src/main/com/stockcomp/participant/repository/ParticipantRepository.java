@@ -3,7 +3,7 @@ package com.stockcomp.participant.repository;
 import com.stockcomp.contest.entity.Contest;
 import com.stockcomp.participant.entity.Participant;
 import com.stockcomp.contest.entity.ContestStatus;
-import com.stockcomp.domain.user.User;
+import com.stockcomp.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

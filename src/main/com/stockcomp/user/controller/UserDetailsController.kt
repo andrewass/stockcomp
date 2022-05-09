@@ -1,9 +1,9 @@
-package com.stockcomp.producer.rest
+package com.stockcomp.user.controller
 
-import com.stockcomp.dto.user.UserDetailsDto
+import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.security.JwtService
-import com.stockcomp.service.user.UserService
+import com.stockcomp.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

@@ -1,6 +1,7 @@
 package com.stockcomp.domain.user
 
 import com.stockcomp.domain.BaseEntity
+import com.stockcomp.user.entity.User
 import java.time.LocalDateTime
 import javax.persistence.*
 

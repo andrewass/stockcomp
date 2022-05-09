@@ -2,10 +2,10 @@ package com.stockcomp.configuration;
 
 import com.stockcomp.producer.common.ExceptionHandlerFilter;
 import com.stockcomp.producer.common.TokenAuthenticationFilter;
-import com.stockcomp.domain.user.Role;
+import com.stockcomp.user.entity.Role;
 import com.stockcomp.request.SignUpRequest;
 import com.stockcomp.service.user.CustomOAuth2UserService;
-import com.stockcomp.service.user.DefaultUserService;
+import com.stockcomp.user.service.DefaultUserService;
 import com.stockcomp.service.user.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -65,7 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/**", "/login/oauth2/code/google","/graphql","/graphiql",
+                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/**", "/login/oauth2/code/google",
                         "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs", "investment-order/*")
                 .permitAll()
                 .anyRequest().authenticated()

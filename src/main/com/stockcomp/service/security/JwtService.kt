@@ -1,6 +1,6 @@
 package com.stockcomp.service.security
 
-import com.stockcomp.domain.user.User
+import com.stockcomp.user.entity.User
 import org.springframework.security.core.userdetails.UserDetails
 
 interface JwtService {

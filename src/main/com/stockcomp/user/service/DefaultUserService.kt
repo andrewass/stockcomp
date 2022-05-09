@@ -1,7 +1,7 @@
-package com.stockcomp.service.user
+package com.stockcomp.user.service
 
-import com.stockcomp.domain.user.Role
-import com.stockcomp.dto.user.UserDetailsDto
+import com.stockcomp.user.entity.Role
+import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.repository.UserRepository
 import com.stockcomp.request.AuthenticationRequest
@@ -25,11 +25,11 @@ class DefaultUserService @Autowired constructor(
             .let { User(it.username, it.password, emptyList()) }
 
 
-    override fun signUpUser(request: SignUpRequest): com.stockcomp.domain.user.User {
+    override fun signUpUser(request: SignUpRequest): com.stockcomp.user.entity.User {
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateCredentialException("Existing username : ${request.username}")
         }
-        val user = com.stockcomp.domain.user.User(
+        val user = com.stockcomp.user.entity.User(
             username = request.username,
             password = passwordEncoder.encode(request.password),
             email = request.email,
@@ -58,6 +58,6 @@ class DefaultUserService @Autowired constructor(
         userRepository.findByUsername(username).userRole == Role.ADMIN
 
 
-    override fun findUserByUsername(username: String): com.stockcomp.domain.user.User? =
+    override fun findUserByUsername(username: String): com.stockcomp.user.entity.User? =
         userRepository.findByUsername(username)
 }

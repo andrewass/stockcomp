@@ -1,7 +1,5 @@
 package com.stockcomp.configuration;
 
-import graphql.scalars.ExtendedScalars;
-import graphql.schema.GraphQLScalarType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +18,5 @@ public class WebConfiguration {
                         .defaultCodecs()
                         .maxInMemorySize(20 * 1024 * 1024))
                 .baseUrl(consumerBaseUrl).build();
-    }
-
-    @Bean
-    public GraphQLScalarType getLong() {
-        return ExtendedScalars.GraphQLLong;
     }
 }

@@ -5,7 +5,7 @@ import com.stockcomp.producer.common.createCookie
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.domain.user.User
+import com.stockcomp.user.entity.User
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.repository.UserRepository

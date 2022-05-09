@@ -1,4 +1,4 @@
-package com.stockcomp.tasks
+package com.stockcomp.contest.tasks
 
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository

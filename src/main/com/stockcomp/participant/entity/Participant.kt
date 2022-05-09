@@ -2,7 +2,7 @@ package com.stockcomp.participant.entity
 
 import com.stockcomp.domain.BaseEntity
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.domain.user.User
+import com.stockcomp.user.entity.User
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import javax.persistence.*
 

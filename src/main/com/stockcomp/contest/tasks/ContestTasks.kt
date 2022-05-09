@@ -1,4 +1,4 @@
-package com.stockcomp.tasks
+package com.stockcomp.contest.tasks
 
 interface ContestTasks {
 

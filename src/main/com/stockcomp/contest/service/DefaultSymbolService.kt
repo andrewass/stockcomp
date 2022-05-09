@@ -1,7 +1,7 @@
-package com.stockcomp.service.symbol
+package com.stockcomp.contest.service
 
-import com.stockcomp.consumer.QuoteConsumer
-import com.stockcomp.dto.stock.RealTimePriceDto
+import com.stockcomp.contest.consumer.QuoteConsumer
+import com.stockcomp.contest.dto.RealTimePriceDto
 import org.springframework.stereotype.Service
 
 @Service

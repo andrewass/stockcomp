@@ -4,11 +4,11 @@ import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.DefaultContestService
-import com.stockcomp.domain.user.User
+import com.stockcomp.user.entity.User
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.service.user.DefaultUserService
-import com.stockcomp.tasks.DefaultContestTasks
+import com.stockcomp.user.service.DefaultUserService
+import com.stockcomp.contest.tasks.DefaultContestTasks
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

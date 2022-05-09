@@ -1,6 +1,6 @@
 package com.stockcomp.producer.common
 
-import com.stockcomp.service.user.DefaultUserService
+import com.stockcomp.user.service.DefaultUserService
 import com.stockcomp.service.security.DefaultJwtService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

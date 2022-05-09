@@ -8,13 +8,13 @@ import com.stockcomp.contest.entity.ContestStatus.RUNNING
 import com.stockcomp.domain.contest.enums.OrderStatus.*
 import com.stockcomp.domain.contest.enums.TransactionType.BUY
 import com.stockcomp.domain.contest.enums.TransactionType.SELL
-import com.stockcomp.domain.user.User
-import com.stockcomp.dto.stock.RealTimePriceDto
+import com.stockcomp.user.entity.User
+import com.stockcomp.contest.dto.RealTimePriceDto
 import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.service.symbol.SymbolService
+import com.stockcomp.contest.service.SymbolService
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

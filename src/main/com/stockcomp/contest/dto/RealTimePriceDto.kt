@@ -1,4 +1,4 @@
-package com.stockcomp.dto.stock
+package com.stockcomp.contest.dto
 
 data class RealTimePriceDto(
     val price: Double,

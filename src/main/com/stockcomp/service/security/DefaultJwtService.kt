@@ -1,7 +1,7 @@
 package com.stockcomp.service.security
 
 import com.stockcomp.domain.user.RefreshToken
-import com.stockcomp.domain.user.User
+import com.stockcomp.user.entity.User
 import com.stockcomp.exception.TokenRefreshException
 import com.stockcomp.repository.RefreshTokenRepository
 import com.stockcomp.repository.UserRepository

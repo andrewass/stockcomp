@@ -5,13 +5,12 @@ import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
-import com.stockcomp.domain.user.User
-import com.stockcomp.contest.dto.ContestDto
+import com.stockcomp.user.entity.User
 import com.stockcomp.participant.dto.ContestParticipantDto
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.leaderboard.dto.MedalDto
-import com.stockcomp.dto.user.UserDetailsDto
+import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
 
 fun mapToContestParticipant(contest: Contest, participant: Participant?): ContestParticipantDto =
