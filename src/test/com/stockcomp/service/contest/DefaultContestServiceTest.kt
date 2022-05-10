@@ -156,21 +156,10 @@ internal class DefaultContestServiceTest {
             participantRepository.save(capture(participantSlot))
         } returns participant
 
-        contestService.signUpUser(username, contestNumber)
+        contestService.signUp(username, contestNumber)
 
         assertEquals(participantSlot.captured.contest, runningContest)
         assertEquals(participantSlot.captured.user, user)
-    }
-
-    @Test
-    fun `should throw exception when trying to sign up for a non-existing contest`() {
-        every {
-            contestRepository.findByContestNumber(contestNumber)
-        } returns null
-
-        assertThrows<NoSuchElementException> {
-            contestService.signUpUser(username, contestNumber)
-        }
     }
 
     private fun createFutureContest() =

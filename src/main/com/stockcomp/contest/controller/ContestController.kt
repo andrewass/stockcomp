@@ -5,6 +5,7 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
+import com.stockcomp.contest.dto.ContestParticipationDto
 import com.stockcomp.producer.common.CustomExceptionHandler
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.security.JwtService
@@ -21,7 +22,7 @@ class ContestController(
 ) : CustomExceptionHandler() {
 
     @GetMapping("/get-by-status")
-    fun getContestsByStatus(@RequestBody statusList : List<ContestStatus>): ResponseEntity<List<ContestDto>> =
+    fun getContestsByStatus(@RequestBody statusList: List<ContestStatus>): ResponseEntity<List<ContestDto>> =
         ResponseEntity.ok(contestService.getContests(statusList))
 
 
@@ -41,9 +42,24 @@ class ContestController(
 
 
     @DeleteMapping("/delete/{contestNumber}")
-    fun deleteContest(@PathVariable contestNumber: Int) : ResponseEntity<HttpStatus> =
+    fun deleteContest(@PathVariable contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.deleteContest(contestNumber)
             .let { ResponseEntity(HttpStatus.OK) }
+
+
+    @PostMapping("/sign-up")
+    fun signUp(@PathVariable contestNumber: Int, request: HttpServletRequest): ResponseEntity<HttpStatus> {
+        contestService.signUp(extractUsernameFromRequest(request), contestNumber)
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @PostMapping("/contest-participations")
+    fun getContestParticipations(
+        httpServletRequest: HttpServletRequest,
+        @RequestBody statusList: List<ContestStatus>
+    ): ResponseEntity<List<ContestParticipationDto>> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { ResponseEntity.ok(contestService.getContestParticipations(statusList, it)) }
 
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String =

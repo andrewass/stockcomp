@@ -1,4 +1,4 @@
-package com.stockcomp.producer.rest
+package com.stockcomp.authentication.controller
 
 import com.stockcomp.producer.common.createCookie
 import com.stockcomp.producer.common.getAccessTokenFromCookie

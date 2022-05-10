@@ -1,16 +1,15 @@
 package com.stockcomp.contest.service
 
 import com.stockcomp.contest.dto.ContestDto
+import com.stockcomp.contest.dto.ContestParticipationDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
-import com.stockcomp.participant.dto.ContestParticipantDto
+import com.stockcomp.contest.tasks.ContestTasks
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.user.service.UserService
-import com.stockcomp.contest.tasks.ContestTasks
-import com.stockcomp.util.mapToContestParticipant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -76,22 +75,23 @@ class DefaultContestService(
         TODO("Not yet implemented")
     }
 
-    override fun signUpUser(username: String, contestNumber: Int): Long {
-        return contestRepository.findByContestNumber(contestNumber)
-            ?.takeIf { contest -> contest.contestStatus in listOf(
+    override fun signUp(username: String, contestNumber: Int) {
+        val contest = contestRepository.findByContestNumber(contestNumber)
+        assert(
+            contest.contestStatus in listOf(
                 ContestStatus.RUNNING,
                 ContestStatus.STOPPED,
                 ContestStatus.AWAITING_START
-            ) }
-            ?.let {
-                val user = userService.findUserByUsername(username)!!
-                val participant = Participant(user = user, contest = it, rank = it.participantCount + 1)
-                    .let { pcp -> participantRepository.save(pcp) }
-                it.participantCount++
-                contestRepository.save(it)
-                participant.id
-            }
-            ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
+            )
+        )
+        Participant(
+            user = userService.findUserByUsername(username)!!,
+            contest = contest,
+            rank = contest.participantCount + 1
+        ).also { pcp -> participantRepository.save(pcp) }
+
+        contest.participantCount++
+        contestRepository.save(contest)
     }
 
     override fun getContests(statusList: List<ContestStatus>): List<ContestDto> =
@@ -102,14 +102,14 @@ class DefaultContestService(
         }.map { mapToContestDto(it) }
 
 
-    override fun getContestParticipants(
+    override fun getContestParticipations(
         statusList: List<ContestStatus>, username: String
-    ): List<ContestParticipantDto> {
+    ): List<ContestParticipationDto> {
         val user = userService.findUserByUsername(username)
         return contestRepository.findAllByContestStatusList(statusList)
             .map {
                 val participant: Participant? = participantRepository.findByContestAndUser(it, user)
-                mapToContestParticipant(it, participant)
+                mapToContestParticipationDto(it, participant)
             }
     }
 }

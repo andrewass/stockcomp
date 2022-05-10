@@ -1,23 +1,16 @@
 package com.stockcomp.util
 
-import com.stockcomp.contest.entity.Contest
+import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.participant.entity.Participant
-import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.leaderboard.entity.Medal
-import com.stockcomp.user.entity.User
-import com.stockcomp.participant.dto.ContestParticipantDto
-import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.leaderboard.dto.MedalDto
+import com.stockcomp.leaderboard.entity.LeaderboardEntry
+import com.stockcomp.leaderboard.entity.Medal
+import com.stockcomp.participant.dto.ParticipantDto
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
+import com.stockcomp.user.entity.User
 
-fun mapToContestParticipant(contest: Contest, participant: Participant?): ContestParticipantDto =
-    ContestParticipantDto(
-        contest = contest,
-        participant = participant
-    )
 
 fun User.toUserDetailsDto() =
     UserDetailsDto(
