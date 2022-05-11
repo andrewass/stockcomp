@@ -18,13 +18,18 @@ class ParticipantController(
     private val jwtService: JwtService
 ) {
 
-    @GetMapping("/participant")
+    @GetMapping("/by-contest")
     fun getParticipant(
         httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<ParticipantDto> =
         extractUsernameFromRequest(httpServletRequest)
             .let { participantService.getParticipant(contestNumber, it) }
             .let { ResponseEntity.ok(it) }
+
+
+    @GetMapping("/sorted-participants")
+    fun getSortedParticipants(@RequestParam contestNumber: Int) : ResponseEntity<List<ParticipantDto>> =
+        ResponseEntity.ok(participantService.getParticipantsSortedByRank(contestNumber))
 
 
     @GetMapping("/participant-history")

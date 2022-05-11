@@ -21,13 +21,13 @@ class ContestController(
     private val defaultJwtService: JwtService
 ) : CustomExceptionHandler() {
 
-    @GetMapping("/get-by-status")
+    @PostMapping("/get-by-status")
     fun getContestsByStatus(@RequestBody statusList: List<ContestStatus>): ResponseEntity<List<ContestDto>> =
         ResponseEntity.ok(contestService.getContests(statusList))
 
 
-    @GetMapping("/get-by-number/{contestNumber}")
-    fun getContest(@PathVariable contestNumber: Int): ResponseEntity<ContestDto> =
+    @GetMapping("/get-by-number")
+    fun getContest(@RequestParam contestNumber: Int): ResponseEntity<ContestDto> =
         ResponseEntity.ok(contestService.getContest(contestNumber))
 
 
@@ -41,14 +41,14 @@ class ContestController(
         ResponseEntity.ok(contestService.updateContest(request))
 
 
-    @DeleteMapping("/delete/{contestNumber}")
-    fun deleteContest(@PathVariable contestNumber: Int): ResponseEntity<HttpStatus> =
+    @DeleteMapping("/delete")
+    fun deleteContest(@RequestParam contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.deleteContest(contestNumber)
             .let { ResponseEntity(HttpStatus.OK) }
 
 
     @PostMapping("/sign-up")
-    fun signUp(@PathVariable contestNumber: Int, request: HttpServletRequest): ResponseEntity<HttpStatus> {
+    fun signUp(@RequestParam contestNumber: Int, request: HttpServletRequest): ResponseEntity<HttpStatus> {
         contestService.signUp(extractUsernameFromRequest(request), contestNumber)
         return ResponseEntity(HttpStatus.OK)
     }
