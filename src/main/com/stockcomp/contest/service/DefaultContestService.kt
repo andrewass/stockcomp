@@ -1,7 +1,6 @@
 package com.stockcomp.contest.service
 
 import com.stockcomp.contest.dto.ContestDto
-import com.stockcomp.contest.dto.ContestParticipationDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
@@ -100,16 +99,4 @@ class DefaultContestService(
         } else {
             contestRepository.findAllByContestStatusList(statusList)
         }.map { mapToContestDto(it) }
-
-
-    override fun getContestParticipations(
-        statusList: List<ContestStatus>, username: String
-    ): List<ContestParticipationDto> {
-        val user = userService.findUserByUsername(username)
-        return contestRepository.findAllByContestStatusList(statusList)
-            .map {
-                val participant: Participant? = participantRepository.findByContestAndUser(it, user)
-                mapToContestParticipationDto(it, participant)
-            }
-    }
 }

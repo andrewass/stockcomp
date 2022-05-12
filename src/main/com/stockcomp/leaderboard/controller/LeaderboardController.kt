@@ -19,7 +19,7 @@ class LeaderboardController(
     private val defaultJwtService: DefaultJwtService
 ) {
 
-    @GetMapping("/entries")
+    @GetMapping("/sorted-entries")
     fun getAllLeaderboardEntries(httpServletRequest: HttpServletRequest): ResponseEntity<List<LeaderboardEntryDto>> =
         leaderboardService.getSortedLeaderboardEntries()
             .let { ResponseEntity.ok(it) }

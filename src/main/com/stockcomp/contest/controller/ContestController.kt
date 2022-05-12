@@ -5,7 +5,6 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
-import com.stockcomp.contest.dto.ContestParticipationDto
 import com.stockcomp.producer.common.CustomExceptionHandler
 import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.security.JwtService
@@ -52,15 +51,6 @@ class ContestController(
         contestService.signUp(extractUsernameFromRequest(request), contestNumber)
         return ResponseEntity(HttpStatus.OK)
     }
-
-    @PostMapping("/contest-participations")
-    fun getContestParticipations(
-        httpServletRequest: HttpServletRequest,
-        @RequestBody statusList: List<ContestStatus>
-    ): ResponseEntity<List<ContestParticipationDto>> =
-        extractUsernameFromRequest(httpServletRequest)
-            .let { ResponseEntity.ok(contestService.getContestParticipations(statusList, it)) }
-
 
     private fun extractUsernameFromRequest(request: HttpServletRequest): String =
         getAccessTokenFromCookie(request)
