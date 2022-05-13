@@ -4,6 +4,7 @@ import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.dto.ParticipantDto
+import com.stockcomp.participant.dto.mapToParticipantDto
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository

@@ -4,8 +4,8 @@ import com.stockcomp.participant.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.domain.contest.enums.OrderStatus
-import com.stockcomp.domain.contest.enums.TransactionType
+import com.stockcomp.investmentorder.entity.OrderStatus
+import com.stockcomp.investmentorder.entity.TransactionType
 import com.stockcomp.contest.dto.RealTimePriceDto
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.InvestmentRepository

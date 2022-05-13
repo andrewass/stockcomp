@@ -1,9 +1,9 @@
 package com.stockcomp.investmentorder.dto
 
-import com.stockcomp.domain.contest.enums.TransactionType
+import com.stockcomp.investmentorder.entity.TransactionType
 import java.time.LocalDateTime
 
-data class InvestmentOrderRequest(
+data class PlaceInvestmentOrderRequest(
     val contestNumber: Int,
     val symbol: String,
     val amount: Int,

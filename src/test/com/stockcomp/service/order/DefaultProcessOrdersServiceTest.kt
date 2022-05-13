@@ -5,9 +5,9 @@ import com.stockcomp.participant.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus.RUNNING
-import com.stockcomp.domain.contest.enums.OrderStatus.*
-import com.stockcomp.domain.contest.enums.TransactionType.BUY
-import com.stockcomp.domain.contest.enums.TransactionType.SELL
+import com.stockcomp.investmentorder.entity.OrderStatus.*
+import com.stockcomp.investmentorder.entity.TransactionType.BUY
+import com.stockcomp.investmentorder.entity.TransactionType.SELL
 import com.stockcomp.user.entity.User
 import com.stockcomp.contest.dto.RealTimePriceDto
 import com.stockcomp.investmentorder.service.DefaultProcessOrdersService

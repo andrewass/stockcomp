@@ -1,6 +1,6 @@
 package com.stockcomp.util
 
-import com.stockcomp.investmentorder.dto.InvestmentOrderRequest
+import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.leaderboard.dto.MedalDto
@@ -35,7 +35,7 @@ fun LeaderboardEntry.toLeaderboardEntryDto() =
         medals = this.medals.map { it.toMedalDto() }
     )
 
-fun mapToInvestmentOrder(participant: com.stockcomp.participant.entity.Participant, request: InvestmentOrderRequest) =
+fun mapToInvestmentOrder(participant: com.stockcomp.participant.entity.Participant, request: PlaceInvestmentOrderRequest) =
     InvestmentOrder(
         symbol = request.symbol,
         acceptedPrice = request.acceptedPrice,
