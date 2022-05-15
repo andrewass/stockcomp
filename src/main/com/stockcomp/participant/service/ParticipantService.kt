@@ -9,6 +9,4 @@ interface ParticipantService {
     fun getParticipant(contestNumber: Int, username: String): ParticipantDto
 
     fun getParticipantHistory(username: String): List<ParticipantDto>
-
-
 }

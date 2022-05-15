@@ -23,8 +23,7 @@ class InvestmentController(
 
     @GetMapping("/get-all")
     fun getAllFromContest(
-        @RequestParam contestNumber: Int,
-        request: HttpServletRequest
+        @RequestParam contestNumber: Int, request: HttpServletRequest
     ) : ResponseEntity<List<InvestmentDto>> =
         extractUsernameFromRequest(request)
             .let { ResponseEntity.ok(investmentService.getAllInvestmentsForParticipant(it, contestNumber)) }
@@ -32,8 +31,7 @@ class InvestmentController(
 
     @PostMapping("/get-by-symbol")
     fun getAllFromContest(
-        @RequestBody getInvestmentBySymbolRequest: GetInvestmentBySymbolRequest,
-        servletRequest: HttpServletRequest
+        @RequestBody getInvestmentBySymbolRequest: GetInvestmentBySymbolRequest, servletRequest: HttpServletRequest
     ) : ResponseEntity<InvestmentDto?> =
         extractUsernameFromRequest(servletRequest)
             .let { ResponseEntity.ok(investmentService.getInvestmentForSymbol(it, getInvestmentBySymbolRequest)) }

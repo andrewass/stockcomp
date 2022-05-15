@@ -1,18 +1,18 @@
 package com.stockcomp.investmentorder.service
 
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.investmentorder.entity.OrderStatus
-import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.InvestmentOrderDto
-import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
-import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
+import com.stockcomp.investmentorder.entity.InvestmentOrder
+import com.stockcomp.investmentorder.entity.OrderStatus
+import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
+import com.stockcomp.participant.entity.Participant
+import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.util.mapToInvestmentOrder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -46,10 +46,10 @@ class DefaultInvestmentOrderService(
 
 
     override fun getSymbolOrdersByStatus(
-        username: String, contestNumber: Int,
-        status: List<OrderStatus>, symbol: String
-    ): List<InvestmentOrder> =
-        findOrdersByParticipantAndSymbol(username, contestNumber, symbol, status)
+        username: String, request: GetInvestmentOrderRequest
+    ): List<InvestmentOrderDto> =
+        findOrdersByParticipantAndSymbol(username, request.contestNumber, request.symbol!!, request.statusList)
+            .map { mapToInvestmentOrderDto(it) }
 
 
     override fun terminateRemainingOrders(contest: Contest) {

@@ -4,5 +4,6 @@ import com.stockcomp.investmentorder.entity.OrderStatus
 
 data class GetInvestmentOrderRequest(
     val contestNumber : Int,
-    val statusList: List<OrderStatus>
+    val statusList: List<OrderStatus>,
+    val symbol: String? = null
 )

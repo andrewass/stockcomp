@@ -40,6 +40,17 @@ class InvestmentOrderController(
             .let { investmentOrderService.getOrdersByStatus(it, investmentOrderRequest) }
             .let { ResponseEntity.ok(it) }
 
+
+    @PostMapping("get-by-status-symbol")
+    fun getInvestmentOrdersSymbol(
+        httpServletRequest: HttpServletRequest,
+        @RequestBody investmentOrderRequest: GetInvestmentOrderRequest,
+    ): ResponseEntity<List<InvestmentOrderDto>> =
+        extractUsernameFromRequest(httpServletRequest)
+            .let { investmentOrderService.getSymbolOrdersByStatus(it, investmentOrderRequest) }
+            .let { ResponseEntity.ok(it) }
+
+
     private fun extractUsernameFromRequest(request: HttpServletRequest): String =
         getAccessTokenFromCookie(request)
             .let { jwtService.extractUsername(it!!) }
