@@ -1,7 +1,6 @@
 package com.stockcomp.participant.service
 
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.participant.entity.Investment
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.dto.mapToParticipantDto
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 class DefaultParticipantService(
     private val contestRepository: ContestRepository,
     private val participantRepository: ParticipantRepository,
-    private val investmentRepository: InvestmentRepository,
     private val userRepository: UserRepository
 ) : ParticipantService {
 
@@ -45,20 +43,4 @@ class DefaultParticipantService(
                     ContestStatus.COMPLETED
                 )
             }.map { mapToParticipantDto(it) }
-
-
-    override fun getInvestmentForSymbol(username: String, contestNumber: Int, symbol: String): Investment? =
-        getParticipant(username, contestNumber)
-            .investments.firstOrNull { it.symbol == symbol }
-
-
-    override fun getAllInvestmentsForContest(username: String, contestNumber: Int): List<Investment> =
-        getParticipant(username, contestNumber)
-            .let { investmentRepository.findAllByParticipant(it) }
-
-
-    private fun getParticipant(username: String, contestNumber: Int): Participant =
-        contestRepository.findByContestNumber(contestNumber)
-            .let { participantRepository.findAllByUsernameAndContest(username, it) }
-            .first()
 }
