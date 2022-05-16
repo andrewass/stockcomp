@@ -5,19 +5,13 @@ import com.stockcomp.investmentorder.entity.TransactionType
 import java.time.LocalDateTime
 
 data class InvestmentOrderDto(
+    val orderId : Long?,
     val symbol: String,
-
     val totalAmount: Int,
-
-    var remainingAmount: Int,
-
+    val remainingAmount: Int,
     val acceptedPrice: Double,
-
     val currency : String,
-
     val expirationTime: LocalDateTime,
-
     val transactionType: TransactionType,
-
-    var orderStatus: OrderStatus
+    val orderStatus: OrderStatus
 )

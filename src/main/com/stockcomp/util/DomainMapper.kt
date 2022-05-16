@@ -6,6 +6,7 @@ import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.leaderboard.dto.MedalDto
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.user.entity.User
 
@@ -35,7 +36,7 @@ fun LeaderboardEntry.toLeaderboardEntryDto() =
         medals = this.medals.map { it.toMedalDto() }
     )
 
-fun mapToInvestmentOrder(participant: com.stockcomp.participant.entity.Participant, request: PlaceInvestmentOrderRequest) =
+fun mapToInvestmentOrder(participant: Participant, request: PlaceInvestmentOrderRequest) =
     InvestmentOrder(
         symbol = request.symbol,
         acceptedPrice = request.acceptedPrice,

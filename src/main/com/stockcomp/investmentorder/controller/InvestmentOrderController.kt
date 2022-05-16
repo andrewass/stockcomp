@@ -8,10 +8,7 @@ import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.service.security.JwtService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
@@ -23,35 +20,45 @@ class InvestmentOrderController(
 
     @PostMapping("/place-order")
     fun placeInvestmentOrder(
-        httpServletRequest: HttpServletRequest,
+        servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
-        extractUsernameFromRequest(httpServletRequest)
+        extractUsernameFromRequest(servletRequest)
             .let { investmentOrderService.placeInvestmentOrder(investmentOrderRequest, it) }
+            .let { ResponseEntity(HttpStatus.OK) }
+
+
+    @PostMapping("/delete-order")
+    fun deleteInvestmentOrder(
+        servletRequest: HttpServletRequest,
+        @RequestParam orderId: Long
+    ): ResponseEntity<HttpStatus> =
+        extractUsernameFromRequest(servletRequest)
+            .let { investmentOrderService.deleteInvestmentOrder(it, orderId) }
             .let { ResponseEntity(HttpStatus.OK) }
 
 
     @PostMapping("/get-by-status")
     fun getInvestmentOrders(
-        httpServletRequest: HttpServletRequest,
+        servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: GetInvestmentOrderRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
+        extractUsernameFromRequest(servletRequest)
             .let { investmentOrderService.getOrdersByStatus(it, investmentOrderRequest) }
             .let { ResponseEntity.ok(it) }
 
 
     @PostMapping("get-by-status-symbol")
     fun getInvestmentOrdersSymbol(
-        httpServletRequest: HttpServletRequest,
+        servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: GetInvestmentOrderRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(httpServletRequest)
+        extractUsernameFromRequest(servletRequest)
             .let { investmentOrderService.getSymbolOrdersByStatus(it, investmentOrderRequest) }
             .let { ResponseEntity.ok(it) }
 
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
-        getAccessTokenFromCookie(request)
+    private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
+        getAccessTokenFromCookie(servletRequest)
             .let { jwtService.extractUsername(it!!) }
 }

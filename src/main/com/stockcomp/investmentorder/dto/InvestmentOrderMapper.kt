@@ -4,6 +4,7 @@ import com.stockcomp.investmentorder.entity.InvestmentOrder
 
 fun mapToInvestmentOrderDto(source : InvestmentOrder) =
     InvestmentOrderDto(
+        orderId = source.orderId,
         symbol = source.symbol,
         acceptedPrice = source.acceptedPrice,
         currency = source.currency,

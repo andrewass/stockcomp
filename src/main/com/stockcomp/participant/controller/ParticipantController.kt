@@ -20,9 +20,9 @@ class ParticipantController(
 
     @GetMapping("/by-contest")
     fun getParticipant(
-        httpServletRequest: HttpServletRequest, @RequestParam contestNumber: Int
+        servletRequest: HttpServletRequest, @RequestParam contestNumber: Int
     ): ResponseEntity<ParticipantDto> =
-        extractUsernameFromRequest(httpServletRequest)
+        extractUsernameFromRequest(servletRequest)
             .let { participantService.getParticipant(contestNumber, it) }
             .let { ResponseEntity.ok(it) }
 
@@ -34,13 +34,13 @@ class ParticipantController(
 
     @GetMapping("/participant-history")
     fun getParticipantHistory(
-        httpServletRequest: HttpServletRequest, @RequestParam username: String
+        servletRequest: HttpServletRequest, @RequestParam username: String
     ): ResponseEntity<List<ParticipantDto>> =
         participantService.getParticipantHistory(username)
             .let { ResponseEntity.ok(it) }
 
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
-        getAccessTokenFromCookie(request)
+    private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
+        getAccessTokenFromCookie(servletRequest)
             .let { jwtService.extractUsername(it!!) }
 }

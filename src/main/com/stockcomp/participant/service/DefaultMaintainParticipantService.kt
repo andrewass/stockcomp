@@ -9,8 +9,10 @@ import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.contest.service.SymbolService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class DefaultMaintainParticipantService(
     private val investmentRepository: InvestmentRepository,
     private val participantRepository: ParticipantRepository,
@@ -61,5 +63,4 @@ class DefaultMaintainParticipantService(
             .onEach { it.rank = rankCounter++ }
             .also { participantRepository.saveAll(it) }
     }
-
 }

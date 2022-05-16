@@ -47,12 +47,12 @@ class ContestController(
 
 
     @PostMapping("/sign-up")
-    fun signUp(@RequestParam contestNumber: Int, request: HttpServletRequest): ResponseEntity<HttpStatus> {
-        contestService.signUp(extractUsernameFromRequest(request), contestNumber)
+    fun signUp(@RequestParam contestNumber: Int, servletRequest: HttpServletRequest): ResponseEntity<HttpStatus> {
+        contestService.signUp(extractUsernameFromRequest(servletRequest), contestNumber)
         return ResponseEntity(HttpStatus.OK)
     }
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
-        getAccessTokenFromCookie(request)
+    private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
+        getAccessTokenFromCookie(servletRequest)
             .let { defaultJwtService.extractUsername(it!!) }
 }

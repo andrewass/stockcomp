@@ -20,23 +20,23 @@ class LeaderboardController(
 ) {
 
     @GetMapping("/sorted-entries")
-    fun getAllLeaderboardEntries(httpServletRequest: HttpServletRequest): ResponseEntity<List<LeaderboardEntryDto>> =
+    fun getAllLeaderboardEntries(servletRequest: HttpServletRequest): ResponseEntity<List<LeaderboardEntryDto>> =
         leaderboardService.getSortedLeaderboardEntries()
             .let { ResponseEntity.ok(it) }
 
 
     @GetMapping("/user-entry")
     fun getLeaderboardEntryForUser(
-        httpServletRequest: HttpServletRequest,
+        servletRequest: HttpServletRequest,
         @RequestParam(required = false) username: String?
     ): ResponseEntity<LeaderboardEntryDto> =
-        (username ?: extractUsernameFromRequest(httpServletRequest))
+        (username ?: extractUsernameFromRequest(servletRequest))
             .let { leaderboardService.getLeaderboardEntryForUser(it) }
             ?.let { ResponseEntity.ok(it) }
             ?: ResponseEntity(HttpStatus.OK)
 
 
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
-        getAccessTokenFromCookie(request)
+    private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
+        getAccessTokenFromCookie(servletRequest)
             .let { defaultJwtService.extractUsername(it!!) }
 }
