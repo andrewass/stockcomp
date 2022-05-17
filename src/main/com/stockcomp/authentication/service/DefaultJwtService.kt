@@ -4,7 +4,7 @@ import com.stockcomp.domain.user.RefreshToken
 import com.stockcomp.user.entity.User
 import com.stockcomp.exception.TokenRefreshException
 import com.stockcomp.authentication.repository.RefreshTokenRepository
-import com.stockcomp.producer.common.repository.UserRepository
+import com.stockcomp.user.repository.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm

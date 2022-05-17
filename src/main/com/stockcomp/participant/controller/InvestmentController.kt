@@ -3,7 +3,7 @@ package com.stockcomp.participant.controller
 import com.stockcomp.participant.dto.GetInvestmentBySymbolRequest
 import com.stockcomp.participant.dto.InvestmentDto
 import com.stockcomp.participant.service.InvestmentService
-import com.stockcomp.producer.common.getAccessTokenFromCookie
+import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.authentication.service.JwtService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

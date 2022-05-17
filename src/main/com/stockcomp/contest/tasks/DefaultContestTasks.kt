@@ -2,6 +2,7 @@ package com.stockcomp.contest.tasks
 
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
 import com.stockcomp.participant.service.MaintainParticipantService
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.investmentorder.service.InvestmentOrderService
@@ -39,9 +40,14 @@ class DefaultContestTasks(
         CoroutineScope(Default).launch {
             completeOrderProcessing()
             completeMaintainInvestments()
-            contestRepository.findByContestNumber(contestNumber)
-                .also { investmentOrderService.terminateRemainingOrders(it) }
-                .also { leaderboardService.updateLeaderboard(it) }
+
+            val contest = contestRepository.findByContestNumber(contestNumber)
+            investmentOrderService.terminateRemainingOrders(contest)
+            if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED){
+                leaderboardService.updateLeaderboard(contest)
+                contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
+                contestRepository.save(contest)
+            }
         }
     }
 

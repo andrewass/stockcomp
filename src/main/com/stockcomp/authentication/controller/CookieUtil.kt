@@ -1,4 +1,4 @@
-package com.stockcomp.producer.common
+package com.stockcomp.authentication.controller
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest

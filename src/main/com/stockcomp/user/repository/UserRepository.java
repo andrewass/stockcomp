@@ -1,4 +1,4 @@
-package com.stockcomp.producer.common.repository;
+package com.stockcomp.user.repository;
 
 import com.stockcomp.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

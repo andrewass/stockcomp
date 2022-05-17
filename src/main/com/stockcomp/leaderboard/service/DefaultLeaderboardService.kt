@@ -1,20 +1,16 @@
 package com.stockcomp.leaderboard.service
 
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.participant.entity.Participant
-import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
+import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.toLeaderboardEntryDto
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.leaderboard.entity.MedalValue
-import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
-import com.stockcomp.contest.repository.ContestRepository
-import com.stockcomp.leaderboard.dto.toLeaderboardEntryDto
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.user.service.UserService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,17 +33,12 @@ class DefaultLeaderboardService(
     )
 
     override fun updateLeaderboard(contest: Contest) {
-        if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED) {
-            logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
-            contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.IN_PROGRESS
+        logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
 
-            CoroutineScope(Dispatchers.Default).launch {
-                updateScoreForParticipants(contest)
-                logger.info("Update of participant score completed")
-                updateRankingForEntries()
-                logger.info("Update of each ranking completed")
-            }
-        }
+        updateScoreForParticipants(contest)
+        logger.info("Update of participant score completed")
+        updateRankingForEntries()
+        logger.info("Update of each ranking completed")
     }
 
     override fun getSortedLeaderboardEntries(): List<LeaderboardEntryDto> =
@@ -57,7 +48,7 @@ class DefaultLeaderboardService(
 
     override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto? =
         userService.findUserByUsername(username)
-                .let { leaderboardEntryRepository.findByUser(it) }?.toLeaderboardEntryDto()
+            .let { leaderboardEntryRepository.findByUser(it) }?.toLeaderboardEntryDto()
 
 
     private fun updateRankingForEntries() {
@@ -77,8 +68,6 @@ class DefaultLeaderboardService(
                     updateAndSaveLeaderboardEntry(participant, contest, entry)
                 }
             }
-        contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
-        contestRepository.save(contest)
     }
 
     private fun updateAndSaveLeaderboardEntry(participant: Participant, contest: Contest, entry: LeaderboardEntry) {

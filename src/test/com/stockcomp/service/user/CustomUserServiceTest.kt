@@ -2,8 +2,8 @@ package com.stockcomp.service.user
 
 import com.stockcomp.user.entity.User
 import com.stockcomp.exception.DuplicateCredentialException
-import com.stockcomp.producer.common.repository.UserRepository
-import com.stockcomp.request.SignUpRequest
+import com.stockcomp.user.repository.UserRepository
+import com.stockcomp.user.dto.SignUpRequest
 import com.stockcomp.user.service.DefaultUserService
 import io.mockk.MockKAnnotations
 import io.mockk.every

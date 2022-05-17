@@ -4,7 +4,7 @@ import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.InvestmentOrderDto
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.service.InvestmentOrderService
-import com.stockcomp.producer.common.getAccessTokenFromCookie
+import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.authentication.service.JwtService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

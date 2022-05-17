@@ -2,8 +2,8 @@ package com.stockcomp.user.service
 
 import com.stockcomp.user.entity.User
 import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.request.AuthenticationRequest
-import com.stockcomp.request.SignUpRequest
+import com.stockcomp.authentication.dto.AuthenticationRequest
+import com.stockcomp.user.dto.SignUpRequest
 
 interface UserService {
 

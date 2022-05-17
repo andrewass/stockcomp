@@ -1,10 +1,7 @@
 package com.stockcomp.authentication.controller
 
-import com.stockcomp.producer.common.createCookie
-import com.stockcomp.producer.common.getAccessTokenFromCookie
-import com.stockcomp.producer.common.getRefreshTokenFromCookie
-import com.stockcomp.request.AuthenticationRequest
-import com.stockcomp.request.SignUpRequest
+import com.stockcomp.authentication.dto.AuthenticationRequest
+import com.stockcomp.user.dto.SignUpRequest
 import com.stockcomp.authentication.service.DefaultJwtService
 import com.stockcomp.user.service.DefaultUserService
 import io.micrometer.core.instrument.Counter

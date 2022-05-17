@@ -5,8 +5,8 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
-import com.stockcomp.producer.common.CustomExceptionHandler
-import com.stockcomp.producer.common.getAccessTokenFromCookie
+import com.stockcomp.exception.handler.CustomExceptionHandler
+import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.authentication.service.JwtService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

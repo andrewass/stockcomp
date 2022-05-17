@@ -1,14 +1,14 @@
 package com.stockcomp.producer
 
 import com.stockcomp.IntegrationTest
-import com.stockcomp.producer.common.createCookie
+import com.stockcomp.authentication.controller.createCookie
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.user.entity.User
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.producer.common.repository.UserRepository
+import com.stockcomp.user.repository.UserRepository
 import com.stockcomp.authentication.service.DefaultJwtService
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

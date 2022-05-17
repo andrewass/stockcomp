@@ -3,9 +3,9 @@ package com.stockcomp.user.service
 import com.stockcomp.user.entity.Role
 import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.exception.DuplicateCredentialException
-import com.stockcomp.producer.common.repository.UserRepository
-import com.stockcomp.request.AuthenticationRequest
-import com.stockcomp.request.SignUpRequest
+import com.stockcomp.user.repository.UserRepository
+import com.stockcomp.authentication.dto.AuthenticationRequest
+import com.stockcomp.user.dto.SignUpRequest
 import com.stockcomp.user.dto.mapToUserDetailsDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User

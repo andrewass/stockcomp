@@ -1,4 +1,4 @@
-package com.stockcomp.producer.common
+package com.stockcomp.authentication.controller
 
 import com.stockcomp.user.service.DefaultUserService
 import com.stockcomp.authentication.service.DefaultJwtService

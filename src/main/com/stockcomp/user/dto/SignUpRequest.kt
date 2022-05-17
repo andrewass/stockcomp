@@ -1,4 +1,4 @@
-package com.stockcomp.request
+package com.stockcomp.user.dto
 
 import com.stockcomp.user.entity.Role
 

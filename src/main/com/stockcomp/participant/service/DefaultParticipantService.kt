@@ -5,7 +5,7 @@ import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.dto.mapToParticipantDto
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.producer.common.repository.UserRepository
+import com.stockcomp.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

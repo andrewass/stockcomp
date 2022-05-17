@@ -1,7 +1,7 @@
 package com.stockcomp.leaderboard.controller
 
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
-import com.stockcomp.producer.common.getAccessTokenFromCookie
+import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.authentication.service.DefaultJwtService
 import org.springframework.http.HttpStatus

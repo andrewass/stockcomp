@@ -1,7 +1,7 @@
 package com.stockcomp.user.controller
 
 import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.producer.common.getAccessTokenFromCookie
+import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.authentication.service.JwtService
 import com.stockcomp.user.service.UserService
 import org.springframework.http.HttpStatus
