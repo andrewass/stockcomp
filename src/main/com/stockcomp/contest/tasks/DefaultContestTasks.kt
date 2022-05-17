@@ -3,10 +3,10 @@ package com.stockcomp.contest.tasks
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
-import com.stockcomp.participant.service.MaintainParticipantService
-import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.investmentorder.service.ProcessOrdersService
+import com.stockcomp.leaderboard.service.LeaderboardService
+import com.stockcomp.participant.service.MaintainParticipantService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Default
 import org.slf4j.LoggerFactory
@@ -41,12 +41,16 @@ class DefaultContestTasks(
             completeOrderProcessing()
             completeMaintainInvestments()
 
-            val contest = contestRepository.findByContestNumber(contestNumber)
+            val contest = withContext(Dispatchers.IO) {
+                contestRepository.findByContestNumber(contestNumber)
+            }
             investmentOrderService.terminateRemainingOrders(contest)
             if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED){
                 leaderboardService.updateLeaderboard(contest)
                 contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
-                contestRepository.save(contest)
+                withContext(Dispatchers.IO) {
+                    contestRepository.save(contest)
+                }
             }
         }
     }
