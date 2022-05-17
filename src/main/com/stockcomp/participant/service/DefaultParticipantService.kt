@@ -4,10 +4,8 @@ import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.dto.mapToParticipantDto
-import com.stockcomp.participant.entity.Participant
-import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.repository.UserRepository
+import com.stockcomp.producer.common.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

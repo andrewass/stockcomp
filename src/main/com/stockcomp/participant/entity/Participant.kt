@@ -38,4 +38,11 @@ class Participant(
 
     var totalInvestmentValue: Double = 0.00
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun updateValues(){
+        val updatedTotalInvestmentsValue = investments.sumOf { it.totalValue }
+        totalInvestmentValue = updatedTotalInvestmentsValue
+        totalValue = remainingFunds + updatedTotalInvestmentsValue
+    }
+}

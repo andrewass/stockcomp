@@ -1,12 +1,12 @@
 package com.stockcomp.participant.service
 
-import com.stockcomp.participant.entity.Investment
-import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.dto.RealTimePriceDto
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.contest.service.SymbolService
+import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.contest.service.SymbolService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -39,21 +39,13 @@ class DefaultMaintainParticipantService(
     }
 
     private fun updateInvestment(investment: Investment, realTimePrice: RealTimePriceDto) {
-        val newTotalValueInvestment = (investment.amount * realTimePrice.usdPrice)
-        investment.apply {
-            totalValue = newTotalValueInvestment
-            totalProfit = newTotalValueInvestment - (amount * averageUnitCost)
-        }
+        investment.updateValues(realTimePrice.usdPrice)
         investmentRepository.save(investment)
     }
 
     private fun updateParticipants() {
         participantRepository.findAllByContestStatus(ContestStatus.RUNNING)
-            .onEach { participant ->
-                val totalInvestmentsValue = participant.investments.sumOf { it.totalValue }
-                participant.totalInvestmentValue = totalInvestmentsValue
-                participant.totalValue = participant.remainingFunds + totalInvestmentsValue
-            }
+            .onEach { participant -> participant.updateValues() }
             .also { participantRepository.saveAll(it) }
     }
 

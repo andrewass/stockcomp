@@ -5,7 +5,7 @@ import com.stockcomp.producer.common.getAccessTokenFromCookie
 import com.stockcomp.producer.common.getRefreshTokenFromCookie
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
-import com.stockcomp.service.security.DefaultJwtService
+import com.stockcomp.authentication.service.DefaultJwtService
 import com.stockcomp.user.service.DefaultUserService
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry

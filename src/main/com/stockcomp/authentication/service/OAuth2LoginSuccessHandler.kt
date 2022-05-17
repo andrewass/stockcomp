@@ -1,4 +1,4 @@
-package com.stockcomp.service.user
+package com.stockcomp.authentication.service
 
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.oidc.user.OidcUser

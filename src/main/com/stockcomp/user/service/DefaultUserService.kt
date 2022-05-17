@@ -3,10 +3,10 @@ package com.stockcomp.user.service
 import com.stockcomp.user.entity.Role
 import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.exception.DuplicateCredentialException
-import com.stockcomp.repository.UserRepository
+import com.stockcomp.producer.common.repository.UserRepository
 import com.stockcomp.request.AuthenticationRequest
 import com.stockcomp.request.SignUpRequest
-import com.stockcomp.util.toUserDetailsDto
+import com.stockcomp.user.dto.mapToUserDetailsDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -51,7 +51,7 @@ class DefaultUserService @Autowired constructor(
     }
 
     override fun getUserDetails(username: String): UserDetailsDto =
-        userRepository.findByUsername(username).toUserDetailsDto()
+        mapToUserDetailsDto(userRepository.findByUsername(username))
 
 
     override fun verifyAdminUser(username: String): Boolean =

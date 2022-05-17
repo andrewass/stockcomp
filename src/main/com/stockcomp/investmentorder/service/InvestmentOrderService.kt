@@ -7,7 +7,7 @@ import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 
 interface InvestmentOrderService {
 
-    fun placeInvestmentOrder(investmentRequest: PlaceInvestmentOrderRequest, username: String): Long
+    fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, username: String)
 
     fun deleteInvestmentOrder(username: String, orderId: Long): Long
 

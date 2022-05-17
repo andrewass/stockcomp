@@ -8,8 +8,8 @@ import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.user.entity.User
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.repository.UserRepository
-import com.stockcomp.service.security.DefaultJwtService
+import com.stockcomp.producer.common.repository.UserRepository
+import com.stockcomp.authentication.service.DefaultJwtService
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

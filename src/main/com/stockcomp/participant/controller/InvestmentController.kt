@@ -4,7 +4,7 @@ import com.stockcomp.participant.dto.GetInvestmentBySymbolRequest
 import com.stockcomp.participant.dto.InvestmentDto
 import com.stockcomp.participant.service.InvestmentService
 import com.stockcomp.producer.common.getAccessTokenFromCookie
-import com.stockcomp.service.security.JwtService
+import com.stockcomp.authentication.service.JwtService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

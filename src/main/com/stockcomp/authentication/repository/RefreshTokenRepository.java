@@ -1,4 +1,4 @@
-package com.stockcomp.repository;
+package com.stockcomp.authentication.repository;
 
 import com.stockcomp.domain.user.RefreshToken;
 import com.stockcomp.user.entity.User;

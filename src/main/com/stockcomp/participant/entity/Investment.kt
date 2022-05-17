@@ -26,4 +26,11 @@ class Investment(
 
     var totalValue: Double = 0.00
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun updateValues(updatedPrice: Double) {
+        val newTotalValueInvestment = amount * updatedPrice
+        totalValue = newTotalValueInvestment
+        totalProfit = newTotalValueInvestment - (amount * averageUnitCost)
+    }
+}

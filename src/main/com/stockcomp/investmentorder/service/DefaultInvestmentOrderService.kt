@@ -13,7 +13,6 @@ import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.util.mapToInvestmentOrder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,9 +25,17 @@ class DefaultInvestmentOrderService(
 ) : InvestmentOrderService {
 
 
-    override fun placeInvestmentOrder(investmentRequest: PlaceInvestmentOrderRequest, username: String): Long =
-        mapToInvestmentOrder(getParticipant(username, investmentRequest.contestNumber), investmentRequest)
-            .let { investmentOrderRepository.save(it) }.orderId!!
+    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, username: String) {
+        InvestmentOrder(
+            participant = getParticipant(username, request.contestNumber),
+            currency = request.currency,
+            acceptedPrice = request.acceptedPrice,
+            expirationTime = request.expirationTime,
+            symbol = request.symbol,
+            totalAmount = request.amount,
+            transactionType = request.transactionType
+        ).let { investmentOrderRepository.save(it) }.orderId!!
+    }
 
 
     override fun deleteInvestmentOrder(username: String, orderId: Long): Long {

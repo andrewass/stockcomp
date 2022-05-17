@@ -1,4 +1,4 @@
-package com.stockcomp.service.user
+package com.stockcomp.authentication.service
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.core.user.OAuth2User

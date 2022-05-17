@@ -8,10 +8,10 @@ import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.leaderboard.entity.MedalValue
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.leaderboard.dto.toLeaderboardEntryDto
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.user.service.UserService
-import com.stockcomp.util.toLeaderboardEntryDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

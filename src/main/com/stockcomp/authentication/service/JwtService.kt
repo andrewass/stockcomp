@@ -1,4 +1,4 @@
-package com.stockcomp.service.security
+package com.stockcomp.authentication.service
 
 import com.stockcomp.user.entity.User
 import org.springframework.security.core.userdetails.UserDetails
