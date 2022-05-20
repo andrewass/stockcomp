@@ -23,9 +23,9 @@ class DefaultLeaderboardService(
 
     override fun updateLeaderboard(contest: Contest) {
         logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
-        updateScoreForParticipants(contest)
+        updateLeaderboardEntryValues(contest)
         logger.info("Update of participant score completed")
-        updateRankingForEntries()
+        updateRankingForLeaderboardEntries()
         logger.info("Update of each ranking completed")
     }
 
@@ -39,14 +39,7 @@ class DefaultLeaderboardService(
             .let { leaderboardEntryRepository.findByUser(it) }?.toLeaderboardEntryDto()
 
 
-    private fun updateRankingForEntries() {
-        var rank = 1
-        leaderboardEntryRepository.findAllByOrderByScore()
-            .onEach { it.ranking = rank++ }
-            .also { leaderboardEntryRepository.saveAll(it) }
-    }
-
-    private fun updateScoreForParticipants(contest: Contest) {
+    private fun updateLeaderboardEntryValues(contest: Contest) {
         participantRepository.findAllByContest(contest)
             .forEach { participant ->
                 val entry = leaderboardEntryRepository.findByUser(participant.user)
@@ -57,5 +50,12 @@ class DefaultLeaderboardService(
                     leaderboardEntryRepository.save(entry)
                 }
             }
+    }
+
+    private fun updateRankingForLeaderboardEntries() {
+        var rank = 1
+        leaderboardEntryRepository.findAllByOrderByScore()
+            .onEach { it.ranking = rank++ }
+            .also { leaderboardEntryRepository.saveAll(it) }
     }
 }

@@ -3,6 +3,7 @@ package com.stockcomp.contest.service
 import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.contest.tasks.ContestTasks
@@ -21,6 +22,7 @@ class DefaultContestService(
     private val participantRepository: ParticipantRepository,
     private val contestTasks: ContestTasks
 ) : ContestService {
+
     private val logger = LoggerFactory.getLogger(DefaultContestService::class.java)
 
     override fun startContest(contestNumber: Int) {
@@ -58,8 +60,12 @@ class DefaultContestService(
             ?: throw NoSuchElementException("Contest with number $contestNumber not found, or without expected status")
     }
 
-    override fun createContest(request: CreateContestRequest): ContestDto {
-        TODO("Not yet implemented")
+    override fun createContest(request: CreateContestRequest) {
+        Contest(
+            contestNumber = request.contestNumber,
+            startTime = request.startTime,
+            endTime = request.startTime.plusMonths(2)
+        ).also { contestRepository.save(it) }
     }
 
     override fun getContest(contestNumber: Int): ContestDto =
@@ -70,7 +76,7 @@ class DefaultContestService(
         TODO("Not yet implemented")
     }
 
-    override fun updateContest(updateContestRequest: UpdateContestRequest): ContestDto {
+    override fun updateContest(updateContestRequest: UpdateContestRequest) {
         TODO("Not yet implemented")
     }
 
@@ -87,7 +93,7 @@ class DefaultContestService(
             user = userService.findUserByUsername(username)!!,
             contest = contest,
             rank = contest.participantCount + 1
-        ).also { pcp -> participantRepository.save(pcp) }
+        ).also { participantRepository.save(it) }
 
         contest.participantCount++
         contestRepository.save(contest)

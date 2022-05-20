@@ -1,13 +1,16 @@
 package com.stockcomp.contest.controller
 
+import com.stockcomp.authentication.controller.getAccessTokenFromCookie
+import com.stockcomp.authentication.service.JwtService
 import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
+import com.stockcomp.exception.InvalidRoleException
 import com.stockcomp.exception.handler.CustomExceptionHandler
-import com.stockcomp.authentication.controller.getAccessTokenFromCookie
-import com.stockcomp.authentication.service.JwtService
+import com.stockcomp.user.entity.Role
+import com.stockcomp.user.repository.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/contest")
 class ContestController(
+    private val userRepository: UserRepository,
     private val contestService: ContestService,
     private val defaultJwtService: JwtService
 ) : CustomExceptionHandler() {
@@ -31,18 +35,32 @@ class ContestController(
 
 
     @PostMapping("/create")
-    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<ContestDto> =
-        ResponseEntity.ok(contestService.createContest(request))
+    fun createContest(
+        servletRequest: HttpServletRequest,
+        @RequestBody contestRequest: CreateContestRequest
+    ): ResponseEntity<HttpStatus> =
+        verifyUserIsAdmin(extractUsernameFromRequest(servletRequest))
+            .also { contestService.createContest(contestRequest) }
+            .let { ResponseEntity(HttpStatus.OK) }
 
 
     @PutMapping("/update")
-    fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<ContestDto> =
-        ResponseEntity.ok(contestService.updateContest(request))
+    fun updateContest(
+        servletRequest: HttpServletRequest,
+        @RequestBody contestRequest: UpdateContestRequest
+    ): ResponseEntity<HttpStatus> =
+        verifyUserIsAdmin(extractUsernameFromRequest(servletRequest))
+            .also { contestService.updateContest(contestRequest) }
+            .let { ResponseEntity(HttpStatus.OK) }
 
 
     @DeleteMapping("/delete")
-    fun deleteContest(@RequestParam contestNumber: Int): ResponseEntity<HttpStatus> =
-        contestService.deleteContest(contestNumber)
+    fun deleteContest(
+        servletRequest: HttpServletRequest,
+        @RequestParam contestNumber: Int
+    ): ResponseEntity<HttpStatus> =
+        verifyUserIsAdmin(extractUsernameFromRequest(servletRequest))
+            .also { contestService.deleteContest(contestNumber) }
             .let { ResponseEntity(HttpStatus.OK) }
 
 
@@ -55,4 +73,13 @@ class ContestController(
     private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
         getAccessTokenFromCookie(servletRequest)
             .let { defaultJwtService.extractUsername(it!!) }
+
+
+    private fun verifyUserIsAdmin(username: String) {
+        userRepository.findByUsername(username).let {
+            if (it.userRole != Role.ADMIN) {
+                throw InvalidRoleException("Admin role is required. Found role : ${it.userRole}")
+            }
+        }
+    }
 }
