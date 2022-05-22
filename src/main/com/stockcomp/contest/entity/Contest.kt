@@ -16,9 +16,9 @@ class Contest(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val startTime: LocalDateTime,
+    var startTime: LocalDateTime,
 
-    val endTime: LocalDateTime,
+    var endTime: LocalDateTime,
 
     val contestNumber: Int,
 

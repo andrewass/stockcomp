@@ -73,11 +73,15 @@ class DefaultContestService(
 
 
     override fun deleteContest(contestNumber: Int) {
-        TODO("Not yet implemented")
+        contestRepository.deleteByContestNumber(contestNumber)
     }
 
-    override fun updateContest(updateContestRequest: UpdateContestRequest) {
-        TODO("Not yet implemented")
+    override fun updateContest(request: UpdateContestRequest) {
+        contestRepository.findByContestNumber(request.contestNumber).apply {
+            contestStatus = request.contestStatus
+            startTime = request.startTime
+            endTime = request.startTime.plusMonths(2)
+        }.also { contestRepository.save(it) }
     }
 
     override fun signUp(username: String, contestNumber: Int) {

@@ -21,4 +21,6 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
 
     @Query("SELECT c FROM Contest c WHERE c.contestStatus IN ?1")
     List<Contest> findAllByContestStatusList(List<ContestStatus> contestStatusList);
+
+    void deleteByContestNumber(Integer contestNumber);
 }

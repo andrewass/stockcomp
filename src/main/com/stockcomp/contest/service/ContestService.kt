@@ -13,7 +13,7 @@ interface ContestService {
 
     fun deleteContest(contestNumber: Int)
 
-    fun updateContest(updateContestRequest: UpdateContestRequest)
+    fun updateContest(request: UpdateContestRequest)
 
     fun startContest(contestNumber: Int)
 
