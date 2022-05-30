@@ -1,13 +1,13 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 
 interface ContestService {
 
-    fun getContest(contestNumber: Int): ContestDto
+    fun getContest(contestNumber: Int): Contest
 
     fun createContest(request: CreateContestRequest)
 
@@ -21,7 +21,9 @@ interface ContestService {
 
     fun completeContest(contestNumber: Int)
 
-    fun signUp(username: String, contestNumber: Int)
+    fun getContests(statusList: List<ContestStatus>): List<Contest>
 
-    fun getContests(statusList: List<ContestStatus>): List<ContestDto>
+    fun findByContestNumber(contestNumber: Int): Contest
+
+    fun saveContest(contest: Contest)
 }

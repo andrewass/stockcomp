@@ -1,14 +1,13 @@
 package com.stockcomp.service.contest
 
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.contest.service.DefaultContestService
-import com.stockcomp.user.entity.User
 import com.stockcomp.contest.repository.ContestRepository
-import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.user.service.DefaultUserService
+import com.stockcomp.contest.service.DefaultContestService
 import com.stockcomp.contest.tasks.DefaultContestTasks
+import com.stockcomp.participant.entity.Participant
+import com.stockcomp.user.entity.User
+import com.stockcomp.user.service.DefaultUserService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -26,9 +25,6 @@ internal class DefaultContestServiceTest {
 
     @MockK
     private lateinit var userService: DefaultUserService
-
-    @MockK
-    private lateinit var participantRepository: ParticipantRepository
 
     @MockK
     private lateinit var contestTasks: DefaultContestTasks
@@ -151,12 +147,6 @@ internal class DefaultContestServiceTest {
         every {
             userService.findUserByUsername(username)
         } returns user
-
-        every {
-            participantRepository.save(capture(participantSlot))
-        } returns participant
-
-        contestService.signUp(username, contestNumber)
 
         assertEquals(participantSlot.captured.contest, runningContest)
         assertEquals(participantSlot.captured.user, user)

@@ -1,15 +1,11 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.dto.ContestDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.contest.tasks.ContestTasks
-import com.stockcomp.participant.entity.Participant
-import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.user.service.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultContestService(
     private val contestRepository: ContestRepository,
-    private val userService: UserService,
-    private val participantRepository: ParticipantRepository,
     private val contestTasks: ContestTasks
 ) : ContestService {
 
@@ -68,8 +62,8 @@ class DefaultContestService(
         ).also { contestRepository.save(it) }
     }
 
-    override fun getContest(contestNumber: Int): ContestDto =
-        mapToContestDto(contestRepository.findByContestNumber(contestNumber))
+    override fun getContest(contestNumber: Int): Contest =
+        contestRepository.findByContestNumber(contestNumber)
 
 
     override fun deleteContest(contestNumber: Int) {
@@ -84,29 +78,18 @@ class DefaultContestService(
         }.also { contestRepository.save(it) }
     }
 
-    override fun signUp(username: String, contestNumber: Int) {
-        val contest = contestRepository.findByContestNumber(contestNumber)
-        assert(
-            contest.contestStatus in listOf(
-                ContestStatus.RUNNING,
-                ContestStatus.STOPPED,
-                ContestStatus.AWAITING_START
-            )
-        )
-        Participant(
-            user = userService.findUserByUsername(username)!!,
-            contest = contest,
-            rank = contest.participantCount + 1
-        ).also { participantRepository.save(it) }
-
-        contest.participantCount++
-        contestRepository.save(contest)
-    }
-
-    override fun getContests(statusList: List<ContestStatus>): List<ContestDto> =
+    override fun getContests(statusList: List<ContestStatus>): List<Contest> =
         if (statusList.isEmpty()) {
             contestRepository.findAll()
         } else {
             contestRepository.findAllByContestStatusList(statusList)
-        }.map { mapToContestDto(it) }
+        }
+
+    override fun findByContestNumber(contestNumber: Int): Contest =
+        contestRepository.findByContestNumber(contestNumber)
+
+
+    override fun saveContest(contest: Contest) {
+        contestRepository.save(contest)
+    }
 }

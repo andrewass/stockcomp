@@ -7,6 +7,7 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
+import com.stockcomp.contest.service.mapToContestDto
 import com.stockcomp.exception.InvalidRoleException
 import com.stockcomp.exception.handler.CustomExceptionHandler
 import com.stockcomp.user.entity.Role
@@ -26,12 +27,15 @@ class ContestController(
 
     @PostMapping("/get-by-status")
     fun getContestsByStatus(@RequestBody statusList: List<ContestStatus>): ResponseEntity<List<ContestDto>> =
-        ResponseEntity.ok(contestService.getContests(statusList))
+        contestService.getContests(statusList)
+            .map { mapToContestDto(it) }
+            .let { ResponseEntity.ok(it) }
 
 
     @GetMapping("/get-by-number")
     fun getContest(@RequestParam contestNumber: Int): ResponseEntity<ContestDto> =
-        ResponseEntity.ok(contestService.getContest(contestNumber))
+        contestService.getContest(contestNumber)
+            .let { ResponseEntity.ok(mapToContestDto(it)) }
 
 
     @PostMapping("/create")
@@ -63,12 +67,6 @@ class ContestController(
             .also { contestService.deleteContest(contestNumber) }
             .let { ResponseEntity(HttpStatus.OK) }
 
-
-    @PostMapping("/sign-up")
-    fun signUp(@RequestParam contestNumber: Int, servletRequest: HttpServletRequest): ResponseEntity<HttpStatus> {
-        contestService.signUp(extractUsernameFromRequest(servletRequest), contestNumber)
-        return ResponseEntity(HttpStatus.OK)
-    }
 
     private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
         getAccessTokenFromCookie(servletRequest)
