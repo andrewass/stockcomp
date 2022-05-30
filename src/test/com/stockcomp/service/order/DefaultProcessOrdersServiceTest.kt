@@ -9,7 +9,7 @@ import com.stockcomp.investmentorder.entity.OrderStatus.*
 import com.stockcomp.investmentorder.entity.TransactionType.BUY
 import com.stockcomp.investmentorder.entity.TransactionType.SELL
 import com.stockcomp.user.entity.User
-import com.stockcomp.contest.dto.RealTimePriceDto
+import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.InvestmentRepository
@@ -69,14 +69,14 @@ internal class DefaultProcessOrdersServiceTest {
     private fun setup() {
         every {
             symbolService.getRealTimePrice(AAPL)
-        } returns RealTimePriceDto(
+        } returns RealTimePrice(
             currency = "USD", dayHigh = 150.00, dayLow = 50.00, openPrice = 50.00,
             previousClose = 50.00, price = 110.00, usdPrice = 110.00
         )
 
         every {
             symbolService.getRealTimePrice(MSFT)
-        } returns RealTimePriceDto(
+        } returns RealTimePrice(
             currency = "USD", dayHigh = 150.00, dayLow = 50.00, openPrice = 50.00,
             previousClose = 50.00, price = 110.00, usdPrice = 110.00
         )
@@ -130,7 +130,7 @@ internal class DefaultProcessOrdersServiceTest {
     fun `should process sell order where current price is above remaining funds`() = runTest {
         every {
             symbolService.getRealTimePrice(AAPL)
-        } returns RealTimePriceDto(
+        } returns RealTimePrice(
             currency = "USD", dayHigh = 150_000.00, dayLow = 50_000.00, openPrice = 50_000.00,
             previousClose = 50_000.00, price = 110_000.00, usdPrice = 110_000.00
         )

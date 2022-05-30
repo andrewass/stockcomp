@@ -1,6 +1,6 @@
-package com.stockcomp.domain.user
+package com.stockcomp.authentication.entity
 
-import com.stockcomp.domain.BaseEntity
+import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.user.entity.User
 import java.time.LocalDateTime
 import javax.persistence.*

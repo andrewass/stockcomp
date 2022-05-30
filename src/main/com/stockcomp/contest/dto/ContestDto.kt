@@ -1,7 +1,7 @@
 package com.stockcomp.contest.dto
 
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
+import com.stockcomp.contest.entity.LeaderboardUpdateStatus
 import java.time.LocalDateTime
 
 data class ContestDto(

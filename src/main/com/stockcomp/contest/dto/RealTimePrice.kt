@@ -1,6 +1,6 @@
 package com.stockcomp.contest.dto
 
-data class RealTimePriceDto(
+data class RealTimePrice(
     val price: Double,
     val openPrice: Double,
     val previousClose: Double,

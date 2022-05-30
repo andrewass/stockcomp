@@ -1,8 +1,6 @@
 package com.stockcomp.leaderboard.service
 
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
-import com.stockcomp.leaderboard.dto.toLeaderboardEntryDto
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.participant.repository.ParticipantRepository
@@ -29,14 +27,13 @@ class DefaultLeaderboardService(
         logger.info("Update of each ranking completed")
     }
 
-    override fun getSortedLeaderboardEntries(): List<LeaderboardEntryDto> =
+    override fun getSortedLeaderboardEntries(): List<LeaderboardEntry> =
         leaderboardEntryRepository.findAllByOrderByRanking()
-            .map { it.toLeaderboardEntryDto() }
 
 
-    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntryDto? =
+    override fun getLeaderboardEntryForUser(username: String): LeaderboardEntry? =
         userService.findUserByUsername(username)
-            .let { leaderboardEntryRepository.findByUser(it) }?.toLeaderboardEntryDto()
+            .let { leaderboardEntryRepository.findByUser(it) }
 
 
     private fun updateLeaderboardEntryValues(contest: Contest) {

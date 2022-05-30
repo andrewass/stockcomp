@@ -4,6 +4,7 @@ import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.authentication.service.DefaultJwtService
+import com.stockcomp.leaderboard.dto.mapToLeaderboardEntryDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,6 +23,7 @@ class LeaderboardController(
     @GetMapping("/sorted-entries")
     fun getAllLeaderboardEntries(servletRequest: HttpServletRequest): ResponseEntity<List<LeaderboardEntryDto>> =
         leaderboardService.getSortedLeaderboardEntries()
+            .map { mapToLeaderboardEntryDto(it) }
             .let { ResponseEntity.ok(it) }
 
 
@@ -32,7 +34,7 @@ class LeaderboardController(
     ): ResponseEntity<LeaderboardEntryDto> =
         (username ?: extractUsernameFromRequest(servletRequest))
             .let { leaderboardService.getLeaderboardEntryForUser(it) }
-            ?.let { ResponseEntity.ok(it) }
+            ?.let { ResponseEntity.ok(mapToLeaderboardEntryDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 
 

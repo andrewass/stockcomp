@@ -1,6 +1,6 @@
 package com.stockcomp.investmentorder.entity
 
-import com.stockcomp.domain.BaseEntity
+import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.participant.entity.Participant
 import java.time.LocalDateTime
 import javax.persistence.*

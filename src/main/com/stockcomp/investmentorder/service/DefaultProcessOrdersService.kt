@@ -6,7 +6,7 @@ import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.entity.TransactionType
-import com.stockcomp.contest.dto.RealTimePriceDto
+import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
@@ -60,7 +60,7 @@ class DefaultProcessOrdersService(
             }
     }
 
-    private fun processOrder(investmentOrder: InvestmentOrder, realTimePriceDto: RealTimePriceDto) {
+    private fun processOrder(investmentOrder: InvestmentOrder, realTimePriceDto: RealTimePrice) {
         val participant = investmentOrder.participant
         if (investmentOrder.transactionType == TransactionType.BUY && participant.remainingFunds >= realTimePriceDto.usdPrice) {
             processBuyOrder(participant, realTimePriceDto, investmentOrder)
@@ -69,7 +69,7 @@ class DefaultProcessOrdersService(
         }
     }
 
-    private fun processBuyOrder(participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder) {
+    private fun processBuyOrder(participant: Participant, realTimePriceDto: RealTimePrice, order: InvestmentOrder) {
         if (realTimePriceDto.price <= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
                 ?: Investment(symbol = order.symbol, participant = participant)
@@ -81,7 +81,7 @@ class DefaultProcessOrdersService(
         }
     }
 
-    private fun processSellOrder(participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder) {
+    private fun processSellOrder(participant: Participant, realTimePriceDto: RealTimePrice, order: InvestmentOrder) {
         if (realTimePriceDto.price >= order.acceptedPrice) {
             val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
             val amountToSell = Integer.min(investment.amount, order.totalAmount)
@@ -92,7 +92,7 @@ class DefaultProcessOrdersService(
     }
 
     private fun calculateAverageUnitCost(
-        investment: Investment, realTimePriceDto: RealTimePriceDto, amountToBuy: Int
+        investment: Investment, realTimePriceDto: RealTimePrice, amountToBuy: Int
     ): Double {
         val totalCost = (investment.amount * investment.averageUnitCost) + (amountToBuy * realTimePriceDto.usdPrice)
         val totalAmount = investment.amount + amountToBuy
@@ -101,7 +101,7 @@ class DefaultProcessOrdersService(
     }
 
     private fun getAvailableAmountToBuy(
-        participant: Participant, realTimePriceDto: RealTimePriceDto, order: InvestmentOrder
+        participant: Participant, realTimePriceDto: RealTimePrice, order: InvestmentOrder
     ): Int {
         val maxAvailAmount = participant.remainingFunds / realTimePriceDto.usdPrice
 

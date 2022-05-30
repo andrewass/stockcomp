@@ -6,6 +6,7 @@ import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.authentication.controller.getAccessTokenFromCookie
 import com.stockcomp.authentication.service.JwtService
+import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -45,6 +46,7 @@ class InvestmentOrderController(
     ): ResponseEntity<List<InvestmentOrderDto>> =
         extractUsernameFromRequest(servletRequest)
             .let { investmentOrderService.getOrdersByStatus(it, investmentOrderRequest) }
+            .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
 
@@ -55,6 +57,7 @@ class InvestmentOrderController(
     ): ResponseEntity<List<InvestmentOrderDto>> =
         extractUsernameFromRequest(servletRequest)
             .let { investmentOrderService.getSymbolOrdersByStatus(it, investmentOrderRequest) }
+            .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
 

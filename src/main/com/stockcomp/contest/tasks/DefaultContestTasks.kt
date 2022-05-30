@@ -2,7 +2,7 @@ package com.stockcomp.contest.tasks
 
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
-import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
+import com.stockcomp.contest.entity.LeaderboardUpdateStatus
 import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.investmentorder.service.ProcessOrdersService
 import com.stockcomp.leaderboard.service.LeaderboardService

@@ -1,4 +1,4 @@
-package com.stockcomp.domain
+package com.stockcomp.common.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp

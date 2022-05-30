@@ -1,7 +1,6 @@
 package com.stockcomp.contest.entity
 
-import com.stockcomp.domain.BaseEntity
-import com.stockcomp.domain.contest.enums.LeaderboardUpdateStatus
+import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.participant.entity.Participant
 import java.time.LocalDateTime

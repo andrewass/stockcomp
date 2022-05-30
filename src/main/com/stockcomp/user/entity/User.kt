@@ -1,7 +1,7 @@
 package com.stockcomp.user.entity
 
-import com.stockcomp.domain.BaseEntity
-import com.stockcomp.domain.user.RefreshToken
+import com.stockcomp.common.entity.BaseEntity
+import com.stockcomp.authentication.entity.RefreshToken
 import javax.persistence.*
 
 @Entity

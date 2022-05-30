@@ -3,18 +3,18 @@ package com.stockcomp.leaderboard.dto
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
 
-fun Medal.toMedalDto() =
+fun mapToMedalDto(src : Medal) =
     MedalDto(
-        medalValue = this.medalValue.decode,
-        position = this.position
+        medalValue = src.medalValue.decode,
+        position = src.position
     )
 
-fun LeaderboardEntry.toLeaderboardEntryDto() =
+fun mapToLeaderboardEntryDto(src : LeaderboardEntry) =
     LeaderboardEntryDto(
-        ranking = this.ranking,
-        contestCount = this.contestCount,
-        score = this.score,
-        username = this.user.username,
-        country = this.user.country,
-        medals = this.medals.map { it.toMedalDto() }
+        ranking = src.ranking,
+        contestCount = src.contestCount,
+        score = src.score,
+        username = src.user.username,
+        country = src.user.country,
+        medals = src.medals.map { mapToMedalDto(it) }
     )

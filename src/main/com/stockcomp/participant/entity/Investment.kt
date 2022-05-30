@@ -1,6 +1,6 @@
 package com.stockcomp.participant.entity
 
-import com.stockcomp.domain.BaseEntity
+import com.stockcomp.common.entity.BaseEntity
 import javax.persistence.*
 
 @Entity

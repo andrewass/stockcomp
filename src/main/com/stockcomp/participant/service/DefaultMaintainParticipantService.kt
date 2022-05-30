@@ -1,6 +1,6 @@
 package com.stockcomp.participant.service
 
-import com.stockcomp.contest.dto.RealTimePriceDto
+import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.contest.service.SymbolService
@@ -38,7 +38,7 @@ class DefaultMaintainParticipantService(
         }
     }
 
-    private fun updateInvestment(investment: Investment, realTimePrice: RealTimePriceDto) {
+    private fun updateInvestment(investment: Investment, realTimePrice: RealTimePrice) {
         investment.updateValues(realTimePrice.usdPrice)
         investmentRepository.save(investment)
     }

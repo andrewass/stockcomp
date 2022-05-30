@@ -5,7 +5,6 @@ import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
-import com.stockcomp.investmentorder.dto.InvestmentOrderDto
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
 import com.stockcomp.investmentorder.entity.InvestmentOrder
@@ -47,16 +46,14 @@ class DefaultInvestmentOrderService(
         return orderId
     }
 
-    override fun getOrdersByStatus(username: String, request: GetInvestmentOrderRequest): List<InvestmentOrderDto> =
+    override fun getOrdersByStatus(username: String, request: GetInvestmentOrderRequest): List<InvestmentOrder> =
         findOrdersByParticipant(username, request.contestNumber, request.statusList)
-            .map { mapToInvestmentOrderDto(it) }
 
 
     override fun getSymbolOrdersByStatus(
         username: String, request: GetInvestmentOrderRequest
-    ): List<InvestmentOrderDto> =
+    ): List<InvestmentOrder> =
         findOrdersByParticipantAndSymbol(username, request.contestNumber, request.symbol!!, request.statusList)
-            .map { mapToInvestmentOrderDto(it) }
 
 
     override fun terminateRemainingOrders(contest: Contest) {
