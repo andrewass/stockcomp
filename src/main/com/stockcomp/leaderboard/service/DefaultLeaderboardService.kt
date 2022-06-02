@@ -3,7 +3,7 @@ package com.stockcomp.leaderboard.service
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
-import com.stockcomp.participant.repository.ParticipantRepository
+import com.stockcomp.participant.service.ParticipantService
 import com.stockcomp.user.service.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultLeaderboardService(
     private val leaderboardEntryRepository: LeaderboardEntryRepository,
-    private val participantRepository: ParticipantRepository,
+    private val participantService: ParticipantService,
     private val userService: UserService
 ) : LeaderboardService {
 
@@ -37,7 +37,7 @@ class DefaultLeaderboardService(
 
 
     private fun updateLeaderboardEntryValues(contest: Contest) {
-        participantRepository.findAllByContest(contest)
+        participantService.getAllByContest(contest)
             .forEach { participant ->
                 val entry = leaderboardEntryRepository.findByUser(participant.user)
                     ?: LeaderboardEntry(user = participant.user)

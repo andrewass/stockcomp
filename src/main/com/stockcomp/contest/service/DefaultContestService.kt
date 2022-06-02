@@ -38,7 +38,7 @@ class DefaultContestService(
         if (statusList.isEmpty()) {
             contestRepository.findAll()
         } else {
-            contestRepository.findAllByContestStatusList(statusList)
+            contestRepository.findAllByContestStatusIn(statusList)
         }
 
     override fun findByContestNumber(contestNumber: Int): Contest =

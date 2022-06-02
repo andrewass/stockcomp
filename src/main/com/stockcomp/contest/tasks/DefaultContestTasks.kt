@@ -1,5 +1,6 @@
 package com.stockcomp.contest.tasks
 
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.entity.LeaderboardUpdateStatus
 import com.stockcomp.contest.service.ContestService
@@ -47,24 +48,23 @@ class DefaultContestTasks(
             }
     }
 
-    override fun completeContestTasks(contestNumber: Int) {
-
+    override fun completeContest(contestNumber: Int) {
         contestService.findByContestNumber(contestNumber)
             .takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
             ?.also {
                 it.contestStatus = ContestStatus.COMPLETED
                 contestService.saveContest(it)
+                completeContestTasks(it)
                 logger.info("Completing contest $contestNumber")
             }
+    }
 
+    private fun completeContestTasks(contest: Contest) {
         CoroutineScope(Default).launch {
             completeOrderProcessing()
             completeMaintainInvestments()
-
-            val contest = withContext(Dispatchers.IO) {
-                contestService.findByContestNumber(contestNumber)
-            }
             investmentOrderService.terminateRemainingOrders(contest)
+
             if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED) {
                 leaderboardService.updateLeaderboard(contest)
                 contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED

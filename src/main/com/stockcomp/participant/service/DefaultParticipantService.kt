@@ -29,6 +29,10 @@ class DefaultParticipantService(
             userService.findUserByUsername(username)
         )
 
+    override fun getAllByContest(contest: Contest): List<Participant> =
+        participantRepository.findAllByContest(contest)
+
+
     override fun getAllByUsernameAndContest(username: String, contest: Contest) : List<Participant> =
         participantRepository.findAllByUsernameAndContest(username, contest)
 

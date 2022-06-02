@@ -20,7 +20,6 @@ class DefaultInvestmentService(
 
     private val logger = LoggerFactory.getLogger(DefaultInvestmentService::class.java)
 
-
     override fun getInvestmentForSymbol(username: String, request: GetInvestmentBySymbolRequest): Investment? =
         participantService.getParticipant(request.contestNumber, username)
             .investments.firstOrNull { it.symbol == request.symbol }
@@ -31,7 +30,7 @@ class DefaultInvestmentService(
             .let { investmentRepository.findAllByParticipant(it) }
 
 
-    override fun maintainInvestments() {
+    override fun updateInvestments() {
         investmentRepository.findAllByContestStatus(ContestStatus.RUNNING)
             .groupBy { it.symbol }
             .forEach { (symbol, investments) ->

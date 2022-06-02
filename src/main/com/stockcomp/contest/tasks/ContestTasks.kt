@@ -14,5 +14,5 @@ interface ContestTasks {
 
     fun stopContest(contestNumber: Int)
 
-    fun completeContestTasks(contestNumber: Int)
+    fun completeContest(contestNumber: Int)
 }

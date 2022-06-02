@@ -19,7 +19,7 @@ class DefaultMaintainParticipantService(
 
     override fun maintainParticipants() {
         try {
-            investmentService.maintainInvestments()
+            investmentService.updateInvestments()
             updateParticipants()
             updateRanking()
         } catch (e: Exception) {

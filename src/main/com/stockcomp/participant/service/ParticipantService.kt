@@ -9,6 +9,8 @@ interface ParticipantService {
 
     fun getParticipant(contestNumber: Int, username: String): Participant
 
+    fun getAllByContest(contest: Contest) : List<Participant>
+
     fun getAllByUsernameAndContest(username: String, contest: Contest): List<Participant>
 
     fun getParticipantHistory(username: String): List<Participant>

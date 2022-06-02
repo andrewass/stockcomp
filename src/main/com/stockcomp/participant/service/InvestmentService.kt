@@ -10,5 +10,5 @@ interface InvestmentService {
 
     fun getAllInvestmentsForParticipant(username: String, contestNumber: Int): List<Investment>
 
-    fun maintainInvestments()
+    fun updateInvestments()
 }
