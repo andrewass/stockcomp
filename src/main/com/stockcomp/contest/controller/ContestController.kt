@@ -34,7 +34,7 @@ class ContestController(
 
     @GetMapping("/get-by-number")
     fun getContest(@RequestParam contestNumber: Int): ResponseEntity<ContestDto> =
-        contestService.getContest(contestNumber)
+        contestService.findByContestNumber(contestNumber)
             .let { ResponseEntity.ok(mapToContestDto(it)) }
 
 

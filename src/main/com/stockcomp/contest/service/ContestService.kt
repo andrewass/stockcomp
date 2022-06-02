@@ -7,23 +7,17 @@ import com.stockcomp.contest.entity.ContestStatus
 
 interface ContestService {
 
-    fun getContest(contestNumber: Int): Contest
-
     fun createContest(request: CreateContestRequest)
 
     fun deleteContest(contestNumber: Int)
 
     fun updateContest(request: UpdateContestRequest)
 
-    fun startContest(contestNumber: Int)
-
-    fun stopContest(contestNumber: Int)
-
-    fun completeContest(contestNumber: Int)
-
     fun getContests(statusList: List<ContestStatus>): List<Contest>
 
     fun findByContestNumber(contestNumber: Int): Contest
+
+    fun findByContestNumberAndStatus(status: ContestStatus, contestNumber: Int): Contest
 
     fun saveContest(contest: Contest)
 }

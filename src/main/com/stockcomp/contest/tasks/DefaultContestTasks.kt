@@ -1,8 +1,8 @@
 package com.stockcomp.contest.tasks
 
 import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.contest.entity.LeaderboardUpdateStatus
+import com.stockcomp.contest.service.ContestService
 import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.investmentorder.service.ProcessOrdersService
 import com.stockcomp.leaderboard.service.LeaderboardService
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class DefaultContestTasks(
-    private val contestRepository: ContestRepository,
     private val maintainParticipantService: MaintainParticipantService,
     private val processOrdersService: ProcessOrdersService,
     private val investmentOrderService: InvestmentOrderService,
-    private val leaderboardService: LeaderboardService
+    private val leaderboardService: LeaderboardService,
+    private val contestService: ContestService
 ) : ContestTasks {
 
     private val logger = LoggerFactory.getLogger(DefaultContestTasks::class.java)
@@ -26,30 +26,50 @@ class DefaultContestTasks(
     private var orderJob: Job? = null
     private var investmentJob: Job? = null
 
-    override fun startContestTasks() {
-        startOrderProcessing()
-        startMaintainInvestments()
+    override fun startContest(contestNumber: Int) {
+        contestService.findByContestNumberAndStatus(ContestStatus.AWAITING_START, contestNumber).also {
+            it.contestStatus = ContestStatus.RUNNING
+            contestService.saveContest(it)
+            startOrderProcessing()
+            startMaintainInvestments()
+            logger.info("Starting contest $contestNumber")
+        }
     }
 
-    override fun stopContestTasks() {
-        stopOrderProcessing()
-        stopMaintainInvestments()
+    override fun stopContest(contestNumber: Int) {
+        contestService.findByContestNumberAndStatus(ContestStatus.RUNNING, contestNumber)
+            .also {
+                it.contestStatus = ContestStatus.STOPPED
+                contestService.saveContest(it)
+                stopOrderProcessing()
+                stopMaintainInvestments()
+                logger.info("Stopping contest $contestNumber")
+            }
     }
 
     override fun completeContestTasks(contestNumber: Int) {
+
+        contestService.findByContestNumber(contestNumber)
+            .takeIf { contest -> contest.contestStatus in listOf(ContestStatus.RUNNING, ContestStatus.STOPPED) }
+            ?.also {
+                it.contestStatus = ContestStatus.COMPLETED
+                contestService.saveContest(it)
+                logger.info("Completing contest $contestNumber")
+            }
+
         CoroutineScope(Default).launch {
             completeOrderProcessing()
             completeMaintainInvestments()
 
             val contest = withContext(Dispatchers.IO) {
-                contestRepository.findByContestNumber(contestNumber)
+                contestService.findByContestNumber(contestNumber)
             }
             investmentOrderService.terminateRemainingOrders(contest)
-            if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED){
+            if (contest.leaderboardUpdateStatus != LeaderboardUpdateStatus.COMPLETED) {
                 leaderboardService.updateLeaderboard(contest)
                 contest.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
                 withContext(Dispatchers.IO) {
-                    contestRepository.save(contest)
+                    contestService.saveContest(contest)
                 }
             }
         }
@@ -110,5 +130,5 @@ class DefaultContestTasks(
     }
 
     private fun existsRunningContest(): Boolean =
-        contestRepository.findAllByContestStatus(ContestStatus.RUNNING).isNotEmpty()
+        contestService.getContests(listOf(ContestStatus.RUNNING)).isNotEmpty()
 }

@@ -1,5 +1,6 @@
 package com.stockcomp.participant.service
 
+import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.entity.Participant
@@ -27,6 +28,9 @@ class DefaultParticipantService(
             contestService.findByContestNumber(contestNumber),
             userService.findUserByUsername(username)
         )
+
+    override fun getAllByUsernameAndContest(username: String, contest: Contest) : List<Participant> =
+        participantRepository.findAllByUsernameAndContest(username, contest)
 
 
     override fun getParticipantHistory(username: String): List<Participant> =

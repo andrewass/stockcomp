@@ -6,12 +6,11 @@ import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.exception.InvalidStateException
 import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
-import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.participant.repository.ParticipantRepository
+import com.stockcomp.participant.service.ParticipantService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultInvestmentOrderService(
     private val investmentOrderRepository: InvestmentOrderRepository,
-    private val participantRepository: ParticipantRepository,
+    private val participantService: ParticipantService,
     private val contestRepository: ContestRepository
 ) : InvestmentOrderService {
 
@@ -66,7 +65,7 @@ class DefaultInvestmentOrderService(
         username: String, contestNumber: Int, orderStatus: List<OrderStatus>
     ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
-            .let { participantRepository.findAllByUsernameAndContest(username, it).first() }
+            .let { participantService.getAllByUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndOrderStatusIn(it, orderStatus) }
 
 
@@ -74,11 +73,11 @@ class DefaultInvestmentOrderService(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
     ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
-            .let { participantRepository.findAllByUsernameAndContest(username, it).first() }
+            .let { participantService.getAllByUsernameAndContest(username, it).first() }
             .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, orderStatus) }
 
 
     private fun getParticipant(username: String, contestNumber: Int): Participant =
         contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
-            .let { participantRepository.findAllByUsernameAndContest(username, it) }.first()
+            .let { participantService.getAllByUsernameAndContest(username, it) }.first()
 }

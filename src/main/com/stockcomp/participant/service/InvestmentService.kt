@@ -1,13 +1,14 @@
 package com.stockcomp.participant.service
 
 import com.stockcomp.participant.dto.GetInvestmentBySymbolRequest
-import com.stockcomp.participant.dto.InvestmentDto
+import com.stockcomp.participant.entity.Investment
 
 
 interface InvestmentService {
 
-    fun getInvestmentForSymbol(username: String, request: GetInvestmentBySymbolRequest): InvestmentDto?
+    fun getInvestmentForSymbol(username: String, request: GetInvestmentBySymbolRequest): Investment?
 
-    fun getAllInvestmentsForParticipant(username: String, contestNumber: Int): List<InvestmentDto>
+    fun getAllInvestmentsForParticipant(username: String, contestNumber: Int): List<Investment>
 
+    fun maintainInvestments()
 }

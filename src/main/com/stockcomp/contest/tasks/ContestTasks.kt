@@ -10,9 +10,9 @@ interface ContestTasks {
 
     fun stopMaintainInvestments()
 
-    fun startContestTasks()
+    fun startContest(contestNumber: Int)
 
-    fun stopContestTasks()
+    fun stopContest(contestNumber: Int)
 
     fun completeContestTasks(contestNumber: Int)
 }
