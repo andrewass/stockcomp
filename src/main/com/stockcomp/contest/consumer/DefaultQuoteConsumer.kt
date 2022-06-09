@@ -13,7 +13,9 @@ class DefaultQuoteConsumer(
     override fun getRealTimePrice(symbol: String): RealTimePrice {
         return webClient.get()
             .uri { uriBuilder: UriBuilder ->
-                uriBuilder.path("/stock/stock-quote/$symbol").build()
+                uriBuilder.path("/stock/stock-quote")
+                    .queryParam("symbol", symbol)
+                    .build()
             }
             .retrieve()
             .bodyToMono(RealTimePrice::class.java)

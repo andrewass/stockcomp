@@ -23,7 +23,7 @@ class DefaultParticipantService(
             .let { participantRepository.findAllByContestOrderByRankAsc(it) }
 
 
-    override fun getParticipant(contestNumber: Int, username: String): Participant =
+    override fun getParticipant(contestNumber: Int, username: String): Participant? =
         participantRepository.findByContestAndUser(
             contestService.findByContestNumber(contestNumber),
             userService.findUserByUsername(username)

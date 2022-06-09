@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.7</version>
+        <version>2.7.0</version>
         <relativePath/>
     </parent>
     <groupId>com</groupId>
@@ -19,9 +19,9 @@
         <kotlin.version>1.6.21</kotlin.version>
         <testcontainers.version>1.17.1</testcontainers.version>
         <kotlinx.coroutines.version>1.6.1</kotlinx.coroutines.version>
-        <mockk.version>1.12.3</mockk.version>
+        <mockk.version>1.12.4</mockk.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
-        <micrometer.version>1.8.5</micrometer.version>
+        <micrometer.version>1.9.0</micrometer.version>
         <logstash.version>7.1.1</logstash.version>
         <postgresql.version>42.3.4</postgresql.version>
         <maven.failsafe.version>2.22.2</maven.failsafe.version>

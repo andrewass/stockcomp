@@ -7,7 +7,7 @@ interface ParticipantService {
 
     fun getParticipantsSortedByRank(contestNumber: Int): List<Participant>
 
-    fun getParticipant(contestNumber: Int, username: String): Participant
+    fun getParticipant(contestNumber: Int, username: String): Participant?
 
     fun getAllByContest(contest: Contest) : List<Participant>
 

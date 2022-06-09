@@ -17,19 +17,20 @@ class ParticipantController(
     private val jwtService: JwtService
 ) {
 
-    @PostMapping("/sign-up")
+    @PostMapping("/sign-up-participant")
     fun signUp(@RequestParam contestNumber: Int, servletRequest: HttpServletRequest): ResponseEntity<HttpStatus> {
         participantService.signUpParticipant(extractUsernameFromRequest(servletRequest), contestNumber)
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("/by-contest")
+    @GetMapping("/participant-by-contest")
     fun getParticipant(
         servletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<ParticipantDto> =
+    ): ResponseEntity<ParticipantDto>? =
         extractUsernameFromRequest(servletRequest)
             .let { participantService.getParticipant(contestNumber, it) }
-            .let { ResponseEntity.ok(mapToParticipantDto(it)) }
+            ?.let { ResponseEntity.ok(mapToParticipantDto(it)) }
+            ?: ResponseEntity(HttpStatus.OK)
 
 
     @GetMapping("/sorted-participants")
