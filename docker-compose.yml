@@ -48,8 +48,6 @@ services:
       SPRING_DATASOURCE_USERNAME: "user"
       SPRING_DATASOURCE_PASSWORD: "password"
       JWT_SECRET: ${JWT_SECRET}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       ADMIN_EMAIL: "admin@admin.com"
       ADMIN_PASSWORD: "admin"
     ports:

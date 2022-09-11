@@ -57,12 +57,6 @@ class AuthenticationController internal constructor(
                 ResponseEntity.ok(it)
             }
 
-
-    @PostMapping("/sign-in-google")
-    fun signInWithGoogle(){
-
-    }
-
     @PostMapping("/sign-out")
     fun signOutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<HttpStatus> =
         extractUsernameFromRequest(request)

@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StockcompApplication {
+public class StockCompApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StockcompApplication.class, args);
+        SpringApplication.run(StockCompApplication.class, args);
     }
 }

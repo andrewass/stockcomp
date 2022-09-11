@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class DefaultContestService(
-    private val contestRepository: ContestRepository,
+    private val contestRepository: ContestRepository
 ) : ContestService {
 
     override fun createContest(request: CreateContestRequest) {

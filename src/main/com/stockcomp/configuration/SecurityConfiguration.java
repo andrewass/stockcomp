@@ -1,12 +1,10 @@
 package com.stockcomp.configuration;
 
-import com.stockcomp.exception.handler.ExceptionHandlerFilter;
 import com.stockcomp.authentication.controller.TokenAuthenticationFilter;
-import com.stockcomp.user.entity.Role;
+import com.stockcomp.exception.handler.ExceptionHandlerFilter;
 import com.stockcomp.user.dto.SignUpRequest;
-import com.stockcomp.authentication.service.CustomOAuth2UserService;
+import com.stockcomp.user.entity.Role;
 import com.stockcomp.user.service.DefaultUserService;
-import com.stockcomp.authentication.service.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +26,6 @@ import java.util.List;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final DefaultUserService userService;
-    private final CustomOAuth2UserService oAuth2UserService;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final PasswordEncoder passwordEncoder;
@@ -41,13 +37,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String adminEmail;
 
     public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter tokenAuthenticationFilter,
-                                 DefaultUserService userService, CustomOAuth2UserService oAuth2UserService,
-                                 OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, ExceptionHandlerFilter exceptionHandlerFilter) {
+                                 DefaultUserService userService, ExceptionHandlerFilter exceptionHandlerFilter) {
         this.passwordEncoder = passwordEncoder;
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
         this.userService = userService;
-        this.oAuth2UserService = oAuth2UserService;
-        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
         this.exceptionHandlerFilter = exceptionHandlerFilter;
     }
 
@@ -65,16 +58,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/**", "/login/oauth2/code/google",
+                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/**",
                         "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs", "investment-order/*")
                 .permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
-                .and()
-                .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
