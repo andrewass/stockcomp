@@ -13,6 +13,10 @@ consumer:
     base:
         url: http://stock-analyzer:8088
 
+authorization:
+    base:
+        url: http://localhost:8089
+
 cookie:
     duration: 3600000
 
