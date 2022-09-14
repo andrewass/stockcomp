@@ -1,21 +1,18 @@
 package com.stockcomp.configuration;
 
-import com.stockcomp.authentication.controller.TokenAuthenticationFilter;
-import com.stockcomp.exception.handler.ExceptionHandlerFilter;
 import com.stockcomp.user.dto.SignUpRequest;
 import com.stockcomp.user.entity.Role;
 import com.stockcomp.user.service.DefaultUserService;
+import com.stockcomp.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.annotation.PostConstruct;
@@ -25,10 +22,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final DefaultUserService userService;
-    private final TokenAuthenticationFilter tokenAuthenticationFilter;
-    private final ExceptionHandlerFilter exceptionHandlerFilter;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Value("${admin.password}")
     private String adminPassword;
@@ -36,19 +30,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${admin.email}")
     private String adminEmail;
 
-    public SecurityConfiguration(PasswordEncoder passwordEncoder, TokenAuthenticationFilter tokenAuthenticationFilter,
-                                 DefaultUserService userService, ExceptionHandlerFilter exceptionHandlerFilter) {
-        this.passwordEncoder = passwordEncoder;
-        this.tokenAuthenticationFilter = tokenAuthenticationFilter;
+    public SecurityConfiguration(DefaultUserService userService) {
         this.userService = userService;
-        this.exceptionHandlerFilter = exceptionHandlerFilter;
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder authentication) throws Exception {
-        authentication
-                .userDetailsService(userService)
-                .passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -57,16 +40,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .cors().configurationSource(request -> createCorsConfiguration())
                 .and()
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/task/*", "/auth/*", "/actuator/*", "/admin/**",
-                        "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs", "investment-order/*")
-                .permitAll()
-                .anyRequest().authenticated()
-                .and()
+                .authorizeRequests(authorize -> authorize
+                        .antMatchers("/task/*", "/actuator/*",
+                                "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs")
+                        .permitAll()
+                        .anyRequest().authenticated()
+                ).oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.addFilterBefore(exceptionHandlerFilter, TokenAuthenticationFilter.class);
     }
 
     @Bean

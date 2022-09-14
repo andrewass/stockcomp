@@ -15,7 +15,7 @@ consumer:
 
 authorization:
     base:
-        url: http://localhost:8089
+        url: http://auth-server:8089
 
 cookie:
     duration: 3600000
@@ -47,7 +47,11 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQL10Dialect
-
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: http://auth-server:8089
 
 
 
