@@ -4,6 +4,7 @@ import com.stockcomp.investmentorder.entity.TransactionType
 import java.time.LocalDateTime
 
 data class PlaceInvestmentOrderRequest(
+    val ident: String,
     val contestNumber: Int,
     val symbol: String,
     val amount: Int,

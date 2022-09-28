@@ -22,10 +22,9 @@ class DefaultInvestmentOrderService(
     private val contestRepository: ContestRepository
 ) : InvestmentOrderService {
 
-
-    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, username: String) {
+    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest) {
         InvestmentOrder(
-            participant = getParticipant(username, request.contestNumber),
+            participant = getParticipant(request.ident, request.contestNumber),
             currency = request.currency,
             acceptedPrice = request.acceptedPrice,
             expirationTime = request.expirationTime,
@@ -34,7 +33,6 @@ class DefaultInvestmentOrderService(
             transactionType = request.transactionType
         ).let { investmentOrderRepository.save(it) }.orderId!!
     }
-
 
     override fun deleteInvestmentOrder(username: String, orderId: Long): Long {
         investmentOrderRepository.findById(orderId).get()
@@ -45,14 +43,12 @@ class DefaultInvestmentOrderService(
         return orderId
     }
 
-    override fun getOrdersByStatus(username: String, request: GetInvestmentOrderRequest): List<InvestmentOrder> =
-        findOrdersByParticipant(username, request.contestNumber, request.statusList)
+    override fun getOrdersByStatus(request: GetInvestmentOrderRequest): List<InvestmentOrder> =
+        findOrdersByParticipant(request.ident, request.contestNumber, request.statusList)
 
 
-    override fun getSymbolOrdersByStatus(
-        username: String, request: GetInvestmentOrderRequest
-    ): List<InvestmentOrder> =
-        findOrdersByParticipantAndSymbol(username, request.contestNumber, request.symbol!!, request.statusList)
+    override fun getSymbolOrdersByStatus(request: GetInvestmentOrderRequest): List<InvestmentOrder> =
+        findOrdersByParticipantAndSymbol(request.ident, request.contestNumber, request.symbol!!, request.statusList)
 
 
     override fun terminateRemainingOrders(contest: Contest) {

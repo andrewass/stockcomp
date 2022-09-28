@@ -3,10 +3,8 @@ package com.stockcomp.investmentorder.controller
 import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.InvestmentOrderDto
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
-import com.stockcomp.investmentorder.service.InvestmentOrderService
-import com.stockcomp.authentication.controller.getAccessTokenFromCookie
-import com.stockcomp.authentication.service.JwtService
 import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
+import com.stockcomp.investmentorder.service.InvestmentOrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletRequest
 @RequestMapping("/investmentorder")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
-    private val jwtService: JwtService
 ) {
 
     @PostMapping("/place-order")
@@ -24,18 +21,16 @@ class InvestmentOrderController(
         servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
-        extractUsernameFromRequest(servletRequest)
-            .let { investmentOrderService.placeInvestmentOrder(investmentOrderRequest, it) }
+        investmentOrderService.placeInvestmentOrder(investmentOrderRequest)
             .let { ResponseEntity(HttpStatus.OK) }
 
 
     @PostMapping("/delete-order")
     fun deleteInvestmentOrder(
         servletRequest: HttpServletRequest,
-        @RequestParam orderId: Long
+        @RequestParam orderId: Long, @RequestParam ident: String
     ): ResponseEntity<HttpStatus> =
-        extractUsernameFromRequest(servletRequest)
-            .let { investmentOrderService.deleteInvestmentOrder(it, orderId) }
+        investmentOrderService.deleteInvestmentOrder(ident, orderId)
             .let { ResponseEntity(HttpStatus.OK) }
 
 
@@ -44,8 +39,7 @@ class InvestmentOrderController(
         servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: GetInvestmentOrderRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(servletRequest)
-            .let { investmentOrderService.getOrdersByStatus(it, investmentOrderRequest) }
+        investmentOrderService.getOrdersByStatus(investmentOrderRequest)
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
@@ -55,13 +49,7 @@ class InvestmentOrderController(
         servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: GetInvestmentOrderRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        extractUsernameFromRequest(servletRequest)
-            .let { investmentOrderService.getSymbolOrdersByStatus(it, investmentOrderRequest) }
+        investmentOrderService.getSymbolOrdersByStatus(investmentOrderRequest)
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
-
-
-    private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
-        getAccessTokenFromCookie(servletRequest)
-            .let { jwtService.extractUsername(it!!) }
 }

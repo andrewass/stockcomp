@@ -56,8 +56,8 @@ services:
 
 networks:
   default:
+    name: compose_network
     external: true
-    name: stock-analyzer_default
 
 volumes:
   grafana-volume:
