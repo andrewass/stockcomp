@@ -6,9 +6,9 @@ import com.stockcomp.participant.entity.Investment
 
 interface InvestmentService {
 
-    fun getInvestmentForSymbol(username: String, request: GetInvestmentBySymbolRequest): Investment?
+    fun getInvestmentForSymbol(request: GetInvestmentBySymbolRequest): Investment?
 
-    fun getAllInvestmentsForParticipant(username: String, contestNumber: Int): List<Investment>
+    fun getAllInvestmentsForParticipant(ident: String, contestNumber: Int): List<Investment>
 
     fun updateInvestments()
 }

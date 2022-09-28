@@ -20,13 +20,13 @@ class DefaultInvestmentService(
 
     private val logger = LoggerFactory.getLogger(DefaultInvestmentService::class.java)
 
-    override fun getInvestmentForSymbol(username: String, request: GetInvestmentBySymbolRequest): Investment? =
-        participantService.getParticipant(request.contestNumber, username)!!
+    override fun getInvestmentForSymbol(request: GetInvestmentBySymbolRequest): Investment? =
+        participantService.getParticipant(request.contestNumber, request.ident)!!
             .investments.firstOrNull { it.symbol == request.symbol }
 
 
-    override fun getAllInvestmentsForParticipant(username: String, contestNumber: Int): List<Investment> =
-        participantService.getParticipant(contestNumber, username)
+    override fun getAllInvestmentsForParticipant(ident: String, contestNumber: Int): List<Investment> =
+        participantService.getParticipant(contestNumber, ident)
             .let { investmentRepository.findAllByParticipant(it) }
 
 

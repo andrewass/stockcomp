@@ -1,34 +1,26 @@
 package com.stockcomp.participant.controller
 
-import com.stockcomp.authentication.controller.getAccessTokenFromCookie
-import com.stockcomp.authentication.service.JwtService
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.dto.mapToParticipantDto
 import com.stockcomp.participant.service.ParticipantService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/participant")
 class ParticipantController(
-    private val participantService: ParticipantService,
-    private val jwtService: JwtService
+    private val participantService: ParticipantService
 ) {
-
     @PostMapping("/sign-up-participant")
-    fun signUp(@RequestParam contestNumber: Int, servletRequest: HttpServletRequest): ResponseEntity<HttpStatus> {
-        participantService.signUpParticipant(extractUsernameFromRequest(servletRequest), contestNumber)
+    fun signUp(@RequestParam contestNumber: Int, @RequestParam ident: String): ResponseEntity<HttpStatus> {
+        participantService.signUpParticipant(ident, contestNumber)
         return ResponseEntity(HttpStatus.OK)
     }
 
     @GetMapping("/participant-by-contest")
-    fun getParticipant(
-        servletRequest: HttpServletRequest, @RequestParam contestNumber: Int
-    ): ResponseEntity<ParticipantDto>? =
-        extractUsernameFromRequest(servletRequest)
-            .let { participantService.getParticipant(contestNumber, it) }
+    fun getParticipant(@RequestParam contestNumber: Int, @RequestParam ident: String): ResponseEntity<ParticipantDto>? =
+        participantService.getParticipant(contestNumber, ident)
             ?.let { ResponseEntity.ok(mapToParticipantDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 
@@ -41,15 +33,8 @@ class ParticipantController(
 
 
     @GetMapping("/participant-history")
-    fun getParticipantHistory(
-        servletRequest: HttpServletRequest, @RequestParam username: String
-    ): ResponseEntity<List<ParticipantDto>> =
-        participantService.getParticipantHistory(username)
+    fun getParticipantHistory(@RequestParam ident: String): ResponseEntity<List<ParticipantDto>> =
+        participantService.getParticipantHistory(ident)
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
-
-
-    private fun extractUsernameFromRequest(servletRequest: HttpServletRequest): String =
-        getAccessTokenFromCookie(servletRequest)
-            .let { jwtService.extractUsername(it!!) }
 }
