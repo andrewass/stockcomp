@@ -1,7 +1,5 @@
 package com.stockcomp.configuration;
 
-import com.stockcomp.user.dto.SignUpRequest;
-import com.stockcomp.user.entity.Role;
 import com.stockcomp.user.service.DefaultUserService;
 import com.stockcomp.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,8 +72,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         var adminUsername = "admin";
         var existingAdmin = userService.findUserByUsername(adminUsername);
         if (existingAdmin == null) {
+            /*
             userService.signUpUser(
                     new SignUpRequest(adminUsername, adminPassword, adminEmail, Role.ADMIN));
+
+             */
         }
     }
 }

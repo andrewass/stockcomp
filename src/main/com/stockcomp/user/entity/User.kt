@@ -1,7 +1,6 @@
 package com.stockcomp.user.entity
 
 import com.stockcomp.common.entity.BaseEntity
-import com.stockcomp.authentication.entity.RefreshToken
 import javax.persistence.*
 
 @Entity
@@ -24,9 +23,6 @@ class User(
     var fullName: String? = null,
 
     @Enumerated(EnumType.STRING)
-    val userRole: Role = Role.USER,
-
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
-    val refreshTokens: MutableList<RefreshToken> = mutableListOf()
+    val userRole: Role = Role.USER
 
 ) : BaseEntity()

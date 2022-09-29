@@ -1,28 +1,22 @@
 package com.stockcomp.service.user
 
 import com.stockcomp.user.entity.User
-import com.stockcomp.exception.DuplicateCredentialException
 import com.stockcomp.user.repository.UserRepository
-import com.stockcomp.user.dto.SignUpRequest
 import com.stockcomp.user.service.DefaultUserService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.SpyK
-import io.mockk.slot
-import io.mockk.verify
-import org.junit.jupiter.api.*
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class CustomUserServiceTest {
 
     @MockK
     private lateinit var userRepository: UserRepository
-
-    @SpyK
-    private var passwordEncoder = BCryptPasswordEncoder()
 
     @InjectMockKs
     private lateinit var defaultUserService: DefaultUserService
@@ -46,36 +40,6 @@ internal class CustomUserServiceTest {
 
         Assertions.assertEquals(username, userDetails.username)
         Assertions.assertEquals(password, userDetails.password)
-    }
-
-    @Test
-    fun `should add new user from given request`() {
-        val userSlot = slot<User>()
-        every {
-            userRepository.existsByUsername(username)
-        } returns false
-
-        every {
-            userRepository.save(capture(userSlot))
-        } returns user
-
-        defaultUserService.signUpUser(SignUpRequest(username, password, email))
-
-        verify { userRepository.save(any()) }
-        Assertions.assertEquals(username, userSlot.captured.username)
-        Assertions.assertEquals(userSlot.captured.password.length, 60)
-        Assertions.assertEquals(email, userSlot.captured.email)
-    }
-
-    @Test
-    fun `should throw exception when attempting to add user with duplicate username`() {
-        every {
-            userRepository.existsByUsername(username)
-        } returns true
-
-        assertThrows<DuplicateCredentialException> {
-            defaultUserService.signUpUser(SignUpRequest(username, password, email))
-        }
     }
 
     @Test

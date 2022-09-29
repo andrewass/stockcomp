@@ -1,8 +1,6 @@
 package com.stockcomp.user.controller
 
 import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.authentication.controller.getAccessTokenFromCookie
-import com.stockcomp.authentication.service.JwtService
 import com.stockcomp.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,15 +10,12 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/user")
 class UserDetailsController(
-    private val userService: UserService,
-    private val jwtService: JwtService
+    private val userService: UserService
 ) {
 
     @GetMapping("/get-details")
-    fun getUserDetails(
-        httpServletRequest: HttpServletRequest, @RequestParam username: String?
-    ): ResponseEntity<UserDetailsDto> =
-        userService.getUserDetails(username ?: extractUsernameFromRequest(httpServletRequest))
+    fun getUserDetails(@RequestParam username: String): ResponseEntity<UserDetailsDto> =
+        userService.getUserDetails(username)
             .let { ResponseEntity.ok(it) }
 
 
@@ -30,9 +25,4 @@ class UserDetailsController(
     ): ResponseEntity<HttpStatus> =
         userService.updateUserDetails(userDetailsDto)
             .run { ResponseEntity(HttpStatus.OK) }
-
-
-    private fun extractUsernameFromRequest(request: HttpServletRequest): String =
-        getAccessTokenFromCookie(request)
-            .let { jwtService.extractUsername(it!!) }
 }
