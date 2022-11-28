@@ -1,7 +1,6 @@
 create table t_user(
 	user_id                 bigserial  primary key ,
 	username                varchar(50) unique not null,
-	password                varchar(200) not null,
 	email                   varchar(60) unique not null,
 	country                 varchar(100),
 	full_name               varchar(100),

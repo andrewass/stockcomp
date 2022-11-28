@@ -5,7 +5,7 @@ import com.stockcomp.participant.entity.Participant
 
 fun mapToParticipantDto(source: Participant) =
     ParticipantDto(
-        username = source.user.username,
+        displayName = source.user.fullName,
         rank = source.rank,
         totalValue = source.totalValue,
         totalInvestmentValue = source.totalInvestmentValue,

@@ -55,8 +55,8 @@ internal class DefaultProcessOrdersServiceTest {
         contestNumber = 1, startTime = LocalDateTime.now(), endTime = LocalDateTime.now().plusWeeks(4)
     )
 
-    private val firstUser = User(username = "firstUser", password = "firstPassword", email = "first@mail.com")
-    private val secondUser = User(username = "secUser", password = "secPassword", email = "sec@mail.com")
+    private val firstUser = User(username = "firstUser", email = "first@mail.com")
+    private val secondUser = User(username = "secUser", email = "sec@mail.com")
     private val firstParticipant = Participant(contest = contest, rank = 1, user = firstUser)
     private val secParticipant = Participant(contest = contest, rank = 2, user = secondUser)
 
@@ -66,7 +66,7 @@ internal class DefaultProcessOrdersServiceTest {
     private val investmentOrders = createInvestmentOrders()
 
     @BeforeEach
-    private fun setup() {
+    fun setup() {
         every {
             symbolService.getRealTimePrice(AAPL)
         } returns RealTimePrice(

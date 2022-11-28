@@ -12,15 +12,13 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val username: String,
+    var username: String,
 
-    var password: String,
+    var fullName: String? = null,
 
     val email: String,
 
     var country: String? = null,
-
-    var fullName: String? = null,
 
     @Enumerated(EnumType.STRING)
     val userRole: Role = Role.USER

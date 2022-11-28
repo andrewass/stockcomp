@@ -3,7 +3,7 @@ package com.stockcomp.participant.dto
 import java.time.LocalDateTime
 
 data class ParticipantDto(
-    val username : String,
+    val displayName : String?,
     val rank: Int?,
     val totalValue: Double,
     val totalInvestmentValue: Double,

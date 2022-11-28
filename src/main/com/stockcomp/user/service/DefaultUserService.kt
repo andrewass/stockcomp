@@ -1,29 +1,24 @@
 package com.stockcomp.user.service
 
-import com.stockcomp.user.entity.Role
 import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.user.repository.UserRepository
 import com.stockcomp.user.dto.mapToUserDetailsDto
+import com.stockcomp.user.entity.Role
+import com.stockcomp.user.entity.User
+import com.stockcomp.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
 class DefaultUserService @Autowired constructor(
     private val userRepository: UserRepository
-) : UserDetailsService, UserService {
+) : UserService {
 
-    override fun loadUserByUsername(userName: String): UserDetails =
-        userRepository.findByUsername(userName)
-            .let { User(it.username, it.password, emptyList()) }
+    override fun findUserByEmail(email: String): User = userRepository.findByEmail(email)
 
 
     override fun updateUserDetails(userDetailsDto: UserDetailsDto) {
-        userRepository.findByUsername(userDetailsDto.username).let {
+        userRepository.findByEmail(userDetailsDto.email).let {
             it.country = userDetailsDto.country
-            it.fullName = userDetailsDto.fullName
             userRepository.save(it)
         }
     }
@@ -36,6 +31,12 @@ class DefaultUserService @Autowired constructor(
         userRepository.findByUsername(username).userRole == Role.ADMIN
 
 
-    override fun findUserByUsername(username: String): com.stockcomp.user.entity.User? =
+    override fun findUserByUsername(username: String): User? =
         userRepository.findByUsername(username)
+
+
+    private fun createUser(email: String): User {
+        return User(email = email, username = email)
+            .let { userRepository.save(it) }
+    }
 }

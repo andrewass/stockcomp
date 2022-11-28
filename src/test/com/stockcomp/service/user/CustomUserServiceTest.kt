@@ -22,32 +22,22 @@ internal class CustomUserServiceTest {
     private lateinit var defaultUserService: DefaultUserService
 
     private val username = "testUser"
-    private val password = "testPassword"
     private val email = "testEmail"
-    private val user = User(username = username, password = password, email = email, country = "Canada")
+    private val user = User(username = username, email = email, country = "Canada")
 
     @BeforeAll
-    private fun setUp() {
+    fun setUp() {
         MockKAnnotations.init(this)
         every {
-            userRepository.findByUsername(username)
+            userRepository.findByEmail(email)
         } returns user
     }
 
     @Test
-    fun `should load user by username`() {
-        val userDetails = defaultUserService.loadUserByUsername(username)
-
-        Assertions.assertEquals(username, userDetails.username)
-        Assertions.assertEquals(password, userDetails.password)
-    }
-
-    @Test
     fun `should get peristed user`() {
-        val user = defaultUserService.findUserByUsername(username)!!
+        val user = defaultUserService.findUserByEmail(email)
 
         Assertions.assertEquals(username, user.username)
-        Assertions.assertEquals(password, user.password)
         Assertions.assertEquals(email, user.email)
     }
 }
