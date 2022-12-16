@@ -6,7 +6,7 @@ fun mapToUserDetailsDto(src: User) =
     UserDetailsDto(
         id = src.id,
         email = src.email,
-        displayName = src.fullName,
+        fullName = src.fullName,
         country = src.country,
         userRole = src.userRole.name
     )

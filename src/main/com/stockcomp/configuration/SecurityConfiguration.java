@@ -37,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers("/task/*", "/actuator/*",
+                        .antMatchers("/task/*", "/actuator/*","/user/*",
                                 "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs")
                         .permitAll()
                         .anyRequest().authenticated()
@@ -48,6 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private CorsConfiguration createCorsConfiguration() {
         var cors = new CorsConfiguration();
         cors.addAllowedOrigin("http://localhost:8000");
+        cors.addAllowedOrigin("http://localhost:3000");
         cors.addAllowedOrigin("http://stockclient-service:80");
         cors.addAllowedOrigin("http://localhost:80");
         cors.setAllowCredentials(true);

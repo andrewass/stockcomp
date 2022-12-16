@@ -14,8 +14,8 @@ class UserDetailsController(
 ) {
 
     @GetMapping("/get-details")
-    fun getUserDetails(@RequestParam username: String): ResponseEntity<UserDetailsDto> =
-        userService.getUserDetails(username)
+    fun getUserDetails(@RequestParam email: String): ResponseEntity<UserDetailsDto> =
+        userService.getUserDetails(email)
             .let { ResponseEntity.ok(it) }
 
 
