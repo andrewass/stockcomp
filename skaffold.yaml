@@ -1,0 +1,11 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+build:
+  artifacts:
+    - image: stockcomp-server-image
+      jib: {}
+
+manifests:
+  rawYaml:
+    - k8s/config.yaml
+    - k8s/stockcomp.yaml

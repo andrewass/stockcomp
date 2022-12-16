@@ -15,7 +15,7 @@ consumer:
 
 authorization:
     base:
-        url: http://auth-server:8089
+        url: http://auth-backend-service
 
 cookie:
     duration: 3600000
@@ -36,9 +36,9 @@ management:
 
 spring:
     datasource:
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        url: ${SPRING_DATASOURCE_URL}
-        username: ${SPRING_DATASOURCE_USERNAME}
+        password: password
+        url: jdbc:postgresql://postgres-service/stockdb
+        username: user
     jpa:
         generate-ddl: false
         hibernate:
@@ -51,8 +51,5 @@ spring:
         oauth2:
             resourceserver:
                 jwt:
-                    issuer-uri: http://auth-server:8089
-                    jwk-set-uri: http://auth-server:8089/.well-known/jwks.json
-
-
-
+                    issuer-uri: http://auth-backend-service
+                    jwk-set-uri: http://auth-backend-service/.well-known/jwks.json

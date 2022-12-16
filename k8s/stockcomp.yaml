@@ -16,25 +16,14 @@ spec:
     spec:
       containers:
         - name: stockcomp
-          image: ghcr.io/andrewass/stockcomp:latest
+          image: stockcomp-server-image
           ports:
             - containerPort: 8080
           env:
-            - name: CONSUMER_BASE_URL
-              value: http://stock-analyzer:8088
-            - name: ADMIN_PASSWORD
-              value: admin
             - name: ADMIN_EMAIL
-              value: admin@admin.com
-            - name: SPRING_DATASOURCE_USERNAME
-              value: postgres
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgresql:5432/stockdb
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgresql
-                  key: postgresql-password
+              value: "admin@admin.com"
+            - name: ADMIN_PASSWORD
+              value: "admin"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -55,3 +44,23 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30111
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-contest-server
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "contestserver.io"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stockcomp-service
+                port:
+                  number: 8080

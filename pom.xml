@@ -24,7 +24,8 @@
         <micrometer.version>1.10.1</micrometer.version>
         <logstash.version>7.2</logstash.version>
         <postgresql.version>42.5.1</postgresql.version>
-        <maven.failsafe.version>2.22.2</maven.failsafe.version>
+        <maven.failsafe.version>3.0.0-M7</maven.failsafe.version>
+        <jib.version>3.3.1</jib.version>
     </properties>
 
     <dependencies>
@@ -183,6 +184,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.version}</version>
+                <configuration>
+                    <to>
+                        <image>stockcomp-server-image</image>
+                    </to>
+                </configuration>
             </plugin>
         </plugins>
     </build>
