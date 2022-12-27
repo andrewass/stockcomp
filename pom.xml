@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.6</version>
+        <version>3.0.1</version>
         <relativePath/>
     </parent>
     <groupId>com</groupId>
@@ -24,7 +24,7 @@
         <micrometer.version>1.10.1</micrometer.version>
         <logstash.version>7.2</logstash.version>
         <postgresql.version>42.5.1</postgresql.version>
-        <maven.failsafe.version>3.0.0-M7</maven.failsafe.version>
+        <maven.failsafe.version>2.22.2</maven.failsafe.version>
         <jib.version>3.3.1</jib.version>
     </properties>
 
@@ -126,6 +126,10 @@
             <artifactId>mockk-jvm</artifactId>
             <version>${mockk.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
         </dependency>
     </dependencies>
 

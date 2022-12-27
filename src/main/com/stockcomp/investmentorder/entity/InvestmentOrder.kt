@@ -3,7 +3,7 @@ package com.stockcomp.investmentorder.entity
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.participant.entity.Participant
 import java.time.LocalDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_INVESTMENT_ORDER")

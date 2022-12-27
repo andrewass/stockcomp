@@ -4,7 +4,7 @@ import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.user.entity.User
 import com.stockcomp.investmentorder.entity.InvestmentOrder
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_PARTICIPANT")

@@ -1,7 +1,7 @@
 package com.stockcomp.participant.entity
 
 import com.stockcomp.common.entity.BaseEntity
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_INVESTMENT")

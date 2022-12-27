@@ -2,7 +2,7 @@ package com.stockcomp.leaderboard.entity
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.contest.entity.Contest
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_MEDAL")

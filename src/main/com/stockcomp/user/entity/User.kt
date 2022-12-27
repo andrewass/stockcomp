@@ -1,7 +1,7 @@
 package com.stockcomp.user.entity
 
 import com.stockcomp.common.entity.BaseEntity
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_USER")

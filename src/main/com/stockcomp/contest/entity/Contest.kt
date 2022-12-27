@@ -4,7 +4,7 @@ import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.participant.entity.Participant
 import java.time.LocalDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_CONTEST")

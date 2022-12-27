@@ -39,13 +39,4 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(InvalidRoleException::class)
     fun handleExceptionsForForbidden(exception: InvalidRoleException) : ResponseEntity<Any> =
         ResponseEntity(exception.message, HttpStatus.FORBIDDEN)
-
-
-    override fun handleHttpMessageNotReadable(
-        exception: HttpMessageNotReadableException, headers: HttpHeaders,
-        status: HttpStatus, request: WebRequest
-    ): ResponseEntity<Any> {
-        logger.error(exception.message)
-        return ResponseEntity(exception.message, HttpStatus.BAD_REQUEST)
-    }
 }

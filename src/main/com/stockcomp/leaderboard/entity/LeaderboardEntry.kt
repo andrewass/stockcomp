@@ -4,7 +4,7 @@ import com.stockcomp.contest.entity.Contest
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.entity.User
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "T_LEADERBOARD_ENTRY")
