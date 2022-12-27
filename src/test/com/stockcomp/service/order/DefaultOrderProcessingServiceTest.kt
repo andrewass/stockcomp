@@ -1,6 +1,6 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
+import com.stockcomp.investmentorder.service.DefaultOrderProcessService
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.contest.service.DefaultSymbolService
@@ -24,7 +24,7 @@ internal class DefaultOrderProcessingServiceTest {
     private lateinit var symbolService: DefaultSymbolService
 
     @InjectMockKs
-    private lateinit var maintainOrderService: DefaultProcessOrdersService
+    private lateinit var maintainOrderService: DefaultOrderProcessService
 
     @BeforeAll
     private fun setUp() {

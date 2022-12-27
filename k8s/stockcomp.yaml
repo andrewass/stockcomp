@@ -24,11 +24,6 @@ spec:
               value: "admin@admin.com"
             - name: ADMIN_PASSWORD
               value: "admin"
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: secrets
-                  key: jwt-secret
 
 ---
 apiVersion: v1

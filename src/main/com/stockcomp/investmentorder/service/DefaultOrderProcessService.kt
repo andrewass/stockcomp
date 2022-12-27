@@ -1,43 +1,41 @@
 package com.stockcomp.investmentorder.service
 
-import com.stockcomp.participant.entity.Investment
-import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.participant.entity.Participant
+import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.service.SymbolService
+import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.entity.TransactionType
-import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
+import com.stockcomp.participant.entity.Investment
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.contest.service.SymbolService
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class DefaultProcessOrdersService(
+class DefaultOrderProcessService(
     private val participantRepository: ParticipantRepository,
     private val investmentOrderRepository: InvestmentOrderRepository,
     private val investmentRepository: InvestmentRepository,
     private val symbolService: SymbolService,
     private val meterRegistry: SimpleMeterRegistry
-) : ProcessOrdersService {
+) : OrderProcessService {
 
-    private val logger = LoggerFactory.getLogger(DefaultProcessOrdersService::class.java)
+    private val logger = LoggerFactory.getLogger(DefaultOrderProcessService::class.java)
 
-    override suspend fun processInvestmentOrders() {
+    override fun processInvestmentOrders() {
         try {
             investmentOrderRepository.findAllByOrderAndContestStatus(OrderStatus.ACTIVE, ContestStatus.RUNNING)
                 .also { gaugeOrders(it) }
                 .groupBy { it.symbol }
                 .forEach { (symbol, orders) ->
                     run {
-                        delay(15000L)
                         processOrdersForSymbol(symbol, orders)
                         logger.info("Processing order for symbol $symbol")
                     }

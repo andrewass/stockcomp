@@ -5,7 +5,7 @@ import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.entity.LeaderboardUpdateStatus
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.investmentorder.service.InvestmentOrderService
-import com.stockcomp.investmentorder.service.ProcessOrdersService
+import com.stockcomp.investmentorder.service.OrderProcessService
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.participant.service.MaintainParticipantService
 import kotlinx.coroutines.*
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class DefaultContestTasks(
     private val maintainParticipantService: MaintainParticipantService,
-    private val processOrdersService: ProcessOrdersService,
+    private val orderProcessService: OrderProcessService,
     private val investmentOrderService: InvestmentOrderService,
     private val leaderboardService: LeaderboardService,
     private val contestService: ContestService
@@ -82,7 +82,7 @@ class DefaultContestTasks(
             orderJob = CoroutineScope(Default).launch {
                 logger.info("Starting maintenance of investment orders")
                 while (isActive) {
-                    processOrdersService.processInvestmentOrders()
+                    orderProcessService.processInvestmentOrders()
                     delay(15000L)
                 }
             }

@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class DefaultMaintainParticipantService(
+class DefaultParticipantMaintenanceService(
     private val investmentService: InvestmentService,
     private val participantRepository: ParticipantRepository,
     private val contestService: ContestService
 ) : MaintainParticipantService {
 
-    private val logger = LoggerFactory.getLogger(DefaultMaintainParticipantService::class.java)
+    private val logger = LoggerFactory.getLogger(DefaultParticipantMaintenanceService::class.java)
 
     override fun maintainParticipants() {
         try {

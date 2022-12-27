@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: process-orders
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: process-orders
+              image: curlimages/curl:7.87.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - curl
+                - -v
+                - -X
+                - POST
+                - http://stockcomp-service:8080/investmentorder/process-orders
+
+
+

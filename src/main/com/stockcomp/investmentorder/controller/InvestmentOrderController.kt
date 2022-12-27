@@ -5,6 +5,7 @@ import com.stockcomp.investmentorder.dto.InvestmentOrderDto
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
 import com.stockcomp.investmentorder.service.InvestmentOrderService
+import com.stockcomp.investmentorder.service.OrderProcessService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest
 @RequestMapping("/investmentorder")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
+    private val orderProcessService : OrderProcessService
 ) {
 
     @PostMapping("/place-order")
@@ -44,7 +46,7 @@ class InvestmentOrderController(
             .let { ResponseEntity.ok(it) }
 
 
-    @PostMapping("get-by-status-symbol")
+    @PostMapping("/get-by-status-symbol")
     fun getInvestmentOrdersSymbol(
         servletRequest: HttpServletRequest,
         @RequestBody investmentOrderRequest: GetInvestmentOrderRequest,
@@ -52,4 +54,10 @@ class InvestmentOrderController(
         investmentOrderService.getSymbolOrdersByStatus(investmentOrderRequest)
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
+
+    @PostMapping("/process-orders")
+    fun processInvestmentOrders() : Boolean {
+        orderProcessService.processInvestmentOrders()
+        return true
+    }
 }

@@ -7,5 +7,4 @@ build:
 
 manifests:
   rawYaml:
-    - k8s/config.yaml
     - k8s/stockcomp.yaml

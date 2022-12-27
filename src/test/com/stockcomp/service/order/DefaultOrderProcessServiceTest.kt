@@ -10,7 +10,7 @@ import com.stockcomp.investmentorder.entity.TransactionType.BUY
 import com.stockcomp.investmentorder.entity.TransactionType.SELL
 import com.stockcomp.user.entity.User
 import com.stockcomp.contest.dto.RealTimePrice
-import com.stockcomp.investmentorder.service.DefaultProcessOrdersService
+import com.stockcomp.investmentorder.service.DefaultOrderProcessService
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
@@ -31,7 +31,7 @@ import java.time.LocalDateTime
 
 @ExtendWith(MockKExtension::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class DefaultProcessOrdersServiceTest {
+internal class DefaultOrderProcessServiceTest {
 
     @MockK
     private lateinit var participantRepository: ParticipantRepository
@@ -49,7 +49,7 @@ internal class DefaultProcessOrdersServiceTest {
     private lateinit var meterRegistry: SimpleMeterRegistry
 
     @InjectMockKs
-    private lateinit var processOrdersService: DefaultProcessOrdersService
+    private lateinit var processOrdersService: DefaultOrderProcessService
 
     private val contest = Contest(
         contestNumber = 1, startTime = LocalDateTime.now(), endTime = LocalDateTime.now().plusWeeks(4)
