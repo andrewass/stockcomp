@@ -1,7 +1,7 @@
 package com.stockcomp.user.service
 
-import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.user.dto.mapToUserDetailsDto
+import com.stockcomp.user.controller.UserDetailsDto
+import com.stockcomp.user.controller.mapToUserDetailsDto
 import com.stockcomp.user.entity.Role
 import com.stockcomp.user.entity.User
 import com.stockcomp.user.repository.UserRepository
@@ -13,11 +13,14 @@ class DefaultUserService @Autowired constructor(
     private val userRepository: UserRepository
 ) : UserService {
 
+    override fun findUserByTokenClaim(email: String): User =
+        userRepository.findByEmail(email)
+            ?: userRepository.save(User(username = email, email = email))
+
     override fun findUserByEmail(email: String): User = userRepository.findByEmail(email)
 
-
-    override fun updateUserDetails(userDetailsDto: UserDetailsDto) {
-        userRepository.findByEmail(userDetailsDto.email).let {
+    override fun updateUser(user: User, userDetailsDto: UserDetailsDto) {
+        user.also {
             it.country = userDetailsDto.country
             userRepository.save(it)
         }

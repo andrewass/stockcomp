@@ -1,4 +1,4 @@
-package com.stockcomp.user.dto
+package com.stockcomp.user.controller
 
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
 

@@ -1,7 +1,7 @@
 package com.stockcomp.token.service
 
-import com.stockcomp.user.entity.User
+import org.springframework.security.oauth2.jwt.Jwt
 
 interface TokenService {
-    fun extractUserFromToken(token: String) : User
+    fun extractEmailFromToken(token: Jwt): String
 }
