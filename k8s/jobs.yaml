@@ -22,5 +22,28 @@ spec:
                 - POST
                 - http://stockcomp-service:8080/investmentorder/process-orders
 
+---
 
-
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: maintain-participants
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: maintain-participants
+              image: curlimages/curl:7.87.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - curl
+                - -v
+                - -X
+                - POST
+                - http://stockcomp-service:8080/participant/maintain-participants

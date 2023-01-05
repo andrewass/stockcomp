@@ -2,6 +2,7 @@ package com.stockcomp.participant.controller
 
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.dto.mapToParticipantDto
+import com.stockcomp.participant.service.MaintainParticipantService
 import com.stockcomp.participant.service.ParticipantService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/participant")
 class ParticipantController(
-    private val participantService: ParticipantService
+    private val participantService: ParticipantService,
+    private val maintainParticipantService: MaintainParticipantService
 ) {
+
     @PostMapping("/sign-up-participant")
     fun signUp(@RequestParam contestNumber: Int, @RequestParam ident: String): ResponseEntity<HttpStatus> {
         participantService.signUpParticipant(ident, contestNumber)
@@ -31,6 +34,11 @@ class ParticipantController(
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
 
+
+    @PostMapping("/maintain-participants")
+    fun maintainParticipants(){
+        maintainParticipantService.maintainParticipants()
+    }
 
     @GetMapping("/participant-history")
     fun getParticipantHistory(@RequestParam ident: String): ResponseEntity<List<ParticipantDto>> =

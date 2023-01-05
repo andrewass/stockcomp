@@ -1,5 +1,6 @@
 package com.stockcomp.user.controller
 
+import com.stockcomp.token.service.TokenService
 import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.user.service.UserService
 import org.springframework.http.HttpStatus
@@ -10,14 +11,16 @@ import jakarta.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/user")
 class UserDetailsController(
-    private val userService: UserService
+    private val userService: UserService,
+    private val tokenService : TokenService
 ) {
 
     @GetMapping("/get-details")
-    fun getUserDetails(@RequestParam email: String): ResponseEntity<UserDetailsDto> =
-        userService.getUserDetails(email)
+    fun getUserDetails(): ResponseEntity<UserDetailsDto> {
+        val user = tokenService.extractUserFromToken("token")
+        return userService.getUserDetails(user.email)
             .let { ResponseEntity.ok(it) }
-
+    }
 
     @PutMapping("/update-details")
     fun updateUserDetails(
