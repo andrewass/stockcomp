@@ -41,6 +41,11 @@ class DefaultContestService(
             contestRepository.findAllByContestStatusIn(statusList)
         }
 
+    override fun getActiveContest(): Contest? =
+        contestRepository.findAllByContestStatusIn(
+            listOf(ContestStatus.RUNNING, ContestStatus.STOPPED)
+        ).firstOrNull()
+
     override fun findByContestNumber(contestNumber: Int): Contest =
         contestRepository.findByContestNumber(contestNumber)
 

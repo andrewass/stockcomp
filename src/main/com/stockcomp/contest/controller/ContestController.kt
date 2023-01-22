@@ -24,6 +24,14 @@ class ContestController(
             .let { ResponseEntity.ok(it) }
 
 
+    @PostMapping("/get-active-contest")
+    fun getActiveContest(): ResponseEntity<ContestDto> =
+        contestService.getActiveContest()
+            ?.let { mapToContestDto(it) }
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity(HttpStatus.OK)
+
+
     @GetMapping("/get-by-number")
     fun getContest(@RequestParam contestNumber: Int): ResponseEntity<ContestDto> =
         contestService.findByContestNumber(contestNumber)

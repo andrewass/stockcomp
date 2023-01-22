@@ -20,4 +20,6 @@ interface ContestService {
     fun findByContestNumberAndStatus(status: ContestStatus, contestNumber: Int): Contest
 
     fun saveContest(contest: Contest)
+
+    fun getActiveContest(): Contest?
 }

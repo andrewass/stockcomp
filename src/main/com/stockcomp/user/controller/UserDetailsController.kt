@@ -16,10 +16,8 @@ class UserDetailsController(
 ) {
 
     @GetMapping("/get-details")
-    fun getUserDetails(
-        @AuthenticationPrincipal principal: Jwt
-    ): ResponseEntity<UserDetailsDto> =
-        tokenService.extractEmailFromToken(principal)
+    fun getUserDetails(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<UserDetailsDto> =
+        tokenService.extractEmailFromToken(jwt)
             .let { userService.findUserByTokenClaim(it) }
             .let { mapToUserDetailsDto(it) }
             .let { ResponseEntity.ok(it) }
@@ -27,10 +25,10 @@ class UserDetailsController(
 
     @PutMapping("/update-details")
     fun updateUserDetails(
-        @AuthenticationPrincipal principal: Jwt,
+        @AuthenticationPrincipal jwt: Jwt,
         @RequestBody userDetailsDto: UserDetailsDto
     ): ResponseEntity<HttpStatus> =
-        tokenService.extractEmailFromToken(principal)
+        tokenService.extractEmailFromToken(jwt)
             .let { userService.findUserByTokenClaim(it) }
             .let { userService.updateUser(it, userDetailsDto) }
             .let { ResponseEntity(HttpStatus.OK) }
