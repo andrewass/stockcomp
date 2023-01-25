@@ -1,9 +1,9 @@
 package com.stockcomp.investmentorder.service
 
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
+import com.stockcomp.investmentorder.entity.OrderStatus
 
 interface InvestmentOrderService {
 
@@ -11,9 +11,14 @@ interface InvestmentOrderService {
 
     fun deleteInvestmentOrder(username: String, orderId: Long): Long
 
-    fun getOrdersByStatus(request: GetInvestmentOrderRequest): List<InvestmentOrder>
+    fun getOrdersByStatus(
+        contestNumber: Int, statusList: List<OrderStatus>, ident: String
+    ): List<InvestmentOrder>
 
-    fun getSymbolOrdersByStatus(request: GetInvestmentOrderRequest): List<InvestmentOrder>
+    fun getSymbolOrdersByStatus(
+        contestNumber: Int, symbol: String,
+        statusList: List<OrderStatus>, ident: String
+    ): List<InvestmentOrder>
 
     fun terminateRemainingOrders(contest: Contest)
 }

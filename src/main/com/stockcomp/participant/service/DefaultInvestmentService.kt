@@ -3,7 +3,6 @@ package com.stockcomp.participant.service
 import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.SymbolService
-import com.stockcomp.participant.dto.GetInvestmentBySymbolRequest
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.repository.InvestmentRepository
 import org.slf4j.LoggerFactory
@@ -20,9 +19,9 @@ class DefaultInvestmentService(
 
     private val logger = LoggerFactory.getLogger(DefaultInvestmentService::class.java)
 
-    override fun getInvestmentForSymbol(request: GetInvestmentBySymbolRequest): Investment? =
-        participantService.getParticipant(request.contestNumber, request.ident)!!
-            .investments.firstOrNull { it.symbol == request.symbol }
+    override fun getInvestmentForSymbol(contestNumber: Int, ident: String, symbol: String): Investment? =
+        participantService.getParticipant(contestNumber, ident)!!
+            .investments.firstOrNull { it.symbol == symbol }
 
 
     override fun getAllInvestmentsForParticipant(ident: String, contestNumber: Int): List<Investment> =
