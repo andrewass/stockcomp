@@ -1,20 +1,20 @@
 package com.stockcomp.service.order
 
+import com.stockcomp.contest.dto.RealTimePrice
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.participant.entity.Investment
-import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.participant.entity.Participant
 import com.stockcomp.contest.entity.ContestStatus.RUNNING
+import com.stockcomp.contest.service.SymbolService
+import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus.*
 import com.stockcomp.investmentorder.entity.TransactionType.BUY
 import com.stockcomp.investmentorder.entity.TransactionType.SELL
-import com.stockcomp.user.entity.User
-import com.stockcomp.contest.dto.RealTimePrice
-import com.stockcomp.investmentorder.service.DefaultOrderProcessService
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
+import com.stockcomp.investmentorder.service.DefaultOrderProcessService
+import com.stockcomp.participant.entity.Investment
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.repository.ParticipantRepository
-import com.stockcomp.contest.service.SymbolService
+import com.stockcomp.user.entity.User
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -69,17 +69,11 @@ internal class DefaultOrderProcessServiceTest {
     fun setup() {
         every {
             symbolService.getRealTimePrice(AAPL)
-        } returns RealTimePrice(
-            currency = "USD", dayHigh = 150.00, dayLow = 50.00, openPrice = 50.00,
-            previousClose = 50.00, price = 110.00, usdPrice = 110.00
-        )
+        } returns RealTimePrice(currency = "USD", price = 110.00, usdPrice = 110.00)
 
         every {
             symbolService.getRealTimePrice(MSFT)
-        } returns RealTimePrice(
-            currency = "USD", dayHigh = 150.00, dayLow = 50.00, openPrice = 50.00,
-            previousClose = 50.00, price = 110.00, usdPrice = 110.00
-        )
+        } returns RealTimePrice(currency = "USD", price = 110.00, usdPrice = 110.00)
 
         every {
             investmentRepository.findBySymbolAndParticipant(AAPL, firstParticipant)
@@ -131,8 +125,7 @@ internal class DefaultOrderProcessServiceTest {
         every {
             symbolService.getRealTimePrice(AAPL)
         } returns RealTimePrice(
-            currency = "USD", dayHigh = 150_000.00, dayLow = 50_000.00, openPrice = 50_000.00,
-            previousClose = 50_000.00, price = 110_000.00, usdPrice = 110_000.00
+            currency = "USD", price = 110_000.00, usdPrice = 110_000.00
         )
 
         every {

@@ -21,9 +21,9 @@ class DefaultInvestmentOrderService(
     private val contestRepository: ContestRepository
 ) : InvestmentOrderService {
 
-    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest) {
+    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest,ident: String) {
         InvestmentOrder(
-            participant = getParticipant(request.ident, request.contestNumber),
+            participant = getParticipant(ident, request.contestNumber),
             currency = request.currency,
             acceptedPrice = request.acceptedPrice,
             expirationTime = request.expirationTime,

@@ -11,7 +11,7 @@ class DefaultQuoteConsumer(
     private val webClient: WebClient
 ) : QuoteConsumer {
 
-    @Value("consumer.base.url")
+    @Value("\${consumer.base.url}")
     private lateinit var consumerUrl: String
 
     override fun getRealTimePrice(symbol: String): RealTimePrice {

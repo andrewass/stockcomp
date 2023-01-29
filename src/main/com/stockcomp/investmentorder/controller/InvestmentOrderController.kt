@@ -9,15 +9,15 @@ import com.stockcomp.investmentorder.service.OrderProcessService
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/investmentorder")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
-    private val orderProcessService : OrderProcessService,
+    private val orderProcessService: OrderProcessService,
     private val tokenService: TokenService
 ) {
 
@@ -26,7 +26,8 @@ class InvestmentOrderController(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestBody investmentOrderRequest: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
-        investmentOrderService.placeInvestmentOrder(investmentOrderRequest)
+        tokenService.extractEmailFromToken(jwt)
+            .let { investmentOrderService.placeInvestmentOrder(investmentOrderRequest, it) }
             .let { ResponseEntity(HttpStatus.OK) }
 
 
@@ -36,7 +37,7 @@ class InvestmentOrderController(
         @RequestParam orderId: Long,
     ): ResponseEntity<HttpStatus> =
         tokenService.extractEmailFromToken(jwt)
-            .let {  investmentOrderService.deleteInvestmentOrder(it, orderId) }
+            .let { investmentOrderService.deleteInvestmentOrder(it, orderId) }
             .let { ResponseEntity(HttpStatus.OK) }
 
 
@@ -46,7 +47,7 @@ class InvestmentOrderController(
         @RequestBody request: GetInvestmentOrderRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let {  investmentOrderService.getOrdersByStatus(request.contestNumber, request.statusList, it) }
+            .let { investmentOrderService.getOrdersByStatus(request.contestNumber, request.statusList, it) }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
@@ -57,16 +58,18 @@ class InvestmentOrderController(
         @RequestBody request: GetInvestmentOrderRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let {  investmentOrderService.getSymbolOrdersByStatus(
-                request.contestNumber, request.symbol!!,
-                request.statusList, it
-            ) }
+            .let {
+                investmentOrderService.getSymbolOrdersByStatus(
+                    request.contestNumber, request.symbol!!,
+                    request.statusList, it
+                )
+            }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
 
     @PostMapping("/process-orders")
-    fun processInvestmentOrders() : Boolean {
+    fun processInvestmentOrders(): Boolean {
         orderProcessService.processInvestmentOrders()
         return true
     }

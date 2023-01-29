@@ -25,12 +25,12 @@ spec:
             - name: POSTGRES_ROOT_PASSWORD
               value: "rootpass"
           volumeMounts:
-            - name: "postgres-data-dir"
-              mountPath: "/data/db/postgres"
+            - name: postgres-persistent-storage
+              mountPath: /var/lib/postgresql/data
       volumes:
-        - name: "postgres-data-dir"
+        - name: postgres-persistent-storage
           persistentVolumeClaim:
-            claimName: "pvc-postgres"
+            claimName: pvc-postgres
 
 ---
 

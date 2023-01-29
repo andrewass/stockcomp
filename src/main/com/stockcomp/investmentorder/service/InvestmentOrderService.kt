@@ -7,7 +7,7 @@ import com.stockcomp.investmentorder.entity.OrderStatus
 
 interface InvestmentOrderService {
 
-    fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest)
+    fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, ident: String)
 
     fun deleteInvestmentOrder(username: String, orderId: Long): Long
 
