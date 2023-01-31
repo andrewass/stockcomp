@@ -1,9 +1,6 @@
 package com.stockcomp.investmentorder.controller
 
-import com.stockcomp.investmentorder.dto.GetInvestmentOrderRequest
-import com.stockcomp.investmentorder.dto.InvestmentOrderDto
-import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
-import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
+import com.stockcomp.investmentorder.dto.*
 import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.investmentorder.service.OrderProcessService
 import com.stockcomp.token.service.TokenService
@@ -41,13 +38,13 @@ class InvestmentOrderController(
             .let { ResponseEntity(HttpStatus.OK) }
 
 
-    @PostMapping("/get-by-status")
+    @PostMapping("/get-all-by-status")
     fun getInvestmentOrders(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody request: GetInvestmentOrderRequest,
+        @RequestBody request: GetAllInvestmentOrders,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.getOrdersByStatus(request.contestNumber, request.statusList, it) }
+            .let { investmentOrderService.getAllOrdersByStatus(request.statusList, it) }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
@@ -55,7 +52,7 @@ class InvestmentOrderController(
     @PostMapping("/get-by-status-symbol")
     fun getInvestmentOrdersSymbol(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody request: GetInvestmentOrderRequest,
+        @RequestBody request: GetInvestmentOrderBySymbolRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
             .let {

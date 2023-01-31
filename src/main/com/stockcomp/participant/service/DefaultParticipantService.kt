@@ -17,6 +17,10 @@ class DefaultParticipantService(
     private val userService: UserService
 ) : ParticipantService {
 
+    override fun getActiveParticipantsByUser(username: String): List<Participant> =
+        contestService.getContests(listOf(ContestStatus.RUNNING, ContestStatus.STOPPED))
+            .flatMap{ getAllByUsernameAndContest(username, it) }
+
     override fun getParticipantsSortedByRank(contestNumber: Int): List<Participant> =
         contestService.findByContestNumber(contestNumber)
             .let { participantRepository.findAllByContestOrderByRankAsc(it) }

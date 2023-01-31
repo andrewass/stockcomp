@@ -11,9 +11,7 @@ interface InvestmentOrderService {
 
     fun deleteInvestmentOrder(username: String, orderId: Long): Long
 
-    fun getOrdersByStatus(
-        contestNumber: Int, statusList: List<OrderStatus>, ident: String
-    ): List<InvestmentOrder>
+    fun getAllOrdersByStatus(statusList: List<OrderStatus>, ident: String) : List<InvestmentOrder>
 
     fun getSymbolOrdersByStatus(
         contestNumber: Int, symbol: String,

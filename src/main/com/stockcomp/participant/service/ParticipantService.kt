@@ -18,4 +18,6 @@ interface ParticipantService {
     fun signUpParticipant(username: String, contestNumber: Int)
 
     fun saveParticipant(participant: Participant)
+
+    fun getActiveParticipantsByUser(username: String) : List<Participant>
 }

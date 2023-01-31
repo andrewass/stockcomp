@@ -21,7 +21,7 @@ class DefaultInvestmentOrderService(
     private val contestRepository: ContestRepository
 ) : InvestmentOrderService {
 
-    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest,ident: String) {
+    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, ident: String) {
         InvestmentOrder(
             participant = getParticipant(ident, request.contestNumber),
             currency = request.currency,
@@ -42,10 +42,10 @@ class DefaultInvestmentOrderService(
         return orderId
     }
 
-    override fun getOrdersByStatus(
-        contestNumber: Int, statusList: List<OrderStatus>, ident: String
-    ): List<InvestmentOrder> =
-        findOrdersByParticipant(ident, contestNumber, statusList)
+    override fun getAllOrdersByStatus(statusList: List<OrderStatus>, ident: String): List<InvestmentOrder> =
+        participantService.getActiveParticipantsByUser(ident)
+            .flatMap { it.investmentOrders }
+            .filter { statusList.contains(it.orderStatus) }
 
 
     override fun getSymbolOrdersByStatus(
@@ -60,14 +60,6 @@ class DefaultInvestmentOrderService(
             .onEach { it.orderStatus = OrderStatus.TERMINATED }
             .also { investmentOrderRepository.saveAll(it) }
     }
-
-    private fun findOrdersByParticipant(
-        username: String, contestNumber: Int, orderStatus: List<OrderStatus>
-    ): List<InvestmentOrder> =
-        contestRepository.findByContestNumber(contestNumber)
-            .let { participantService.getAllByUsernameAndContest(username, it).first() }
-            .let { investmentOrderRepository.findAllByParticipantAndOrderStatusIn(it, orderStatus) }
-
 
     private fun findOrdersByParticipantAndSymbol(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
