@@ -5,5 +5,6 @@ data class InvestmentDto(
     val amount: Int,
     val averageUnitCost: Double,
     val totalProfit: Double,
-    val totalValue: Double
+    val totalValue: Double,
+    val contestNumber: Int
 )

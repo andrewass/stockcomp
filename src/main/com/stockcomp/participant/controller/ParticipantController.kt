@@ -69,8 +69,11 @@ class ParticipantController(
     }
 
     @GetMapping("/participant-history")
-    fun getParticipantHistory(@RequestParam ident: String): ResponseEntity<List<ParticipantDto>> =
-        participantService.getParticipantHistory(ident)
+    fun getParticipantHistory(
+        @AuthenticationPrincipal jwt: Jwt
+    ): ResponseEntity<List<ParticipantDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { participantService.getParticipantHistory(it) }
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
 }

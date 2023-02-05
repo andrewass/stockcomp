@@ -28,7 +28,7 @@ class InvestmentOrderController(
             .let { ResponseEntity(HttpStatus.OK) }
 
 
-    @PostMapping("/delete-order")
+    @DeleteMapping("/delete-order")
     fun deleteInvestmentOrder(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam orderId: Long,

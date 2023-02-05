@@ -24,9 +24,9 @@ class DefaultInvestmentService(
             .investments.firstOrNull { it.symbol == symbol }
 
 
-    override fun getAllInvestmentsForParticipant(ident: String, contestNumber: Int): List<Investment> =
-        participantService.getParticipant(contestNumber, ident)
-            .let { investmentRepository.findAllByParticipant(it) }
+    override fun getAllInvestmentsForParticipant(ident: String): List<Investment> =
+        participantService.getActiveParticipantsByUser(ident)
+            .flatMap { investmentRepository.findAllByParticipant(it) }
 
 
     override fun updateInvestments() {

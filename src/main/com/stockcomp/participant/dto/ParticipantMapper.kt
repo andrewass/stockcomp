@@ -21,5 +21,6 @@ fun mapToInvestmentDto(source: Investment) =
         averageUnitCost = source.averageUnitCost,
         symbol = source.symbol,
         totalProfit = source.totalProfit,
-        totalValue = source.totalValue
+        totalValue = source.totalValue,
+        contestNumber = source.participant.contest.contestNumber
     )

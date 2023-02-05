@@ -20,11 +20,10 @@ class InvestmentController(
 
     @GetMapping("/get-all")
     fun getAllFromContest(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam contestNumber: Int, @RequestParam ident: String
+        @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<List<InvestmentDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let {  investmentService.getAllInvestmentsForParticipant(it, contestNumber) }
+            .let {  investmentService.getAllInvestmentsForParticipant(it) }
             .map { mapToInvestmentDto(it) }
             .let { ResponseEntity.ok(it) }
 
