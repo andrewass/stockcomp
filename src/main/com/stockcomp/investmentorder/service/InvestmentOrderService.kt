@@ -9,7 +9,7 @@ interface InvestmentOrderService {
 
     fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, ident: String)
 
-    fun deleteInvestmentOrder(username: String, orderId: Long): Long
+    fun deleteInvestmentOrder(email: String, orderId: Long): Long
 
     fun getAllOrdersByStatus(statusList: List<OrderStatus>, ident: String) : List<InvestmentOrder>
 

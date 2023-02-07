@@ -5,7 +5,6 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
-import com.stockcomp.contest.service.mapToContestDto
 import com.stockcomp.exception.handler.CustomExceptionHandler
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -25,7 +25,7 @@ class DefaultOrderProcessService(
     private val investmentRepository: InvestmentRepository,
     private val symbolService: SymbolService,
     private val meterRegistry: SimpleMeterRegistry
-) : OrderProcessService {
+) : InvestmentOrderProcessService {
 
     private val logger = LoggerFactory.getLogger(DefaultOrderProcessService::class.java)
 

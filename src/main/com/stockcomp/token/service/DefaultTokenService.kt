@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 class DefaultTokenService : TokenService {
 
     override fun extractEmailFromToken(token: Jwt): String {
-        return when (extractIssuerFromToken(token)) {
+        return when (extractIssuerFromToken()) {
             TokenIssuer.CUSTOM_AUTH -> extractEmailFromCustomAuth(token)
             else -> throw RuntimeException("Unsupported issuer")
         }
@@ -16,5 +16,5 @@ class DefaultTokenService : TokenService {
     private fun extractEmailFromCustomAuth(token: Jwt): String =
         token.getClaimAsString("sub")
 
-    private fun extractIssuerFromToken(token: Jwt) = TokenIssuer.CUSTOM_AUTH
+    private fun extractIssuerFromToken() = TokenIssuer.CUSTOM_AUTH
 }

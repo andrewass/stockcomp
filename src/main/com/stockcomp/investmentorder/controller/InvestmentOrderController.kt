@@ -2,7 +2,7 @@ package com.stockcomp.investmentorder.controller
 
 import com.stockcomp.investmentorder.dto.*
 import com.stockcomp.investmentorder.service.InvestmentOrderService
-import com.stockcomp.investmentorder.service.OrderProcessService
+import com.stockcomp.investmentorder.service.InvestmentOrderProcessService
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/investmentorder")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
-    private val orderProcessService: OrderProcessService,
+    private val orderProcessService: InvestmentOrderProcessService,
     private val tokenService: TokenService
 ) {
 

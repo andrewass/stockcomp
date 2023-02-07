@@ -8,8 +8,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest(properties = {
         "admin.password=admin",
-        "admin.email=admin@admin.com",
-        "application.runner.enabled=false"
+        "admin.email=admin@admin.com"
 }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class IntegrationTest {
 
