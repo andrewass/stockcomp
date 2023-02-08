@@ -6,6 +6,4 @@ interface InvestmentService {
     fun getInvestmentForSymbol(contestNumber: Int, ident: String, symbol: String): Investment?
 
     fun getAllInvestmentsForParticipant(ident: String): List<Investment>
-
-    fun updateInvestments()
 }

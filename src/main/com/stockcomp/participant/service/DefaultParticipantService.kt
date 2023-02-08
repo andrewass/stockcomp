@@ -45,20 +45,15 @@ class DefaultParticipantService(
             .let { participantRepository.findAllByUser(it) }
             .filter {
                 it.contest.contestStatus in listOf(
-                    ContestStatus.RUNNING,
-                    ContestStatus.STOPPED,
-                    ContestStatus.COMPLETED
+                    ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.COMPLETED
                 )
             }
-
 
     override fun signUpParticipant(username: String, contestNumber: Int) {
         val contest = contestService.findByContestNumber(contestNumber)
         assert(
             contest.contestStatus in listOf(
-                ContestStatus.RUNNING,
-                ContestStatus.STOPPED,
-                ContestStatus.AWAITING_START
+                ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START
             )
         )
         Participant(
