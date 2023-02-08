@@ -9,7 +9,7 @@ import com.stockcomp.investmentorder.entity.OrderStatus.*
 import com.stockcomp.investmentorder.entity.TransactionType.BUY
 import com.stockcomp.investmentorder.entity.TransactionType.SELL
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
-import com.stockcomp.investmentorder.service.DefaultOrderProcessService
+import com.stockcomp.investmentorder.service.DefaultInvestmentOrderProcessService
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.InvestmentRepository
@@ -49,7 +49,7 @@ internal class DefaultOrderProcessServiceTest {
     private lateinit var meterRegistry: SimpleMeterRegistry
 
     @InjectMockKs
-    private lateinit var processOrdersService: DefaultOrderProcessService
+    private lateinit var processOrdersService: DefaultInvestmentOrderProcessService
 
     private val contest = Contest(
         contestNumber = 1, startTime = LocalDateTime.now(), endTime = LocalDateTime.now().plusWeeks(4)

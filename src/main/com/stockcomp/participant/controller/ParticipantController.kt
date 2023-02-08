@@ -3,7 +3,6 @@ package com.stockcomp.participant.controller
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.dto.ParticipantDto
 import com.stockcomp.participant.dto.mapToParticipantDto
-import com.stockcomp.participant.service.MaintainParticipantService
 import com.stockcomp.participant.service.ParticipantService
 import com.stockcomp.token.service.TokenService
 import com.stockcomp.user.service.UserService
@@ -19,8 +18,7 @@ class ParticipantController(
     private val tokenService: TokenService,
     private val userService: UserService,
     private val contestService: ContestService,
-    private val participantService: ParticipantService,
-    private val maintainParticipantService: MaintainParticipantService
+    private val participantService: ParticipantService
 ) {
 
     @PostMapping("/sign-up-participant")
@@ -55,18 +53,12 @@ class ParticipantController(
             ?: ResponseEntity(HttpStatus.OK)
     }
 
-
     @GetMapping("/sorted-participants")
     fun getSortedParticipants(@RequestParam contestNumber: Int): ResponseEntity<List<ParticipantDto>> =
         participantService.getParticipantsSortedByRank(contestNumber)
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
 
-
-    @PostMapping("/maintain-participants")
-    fun maintainParticipants() {
-        maintainParticipantService.maintainParticipants()
-    }
 
     @GetMapping("/participant-history")
     fun getParticipantHistory(

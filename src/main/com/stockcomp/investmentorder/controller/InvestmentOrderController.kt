@@ -64,10 +64,4 @@ class InvestmentOrderController(
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
-
-    @PostMapping("/process-orders")
-    fun processInvestmentOrders(): Boolean {
-        orderProcessService.processInvestmentOrders()
-        return true
-    }
 }

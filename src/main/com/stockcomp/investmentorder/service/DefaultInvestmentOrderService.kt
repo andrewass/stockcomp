@@ -1,6 +1,5 @@
 package com.stockcomp.investmentorder.service
 
-import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.exception.InvalidStateException
@@ -54,12 +53,6 @@ class DefaultInvestmentOrderService(
     ): List<InvestmentOrder> =
         findOrdersByParticipantAndSymbol(ident, contestNumber, symbol, statusList)
 
-
-    override fun terminateRemainingOrders(contest: Contest) {
-        investmentOrderRepository.findAllByContestAndOrderStatus(contest, OrderStatus.ACTIVE)
-            .onEach { it.orderStatus = OrderStatus.TERMINATED }
-            .also { investmentOrderRepository.saveAll(it) }
-    }
 
     private fun findOrdersByParticipantAndSymbol(
         username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>

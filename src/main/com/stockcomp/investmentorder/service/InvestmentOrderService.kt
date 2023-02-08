@@ -1,6 +1,5 @@
 package com.stockcomp.investmentorder.service
 
-import com.stockcomp.contest.entity.Contest
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
@@ -17,6 +16,4 @@ interface InvestmentOrderService {
         contestNumber: Int, symbol: String,
         statusList: List<OrderStatus>, ident: String
     ): List<InvestmentOrder>
-
-    fun terminateRemainingOrders(contest: Contest)
 }

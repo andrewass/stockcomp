@@ -17,6 +17,4 @@ class DefaultParticipantMaintenanceService(
     override fun maintainParticipants() {
         TODO("Not yet implemented")
     }
-
-
 }
