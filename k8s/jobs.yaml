@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: process-orders
+  name: process-investment-orders
 spec:
   schedule: "* * * * *"
   successfulJobsHistoryLimit: 1
@@ -20,14 +20,14 @@ spec:
                 - -v
                 - -X
                 - POST
-                - http://stockcomp-service:8080/investmentorder/process-orders
+                - http://stockcomp-service:8080/contest-operations/process-investment-orders
 
 ---
 
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: maintain-participants
+  name: maintain-investments
 spec:
   schedule: "* * * * *"
   successfulJobsHistoryLimit: 1
@@ -38,7 +38,7 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: maintain-participants
+            - name: maintain-investments
               image: curlimages/curl:7.87.0
               imagePullPolicy: IfNotPresent
               command:
@@ -46,4 +46,56 @@ spec:
                 - -v
                 - -X
                 - POST
-                - http://stockcomp-service:8080/participant/maintain-participants
+                - http://stockcomp-service:8080/contest-operations/maintain-investments
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: maintain-contest-status
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: maintain-contest-status
+              image: curlimages/curl:7.87.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - curl
+                - -v
+                - -X
+                - POST
+                - http://stockcomp-service:8080/contest-operations/maintain-contest-status
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-leaderboard
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: update-leaderboard
+              image: curlimages/curl:7.87.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - curl
+                - -v
+                - -X
+                - POST
+                - http://stockcomp-service:8080/contest-operations/update-leaderboard

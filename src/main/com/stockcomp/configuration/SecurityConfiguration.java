@@ -43,8 +43,8 @@ public class SecurityConfiguration {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/task/*", "/actuator/*","/user/*","/investmentorder/process-orders",
-                                "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs")
+                        .requestMatchers("/task/*", "/actuator/*","/user/*",
+                                "/contest-operations/*", "/swagger-ui/*", "/swagger-resources/**", "/v2/api-docs")
                         .permitAll()
                         .anyRequest().authenticated()
                 ).oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)

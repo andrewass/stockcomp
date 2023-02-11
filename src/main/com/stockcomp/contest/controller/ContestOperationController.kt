@@ -17,7 +17,7 @@ class ContestOperationController(
         contestOperationService.updateLeaderboard()
     }
 
-    @PostMapping("/maintain-contest")
+    @PostMapping("/maintain-contest-status")
     fun maintainContestStatus() {
         contestOperationService.maintainContestStatus()
     }
