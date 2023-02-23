@@ -14,7 +14,7 @@ fun mapToLeaderboardEntryDto(src : LeaderboardEntry) =
         ranking = src.ranking,
         contestCount = src.contestCount,
         score = src.score,
-        displayName = src.user.fullName,
+        displayName = src.user.username,
         country = src.user.country,
         medals = src.medals.map { mapToMedalDto(it) }
     )

@@ -22,7 +22,7 @@ class Contest(
     val contestNumber: Int,
 
     @Enumerated(EnumType.STRING)
-    var contestStatus : ContestStatus = ContestStatus.AWAITING_START,
+    var contestStatus: ContestStatus = ContestStatus.AWAITING_START,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "LEADERBOARD_UPDATE")
@@ -36,4 +36,8 @@ class Contest(
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val medals: MutableList<Medal> = mutableListOf()
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    override fun equals(other: Any?): Boolean =
+        other is Contest && other.contestNumber == contestNumber
+}

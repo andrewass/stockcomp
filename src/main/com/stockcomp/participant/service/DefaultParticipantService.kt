@@ -26,10 +26,10 @@ class DefaultParticipantService(
             .let { participantRepository.findAllByContestOrderByRankAsc(it) }
 
 
-    override fun getParticipant(contestNumber: Int, username: String): Participant? =
+    override fun getParticipant(contestNumber: Int, email: String): Participant? =
         participantRepository.findByContestAndUser(
             contestService.findByContestNumber(contestNumber),
-            userService.findUserByUsername(username)
+            userService.findUserByEmail(email)
         )
 
     override fun getAllByContest(contest: Contest): List<Participant> =
@@ -49,7 +49,7 @@ class DefaultParticipantService(
                 )
             }
 
-    override fun signUpParticipant(username: String, contestNumber: Int) {
+    override fun signUpParticipant(email: String, contestNumber: Int) {
         val contest = contestService.findByContestNumber(contestNumber)
         assert(
             contest.contestStatus in listOf(
@@ -57,7 +57,7 @@ class DefaultParticipantService(
             )
         )
         Participant(
-            user = userService.findUserByUsername(username)!!,
+            user = userService.findUserByEmail(email),
             contest = contest,
             rank = contest.participantCount + 1
         ).also { participantRepository.save(it) }

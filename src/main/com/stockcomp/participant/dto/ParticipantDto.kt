@@ -1,7 +1,5 @@
 package com.stockcomp.participant.dto
 
-import java.time.LocalDateTime
-
 data class ParticipantDto(
     val displayName : String?,
     val rank: Int?,
@@ -9,6 +7,5 @@ data class ParticipantDto(
     val totalInvestmentValue: Double,
     val remainingFunds: Double,
     val country: String?,
-    val startTime: LocalDateTime,
     val contestNumber: Int
 )

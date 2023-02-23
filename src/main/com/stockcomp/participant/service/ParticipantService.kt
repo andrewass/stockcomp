@@ -7,7 +7,7 @@ interface ParticipantService {
 
     fun getParticipantsSortedByRank(contestNumber: Int): List<Participant>
 
-    fun getParticipant(contestNumber: Int, username: String): Participant?
+    fun getParticipant(contestNumber: Int, email: String): Participant?
 
     fun getAllByContest(contest: Contest) : List<Participant>
 
@@ -15,7 +15,7 @@ interface ParticipantService {
 
     fun getParticipantHistory(username: String): List<Participant>
 
-    fun signUpParticipant(username: String, contestNumber: Int)
+    fun signUpParticipant(email: String, contestNumber: Int)
 
     fun saveParticipant(participant: Participant)
 

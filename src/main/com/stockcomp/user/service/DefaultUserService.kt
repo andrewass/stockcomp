@@ -13,15 +13,19 @@ class DefaultUserService @Autowired constructor(
     private val userRepository: UserRepository
 ) : UserService {
 
+    private val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+
     override fun findUserByTokenClaim(email: String): User =
         userRepository.findByEmail(email)
-            ?: userRepository.save(User(username = email, email = email))
+            ?: createUser(email)
 
     override fun findUserByEmail(email: String): User = userRepository.findByEmail(email)
 
     override fun updateUser(user: User, userDetailsDto: UserDetailsDto) {
         user.also {
-            it.country = userDetailsDto.country
+            it.country = userDetailsDto.country ?: it.country
+            it.username = userDetailsDto.username ?: it.username
+            it.fullName = userDetailsDto.fullName ?: it.fullName
             userRepository.save(it)
         }
     }
@@ -39,7 +43,17 @@ class DefaultUserService @Autowired constructor(
 
 
     private fun createUser(email: String): User {
-        return User(email = email, username = email)
+        var username: String
+        do {
+            username = generateRandomUsername()
+        } while (userRepository.existsByUsername(username))
+
+        return User(email = email, username = username)
             .let { userRepository.save(it) }
     }
+
+
+    private fun generateRandomUsername(): String =
+        (1..15).map { allowedChars.random() }
+            .joinToString("")
 }
