@@ -1,7 +1,5 @@
 package com.stockcomp.configuration;
 
-import com.stockcomp.user.service.DefaultUserService;
-import com.stockcomp.user.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +19,6 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final UserService userService;
-
     @Value("${admin.password}")
     private String adminPassword;
 
@@ -32,9 +28,6 @@ public class SecurityConfiguration {
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     String jwkSetUri;
 
-    public SecurityConfiguration(DefaultUserService userService) {
-        this.userService = userService;
-    }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
@@ -77,14 +70,5 @@ public class SecurityConfiguration {
 
     @PostConstruct
     private void createAdminUser() {
-        var adminUsername = "admin";
-        var existingAdmin = userService.findUserByUsername(adminUsername);
-        if (existingAdmin == null) {
-            /*
-            userService.signUpUser(
-                    new SignUpRequest(adminUsername, adminPassword, adminEmail, Role.ADMIN));
-
-             */
-        }
     }
 }

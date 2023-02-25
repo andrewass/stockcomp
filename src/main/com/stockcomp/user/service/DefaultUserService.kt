@@ -21,6 +21,9 @@ class DefaultUserService @Autowired constructor(
 
     override fun findUserByEmail(email: String): User = userRepository.findByEmail(email)
 
+    override fun findUserByUsername(username: String): User =
+        userRepository.findByUsername(username)
+
     override fun updateUser(user: User, userDetailsDto: UserDetailsDto) {
         user.also {
             it.country = userDetailsDto.country ?: it.country
@@ -36,11 +39,6 @@ class DefaultUserService @Autowired constructor(
 
     override fun verifyAdminUser(username: String): Boolean =
         userRepository.findByUsername(username).userRole == Role.ADMIN
-
-
-    override fun findUserByUsername(username: String): User? =
-        userRepository.findByUsername(username)
-
 
     private fun createUser(email: String): User {
         var username: String

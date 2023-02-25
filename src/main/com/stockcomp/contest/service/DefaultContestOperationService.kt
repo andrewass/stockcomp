@@ -30,7 +30,8 @@ class DefaultContestOperationService(
 
     override fun maintainInvestments() {
         investmentProcessService.maintainInvestments()
-        maintainParticipantValues()
+        maintainParticipanInvestmentValues()
+        maintainParticipantRanking()
     }
 
     override fun processInvestmentOrders() {
@@ -51,8 +52,13 @@ class DefaultContestOperationService(
             }
     }
 
-    private fun maintainParticipantValues() {
+    private fun maintainParticipanInvestmentValues() {
         contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
-            .forEach { participantService.maintainParticipantValues(it) }
+            .forEach { participantService.maintainParticipantInvestmentValues(it) }
+    }
+
+    private fun maintainParticipantRanking() {
+        contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
+            .forEach { participantService.maintainParticipantRanking(it) }
     }
 }

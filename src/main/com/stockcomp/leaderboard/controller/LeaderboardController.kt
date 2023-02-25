@@ -33,7 +33,7 @@ class LeaderboardController(
         @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<LeaderboardEntryDto> =
         tokenService.extractEmailFromToken(jwt)
-            .let { leaderboardService.getLeaderboardEntryForUserIdent(it) }
+            .let { leaderboardService.getLeaderboardEntryForEmail(it) }
             ?.let { ResponseEntity.ok(mapToLeaderboardEntryDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 }

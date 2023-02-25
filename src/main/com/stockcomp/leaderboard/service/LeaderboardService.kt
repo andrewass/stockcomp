@@ -7,7 +7,7 @@ interface LeaderboardService {
 
     fun getSortedLeaderboardEntries(): List<LeaderboardEntry>
 
-    fun getLeaderboardEntryForUserIdent(ident: String): LeaderboardEntry?
+    fun getLeaderboardEntryForEmail(email: String): LeaderboardEntry?
 
     fun getLeaderboardEntryForUser(user: User): LeaderboardEntry?
 

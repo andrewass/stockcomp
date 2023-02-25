@@ -74,11 +74,18 @@ class DefaultParticipantService(
         participantRepository.save(participant)
     }
 
-    override fun maintainParticipantValues(contest: Contest) {
+    override fun maintainParticipantInvestmentValues(contest: Contest) {
         logger.info("Maintaining participant values for contest number : ${contest.contestNumber}")
         getAllByContest(contest)
             .forEach { participant ->
                 participant.updateInvestmentValues()
             }
+    }
+
+    override fun maintainParticipantRanking(contest: Contest) {
+        logger.info("Maintaining participant ranking for contest number : ${contest.contestNumber}")
+        var rankCounter = 1
+        getAllByContest(contest).sortedByDescending{ it.totalValue }
+            .forEach { it.rank = rankCounter++ }
     }
 }

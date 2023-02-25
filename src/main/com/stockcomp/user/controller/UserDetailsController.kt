@@ -16,7 +16,10 @@ class UserDetailsController(
 ) {
 
     @GetMapping("/get-details")
-    fun getUserDetails(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<UserDetailsDto> =
+    fun getUserDetails(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestParam username: String?
+    ): ResponseEntity<UserDetailsDto> =
         tokenService.extractEmailFromToken(jwt)
             .let { userService.findUserByTokenClaim(it) }
             .let { mapToUserDetailsDto(it) }

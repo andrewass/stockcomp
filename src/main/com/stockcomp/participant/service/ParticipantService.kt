@@ -9,7 +9,7 @@ interface ParticipantService {
 
     fun getParticipant(contestNumber: Int, email: String): Participant?
 
-    fun getAllByContest(contest: Contest) : List<Participant>
+    fun getAllByContest(contest: Contest): List<Participant>
 
     fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant>
 
@@ -19,7 +19,9 @@ interface ParticipantService {
 
     fun saveParticipant(participant: Participant)
 
-    fun getActiveParticipantsByUser(username: String) : List<Participant>
+    fun getActiveParticipantsByUser(username: String): List<Participant>
 
-    fun maintainParticipantValues(contest: Contest)
+    fun maintainParticipantInvestmentValues(contest: Contest)
+
+    fun maintainParticipantRanking(contest: Contest)
 }

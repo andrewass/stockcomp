@@ -9,7 +9,7 @@ interface UserService {
 
     fun findUserByTokenClaim(email: String): User
 
-    fun findUserByUsername(username: String): User?
+    fun findUserByUsername(username: String): User
 
     fun updateUser(user: User, userDetailsDto: UserDetailsDto)
 

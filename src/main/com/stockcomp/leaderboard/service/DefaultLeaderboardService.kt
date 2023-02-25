@@ -18,8 +18,8 @@ class DefaultLeaderboardService(
         leaderboardEntryRepository.findAllByOrderByRanking()
 
 
-    override fun getLeaderboardEntryForUserIdent(ident: String): LeaderboardEntry? =
-        userService.findUserByUsername(ident)
+    override fun getLeaderboardEntryForEmail(email: String): LeaderboardEntry? =
+        userService.findUserByEmail(email)
             .let { leaderboardEntryRepository.findByUser(it) }
 
 
