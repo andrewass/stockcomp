@@ -14,8 +14,6 @@ import java.util.List;
 @Repository
 public interface InvestmentOrderRepository extends JpaRepository<InvestmentOrder, Long> {
 
-    List<InvestmentOrder> findAllByParticipantAndOrderStatusIn(Participant participant, List<OrderStatus> orderStatus);
-
     List<InvestmentOrder> findAllByParticipantAndSymbolAndOrderStatusIn(
             Participant participant, String symbol, List<OrderStatus> orderStatus
     );

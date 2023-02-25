@@ -20,9 +20,9 @@ class DefaultInvestmentOrderService(
     private val contestRepository: ContestRepository
 ) : InvestmentOrderService {
 
-    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, ident: String) {
+    override fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, email: String) {
         InvestmentOrder(
-            participant = getParticipant(ident, request.contestNumber),
+            participant = getParticipant(email, request.contestNumber),
             currency = request.currency,
             acceptedPrice = request.acceptedPrice,
             expirationTime = request.expirationTime,
@@ -41,28 +41,22 @@ class DefaultInvestmentOrderService(
         return orderId
     }
 
-    override fun getAllOrdersByStatus(statusList: List<OrderStatus>, ident: String): List<InvestmentOrder> =
-        participantService.getActiveParticipantsByUser(ident)
+    override fun getAllOrdersByStatus(statusList: List<OrderStatus>, email: String): List<InvestmentOrder> =
+        participantService.getActiveParticipantsByUser(email)
             .flatMap { it.investmentOrders }
             .filter { statusList.contains(it.orderStatus) }
 
 
     override fun getSymbolOrdersByStatus(
         contestNumber: Int, symbol: String,
-        statusList: List<OrderStatus>, ident: String
-    ): List<InvestmentOrder> =
-        findOrdersByParticipantAndSymbol(ident, contestNumber, symbol, statusList)
-
-
-    private fun findOrdersByParticipantAndSymbol(
-        username: String, contestNumber: Int, symbol: String, orderStatus: List<OrderStatus>
+        statusList: List<OrderStatus>, email: String
     ): List<InvestmentOrder> =
         contestRepository.findByContestNumber(contestNumber)
-            .let { participantService.getAllByUsernameAndContest(username, it).first() }
-            .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, orderStatus) }
+            .let { participantService.getAllByEmailAndContest(email, it).first() }
+            .let { investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatusIn(it, symbol, statusList) }
 
 
     private fun getParticipant(username: String, contestNumber: Int): Participant =
         contestRepository.findByContestNumberAndContestStatus(contestNumber, ContestStatus.RUNNING)
-            .let { participantService.getAllByUsernameAndContest(username, it) }.first()
+            .let { participantService.getAllByEmailAndContest(username, it) }.first()
 }

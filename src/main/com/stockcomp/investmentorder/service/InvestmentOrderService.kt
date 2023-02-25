@@ -6,14 +6,14 @@ import com.stockcomp.investmentorder.entity.OrderStatus
 
 interface InvestmentOrderService {
 
-    fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, ident: String)
+    fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, email: String)
 
     fun deleteInvestmentOrder(email: String, orderId: Long): Long
 
-    fun getAllOrdersByStatus(statusList: List<OrderStatus>, ident: String) : List<InvestmentOrder>
+    fun getAllOrdersByStatus(statusList: List<OrderStatus>, email: String) : List<InvestmentOrder>
 
     fun getSymbolOrdersByStatus(
         contestNumber: Int, symbol: String,
-        statusList: List<OrderStatus>, ident: String
+        statusList: List<OrderStatus>, email: String
     ): List<InvestmentOrder>
 }

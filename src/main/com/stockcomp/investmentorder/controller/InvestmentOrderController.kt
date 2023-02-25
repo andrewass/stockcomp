@@ -39,7 +39,7 @@ class InvestmentOrderController(
     @PostMapping("/get-all-by-status")
     fun getInvestmentOrders(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody request: GetAllInvestmentOrders,
+        @RequestBody request: GetAllInvestmentOrdersRequest,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
             .let { investmentOrderService.getAllOrdersByStatus(request.statusList, it) }

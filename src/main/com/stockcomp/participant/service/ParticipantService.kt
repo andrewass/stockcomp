@@ -11,7 +11,7 @@ interface ParticipantService {
 
     fun getAllByContest(contest: Contest) : List<Participant>
 
-    fun getAllByUsernameAndContest(username: String, contest: Contest): List<Participant>
+    fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant>
 
     fun getParticipantHistory(username: String): List<Participant>
 
@@ -20,4 +20,6 @@ interface ParticipantService {
     fun saveParticipant(participant: Participant)
 
     fun getActiveParticipantsByUser(username: String) : List<Participant>
+
+    fun maintainParticipantValues(contest: Contest)
 }

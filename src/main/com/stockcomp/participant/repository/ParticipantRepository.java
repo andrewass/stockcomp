@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
-    @Query("SELECT p FROM Participant p inner join p.user u where u.username = ?1 and p.contest = ?2")
-    List<Participant> findAllByUsernameAndContest(String username, Contest contest);
+    @Query("SELECT p FROM Participant p inner join p.user u where u.email = ?1 and p.contest = ?2")
+    List<Participant> findAllByEmailAndContest(String username, Contest contest);
 
     @Query("SELECT p FROM Participant  p where p.contest = ?1")
     List<Participant> findAllByContest(Contest contest);

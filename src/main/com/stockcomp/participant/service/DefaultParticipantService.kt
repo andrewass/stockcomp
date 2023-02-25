@@ -6,6 +6,7 @@ import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.user.service.UserService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,9 +18,12 @@ class DefaultParticipantService(
     private val userService: UserService
 ) : ParticipantService {
 
+    private val logger = LoggerFactory.getLogger(DefaultParticipantService::class.java)
+
     override fun getActiveParticipantsByUser(username: String): List<Participant> =
         contestService.getContests(listOf(ContestStatus.RUNNING, ContestStatus.STOPPED))
-            .flatMap{ getAllByUsernameAndContest(username, it) }
+            .flatMap { getAllByEmailAndContest(username, it) }
+
 
     override fun getParticipantsSortedByRank(contestNumber: Int): List<Participant> =
         contestService.findByContestNumber(contestNumber)
@@ -36,8 +40,8 @@ class DefaultParticipantService(
         participantRepository.findAllByContest(contest)
 
 
-    override fun getAllByUsernameAndContest(username: String, contest: Contest) : List<Participant> =
-        participantRepository.findAllByUsernameAndContest(username, contest)
+    override fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant> =
+        participantRepository.findAllByEmailAndContest(email, contest)
 
 
     override fun getParticipantHistory(username: String): List<Participant> =
@@ -68,5 +72,13 @@ class DefaultParticipantService(
 
     override fun saveParticipant(participant: Participant) {
         participantRepository.save(participant)
+    }
+
+    override fun maintainParticipantValues(contest: Contest) {
+        logger.info("Maintaining participant values for contest number : ${contest.contestNumber}")
+        getAllByContest(contest)
+            .forEach { participant ->
+                participant.updateInvestmentValues()
+            }
     }
 }

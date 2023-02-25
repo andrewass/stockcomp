@@ -40,7 +40,7 @@ class Participant(
 
 ) : BaseEntity() {
 
-    fun updateValues(){
+    fun updateInvestmentValues(){
         val updatedTotalInvestmentsValue = investments.sumOf { it.totalValue }
         totalInvestmentValue = updatedTotalInvestmentsValue
         totalValue = remainingFunds + updatedTotalInvestmentsValue

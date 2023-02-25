@@ -5,6 +5,7 @@ import com.stockcomp.contest.entity.LeaderboardUpdateStatus
 import com.stockcomp.investment.service.InvestmentProcessService
 import com.stockcomp.investmentorder.service.InvestmentOrderProcessService
 import com.stockcomp.leaderboard.service.LeaderboardOperationService
+import com.stockcomp.participant.service.ParticipantService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -13,7 +14,8 @@ class DefaultContestOperationService(
     private val contestService: ContestService,
     private val investmentOrderProcessService: InvestmentOrderProcessService,
     private val investmentProcessService: InvestmentProcessService,
-    private val leaderboardOperationService: LeaderboardOperationService
+    private val leaderboardOperationService: LeaderboardOperationService,
+    private val participantService: ParticipantService
 ) : ContestOperationService {
 
     override fun updateLeaderboard() {
@@ -28,6 +30,7 @@ class DefaultContestOperationService(
 
     override fun maintainInvestments() {
         investmentProcessService.maintainInvestments()
+        maintainParticipantValues()
     }
 
     override fun processInvestmentOrders() {
@@ -46,5 +49,10 @@ class DefaultContestOperationService(
                     contestService.saveContest(it)
                 }
             }
+    }
+
+    private fun maintainParticipantValues() {
+        contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
+            .forEach { participantService.maintainParticipantValues(it) }
     }
 }
