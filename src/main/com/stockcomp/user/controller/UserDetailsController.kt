@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/user")
 class UserDetailsController(
-    private val userService: UserService,
+    private val userService: UserService,   
     private val tokenService: TokenService
 ) {
 
@@ -21,7 +21,11 @@ class UserDetailsController(
         @RequestParam username: String?
     ): ResponseEntity<UserDetailsDto> =
         tokenService.extractEmailFromToken(jwt)
-            .let { userService.findUserByTokenClaim(it) }
+            .let {
+                username
+                    ?.let { userService.findUserByUsername(username) }
+                    ?: userService.findUserByTokenClaim(it)
+            }
             .let { mapToUserDetailsDto(it) }
             .let { ResponseEntity.ok(it) }
 

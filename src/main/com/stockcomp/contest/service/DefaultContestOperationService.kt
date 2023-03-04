@@ -6,6 +6,7 @@ import com.stockcomp.investment.service.InvestmentProcessService
 import com.stockcomp.investmentorder.service.InvestmentOrderProcessService
 import com.stockcomp.leaderboard.service.LeaderboardOperationService
 import com.stockcomp.participant.service.ParticipantService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -17,6 +18,8 @@ class DefaultContestOperationService(
     private val leaderboardOperationService: LeaderboardOperationService,
     private val participantService: ParticipantService
 ) : ContestOperationService {
+
+    private val logger = LoggerFactory.getLogger(DefaultContestOperationService::class.java)
 
     override fun updateLeaderboard() {
         contestService.getContests(listOf(ContestStatus.COMPLETED))
@@ -42,10 +45,12 @@ class DefaultContestOperationService(
         contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
             .forEach {
                 if (it.contestStatus == ContestStatus.AWAITING_START && it.startTime.isBefore(LocalDateTime.now())) {
+                    logger.info("Changing contest status to RUNNING for contest ${it.contestNumber}")
                     it.contestStatus = ContestStatus.RUNNING
                     contestService.saveContest(it)
                 }
                 if (it.endTime.isBefore(LocalDateTime.now())) {
+                    logger.info("Changing contest status to COMPLETED for contest ${it.contestNumber}")
                     it.contestStatus = ContestStatus.COMPLETED
                     contestService.saveContest(it)
                 }
