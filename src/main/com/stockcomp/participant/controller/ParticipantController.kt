@@ -23,7 +23,8 @@ class ParticipantController(
 
     @PostMapping("/sign-up-participant")
     fun signUp(
-        @RequestParam contestNumber: Int, @AuthenticationPrincipal jwt: Jwt
+        @RequestParam contestNumber: Int,
+        @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<HttpStatus> {
         tokenService.extractEmailFromToken(jwt)
             .let { userService.findUserByTokenClaim(it) }
@@ -33,7 +34,8 @@ class ParticipantController(
 
     @GetMapping("/participant-by-contest")
     fun getParticipant(
-        @RequestParam contestNumber: Int, @AuthenticationPrincipal jwt: Jwt
+        @RequestParam contestNumber: Int,
+        @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<ParticipantDto>? =
         tokenService.extractEmailFromToken(jwt)
             .let { userService.findUserByTokenClaim(it) }
@@ -62,10 +64,9 @@ class ParticipantController(
 
     @GetMapping("/participant-history")
     fun getParticipantHistory(
-        @AuthenticationPrincipal jwt: Jwt
+        @RequestParam username: String,
     ): ResponseEntity<List<ParticipantDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { participantService.getParticipantHistory(it) }
+        participantService.getParticipantHistory(username)
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
 }

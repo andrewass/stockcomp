@@ -47,11 +47,8 @@ class DefaultParticipantService(
     override fun getParticipantHistory(username: String): List<Participant> =
         userService.findUserByUsername(username)
             .let { participantRepository.findAllByUser(it) }
-            .filter {
-                it.contest.contestStatus in listOf(
-                    ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.COMPLETED
-                )
-            }
+            .filter { it.contest.contestStatus == ContestStatus.COMPLETED }
+
 
     override fun signUpParticipant(email: String, contestNumber: Int) {
         val contest = contestService.findByContestNumber(contestNumber)
@@ -85,7 +82,7 @@ class DefaultParticipantService(
     override fun maintainParticipantRanking(contest: Contest) {
         logger.info("Maintaining participant ranking for contest number : ${contest.contestNumber}")
         var rankCounter = 1
-        getAllByContest(contest).sortedByDescending{ it.totalValue }
+        getAllByContest(contest).sortedByDescending { it.totalValue }
             .forEach { it.rank = rankCounter++ }
     }
 }
