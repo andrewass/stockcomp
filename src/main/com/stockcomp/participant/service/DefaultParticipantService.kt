@@ -33,7 +33,7 @@ class DefaultParticipantService(
     override fun getParticipant(contestNumber: Int, email: String): Participant? =
         participantRepository.findByContestAndUser(
             contestService.findByContestNumber(contestNumber),
-            userService.findUserByEmail(email)
+            userService.findUserByEmail(email)!!
         )
 
     override fun getAllByContest(contest: Contest): List<Participant> =
@@ -58,7 +58,7 @@ class DefaultParticipantService(
             )
         )
         Participant(
-            user = userService.findUserByEmail(email),
+            user = userService.findUserByEmail(email)!!,
             contest = contest,
             rank = contest.participantCount + 1
         ).also { participantRepository.save(it) }

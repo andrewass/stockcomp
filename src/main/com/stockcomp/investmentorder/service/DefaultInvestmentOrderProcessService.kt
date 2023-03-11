@@ -88,7 +88,7 @@ class DefaultInvestmentOrderProcessService(
 
     private fun processSellOrder(participant: Participant, realTimePriceDto: RealTimePrice, order: InvestmentOrder) {
         if (realTimePriceDto.price >= order.acceptedPrice) {
-            val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
+            val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)!!
             val amountToSell = Integer.min(investment.amount, order.totalAmount)
             investment.amount -= amountToSell
             participant.remainingFunds += amountToSell * realTimePriceDto.usdPrice

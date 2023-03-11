@@ -19,7 +19,7 @@ class DefaultUserService @Autowired constructor(
         userRepository.findByEmail(email)
             ?: createUser(email)
 
-    override fun findUserByEmail(email: String): User = userRepository.findByEmail(email)
+    override fun findUserByEmail(email: String): User? = userRepository.findByEmail(email)
 
     override fun findUserByUsername(username: String): User =
         userRepository.findByUsername(username)

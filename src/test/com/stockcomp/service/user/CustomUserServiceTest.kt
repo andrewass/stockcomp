@@ -35,7 +35,7 @@ internal class CustomUserServiceTest {
 
     @Test
     fun `should get peristed user`() {
-        val user = defaultUserService.findUserByEmail(email)
+        val user = defaultUserService.findUserByEmail(email)!!
 
         Assertions.assertEquals(username, user.username)
         Assertions.assertEquals(email, user.email)

@@ -26,5 +26,5 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
 
     fun findAllByContestOrderByRankAsc(contest: Contest): List<Participant>
 
-    fun findByContestAndUser(contest: Contest, user: User): Participant
+    fun findByContestAndUser(contest: Contest, user: User): Participant?
 }

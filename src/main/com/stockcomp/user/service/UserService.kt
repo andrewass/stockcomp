@@ -5,7 +5,7 @@ import com.stockcomp.user.entity.User
 
 interface UserService {
 
-    fun findUserByEmail(email: String): User
+    fun findUserByEmail(email: String): User?
 
     fun findUserByTokenClaim(email: String): User
 

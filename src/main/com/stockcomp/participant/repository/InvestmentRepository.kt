@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface InvestmentRepository : JpaRepository<Investment, Long> {
 
-    fun findBySymbolAndParticipant(symbol: String, participant: Participant): Investment
+    fun findBySymbolAndParticipant(symbol: String, participant: Participant): Investment?
 
     fun findAllByParticipant(participant: Participant): List<Investment>
 

@@ -20,7 +20,7 @@ class DefaultLeaderboardService(
 
     override fun getLeaderboardEntryForEmail(email: String): LeaderboardEntry? =
         userService.findUserByEmail(email)
-            .let { leaderboardEntryRepository.findByUser(it) }
+            ?.let { leaderboardEntryRepository.findByUser(it) }
 
 
     override fun getLeaderboardEntryForUser(user: User): LeaderboardEntry? =
