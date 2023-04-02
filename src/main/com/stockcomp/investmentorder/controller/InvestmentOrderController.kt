@@ -19,10 +19,10 @@ class InvestmentOrderController(
     @PostMapping("/place-order")
     fun placeInvestmentOrder(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody investmentOrderRequest: PlaceInvestmentOrderRequest
+        @RequestBody request: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
         tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.placeInvestmentOrder(investmentOrderRequest, it) }
+            .let { investmentOrderService.placeInvestmentOrder(request, it) }
             .let { ResponseEntity(HttpStatus.OK) }
 
 

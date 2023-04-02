@@ -4,6 +4,9 @@ import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
 import com.stockcomp.user.entity.User
 import com.stockcomp.user.service.UserService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,8 +17,8 @@ class DefaultLeaderboardService(
     private val userService: UserService
 ) : LeaderboardService {
 
-    override fun getSortedLeaderboardEntries(): List<LeaderboardEntry> =
-        leaderboardEntryRepository.findAllByOrderByRanking()
+    override fun getSortedLeaderboardEntries(pageNumber: Int, pageSize: Int): Page<LeaderboardEntry> =
+        leaderboardEntryRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("ranking")))
 
 
     override fun getLeaderboardEntryForEmail(email: String): LeaderboardEntry? =

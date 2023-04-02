@@ -23,9 +23,13 @@ class LeaderboardController(
 ) {
 
     @GetMapping("/sorted-entries")
-    fun getAllLeaderboardEntries(): ResponseEntity<List<LeaderboardEntryDto>> =
-        leaderboardService.getSortedLeaderboardEntries()
+    fun getAllLeaderboardEntries(
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int
+    ): ResponseEntity<List<LeaderboardEntryDto>> =
+        leaderboardService.getSortedLeaderboardEntries(pageNumber, pageSize).get()
             .map { mapToLeaderboardEntryDto(it) }
+            .toList()
             .let { ResponseEntity.ok(it) }
 
 
