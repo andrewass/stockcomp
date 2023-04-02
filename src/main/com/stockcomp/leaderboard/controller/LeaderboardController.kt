@@ -1,7 +1,9 @@
 package com.stockcomp.leaderboard.controller
 
 import com.stockcomp.leaderboard.dto.LeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.LeaderboardEntryPageDto
 import com.stockcomp.leaderboard.dto.mapToLeaderboardEntryDto
+import com.stockcomp.leaderboard.dto.mapToLeaderboardEntryPageDto
 import com.stockcomp.leaderboard.service.LeaderboardService
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
@@ -26,11 +28,9 @@ class LeaderboardController(
     fun getAllLeaderboardEntries(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
-    ): ResponseEntity<List<LeaderboardEntryDto>> =
-        leaderboardService.getSortedLeaderboardEntries(pageNumber, pageSize).get()
-            .map { mapToLeaderboardEntryDto(it) }
-            .toList()
-            .let { ResponseEntity.ok(it) }
+    ): ResponseEntity<LeaderboardEntryPageDto> =
+        leaderboardService.getSortedLeaderboardEntries(pageNumber, pageSize)
+            .let { ResponseEntity.ok(mapToLeaderboardEntryPageDto(it, pageNumber)) }
 
 
     @GetMapping("/user-entry")
