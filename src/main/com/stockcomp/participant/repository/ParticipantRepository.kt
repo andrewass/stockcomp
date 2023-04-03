@@ -4,6 +4,8 @@ import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.entity.User
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -25,6 +27,8 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
     fun findAllByContestOrderByTotalValueDesc(contest: Contest): List<Participant>
 
     fun findAllByContestOrderByRankAsc(contest: Contest): List<Participant>
+
+    fun findAllByContest(contest: Contest, request: PageRequest) : Page<Participant>
 
     fun findByContestAndUser(contest: Contest, user: User): Participant?
 }

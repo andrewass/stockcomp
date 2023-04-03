@@ -2,6 +2,7 @@ package com.stockcomp.participant.dto
 
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.entity.Participant
+import org.springframework.data.domain.Page
 
 fun mapToParticipantDto(source: Participant) =
     ParticipantDto(
@@ -13,6 +14,14 @@ fun mapToParticipantDto(source: Participant) =
         country = source.user.country,
         contestNumber = source.contest.contestNumber
     )
+
+
+fun mapToParticipantPageDto(source: Page<Participant>) =
+    ParticipantPageDto(
+        participants = source.get().map { mapToParticipantDto(it) }.toList(),
+        totalEntriesCount = source.totalElements
+    )
+
 
 fun mapToInvestmentDto(source: Investment) =
     InvestmentDto(

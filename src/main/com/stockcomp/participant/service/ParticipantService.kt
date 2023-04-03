@@ -2,10 +2,11 @@ package com.stockcomp.participant.service
 
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.participant.entity.Participant
+import org.springframework.data.domain.Page
 
 interface ParticipantService {
 
-    fun getParticipantsSortedByRank(contestNumber: Int): List<Participant>
+    fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant>
 
     fun getParticipant(contestNumber: Int, email: String): Participant?
 

@@ -7,6 +7,9 @@ import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.user.service.UserService
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,9 +28,9 @@ class DefaultParticipantService(
             .flatMap { getAllByEmailAndContest(username, it) }
 
 
-    override fun getParticipantsSortedByRank(contestNumber: Int): List<Participant> =
+    override fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant> =
         contestService.findByContestNumber(contestNumber)
-            .let { participantRepository.findAllByContestOrderByRankAsc(it) }
+            .let { participantRepository.findAllByContest(it, PageRequest.of(pageNumber, pageSize, Sort.by("rank"))) }
 
 
     override fun getParticipant(contestNumber: Int, email: String): Participant? =

@@ -23,6 +23,5 @@ fun mapToLeaderboardEntryDto(src: LeaderboardEntry) =
 fun mapToLeaderboardEntryPageDto(pageEntry: Page<LeaderboardEntry>, currentPage: Int) =
     LeaderboardEntryPageDto(
         entries = pageEntry.get().map { mapToLeaderboardEntryDto(it) }.toList(),
-        hasNext = currentPage < pageEntry.totalPages - 1,
-        hasPrevious = currentPage > 0
+        totalEntriesCount = pageEntry.totalElements
     )

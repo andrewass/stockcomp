@@ -2,7 +2,9 @@ package com.stockcomp.participant.controller
 
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.dto.ParticipantDto
+import com.stockcomp.participant.dto.ParticipantPageDto
 import com.stockcomp.participant.dto.mapToParticipantDto
+import com.stockcomp.participant.dto.mapToParticipantPageDto
 import com.stockcomp.participant.service.ParticipantService
 import com.stockcomp.token.service.TokenService
 import com.stockcomp.user.service.UserService
@@ -56,10 +58,13 @@ class ParticipantController(
     }
 
     @GetMapping("/sorted-participants")
-    fun getSortedParticipants(@RequestParam contestNumber: Int): ResponseEntity<List<ParticipantDto>> =
-        participantService.getParticipantsSortedByRank(contestNumber)
-            .map { mapToParticipantDto(it) }
-            .let { ResponseEntity.ok(it) }
+    fun getSortedParticipants(
+        @RequestParam contestNumber: Int,
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int
+    ): ResponseEntity<ParticipantPageDto> =
+        participantService.getParticipantsSortedByRank(contestNumber, pageNumber, pageSize)
+            .let { ResponseEntity.ok(mapToParticipantPageDto(it)) }
 
 
     @GetMapping("/participant-history")
