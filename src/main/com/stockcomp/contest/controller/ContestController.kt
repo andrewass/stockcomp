@@ -1,6 +1,7 @@
 package com.stockcomp.contest.controller
 
 import com.stockcomp.contest.dto.ContestDto
+import com.stockcomp.contest.dto.ContestPageDto
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.ContestStatus
@@ -15,6 +16,15 @@ import org.springframework.web.bind.annotation.*
 class ContestController(
     private val contestService: ContestService
 ) : CustomExceptionHandler() {
+
+    @GetMapping
+    fun getAllContestsSortedByContestNumber(
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int
+    ): ResponseEntity<ContestPageDto> =
+        contestService.getAllContestsSorted(pageNumber, pageSize)
+            .let { ResponseEntity.ok(mapToContestPageDto(it)) }
+
 
     @PostMapping("/get-by-status")
     fun getContestsByStatus(@RequestBody statusList: List<ContestStatus>): ResponseEntity<List<ContestDto>> =

@@ -1,14 +1,21 @@
 package com.stockcomp.contest.controller
 
 import com.stockcomp.contest.dto.ContestDto
+import com.stockcomp.contest.dto.ContestPageDto
 import com.stockcomp.contest.entity.Contest
+import org.springframework.data.domain.Page
 
 
-fun mapToContestDto(contest  : Contest) = ContestDto(
-    contestNumber = contest.contestNumber,
-    contestStatus = contest.contestStatus,
-    endTime = contest.endTime,
-    leaderboardUpdateStatus = contest.leaderboardUpdateStatus,
-    participantCount = contest.participantCount,
-    startTime = contest.startTime
+fun mapToContestDto(source: Contest) = ContestDto(
+    contestNumber = source.contestNumber,
+    contestStatus = source.contestStatus,
+    endTime = source.endTime,
+    leaderboardUpdateStatus = source.leaderboardUpdateStatus,
+    participantCount = source.participantCount,
+    startTime = source.startTime
+)
+
+fun mapToContestPageDto(source: Page<Contest>) = ContestPageDto(
+    contests = source.get().map { mapToContestDto(it) }.toList(),
+    totalEntriesCount = source.totalElements
 )

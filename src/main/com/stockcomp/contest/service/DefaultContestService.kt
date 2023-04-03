@@ -5,6 +5,9 @@ import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.repository.ContestRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -45,6 +48,11 @@ class DefaultContestService(
         contestRepository.findAllByContestStatusIn(
             listOf(ContestStatus.RUNNING, ContestStatus.STOPPED)
         ).firstOrNull()
+
+
+    override fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
+        contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestNumber")))
+
 
     override fun findByContestNumber(contestNumber: Int): Contest =
         contestRepository.findByContestNumber(contestNumber)

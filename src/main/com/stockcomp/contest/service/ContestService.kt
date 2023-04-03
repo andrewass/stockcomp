@@ -4,6 +4,7 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
+import org.springframework.data.domain.Page
 
 interface ContestService {
 
@@ -22,4 +23,6 @@ interface ContestService {
     fun saveContest(contest: Contest)
 
     fun getActiveContest(): Contest?
+
+    fun getAllContestsSorted(pageNumber: Int, pageSize: Int) : Page<Contest>
 }
