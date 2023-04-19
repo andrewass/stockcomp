@@ -24,5 +24,5 @@ interface ContestService {
 
     fun getActiveContest(): Contest?
 
-    fun getAllContestsSorted(pageNumber: Int, pageSize: Int) : Page<Contest>
+    fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest>
 }

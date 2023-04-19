@@ -1,10 +1,7 @@
 package com.stockcomp.participant.controller
 
 import com.stockcomp.contest.service.ContestService
-import com.stockcomp.participant.dto.ParticipantDto
-import com.stockcomp.participant.dto.ParticipantPageDto
-import com.stockcomp.participant.dto.mapToParticipantDto
-import com.stockcomp.participant.dto.mapToParticipantPageDto
+import com.stockcomp.participant.dto.*
 import com.stockcomp.participant.service.ParticipantService
 import com.stockcomp.token.service.TokenService
 import com.stockcomp.user.service.UserService
@@ -12,8 +9,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
+@Transactional
 @RestController
 @RequestMapping("/participant")
 class ParticipantController(
@@ -67,11 +66,11 @@ class ParticipantController(
             .let { ResponseEntity.ok(mapToParticipantPageDto(it)) }
 
 
-    @GetMapping("/participant-history")
-    fun getParticipantHistory(
+    @GetMapping("/detailed-participant-history")
+    fun getDetailedParticipantHistory(
         @RequestParam username: String,
-    ): ResponseEntity<List<ParticipantDto>> =
+    ): ResponseEntity<List<DetailedParticipantDto>> =
         participantService.getParticipantHistory(username)
-            .map { mapToParticipantDto(it) }
+            .map { mapToDetailedParticipant(it) }
             .let { ResponseEntity.ok(it) }
 }

@@ -17,7 +17,7 @@ class ContestController(
     private val contestService: ContestService
 ) : CustomExceptionHandler() {
 
-    @GetMapping
+    @GetMapping("/get-all-sorted")
     fun getAllContestsSortedByContestNumber(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int

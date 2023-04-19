@@ -4,6 +4,13 @@ import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.domain.Page
 
+fun mapToDetailedParticipant(source: Participant) =
+    DetailedParticipantDto(
+        participant = mapToParticipantDto(source),
+        investments = source.investments.map { mapToInvestmentDto(it) }
+    )
+
+
 fun mapToParticipantDto(source: Participant) =
     ParticipantDto(
         displayName = source.user.username,
