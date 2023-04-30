@@ -1,4 +1,4 @@
-package com.stockcomp.user.controller
+package com.stockcomp.user.dto
 
 import com.stockcomp.user.entity.UserRole
 import com.stockcomp.user.entity.UserStatus

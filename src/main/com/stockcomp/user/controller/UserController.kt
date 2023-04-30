@@ -1,6 +1,8 @@
 package com.stockcomp.user.controller
 
 import com.stockcomp.token.service.TokenService
+import com.stockcomp.user.dto.UserDetailsDto
+import com.stockcomp.user.dto.UserPageDto
 import com.stockcomp.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,6 +16,15 @@ class UserController(
     private val userService: UserService,
     private val tokenService: TokenService
 ) {
+
+    @GetMapping("/get-all-sorted")
+    fun getAllUsersSortedByEmail(
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int
+    ): ResponseEntity<UserPageDto> =
+        userService.getAllUsersSortedByEmail(pageNumber, pageSize)
+            .let { ResponseEntity.ok(mapToUserPageDto(it)) }
+
 
     @GetMapping("/get-details")
     fun getUserDetails(

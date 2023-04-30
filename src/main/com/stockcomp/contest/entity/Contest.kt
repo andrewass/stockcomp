@@ -40,4 +40,8 @@ class Contest(
 
     override fun equals(other: Any?): Boolean =
         other is Contest && other.contestNumber == contestNumber
+
+    override fun hashCode(): Int {
+        return contestNumber
+    }
 }

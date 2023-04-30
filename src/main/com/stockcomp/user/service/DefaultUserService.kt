@@ -1,11 +1,14 @@
 package com.stockcomp.user.service
 
-import com.stockcomp.user.controller.UserDetailsDto
 import com.stockcomp.user.controller.mapToUserDetailsDto
-import com.stockcomp.user.entity.UserRole
+import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.user.entity.User
+import com.stockcomp.user.entity.UserRole
 import com.stockcomp.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +17,9 @@ class DefaultUserService @Autowired constructor(
 ) : UserService {
 
     private val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+
+    override fun getAllUsersSortedByEmail(pageNumber: Int, pageSize: Int): Page<User> =
+        userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("email")))
 
     override fun findUserByTokenClaim(email: String): User =
         userRepository.findByEmail(email)
@@ -36,7 +42,6 @@ class DefaultUserService @Autowired constructor(
     override fun getUserDetails(username: String): UserDetailsDto =
         mapToUserDetailsDto(userRepository.findByUsername(username))
 
-
     override fun verifyAdminUser(username: String): Boolean =
         userRepository.findByUsername(username).userRole == UserRole.ADMIN
 
@@ -49,7 +54,6 @@ class DefaultUserService @Autowired constructor(
         return User(email = email, username = username)
             .let { userRepository.save(it) }
     }
-
 
     private fun generateRandomUsername(): String =
         (1..15).map { allowedChars.random() }

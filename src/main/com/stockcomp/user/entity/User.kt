@@ -21,6 +21,9 @@ class User(
     var country: String? = null,
 
     @Enumerated(EnumType.STRING)
-    val userRole: UserRole = UserRole.USER
+    val userRole: UserRole = UserRole.USER,
+
+    @Enumerated(EnumType.STRING)
+    val userStatus: UserStatus = UserStatus.ACTIVE
 
 ) : BaseEntity()
