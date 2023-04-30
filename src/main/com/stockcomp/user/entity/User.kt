@@ -21,6 +21,6 @@ class User(
     var country: String? = null,
 
     @Enumerated(EnumType.STRING)
-    val userRole: Role = Role.USER
+    val userRole: UserRole = UserRole.USER
 
 ) : BaseEntity()

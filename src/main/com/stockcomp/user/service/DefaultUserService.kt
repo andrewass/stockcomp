@@ -2,7 +2,7 @@ package com.stockcomp.user.service
 
 import com.stockcomp.user.controller.UserDetailsDto
 import com.stockcomp.user.controller.mapToUserDetailsDto
-import com.stockcomp.user.entity.Role
+import com.stockcomp.user.entity.UserRole
 import com.stockcomp.user.entity.User
 import com.stockcomp.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +38,7 @@ class DefaultUserService @Autowired constructor(
 
 
     override fun verifyAdminUser(username: String): Boolean =
-        userRepository.findByUsername(username).userRole == Role.ADMIN
+        userRepository.findByUsername(username).userRole == UserRole.ADMIN
 
     private fun createUser(email: String): User {
         var username: String
