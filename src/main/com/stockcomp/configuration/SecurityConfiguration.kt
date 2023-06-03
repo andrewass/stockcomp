@@ -5,12 +5,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+
 
 @Configuration
 @EnableWebSecurity
@@ -20,35 +22,30 @@ class SecurityConfiguration {
     var jwkSetUri: String? = null
 
     @Bean
-    fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
+    fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain =
         httpSecurity
-            .cors().configurationSource { createCorsConfiguration() }
-            .and()
-            .csrf().disable()
-            .authorizeHttpRequests()
-            .requestMatchers(
-                "/task/*",
-                "/actuator/*",
-                "/user/*",
-                "/contest-operations/*",
-                "/swagger-ui/*",
-                "/swagger-resources/**",
-                "/v2/api-docs"
-            ).permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .oauth2ResourceServer { obj: OAuth2ResourceServerConfigurer<HttpSecurity> -> obj.jwt() }
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-        return httpSecurity.build()
-    }
+            .cors { it.configurationSource(createCorsConfiguration()) }
+            .csrf { it.disable() }
+            .authorizeHttpRequests {
+                it.requestMatchers(
+                    "/task/*",
+                    "/actuator/*",
+                    "/user/*",
+                    "/contest-operations/*",
+                    "/swagger-ui/*",
+                    "/swagger-resources/**",
+                    "/v2/api-docs"
+                ).permitAll().anyRequest().authenticated()
+            }
+            .oauth2ResourceServer { it.jwt { } }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .build()
 
     @Bean
     fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build()
 
-
-    private fun createCorsConfiguration(): CorsConfiguration {
-        return CorsConfiguration().apply {
+    private fun createCorsConfiguration(): CorsConfigurationSource {
+        val courseConfiguration = CorsConfiguration().apply {
             addAllowedOrigin("http://localhost:8000")
             addAllowedOrigin("http://localhost:3000")
             addAllowedOrigin("http://stockclient-service:80")
@@ -62,6 +59,9 @@ class SecurityConfiguration {
                 "Access-Control-Request-Method", "Access-Control-Request-Headers", "Range"
             )
             exposedHeaders = listOf("Content-Range")
+        }
+        return UrlBasedCorsConfigurationSource().also {
+            it.registerCorsConfiguration("/**", courseConfiguration)
         }
     }
 }
