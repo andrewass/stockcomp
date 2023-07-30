@@ -1,6 +1,6 @@
 package com.stockcomp.service.order
 
-import com.stockcomp.contest.dto.RealTimePrice
+import com.stockcomp.contest.dto.CurrentPriceSymbol
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus.RUNNING
 import com.stockcomp.contest.service.SymbolService
@@ -68,12 +68,12 @@ internal class DefaultOrderProcessServiceTest {
     @BeforeEach
     fun setup() {
         every {
-            symbolService.getRealTimePrice(AAPL)
-        } returns RealTimePrice(currency = "USD", price = 110.00, usdPrice = 110.00)
+            symbolService.getCurrentPrice(AAPL)
+        } returns CurrentPriceSymbol(currency = "USD", currentPrice = 110.00)
 
         every {
-            symbolService.getRealTimePrice(MSFT)
-        } returns RealTimePrice(currency = "USD", price = 110.00, usdPrice = 110.00)
+            symbolService.getCurrentPrice(MSFT)
+        } returns CurrentPriceSymbol(currency = "USD", currentPrice = 110.00)
 
         every {
             investmentRepository.findBySymbolAndParticipant(AAPL, firstParticipant)
@@ -123,9 +123,9 @@ internal class DefaultOrderProcessServiceTest {
     @Test
     fun `should process sell order where current price is above remaining funds`() = runTest {
         every {
-            symbolService.getRealTimePrice(AAPL)
-        } returns RealTimePrice(
-            currency = "USD", price = 110_000.00, usdPrice = 110_000.00
+            symbolService.getCurrentPrice(AAPL)
+        } returns CurrentPriceSymbol(
+            currency = "USD", currentPrice = 110_000.00
         )
 
         every {

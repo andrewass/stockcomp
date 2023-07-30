@@ -1,7 +1,7 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.dto.RealTimePrice
+import com.stockcomp.contest.dto.CurrentPriceSymbol
 
 interface SymbolService {
-    fun getRealTimePrice(symbol: String): RealTimePrice
+    fun getCurrentPrice(symbol: String): CurrentPriceSymbol
 }

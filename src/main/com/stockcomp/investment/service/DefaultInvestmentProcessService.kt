@@ -1,6 +1,6 @@
 package com.stockcomp.investment.service
 
-import com.stockcomp.contest.dto.RealTimePrice
+import com.stockcomp.contest.dto.CurrentPriceSymbol
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.SymbolService
 import com.stockcomp.investmentorder.service.DefaultInvestmentOrderProcessService
@@ -22,13 +22,13 @@ class DefaultInvestmentProcessService(
             .groupBy { it.symbol }
             .forEach { (symbol, investments) ->
                 logger.info("Maintaining returns for symbol $symbol")
-                val realTimePrice = symbolService.getRealTimePrice(symbol)
+                val realTimePrice = symbolService.getCurrentPrice(symbol)
                 investments.forEach { updateInvestment(it, realTimePrice) }
             }
     }
 
-    private fun updateInvestment(investment: Investment, realTimePrice: RealTimePrice) {
-        investment.updateValues(realTimePrice.usdPrice)
+    private fun updateInvestment(investment: Investment, realTimePrice: CurrentPriceSymbol) {
+        investment.updateValues(realTimePrice.currentPrice)
         investmentRepository.save(investment)
     }
 }
