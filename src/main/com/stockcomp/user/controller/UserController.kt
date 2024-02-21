@@ -41,7 +41,7 @@ class UserController(
             .let { ResponseEntity.ok(it) }
 
 
-    @PutMapping("/update-details")
+    @PatchMapping("/update-details")
     fun updateUserDetails(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestBody userDetailsDto: UserDetailsDto

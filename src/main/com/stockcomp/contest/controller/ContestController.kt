@@ -53,7 +53,7 @@ class ContestController(
             .let { ResponseEntity(HttpStatus.OK) }
 
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     fun updateContest(@RequestBody contestRequest: UpdateContestRequest): ResponseEntity<HttpStatus> =
         contestService.updateContest(contestRequest)
             .let { ResponseEntity(HttpStatus.OK) }
