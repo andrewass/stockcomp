@@ -2,9 +2,7 @@ package com.stockcomp.contest.service
 
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.entity.LeaderboardUpdateStatus
-import com.stockcomp.investmentorder.service.InvestmentOrderProcessService
 import com.stockcomp.leaderboard.service.LeaderboardOperationService
-import com.stockcomp.participant.service.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -12,9 +10,7 @@ import java.time.LocalDateTime
 @Service
 class DefaultContestOperationService(
     private val contestService: ContestService,
-    private val investmentOrderProcessService: InvestmentOrderProcessService,
     private val leaderboardOperationService: LeaderboardOperationService,
-    private val participantService: ParticipantService
 ) : ContestOperationService {
 
     private val logger = LoggerFactory.getLogger(DefaultContestOperationService::class.java)
@@ -27,15 +23,6 @@ class DefaultContestOperationService(
                 it.leaderboardUpdateStatus = LeaderboardUpdateStatus.COMPLETED
                 contestService.saveContest(it)
             }
-    }
-
-    override fun maintainInvestments() {
-        maintainParticipanInvestmentValues()
-        maintainParticipantRanking()
-    }
-
-    override fun processInvestmentOrders() {
-        investmentOrderProcessService.processInvestmentOrders()
     }
 
     override fun maintainContestStatus() {
@@ -54,13 +41,4 @@ class DefaultContestOperationService(
             }
     }
 
-    private fun maintainParticipanInvestmentValues() {
-        contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
-            .forEach { participantService.maintainParticipantInvestmentValues(it) }
-    }
-
-    private fun maintainParticipantRanking() {
-        contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
-            .forEach { participantService.maintainParticipantRanking(it) }
-    }
 }
