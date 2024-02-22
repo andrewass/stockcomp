@@ -2,7 +2,6 @@ package com.stockcomp.contest.service
 
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.entity.LeaderboardUpdateStatus
-import com.stockcomp.investment.service.InvestmentProcessService
 import com.stockcomp.investmentorder.service.InvestmentOrderProcessService
 import com.stockcomp.leaderboard.service.LeaderboardOperationService
 import com.stockcomp.participant.service.ParticipantService
@@ -14,7 +13,6 @@ import java.time.LocalDateTime
 class DefaultContestOperationService(
     private val contestService: ContestService,
     private val investmentOrderProcessService: InvestmentOrderProcessService,
-    private val investmentProcessService: InvestmentProcessService,
     private val leaderboardOperationService: LeaderboardOperationService,
     private val participantService: ParticipantService
 ) : ContestOperationService {
@@ -32,7 +30,6 @@ class DefaultContestOperationService(
     }
 
     override fun maintainInvestments() {
-        investmentProcessService.maintainInvestments()
         maintainParticipanInvestmentValues()
         maintainParticipantRanking()
     }

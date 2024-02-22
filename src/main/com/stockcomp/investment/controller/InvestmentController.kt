@@ -1,9 +1,9 @@
 package com.stockcomp.investment.controller
 
+import com.stockcomp.investment.service.InvestmentService
 import com.stockcomp.participant.dto.GetInvestmentBySymbolRequest
 import com.stockcomp.participant.dto.InvestmentDto
 import com.stockcomp.participant.dto.mapToInvestmentDto
-import com.stockcomp.investment.service.InvestmentService
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,7 +23,7 @@ class InvestmentController(
         @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<List<InvestmentDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let {  investmentService.getAllInvestmentsForParticipant(it) }
+            .let { investmentService.getAllInvestmentsForParticipant(it) }
             .map { mapToInvestmentDto(it) }
             .let { ResponseEntity.ok(it) }
 
@@ -34,7 +34,7 @@ class InvestmentController(
         @RequestBody request: GetInvestmentBySymbolRequest
     ): ResponseEntity<InvestmentDto?> =
         tokenService.extractEmailFromToken(jwt)
-            .let {  investmentService.getInvestmentForSymbol(request.contestNumber, it, request.symbol) }
+            .let { investmentService.getInvestmentForSymbol(request.contestNumber, it, request.symbol) }
             ?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 }
