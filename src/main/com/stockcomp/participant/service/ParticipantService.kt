@@ -10,7 +10,11 @@ interface ParticipantService {
 
     fun getParticipant(contestNumber: Int, email: String): Participant?
 
+    fun getLockedParticipant(participantId: Long): Participant
+
     fun getAllByContest(contest: Contest): List<Participant>
+
+    fun getAllActiveParticipants(): List<Participant>
 
     fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant>
 

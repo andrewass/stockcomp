@@ -16,7 +16,7 @@ class FastFinanceConsumer(
 
     override fun getCurrentPrice(symbol: String): CurrentPriceSymbol {
         return webClient.get()
-            .uri(URI("$baseUrl/price/current-price-symbol/$symbol"))
+            .uri(URI("$baseUrl/price/current-price/$symbol"))
             .retrieve()
             .bodyToMono(CurrentPriceSymbol::class.java)
             .block()!!

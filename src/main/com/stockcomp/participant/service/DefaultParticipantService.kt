@@ -39,9 +39,14 @@ class DefaultParticipantService(
             userService.findUserByEmail(email)!!
         )
 
+    override fun getLockedParticipant(participantId: Long): Participant =
+        participantRepository.findByIdLocked(participantId)
+
     override fun getAllByContest(contest: Contest): List<Participant> =
         participantRepository.findAllByContest(contest)
 
+    override fun getAllActiveParticipants(): List<Participant> =
+        participantRepository.findAllByContestStatus(ContestStatus.RUNNING)
 
     override fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant> =
         participantRepository.findAllByEmailAndContest(email, contest)

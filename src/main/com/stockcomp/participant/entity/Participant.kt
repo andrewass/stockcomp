@@ -2,8 +2,8 @@ package com.stockcomp.participant.entity
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.user.entity.User
 import com.stockcomp.investmentorder.entity.InvestmentOrder
+import com.stockcomp.user.entity.User
 import jakarta.persistence.*
 
 @Entity
@@ -19,10 +19,10 @@ class Participant(
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.REMOVE])
-    val investmentOrders : MutableList<InvestmentOrder> = mutableListOf(),
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    val investmentOrders: MutableList<InvestmentOrder> = mutableListOf(),
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
     val investments: MutableList<Investment> = mutableListOf(),
 
     @ManyToOne
@@ -40,7 +40,7 @@ class Participant(
 
 ) : BaseEntity() {
 
-    fun updateInvestmentValues(){
+    fun updateInvestmentValues() {
         val updatedTotalInvestmentsValue = investments.sumOf { it.totalValue }
         totalInvestmentValue = updatedTotalInvestmentsValue
         totalValue = remainingFunds + updatedTotalInvestmentsValue
