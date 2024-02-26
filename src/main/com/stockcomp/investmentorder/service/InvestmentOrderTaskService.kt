@@ -7,7 +7,6 @@ import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.entity.TransactionType
 import com.stockcomp.participant.entity.Investment
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.participant.repository.InvestmentRepository
 import com.stockcomp.participant.service.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -20,7 +19,6 @@ interface InvestmentOrderTaskService {
 @Service
 class DefaultInvestmentOrderTaskService(
     private val symbolService: SymbolService,
-    private val investmentRepository: InvestmentRepository,
     private val participantService: ParticipantService,
 ) : InvestmentOrderTaskService {
 
@@ -48,8 +46,9 @@ class DefaultInvestmentOrderTaskService(
         participant: Participant, currentPrice: CurrentPriceSymbol, order: InvestmentOrder
     ) {
         if (currentPrice.currentPrice <= order.acceptedPrice) {
-            val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)
+            val investment = participant.investments.firstOrNull { it.symbol == order.symbol }
                 ?: Investment(symbol = order.symbol, participant = participant)
+                    .also { participant.addInvestment(it) }
             val amountToBuy = getAvailableAmountToBuy(participant, currentPrice, order)
             investment.averageUnitCost = calculateAverageUnitCost(investment, currentPrice, amountToBuy)
             investment.amount += amountToBuy
@@ -62,7 +61,7 @@ class DefaultInvestmentOrderTaskService(
         participant: Participant, currentPrice: CurrentPriceSymbol, order: InvestmentOrder
     ) {
         if (currentPrice.currentPrice >= order.acceptedPrice) {
-            val investment = investmentRepository.findBySymbolAndParticipant(order.symbol, participant)!!
+            val investment = participant.investments.first { it.symbol == order.symbol }
             val amountToSell = Integer.min(investment.amount, order.totalAmount)
             investment.amount -= amountToSell
             participant.remainingFunds += amountToSell * currentPrice.currentPrice
@@ -93,7 +92,7 @@ class DefaultInvestmentOrderTaskService(
             order.orderStatus = OrderStatus.COMPLETED
         }
         if (investment.amount == 0) {
-            participant.investments.remove(investment)
+            participant.removeInvestment(investment)
         }
         participantService.saveParticipant(participant)
     }

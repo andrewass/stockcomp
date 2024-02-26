@@ -45,4 +45,20 @@ class Participant(
         totalInvestmentValue = updatedTotalInvestmentsValue
         totalValue = remainingFunds + updatedTotalInvestmentsValue
     }
+
+    fun addInvestmentOrder(investmentOrder: InvestmentOrder) {
+        investmentOrders.add(investmentOrder)
+    }
+
+    fun removeInvestmentOrder(orderId: Long) {
+        investmentOrders.removeIf { it.orderId == orderId }
+    }
+
+    fun addInvestment(investment: Investment) {
+        investments.add(investment)
+    }
+
+    fun removeInvestment(investment: Investment) {
+        investments.remove(investment)
+    }
 }

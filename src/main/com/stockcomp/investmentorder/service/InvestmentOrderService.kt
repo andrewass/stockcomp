@@ -8,7 +8,7 @@ interface InvestmentOrderService {
 
     fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, email: String)
 
-    fun deleteInvestmentOrder(email: String, orderId: Long): Long
+    fun deleteInvestmentOrder(email: String, orderId: Long, contestNumber: Int): Long
 
     fun getAllOrdersByStatus(statusList: List<OrderStatus>, email: String) : List<InvestmentOrder>
 

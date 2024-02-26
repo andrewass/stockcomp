@@ -30,9 +30,10 @@ class InvestmentOrderController(
     fun deleteInvestmentOrder(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam orderId: Long,
+        @RequestParam contestNumber: Int,
     ): ResponseEntity<HttpStatus> =
         tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.deleteInvestmentOrder(it, orderId) }
+            .let { investmentOrderService.deleteInvestmentOrder(it, orderId, contestNumber) }
             .let { ResponseEntity(HttpStatus.OK) }
 
 
@@ -61,5 +62,4 @@ class InvestmentOrderController(
             }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
-
 }

@@ -1,34 +1,25 @@
 package com.stockcomp.investment.task
 
-import com.stockcomp.contest.dto.CurrentPriceSymbol
-import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.contest.service.SymbolService
-import com.stockcomp.participant.entity.Investment
-import com.stockcomp.participant.repository.InvestmentRepository
+import com.stockcomp.investment.service.InvestmentTaskService
+import com.stockcomp.participant.service.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
 class InvestmentTasks(
-    private val investmentRepository: InvestmentRepository,
-    private val symbolService: SymbolService,
+    private val participantService: ParticipantService,
+    private val investmentTaskService: InvestmentTaskService,
 ) {
     private val logger = LoggerFactory.getLogger(InvestmentTasks::class.java)
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 15000)
     fun runMaintainInvestments() {
-        investmentRepository.findAllByContestStatus(ContestStatus.RUNNING)
-            .groupBy { it.symbol }
-            .forEach { (symbol, investments) ->
-                logger.info("Maintaining returns for symbol $symbol")
-                val realTimePrice = symbolService.getCurrentPrice(symbol)
-                investments.forEach { updateInvestment(it, realTimePrice) }
-            }
-    }
-
-    private fun updateInvestment(investment: Investment, realTimePrice: CurrentPriceSymbol) {
-        investment.updateValues(realTimePrice.currentPrice)
-        investmentRepository.save(investment)
+        try {
+            participantService.getAllActiveParticipants()
+                .forEach { investmentTaskService.maintainInvestments(it.id!!) }
+        } catch (e: Exception) {
+            logger.error("Failed maintain investments : ${e.message}")
+        }
     }
 }
