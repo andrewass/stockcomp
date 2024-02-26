@@ -44,7 +44,6 @@ class ParticipantController(
             ?.let { ResponseEntity.ok(mapToParticipantDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 
-
     @GetMapping("/participant-by-active-contest")
     fun getActiveParticipant(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<ParticipantDto>? {
         val email = tokenService.extractEmailFromToken(jwt)

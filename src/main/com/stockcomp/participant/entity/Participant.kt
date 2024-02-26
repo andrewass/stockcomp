@@ -2,6 +2,7 @@ package com.stockcomp.participant.entity
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.contest.entity.Contest
+import com.stockcomp.investment.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.user.entity.User
 import jakarta.persistence.*

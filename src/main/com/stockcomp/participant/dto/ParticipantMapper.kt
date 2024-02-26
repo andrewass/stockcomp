@@ -1,6 +1,7 @@
 package com.stockcomp.participant.dto
 
-import com.stockcomp.participant.entity.Investment
+import com.stockcomp.investment.dto.InvestmentDto
+import com.stockcomp.investment.entity.Investment
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.domain.Page
 

@@ -5,7 +5,7 @@ import com.stockcomp.contest.service.SymbolService
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.entity.TransactionType
-import com.stockcomp.participant.entity.Investment
+import com.stockcomp.investment.entity.Investment
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.service.ParticipantService
 import org.slf4j.LoggerFactory

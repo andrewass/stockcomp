@@ -1,7 +1,7 @@
 package com.stockcomp.investment.service
 
-import com.stockcomp.participant.entity.Investment
-import com.stockcomp.participant.repository.InvestmentRepository
+import com.stockcomp.investment.entity.Investment
+import com.stockcomp.investment.repository.InvestmentRepository
 import com.stockcomp.participant.service.ParticipantService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

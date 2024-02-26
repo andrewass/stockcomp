@@ -1,8 +1,8 @@
 package com.stockcomp.investment.controller
 
 import com.stockcomp.investment.service.InvestmentService
-import com.stockcomp.participant.dto.GetInvestmentBySymbolRequest
-import com.stockcomp.participant.dto.InvestmentDto
+import com.stockcomp.investment.dto.GetInvestmentBySymbolRequest
+import com.stockcomp.investment.dto.InvestmentDto
 import com.stockcomp.participant.dto.mapToInvestmentDto
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
