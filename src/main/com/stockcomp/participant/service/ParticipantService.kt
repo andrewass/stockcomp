@@ -1,32 +1,83 @@
 package com.stockcomp.participant.service
 
 import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.entity.Participant
+import com.stockcomp.participant.repository.ParticipantRepository
+import com.stockcomp.user.service.UserService
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
-interface ParticipantService {
+@Service
+@Transactional
+class ParticipantService(
+    private val contestService: ContestService,
+    private val participantRepository: ParticipantRepository,
+    private val userService: UserService
+) {
+    private val logger = LoggerFactory.getLogger(ParticipantService::class.java)
 
-    fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant>
+    fun getActiveParticipantsByUser(username: String): List<Participant> =
+        contestService.getContests(listOf(ContestStatus.RUNNING, ContestStatus.STOPPED))
+            .flatMap { getAllByEmailAndContest(username, it) }
 
-    fun getParticipant(contestNumber: Int, email: String): Participant?
+    fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant> =
+        contestService.findByContestNumber(contestNumber)
+            .let { participantRepository.findAllByContest(it, PageRequest.of(pageNumber, pageSize, Sort.by("rank"))) }
 
-    fun getLockedParticipant(participantId: Long): Participant
+    fun getParticipant(contestNumber: Int, email: String): Participant? =
+        participantRepository.findByContestAndUser(
+            contestService.findByContestNumber(contestNumber),
+            userService.findUserByEmail(email)!!
+        )
 
-    fun getAllByContest(contest: Contest): List<Participant>
+    fun getLockedParticipant(participantId: Long): Participant =
+        participantRepository.findByIdLocked(participantId)
 
-    fun getAllActiveParticipants(): List<Participant>
+    fun getAllByContest(contest: Contest): List<Participant> =
+        participantRepository.findAllByContest(contest)
 
-    fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant>
+    fun getAllActiveParticipants(): List<Participant> =
+        participantRepository.findAllByContestStatus(ContestStatus.RUNNING)
 
-    fun getParticipantHistory(username: String): List<Participant>
+    fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant> =
+        participantRepository.findAllByEmailAndContest(email, contest)
 
-    fun signUpParticipant(email: String, contestNumber: Int)
+    fun getParticipantHistory(username: String): List<Participant> =
+        userService.findUserByUsername(username)
+            .let { participantRepository.findAllByUser(it) }
+            .filter { it.contest.contestStatus == ContestStatus.COMPLETED }
 
-    fun saveParticipant(participant: Participant)
+    fun signUpParticipant(email: String, contestNumber: Int) {
+        val contest = contestService.findByContestNumber(contestNumber)
+        assert(
+            contest.contestStatus in listOf(
+                ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START
+            )
+        )
+        Participant(
+            user = userService.findUserByEmail(email)!!,
+            contest = contest,
+            rank = contest.participantCount + 1
+        ).also { participantRepository.save(it) }
 
-    fun getActiveParticipantsByUser(username: String): List<Participant>
+        contest.participantCount++
+        contestService.saveContest(contest)
+    }
 
-    fun maintainParticipantInvestmentValues(contest: Contest)
+    fun saveParticipant(participant: Participant) {
+        participantRepository.save(participant)
+    }
 
-    fun maintainParticipantRanking(contest: Contest)
+    fun maintainParticipantRanking(contest: Contest) {
+        logger.info("Maintaining participant ranking for contest number : ${contest.contestNumber}")
+        var rankCounter = 1
+        getAllByContest(contest).sortedByDescending { it.totalValue }
+            .forEach { it.rank = rankCounter++ }
+    }
 }
