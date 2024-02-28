@@ -16,7 +16,7 @@ class DefaultContestOperationService(
     private val logger = LoggerFactory.getLogger(DefaultContestOperationService::class.java)
 
     override fun updateLeaderboard() {
-        contestService.getContests(listOf(ContestStatus.COMPLETED))
+        contestService.getCompletedContests()
             .filter { it.leaderboardUpdateStatus == LeaderboardUpdateStatus.AWAITING }
             .forEach {
                 leaderboardOperationService.updateLeaderboardEntries(it)
@@ -26,7 +26,7 @@ class DefaultContestOperationService(
     }
 
     override fun maintainContestStatus() {
-        contestService.getContests(listOf(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED))
+        contestService.getActiveContests()
             .forEach {
                 if (it.contestStatus == ContestStatus.AWAITING_START && it.startTime.isBefore(LocalDateTime.now())) {
                     logger.info("Changing contest status to RUNNING for contest ${it.contestNumber}")

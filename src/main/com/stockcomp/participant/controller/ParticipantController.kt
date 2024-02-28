@@ -1,6 +1,5 @@
 package com.stockcomp.participant.controller
 
-import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.dto.*
 import com.stockcomp.participant.service.ParticipantService
 import com.stockcomp.token.service.TokenService
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*
 class ParticipantController(
     private val tokenService: TokenService,
     private val userService: UserService,
-    private val contestService: ContestService,
     private val participantService: ParticipantService
 ) {
 
@@ -45,15 +43,11 @@ class ParticipantController(
             ?: ResponseEntity(HttpStatus.OK)
 
     @GetMapping("/participant-by-active-contest")
-    fun getActiveParticipant(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<ParticipantDto>? {
-        val email = tokenService.extractEmailFromToken(jwt)
-
-        return tokenService.extractEmailFromToken(jwt)
-            .let { contestService.getActiveContest() }
-            ?.let { participantService.getParticipant(it.contestNumber, email) }
-            ?.let { ResponseEntity.ok(mapToParticipantDto(it)) }
-            ?: ResponseEntity(HttpStatus.OK)
-    }
+    fun getActiveParticipant(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<List<ParticipantDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { participantService.getActiveParticipantsByUser(it) }
+            .map { mapToParticipantDto(it) }
+            .let { ResponseEntity.ok(it) }
 
     @GetMapping("/sorted-participants")
     fun getSortedParticipants(
@@ -63,7 +57,6 @@ class ParticipantController(
     ): ResponseEntity<ParticipantPageDto> =
         participantService.getParticipantsSortedByRank(contestNumber, pageNumber, pageSize)
             .let { ResponseEntity.ok(mapToParticipantPageDto(it)) }
-
 
     @GetMapping("/detailed-participant-history")
     fun getDetailedParticipantHistory(

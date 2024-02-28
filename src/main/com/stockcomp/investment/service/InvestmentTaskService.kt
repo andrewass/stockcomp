@@ -10,7 +10,6 @@ class InvestmentTaskService(
     private val symbolService: SymbolService,
     private val participantService: ParticipantService,
 ) {
-
     @Transactional
     fun maintainInvestments(participantId: Long) {
         val participant = participantService.getLockedParticipant(participantId)
@@ -19,6 +18,7 @@ class InvestmentTaskService(
                 val price = symbolService.getCurrentPrice(it.symbol)
                 it.updateValues(price.currentPrice)
             }
+        participant.updateInvestmentValues()
         participantService.saveParticipant(participant)
     }
 }

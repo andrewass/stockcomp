@@ -14,15 +14,15 @@ interface ContestService {
 
     fun updateContest(request: UpdateContestRequest)
 
-    fun getContests(statusList: List<ContestStatus>): List<Contest>
-
     fun findByContestNumber(contestNumber: Int): Contest
 
     fun findByContestNumberAndStatus(status: ContestStatus, contestNumber: Int): Contest
 
     fun saveContest(contest: Contest)
 
-    fun getActiveContest(): Contest?
+    fun getActiveContests(): List<Contest>
+
+    fun getCompletedContests(): List<Contest>
 
     fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest>
 }

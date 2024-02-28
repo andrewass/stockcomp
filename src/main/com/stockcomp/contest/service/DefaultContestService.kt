@@ -37,30 +37,22 @@ class DefaultContestService(
         }.also { contestRepository.save(it) }
     }
 
-    override fun getContests(statusList: List<ContestStatus>): List<Contest> =
-        if (statusList.isEmpty()) {
-            contestRepository.findAll()
-        } else {
-            contestRepository.findAllByContestStatusIn(statusList)
-        }
-
-    override fun getActiveContest(): Contest? =
+    override fun getActiveContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(
-            listOf(ContestStatus.RUNNING, ContestStatus.STOPPED)
-        ).firstOrNull()
+            listOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START)
+        )
 
+    override fun getCompletedContests(): List<Contest> =
+        contestRepository.findAllByContestStatusIn(listOf(ContestStatus.COMPLETED))
 
     override fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
         contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestNumber")))
 
-
     override fun findByContestNumber(contestNumber: Int): Contest =
         contestRepository.findByContestNumber(contestNumber)
 
-
     override fun findByContestNumberAndStatus(status: ContestStatus, contestNumber: Int): Contest =
         contestRepository.findByContestNumberAndContestStatus(contestNumber, status)
-
 
     override fun saveContest(contest: Contest) {
         contestRepository.save(contest)

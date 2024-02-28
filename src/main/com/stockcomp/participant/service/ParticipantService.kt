@@ -23,7 +23,7 @@ class ParticipantService(
     private val logger = LoggerFactory.getLogger(ParticipantService::class.java)
 
     fun getActiveParticipantsByUser(username: String): List<Participant> =
-        contestService.getContests(listOf(ContestStatus.RUNNING, ContestStatus.STOPPED))
+        contestService.getActiveContests()
             .flatMap { getAllByEmailAndContest(username, it) }
 
     fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant> =
