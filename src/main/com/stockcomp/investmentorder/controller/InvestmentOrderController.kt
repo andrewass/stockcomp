@@ -1,6 +1,8 @@
 package com.stockcomp.investmentorder.controller
 
-import com.stockcomp.investmentorder.dto.*
+import com.stockcomp.investmentorder.dto.InvestmentOrderDto
+import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
+import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
 import com.stockcomp.investmentorder.service.InvestmentOrderService
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
@@ -16,7 +18,7 @@ class InvestmentOrderController(
     private val tokenService: TokenService
 ) {
 
-    @PostMapping("/place-order")
+    @PostMapping("/post")
     fun placeInvestmentOrder(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestBody request: PlaceInvestmentOrderRequest
@@ -25,41 +27,55 @@ class InvestmentOrderController(
             .let { investmentOrderService.placeInvestmentOrder(request, it) }
             .let { ResponseEntity(HttpStatus.OK) }
 
-
-    @DeleteMapping("/delete-order")
+    @DeleteMapping("/delete")
     fun deleteInvestmentOrder(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam orderId: Long,
-        @RequestParam contestNumber: Int,
+        @RequestParam contestNumber: Int
     ): ResponseEntity<HttpStatus> =
         tokenService.extractEmailFromToken(jwt)
             .let { investmentOrderService.deleteInvestmentOrder(it, orderId, contestNumber) }
             .let { ResponseEntity(HttpStatus.OK) }
 
-
-    @PostMapping("/get-all-by-status")
-    fun getInvestmentOrders(
+    @GetMapping("/all-active")
+    fun getActiveInvestmentOrders(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody request: GetAllInvestmentOrdersRequest,
+        @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.getAllOrdersByStatus(request.statusList, it) }
+            .let { investmentOrderService.getActiveOrders(contestNumber, it) }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
-
-    @PostMapping("/get-by-status-symbol")
-    fun getInvestmentOrdersSymbol(
+    @GetMapping("/all-completed")
+    fun getCompletedInvestmentOrders(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody request: GetInvestmentOrderBySymbolRequest,
+        @RequestParam contestNumber: Int
     ): ResponseEntity<List<InvestmentOrderDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let {
-                investmentOrderService.getSymbolOrdersByStatus(
-                    request.contestNumber, request.symbol!!,
-                    request.statusList, it
-                )
-            }
+            .let { investmentOrderService.getCompletedOrders(contestNumber, it) }
+            .map { mapToInvestmentOrderDto(it) }
+            .let { ResponseEntity.ok(it) }
+
+    @GetMapping("/symbol-active")
+    fun getActiveInvestmentOrdersSymbol(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestParam contestNumber: Int,
+        @RequestParam symbol: String
+    ): ResponseEntity<List<InvestmentOrderDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { investmentOrderService.getActiveOrdersSymbol(symbol, contestNumber, it) }
+            .map { mapToInvestmentOrderDto(it) }
+            .let { ResponseEntity.ok(it) }
+
+    @GetMapping("/symbol-completed")
+    fun getCompletedInvestmentOrdersSymbol(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestParam contestNumber: Int,
+        @RequestParam symbol: String
+    ): ResponseEntity<List<InvestmentOrderDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { investmentOrderService.getCompletedOrdersSymbol(symbol, contestNumber, it) }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 }
