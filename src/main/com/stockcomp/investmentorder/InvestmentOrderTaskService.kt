@@ -1,31 +1,27 @@
-package com.stockcomp.investmentorder.service
+package com.stockcomp.investmentorder
 
 import com.stockcomp.contest.dto.CurrentPriceSymbol
 import com.stockcomp.contest.service.SymbolService
+import com.stockcomp.investment.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.entity.TransactionType
-import com.stockcomp.investment.entity.Investment
-import com.stockcomp.participant.entity.Participant
 import com.stockcomp.participant.ParticipantService
+import com.stockcomp.participant.entity.Participant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-interface InvestmentOrderTaskService {
-    fun processInvestmentOrders(participantId: Long)
-}
 
 @Service
-class DefaultInvestmentOrderTaskService(
+class InvestmentOrderTaskService(
     private val symbolService: SymbolService,
     private val participantService: ParticipantService,
-) : InvestmentOrderTaskService {
-
+) {
     private val logger = LoggerFactory.getLogger(InvestmentOrderTaskService::class.java)
 
     @Transactional
-    override fun processInvestmentOrders(participantId: Long) {
+    fun processInvestmentOrders(participantId: Long) {
         val participant = participantService.getLockedParticipant(participantId)
         logger.info("Processing orders for participant ${participant.id}")
         participant.investmentOrders

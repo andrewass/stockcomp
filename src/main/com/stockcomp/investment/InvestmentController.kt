@@ -1,7 +1,6 @@
-package com.stockcomp.investment.controller
+package com.stockcomp.investment
 
 import com.stockcomp.investment.dto.InvestmentDto
-import com.stockcomp.investment.service.InvestmentService
 import com.stockcomp.participant.dto.mapToInvestmentDto
 import com.stockcomp.token.service.TokenService
 import org.springframework.http.HttpStatus
@@ -28,7 +27,6 @@ class InvestmentController(
             .let { investmentService.getAllInvestmentsForParticipant(it) }
             .map { mapToInvestmentDto(it) }
             .let { ResponseEntity.ok(it) }
-
 
     @GetMapping
     fun getInvestmentBySymbolAndContest(

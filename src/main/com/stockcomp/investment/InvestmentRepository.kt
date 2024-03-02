@@ -1,4 +1,4 @@
-package com.stockcomp.investment.repository
+package com.stockcomp.investment
 
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.investment.entity.Investment

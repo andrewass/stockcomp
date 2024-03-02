@@ -1,6 +1,5 @@
-package com.stockcomp.investmentorder.task
+package com.stockcomp.investmentorder
 
-import com.stockcomp.investmentorder.service.InvestmentOrderTaskService
 import com.stockcomp.participant.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

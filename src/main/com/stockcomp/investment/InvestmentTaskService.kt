@@ -1,4 +1,4 @@
-package com.stockcomp.investment.service
+package com.stockcomp.investment
 
 import com.stockcomp.contest.service.SymbolService
 import com.stockcomp.participant.ParticipantService

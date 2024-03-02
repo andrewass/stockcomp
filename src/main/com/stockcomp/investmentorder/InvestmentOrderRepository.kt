@@ -1,4 +1,4 @@
-package com.stockcomp.investmentorder.repository
+package com.stockcomp.investmentorder
 
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
