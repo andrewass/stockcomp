@@ -1,10 +1,9 @@
-package com.stockcomp.participant.service
+package com.stockcomp.participant
 
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.participant.repository.ParticipantRepository
 import com.stockcomp.user.service.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page

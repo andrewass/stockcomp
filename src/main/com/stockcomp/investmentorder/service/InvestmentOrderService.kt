@@ -4,7 +4,7 @@ import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.entity.InvestmentOrder
 import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.repository.InvestmentOrderRepository
-import com.stockcomp.participant.service.ParticipantService
+import com.stockcomp.participant.ParticipantService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

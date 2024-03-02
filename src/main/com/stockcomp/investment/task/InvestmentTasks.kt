@@ -1,7 +1,7 @@
 package com.stockcomp.investment.task
 
 import com.stockcomp.investment.service.InvestmentTaskService
-import com.stockcomp.participant.service.ParticipantService
+import com.stockcomp.participant.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

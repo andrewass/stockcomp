@@ -1,4 +1,4 @@
-package com.stockcomp.participant.repository
+package com.stockcomp.participant
 
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
@@ -29,10 +29,6 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
     fun findByIdLocked(id: Long): Participant
 
     fun findAllByUser(user: User): List<Participant>
-
-    fun findAllByContestOrderByTotalValueDesc(contest: Contest): List<Participant>
-
-    fun findAllByContestOrderByRankAsc(contest: Contest): List<Participant>
 
     fun findAllByContest(contest: Contest, request: PageRequest): Page<Participant>
 
