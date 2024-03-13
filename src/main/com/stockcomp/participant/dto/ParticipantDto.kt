@@ -1,5 +1,8 @@
 package com.stockcomp.participant.dto
 
+import com.stockcomp.investment.dto.InvestmentDto
+import com.stockcomp.investmentorder.dto.InvestmentOrderDto
+
 data class ParticipantDto(
     val displayName : String?,
     val rank: Int?,
@@ -8,4 +11,20 @@ data class ParticipantDto(
     val remainingFunds: Double,
     val country: String?,
     val contestNumber: Int
+)
+
+data class ParticipantPageDto(
+    val participants: List<ParticipantDto>,
+    val totalEntriesCount: Long
+)
+
+data class HistoricParticipantDto(
+    val participant: ParticipantDto,
+    val investments: List<InvestmentDto>
+)
+
+data class DetailedParticipantDto(
+    val participant: ParticipantDto,
+    val investments: List<InvestmentDto>,
+    val investmentOrders: List<InvestmentOrderDto>
 )

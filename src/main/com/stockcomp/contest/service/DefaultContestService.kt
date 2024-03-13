@@ -42,6 +42,9 @@ class DefaultContestService(
             listOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START)
         )
 
+    override fun getRunningContests(): List<Contest> =
+        contestRepository.findAllByContestStatusIn(listOf(ContestStatus.RUNNING))
+
     override fun getCompletedContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(listOf(ContestStatus.COMPLETED))
 

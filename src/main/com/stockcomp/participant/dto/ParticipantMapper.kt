@@ -6,7 +6,7 @@ import com.stockcomp.participant.entity.Participant
 import org.springframework.data.domain.Page
 
 fun mapToDetailedParticipant(source: Participant) =
-    DetailedParticipantDto(
+    HistoricParticipantDto(
         participant = mapToParticipantDto(source),
         investments = source.investments.map { mapToInvestmentDto(it) }
     )

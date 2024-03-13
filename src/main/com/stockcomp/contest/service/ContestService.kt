@@ -22,6 +22,8 @@ interface ContestService {
 
     fun getActiveContests(): List<Contest>
 
+    fun getRunningContests(): List<Contest>
+
     fun getCompletedContests(): List<Contest>
 
     fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest>

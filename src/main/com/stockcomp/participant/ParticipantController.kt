@@ -28,7 +28,7 @@ class ParticipantController(
     }
 
     @GetMapping("/contest")
-    fun getParticipant(
+    fun getParticipantForUser(
         @RequestParam contestNumber: Int,
         @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<ParticipantDto>? =
@@ -37,8 +37,17 @@ class ParticipantController(
             ?.let { ResponseEntity.ok(mapToParticipantDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 
+    @GetMapping("/active-participants")
+    fun getAllActiveParticipantsForUser(
+        @AuthenticationPrincipal jwt: Jwt
+    ): ResponseEntity<List<ParticipantDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { participantService.getActiveParticipantsByUser(it) }
+            .map { mapToParticipantDto(it) }
+            .let { ResponseEntity.ok(it) }
+
     @GetMapping("/sorted")
-    fun getSortedParticipants(
+    fun getSortedParticipantsForContest(
         @RequestParam contestNumber: Int,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
@@ -47,9 +56,9 @@ class ParticipantController(
             .let { ResponseEntity.ok(mapToParticipantPageDto(it)) }
 
     @GetMapping("/history")
-    fun getDetailedParticipantHistory(
+    fun getDetailedParticipantHistoryForUser(
         @RequestParam username: String,
-    ): ResponseEntity<List<DetailedParticipantDto>> =
+    ): ResponseEntity<List<HistoricParticipantDto>> =
         participantService.getParticipantHistory(username)
             .map { mapToDetailedParticipant(it) }
             .let { ResponseEntity.ok(it) }

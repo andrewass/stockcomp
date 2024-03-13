@@ -21,9 +21,13 @@ class ParticipantService(
 ) {
     private val logger = LoggerFactory.getLogger(ParticipantService::class.java)
 
-    fun getActiveParticipantsByUser(username: String): List<Participant> =
+    fun getActiveParticipantsByUser(userIdentifier: String): List<Participant> =
         contestService.getActiveContests()
-            .flatMap { getAllByEmailAndContest(username, it) }
+            .flatMap { getAllByEmailAndContest(userIdentifier, it) }
+
+    fun getRunningParticipantsByUser(userIdentifier: String): List<Participant> =
+        contestService.getRunningContests()
+            .flatMap { getAllByEmailAndContest(userIdentifier, it) }
 
     fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant> =
         contestService.findByContestNumber(contestNumber)
@@ -44,8 +48,6 @@ class ParticipantService(
     fun getAllActiveParticipants(): List<Participant> =
         participantRepository.findAllByContestStatus(ContestStatus.RUNNING)
 
-    fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant> =
-        participantRepository.findAllByEmailAndContest(email, contest)
 
     fun getParticipantHistory(username: String): List<Participant> =
         userService.findUserByUsername(username)
@@ -79,4 +81,7 @@ class ParticipantService(
         getAllByContest(contest).sortedByDescending { it.totalValue }
             .forEach { it.rank = rankCounter++ }
     }
+
+    private fun getAllByEmailAndContest(email: String, contest: Contest): List<Participant> =
+        participantRepository.findAllByEmailAndContest(email, contest)
 }
