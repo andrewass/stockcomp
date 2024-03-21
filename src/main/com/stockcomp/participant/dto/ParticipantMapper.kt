@@ -1,11 +1,11 @@
 package com.stockcomp.participant.dto
 
-import com.stockcomp.investment.dto.InvestmentDto
-import com.stockcomp.investment.entity.Investment
+import com.stockcomp.investment.dto.mapToInvestmentDto
+import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.domain.Page
 
-fun mapToDetailedParticipant(source: Participant) =
+fun mapToHistoricParticipant(source: Participant) =
     HistoricParticipantDto(
         participant = mapToParticipantDto(source),
         investments = source.investments.map { mapToInvestmentDto(it) }
@@ -23,20 +23,15 @@ fun mapToParticipantDto(source: Participant) =
         contestNumber = source.contest.contestNumber
     )
 
+fun mapToDetailedParticipantSymbol(source: Participant) =
+    DetailedParticipant(
+        participant = mapToParticipantDto(source),
+        investmentOrders = source.investmentOrders.map { mapToInvestmentOrderDto(it) },
+        investments = source.investments.map { mapToInvestmentDto(it) }
+    )
 
 fun mapToParticipantPageDto(source: Page<Participant>) =
     ParticipantPageDto(
         participants = source.get().map { mapToParticipantDto(it) }.toList(),
         totalEntriesCount = source.totalElements
-    )
-
-
-fun mapToInvestmentDto(source: Investment) =
-    InvestmentDto(
-        amount = source.amount,
-        averageUnitCost = source.averageUnitCost,
-        symbol = source.symbol,
-        totalProfit = source.totalProfit,
-        totalValue = source.totalValue,
-        contestNumber = source.participant.contest.contestNumber
     )

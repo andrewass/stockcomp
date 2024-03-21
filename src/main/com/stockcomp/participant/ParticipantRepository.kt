@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository
 interface ParticipantRepository : JpaRepository<Participant, Long> {
 
     @Query("SELECT p FROM Participant p inner join p.user u where u.email = ?1 and p.contest = ?2")
-    fun findAllByEmailAndContest(username: String, contest: Contest): List<Participant>
+    fun findByEmailAndContest(username: String, contest: Contest): List<Participant>
 
     @Query("SELECT p FROM Participant  p where p.contest = ?1")
     fun findAllByContest(contest: Contest): List<Participant>

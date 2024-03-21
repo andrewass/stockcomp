@@ -42,9 +42,16 @@ class ParticipantController(
         @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<List<ParticipantDto>> =
         tokenService.extractEmailFromToken(jwt)
-            .let { participantService.getActiveParticipantsByUser(it) }
+            .let { participantService.getActiveParticipants(it) }
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
+
+    @GetMapping("/running-participants")
+    fun getAllRunningParticipants(
+        @RequestParam symbol: String
+    ): ResponseEntity<List<ParticipantDto>> {
+        return ResponseEntity.ok(emptyList())
+    }
 
     @GetMapping("/sorted")
     fun getSortedParticipantsForContest(
@@ -60,6 +67,6 @@ class ParticipantController(
         @RequestParam username: String,
     ): ResponseEntity<List<HistoricParticipantDto>> =
         participantService.getParticipantHistory(username)
-            .map { mapToDetailedParticipant(it) }
+            .map { mapToHistoricParticipant(it) }
             .let { ResponseEntity.ok(it) }
 }
