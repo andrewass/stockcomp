@@ -48,10 +48,12 @@ class ParticipantController(
 
     @GetMapping("/running-participants")
     fun getAllRunningParticipants(
-        @RequestParam symbol: String
-    ): ResponseEntity<List<ParticipantDto>> {
-        return ResponseEntity.ok(emptyList())
-    }
+        @RequestParam symbol: String,
+        @AuthenticationPrincipal jwt: Jwt
+    ): ResponseEntity<List<DetailedParticipantDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { participantService.getRunningDetailedParticipantsForSymbol(it, symbol) }
+            .let { ResponseEntity.ok(it) }
 
     @GetMapping("/sorted")
     fun getSortedParticipantsForContest(
@@ -60,7 +62,7 @@ class ParticipantController(
         @RequestParam pageSize: Int
     ): ResponseEntity<ParticipantPageDto> =
         participantService.getParticipantsSortedByRank(contestNumber, pageNumber, pageSize)
-            .let { ResponseEntity.ok(mapToParticipantPageDto(it)) }
+            .let { ResponseEntity.ok(mapToParticipantPage(it)) }
 
     @GetMapping("/history")
     fun getDetailedParticipantHistoryForUser(

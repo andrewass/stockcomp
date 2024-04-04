@@ -23,14 +23,18 @@ fun mapToParticipantDto(source: Participant) =
         contestNumber = source.contest.contestNumber
     )
 
-fun mapToDetailedParticipantSymbol(source: Participant) =
-    DetailedParticipant(
+fun mapToDetailedParticipant(source: Participant, symbol: String) =
+    DetailedParticipantDto(
         participant = mapToParticipantDto(source),
-        investmentOrders = source.investmentOrders.map { mapToInvestmentOrderDto(it) },
-        investments = source.investments.map { mapToInvestmentDto(it) }
+        investments = source.investments.filter { it.symbol == symbol }
+            .map { mapToInvestmentDto(it) },
+        activeOrders = source.investmentOrders.filter { it.symbol == symbol }
+            .map { mapToInvestmentOrderDto(it) },
+        completedOrders = source.investmentOrders.filter { it.symbol == symbol }
+            .map { mapToInvestmentOrderDto(it) }
     )
 
-fun mapToParticipantPageDto(source: Page<Participant>) =
+fun mapToParticipantPage(source: Page<Participant>) =
     ParticipantPageDto(
         participants = source.get().map { mapToParticipantDto(it) }.toList(),
         totalEntriesCount = source.totalElements

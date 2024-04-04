@@ -26,5 +26,6 @@ data class HistoricParticipantDto(
 data class DetailedParticipantDto(
     val participant: ParticipantDto,
     val investments: List<InvestmentDto>,
-    val investmentOrders: List<InvestmentOrderDto>
+    val activeOrders: List<InvestmentOrderDto>,
+    val completedOrders: List<InvestmentOrderDto>
 )

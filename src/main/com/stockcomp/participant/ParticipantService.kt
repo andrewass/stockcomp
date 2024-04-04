@@ -3,6 +3,8 @@ package com.stockcomp.participant
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
+import com.stockcomp.participant.dto.DetailedParticipantDto
+import com.stockcomp.participant.dto.mapToDetailedParticipant
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.service.UserService
 import org.slf4j.LoggerFactory
@@ -25,9 +27,10 @@ class ParticipantService(
         contestService.getActiveContests()
             .mapNotNull { getAllByEmailAndContest(email, it) }
 
-    fun getRunningDetailedParticipantsForSymbol(email: String, symbol: String): List<Participant> =
+    fun getRunningDetailedParticipantsForSymbol(email: String, symbol: String): List<DetailedParticipantDto> =
         contestService.getRunningContests()
-            .mapNotNull{ getAllByEmailAndContest(email, it) }
+            .mapNotNull { getAllByEmailAndContest(email, it) }
+            .map { mapToDetailedParticipant(it, symbol) }
 
     fun getParticipantsSortedByRank(contestNumber: Int, pageNumber: Int, pageSize: Int): Page<Participant> =
         contestService.findByContestNumber(contestNumber)
