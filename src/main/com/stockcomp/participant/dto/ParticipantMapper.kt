@@ -2,6 +2,7 @@ package com.stockcomp.participant.dto
 
 import com.stockcomp.investment.dto.mapToInvestmentDto
 import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
+import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.domain.Page
 
@@ -29,8 +30,22 @@ fun mapToDetailedParticipant(source: Participant, symbol: String) =
         investments = source.investments.filter { it.symbol == symbol }
             .map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders.filter { it.symbol == symbol }
+            .filter { it.orderStatus == OrderStatus.ACTIVE }
             .map { mapToInvestmentOrderDto(it) },
         completedOrders = source.investmentOrders.filter { it.symbol == symbol }
+            .filter { it.orderStatus == OrderStatus.COMPLETED }
+            .map { mapToInvestmentOrderDto(it) }
+    )
+
+fun toDetailedParticipant(source: Participant) =
+    DetailedParticipantDto(
+        participant = mapToParticipantDto(source),
+        investments = source.investments.map { mapToInvestmentDto(it) },
+        activeOrders = source.investmentOrders
+            .filter { it.orderStatus == OrderStatus.ACTIVE }
+            .map { mapToInvestmentOrderDto(it) },
+        completedOrders = source.investmentOrders
+            .filter { it.orderStatus == OrderStatus.COMPLETED }
             .map { mapToInvestmentOrderDto(it) }
     )
 

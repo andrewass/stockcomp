@@ -31,11 +31,11 @@ class ParticipantController(
     fun getParticipantForUser(
         @RequestParam contestNumber: Int,
         @AuthenticationPrincipal jwt: Jwt
-    ): ResponseEntity<ParticipantDto>? =
+    ): ResponseEntity<DetailedParticipantDto> =
         tokenService.extractEmailFromToken(jwt)
             .let { participantService.getParticipant(contestNumber, it) }
-            ?.let { ResponseEntity.ok(mapToParticipantDto(it)) }
-            ?: ResponseEntity(HttpStatus.OK)
+            ?.let { ResponseEntity.ok(toDetailedParticipant(it)) }
+            ?: ResponseEntity(HttpStatus.NO_CONTENT)
 
     @GetMapping("/active-participants")
     fun getAllActiveParticipantsForUser(
