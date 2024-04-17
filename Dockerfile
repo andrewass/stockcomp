@@ -1,5 +1,5 @@
 #Tell Docker to use a given image, tagged with version
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 #Arguements only available during image build
 ARG JAR_FILE=target/stockcomp-0.0.1-SNAPSHOT.jar
