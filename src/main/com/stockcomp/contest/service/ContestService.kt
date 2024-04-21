@@ -4,27 +4,64 @@ import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.Contest
 import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.user.service.UserService
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
-interface ContestService {
+@Service
+@Transactional
+class ContestService(
+    private val contestRepository: ContestRepository,
+    private val userService: UserService,
+) {
 
-    fun createContest(request: CreateContestRequest)
+    fun createContest(request: CreateContestRequest) {
+        Contest(
+            contestNumber = request.contestNumber,
+            startTime = request.startTime,
+            endTime = request.startTime.plusMonths(2)
+        ).also { contestRepository.save(it) }
+    }
 
-    fun deleteContest(contestNumber: Int)
+    fun deleteContest(contestNumber: Int) {
+        contestRepository.deleteByContestNumber(contestNumber)
+    }
 
-    fun updateContest(request: UpdateContestRequest)
+    fun updateContest(request: UpdateContestRequest) {
+        contestRepository.findByContestNumber(request.contestNumber).apply {
+            contestStatus = request.contestStatus
+            startTime = request.startTime
+            endTime = request.startTime.plusMonths(2)
+        }.also { contestRepository.save(it) }
+    }
 
-    fun findByContestNumber(contestNumber: Int): Contest
+    fun getActiveContestsNotSignedUp(email: String): List<Contest> {
+        val user = userService.findUserByEmail(email)
+        return contestRepository.getAllActiveContestsNotSignedUp(user!!.id!!)
+    }
 
-    fun findByContestNumberAndStatus(status: ContestStatus, contestNumber: Int): Contest
+    fun getActiveContests(): List<Contest> =
+        contestRepository.findAllByContestStatusIn(
+            listOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START)
+        )
 
-    fun saveContest(contest: Contest)
+    fun getRunningContests(): List<Contest> =
+        contestRepository.findAllByContestStatusIn(listOf(ContestStatus.RUNNING))
 
-    fun getActiveContests(): List<Contest>
+    fun getCompletedContests(): List<Contest> =
+        contestRepository.findAllByContestStatusIn(listOf(ContestStatus.COMPLETED))
 
-    fun getRunningContests(): List<Contest>
+    fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
+        contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestNumber")))
 
-    fun getCompletedContests(): List<Contest>
+    fun findByContestNumber(contestNumber: Int): Contest =
+        contestRepository.findByContestNumber(contestNumber)
 
-    fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest>
+    fun saveContest(contest: Contest) {
+        contestRepository.save(contest)
+    }
 }
