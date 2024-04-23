@@ -39,10 +39,13 @@ class ContestService(
         }.also { contestRepository.save(it) }
     }
 
-    fun getActiveContestsNotSignedUp(email: String): List<Contest> {
-        val user = userService.findUserByEmail(email)
-        return contestRepository.getAllActiveContestsNotSignedUp(user!!.id!!)
-    }
+    fun getActiveContestsSignedUp(email: String): List<Contest> =
+        userService.findUserByEmail(email)
+            .let { return contestRepository.getAllActiveContestsSignedUp(it!!) }
+
+    fun getActiveContestsNotSignedUp(email: String): List<Contest> =
+        userService.findUserByEmail(email)
+            .let { contestRepository.getAllActiveContestsNotSignedUp(it!!.id!!) }
 
     fun getActiveContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(

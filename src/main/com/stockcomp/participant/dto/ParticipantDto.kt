@@ -4,7 +4,7 @@ import com.stockcomp.investment.dto.InvestmentDto
 import com.stockcomp.investmentorder.dto.InvestmentOrderDto
 
 data class ParticipantDto(
-    val displayName : String?,
+    val displayName: String?,
     val rank: Int?,
     val totalValue: Double,
     val totalInvestmentValue: Double,

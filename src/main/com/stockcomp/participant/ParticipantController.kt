@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @Transactional
 @RestController
-@RequestMapping("/participant")
+@RequestMapping("/participants")
 class ParticipantController(
     private val tokenService: TokenService,
     private val participantService: ParticipantService,
@@ -37,7 +37,7 @@ class ParticipantController(
             ?.let { ResponseEntity.ok(toDetailedParticipant(it)) }
             ?: ResponseEntity(HttpStatus.NO_CONTENT)
 
-    @GetMapping("/active-participants")
+    @GetMapping("/active")
     fun getAllActiveParticipantsForUser(
         @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<List<ParticipantDto>> =

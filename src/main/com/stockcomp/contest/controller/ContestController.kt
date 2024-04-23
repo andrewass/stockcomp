@@ -34,6 +34,13 @@ class ContestController(
             .map { mapToContestDto(it) }
             .let { ResponseEntity.ok(it) }
 
+    @GetMapping("/registered")
+    fun getActiveContestsSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<List<ContestDto>> =
+        tokenService.extractEmailFromToken(jwt)
+            .let { contestService.getActiveContestsSignedUp(it) }
+            .map { mapToContestDto(it) }
+            .let { ResponseEntity.ok(it) }
+
     @GetMapping("/unregistered")
     fun getActiveContestsNotSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<List<ContestDto>> =
         tokenService.extractEmailFromToken(jwt)
