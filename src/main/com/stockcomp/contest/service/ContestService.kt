@@ -3,8 +3,9 @@ package com.stockcomp.contest.service
 import com.stockcomp.contest.dto.CreateContestRequest
 import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.Contest
-import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.entity.ContestStatus.*
 import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.service.UserService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -25,6 +26,17 @@ class ContestService(
             startTime = request.startTime,
             endTime = request.startTime.plusMonths(2)
         ).also { contestRepository.save(it) }
+    }
+
+    fun signUpToContest(email: String, contestNumber: Int) {
+        val contest = contestRepository.findByContestNumber(contestNumber)
+        assert(contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START))
+        Participant(
+            user = userService.findUserByEmail(email)!!,
+            contest = contest,
+            rank = contest.getParticipantCount() + 1
+        ).also { contest.addParticipant(it) }
+        contestRepository.save(contest)
     }
 
     fun deleteContest(contestNumber: Int) {
@@ -49,14 +61,14 @@ class ContestService(
 
     fun getActiveContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(
-            listOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START)
+            listOf(RUNNING, STOPPED, AWAITING_START)
         )
 
     fun getRunningContests(): List<Contest> =
-        contestRepository.findAllByContestStatusIn(listOf(ContestStatus.RUNNING))
+        contestRepository.findAllByContestStatusIn(listOf(RUNNING))
 
     fun getCompletedContests(): List<Contest> =
-        contestRepository.findAllByContestStatusIn(listOf(ContestStatus.COMPLETED))
+        contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
 
     fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
         contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestNumber")))

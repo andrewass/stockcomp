@@ -3,8 +3,8 @@ package com.stockcomp.contest.entity
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.participant.entity.Participant
-import java.time.LocalDateTime
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "T_CONTEST")
@@ -28,8 +28,6 @@ class Contest(
     @Column(name = "LEADERBOARD_UPDATE")
     var leaderboardUpdateStatus: LeaderboardUpdateStatus = LeaderboardUpdateStatus.AWAITING,
 
-    var participantCount: Int = 0,
-
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val participants: MutableList<Participant> = mutableListOf(),
 
@@ -37,6 +35,12 @@ class Contest(
     val medals: MutableList<Medal> = mutableListOf()
 
 ) : BaseEntity() {
+
+    fun addParticipant(participant: Participant) {
+        participants.add(participant)
+    }
+
+    fun getParticipantCount(): Int = participants.size
 
     override fun equals(other: Any?): Boolean =
         other is Contest && other.contestNumber == contestNumber

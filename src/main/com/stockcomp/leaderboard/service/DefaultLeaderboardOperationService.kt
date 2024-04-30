@@ -36,7 +36,7 @@ class DefaultLeaderboardOperationService(
 
                 if (contest != entry.lastContest) {
                     entry.contestCount += 1
-                    entry.score += (contest.participantCount - participant.rank + 1)
+                    entry.score += (contest.getParticipantCount() - participant.rank!! + 1)
                     entry.score /= entry.contestCount
                     entry.lastContest = contest
                     leaderboardService.saveEntry(entry)
@@ -53,14 +53,14 @@ class DefaultLeaderboardOperationService(
     }
 
     private fun updateMedals(participant: Participant, contest: Contest, entry: LeaderboardEntry) {
-        getMedalBasedOnPositionPercentage(participant.rank)
+        getMedalBasedOnPositionPercentage(participant.rank!!)
             ?.also {
                 medalService.saveMedal(
                     Medal(
                         contest = contest,
                         leaderboardEntry = entry,
                         medalValue = it,
-                        position = participant.rank
+                        position = participant.rank!!
                     )
                 )
             }

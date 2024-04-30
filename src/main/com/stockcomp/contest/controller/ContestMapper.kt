@@ -11,7 +11,7 @@ fun mapToContestDto(source: Contest) = ContestDto(
     contestStatus = source.contestStatus,
     endTime = source.endTime,
     leaderboardUpdateStatus = source.leaderboardUpdateStatus,
-    participantCount = source.participantCount,
+    participantCount = source.getParticipantCount(),
     startTime = source.startTime
 )
 

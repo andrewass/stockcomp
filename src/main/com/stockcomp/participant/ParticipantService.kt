@@ -57,23 +57,6 @@ class ParticipantService(
             .let { participantRepository.findAllByUser(it) }
             .filter { it.contest.contestStatus == ContestStatus.COMPLETED }
 
-    fun signUpParticipant(email: String, contestNumber: Int) {
-        val contest = contestService.findByContestNumber(contestNumber)
-        assert(
-            contest.contestStatus in listOf(
-                ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START
-            )
-        )
-        Participant(
-            user = userService.findUserByEmail(email)!!,
-            contest = contest,
-            rank = contest.participantCount + 1
-        ).also { participantRepository.save(it) }
-
-        contest.participantCount++
-        contestService.saveContest(contest)
-    }
-
     fun saveParticipant(participant: Participant) {
         participantRepository.save(participant)
     }

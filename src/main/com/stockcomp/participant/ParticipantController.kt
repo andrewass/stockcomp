@@ -17,16 +17,6 @@ class ParticipantController(
     private val participantService: ParticipantService,
 ) {
 
-    @PostMapping("/sign-up")
-    fun signUp(
-        @RequestParam contestNumber: Int,
-        @AuthenticationPrincipal jwt: Jwt
-    ): ResponseEntity<HttpStatus> {
-        tokenService.extractEmailFromToken(jwt)
-            .let { participantService.signUpParticipant(it, contestNumber) }
-        return ResponseEntity(HttpStatus.OK)
-    }
-
     @GetMapping("/contest")
     fun getParticipantForUser(
         @RequestParam contestNumber: Int,
