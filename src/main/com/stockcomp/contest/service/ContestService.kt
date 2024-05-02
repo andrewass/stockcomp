@@ -1,8 +1,7 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.dto.CreateContestRequest
-import com.stockcomp.contest.dto.UpdateContestRequest
 import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.entity.ContestStatus.*
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.entity.Participant
@@ -12,6 +11,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 @Transactional
@@ -20,11 +20,11 @@ class ContestService(
     private val userService: UserService,
 ) {
 
-    fun createContest(request: CreateContestRequest) {
+    fun createContest(contestNumber: Int, startTime: LocalDateTime) {
         Contest(
-            contestNumber = request.contestNumber,
-            startTime = request.startTime,
-            endTime = request.startTime.plusMonths(2)
+            contestNumber = contestNumber,
+            startTime = startTime,
+            endTime = startTime.plusMonths(2)
         ).also { contestRepository.save(it) }
     }
 
@@ -43,11 +43,11 @@ class ContestService(
         contestRepository.deleteByContestNumber(contestNumber)
     }
 
-    fun updateContest(request: UpdateContestRequest) {
-        contestRepository.findByContestNumber(request.contestNumber).apply {
-            contestStatus = request.contestStatus
-            startTime = request.startTime
-            endTime = request.startTime.plusMonths(2)
+    fun updateContest(number: Int, status: ContestStatus, start: LocalDateTime) {
+        contestRepository.findByContestNumber(number).apply {
+            contestStatus = status
+            startTime = start
+            endTime = startTime.plusMonths(2)
         }.also { contestRepository.save(it) }
     }
 

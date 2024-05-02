@@ -8,7 +8,6 @@ data class ContestDto(
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
     val contestNumber: Int,
-    val participantCount: Int,
     val contestStatus: ContestStatus,
     val leaderboardUpdateStatus: LeaderboardUpdateStatus
 )

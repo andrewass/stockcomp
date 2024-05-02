@@ -7,7 +7,5 @@ import org.springframework.stereotype.Component
 class ContestTasks {
 
     @Scheduled(fixedRate = 30000)
-    fun runMaintainContests() {
-        println("placeholder contests")
-    }
+    fun runMaintainContests() {}
 }

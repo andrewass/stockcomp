@@ -1,9 +1,8 @@
 package com.stockcomp.contest.controller
 
-import com.stockcomp.contest.dto.ContestDto
-import com.stockcomp.contest.dto.ContestPageDto
-import com.stockcomp.contest.dto.CreateContestRequest
-import com.stockcomp.contest.dto.UpdateContestRequest
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.stockcomp.contest.dto.*
+import com.stockcomp.contest.entity.ContestStatus
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.exception.handler.CustomExceptionHandler
 import com.stockcomp.token.service.TokenService
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/contests")
@@ -30,7 +30,7 @@ class ContestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("/sorted")
+    @GetMapping("/all")
     fun getAllContestsSortedByContestNumber(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
@@ -39,24 +39,24 @@ class ContestController(
             .let { ResponseEntity.ok(mapToContestPageDto(it)) }
 
     @GetMapping("/active")
-    fun getActiveContests(): ResponseEntity<List<ContestDto>> =
+    fun getActiveContests(): ResponseEntity<ContestsResponse> =
         contestService.getActiveContests()
             .map { mapToContestDto(it) }
-            .let { ResponseEntity.ok(it) }
+            .let { ResponseEntity.ok(ContestsResponse(it)) }
 
     @GetMapping("/registered")
-    fun getActiveContestsSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<List<ContestDto>> =
+    fun getActiveContestsSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<ContestsResponse> =
         tokenService.extractEmailFromToken(jwt)
             .let { contestService.getActiveContestsSignedUp(it) }
             .map { mapToContestDto(it) }
-            .let { ResponseEntity.ok(it) }
+            .let { ResponseEntity.ok(ContestsResponse(it)) }
 
     @GetMapping("/unregistered")
-    fun getActiveContestsNotSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<List<ContestDto>> =
+    fun getActiveContestsNotSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<ContestsResponse> =
         tokenService.extractEmailFromToken(jwt)
             .let { contestService.getActiveContestsNotSignedUp(it) }
             .map { mapToContestDto(it) }
-            .let { ResponseEntity.ok(it) }
+            .let { ResponseEntity.ok(ContestsResponse(it)) }
 
     @GetMapping("/{contestNumber}")
     fun getContest(@PathVariable contestNumber: Int): ResponseEntity<ContestDto> =
@@ -64,17 +64,33 @@ class ContestController(
             .let { ResponseEntity.ok(mapToContestDto(it)) }
 
     @PostMapping("/create")
-    fun createContest(@RequestBody contestRequest: CreateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.createContest(contestRequest)
+    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> =
+        contestService.createContest(request.contestNumber, request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
     @PatchMapping("/update")
-    fun updateContest(@RequestBody contestRequest: UpdateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.updateContest(contestRequest)
+    fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<HttpStatus> =
+        contestService.updateContest(request.contestNumber, request.contestStatus, request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
     @DeleteMapping
     fun deleteContest(@RequestParam contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.deleteContest(contestNumber)
             .let { ResponseEntity(HttpStatus.OK) }
+
+    data class CreateContestRequest(
+        val contestNumber: Int,
+        val startTime: LocalDateTime
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class UpdateContestRequest(
+        val startTime: LocalDateTime,
+        val contestNumber: Int,
+        val contestStatus: ContestStatus
+    )
+
+    data class ContestsResponse(
+        val contests: List<ContestDto>
+    )
 }
