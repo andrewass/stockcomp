@@ -1,6 +1,6 @@
 package com.stockcomp.leaderboard.service
 
-import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.domain.Contest
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.leaderboard.entity.MedalValue

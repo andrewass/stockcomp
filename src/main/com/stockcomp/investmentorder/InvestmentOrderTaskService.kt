@@ -1,6 +1,6 @@
 package com.stockcomp.investmentorder
 
-import com.stockcomp.contest.dto.CurrentPriceSymbol
+import com.stockcomp.contest.domain.CurrentPriceSymbol
 import com.stockcomp.contest.service.SymbolService
 import com.stockcomp.investment.entity.Investment
 import com.stockcomp.investmentorder.entity.InvestmentOrder

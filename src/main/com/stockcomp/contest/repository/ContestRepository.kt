@@ -1,7 +1,7 @@
 package com.stockcomp.contest.repository
 
-import com.stockcomp.contest.entity.Contest
-import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.domain.Contest
+import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.user.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query

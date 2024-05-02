@@ -1,7 +1,7 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.contest.entity.LeaderboardUpdateStatus
+import com.stockcomp.contest.domain.ContestStatus
+import com.stockcomp.contest.domain.LeaderboardUpdateStatus
 import com.stockcomp.leaderboard.service.LeaderboardOperationService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

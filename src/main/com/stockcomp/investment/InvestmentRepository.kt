@@ -1,6 +1,6 @@
 package com.stockcomp.investment
 
-import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.investment.entity.Investment
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.jpa.repository.JpaRepository

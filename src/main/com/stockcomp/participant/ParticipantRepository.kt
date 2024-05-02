@@ -1,7 +1,7 @@
 package com.stockcomp.participant
 
-import com.stockcomp.contest.entity.Contest
-import com.stockcomp.contest.entity.ContestStatus
+import com.stockcomp.contest.domain.Contest
+import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.entity.User
 import jakarta.persistence.LockModeType

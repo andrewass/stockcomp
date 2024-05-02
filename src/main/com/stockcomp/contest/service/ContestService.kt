@@ -1,8 +1,8 @@
 package com.stockcomp.contest.service
 
-import com.stockcomp.contest.entity.Contest
-import com.stockcomp.contest.entity.ContestStatus
-import com.stockcomp.contest.entity.ContestStatus.*
+import com.stockcomp.contest.domain.Contest
+import com.stockcomp.contest.domain.ContestStatus
+import com.stockcomp.contest.domain.ContestStatus.*
 import com.stockcomp.contest.repository.ContestRepository
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.service.UserService

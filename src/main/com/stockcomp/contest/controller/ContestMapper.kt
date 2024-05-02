@@ -1,8 +1,6 @@
 package com.stockcomp.contest.controller
 
-import com.stockcomp.contest.dto.ContestDto
-import com.stockcomp.contest.dto.ContestPageDto
-import com.stockcomp.contest.entity.Contest
+import com.stockcomp.contest.domain.Contest
 import org.springframework.data.domain.Page
 
 

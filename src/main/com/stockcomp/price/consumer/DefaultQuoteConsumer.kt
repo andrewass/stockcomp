@@ -1,6 +1,6 @@
 package com.stockcomp.price.consumer
 
-import com.stockcomp.contest.dto.CurrentPriceSymbol
+import com.stockcomp.contest.domain.CurrentPriceSymbol
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
