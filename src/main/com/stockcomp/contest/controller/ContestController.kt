@@ -19,9 +19,9 @@ class ContestController(
     private val tokenService: TokenService,
 ) : CustomExceptionHandler() {
 
-    @PostMapping("/sign-up")
+    @PostMapping("/sign-up/{contestNumber}")
     fun signUp(
-        @RequestParam contestNumber: Int,
+        @PathVariable contestNumber: Int,
         @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<HttpStatus> {
         tokenService.extractEmailFromToken(jwt)
@@ -72,8 +72,8 @@ class ContestController(
         contestService.updateContest(request.contestNumber, request.contestStatus, request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
-    @DeleteMapping
-    fun deleteContest(@RequestParam contestNumber: Int): ResponseEntity<HttpStatus> =
+    @DeleteMapping("/{contestNumber}")
+    fun deleteContest(@PathVariable contestNumber: Int): ResponseEntity<HttpStatus> =
         contestService.deleteContest(contestNumber)
             .let { ResponseEntity(HttpStatus.OK) }
 

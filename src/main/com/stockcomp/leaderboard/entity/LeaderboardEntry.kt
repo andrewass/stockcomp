@@ -21,7 +21,7 @@ class LeaderboardEntry(
     var score: Int = 0,
 
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL])
-    val medals: List<Medal> = mutableListOf(),
+    val medals: MutableList<Medal> = mutableListOf(),
 
     @OneToOne
     @JoinColumn(name = "LAST_CONTEST_ID")
