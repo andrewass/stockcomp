@@ -1,7 +1,7 @@
 package com.stockcomp.leaderboard.service
 
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.leaderboard.repository.LeaderboardEntryRepository
+import com.stockcomp.leaderboard.LeaderboardEntryRepository
 import com.stockcomp.user.entity.User
 import com.stockcomp.user.service.UserService
 import org.springframework.data.domain.Page

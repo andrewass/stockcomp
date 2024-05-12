@@ -12,10 +12,6 @@ class InvestmentOrderTasks(
 ) {
     private val logger = LoggerFactory.getLogger(InvestmentOrderTasks::class.java)
 
-    @Scheduled(fixedRate = 60000)
-    fun terminateRemainingOrders() {
-    }
-
     @Scheduled(fixedRate = 15000)
     fun runMaintainInvestmentOrders() {
         try {

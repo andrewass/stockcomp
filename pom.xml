@@ -16,12 +16,11 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>1.9.22</kotlin.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
-        <kotlinx.coroutines.version>1.7.1</kotlinx.coroutines.version>
-        <mockk.version>1.13.5</mockk.version>
-        <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
-        <logstash.version>7.3</logstash.version>
+        <kotlin.version>1.9.24</kotlin.version>
+        <testcontainers.version>1.19.8</testcontainers.version>
+        <mockk.version>1.13.10</mockk.version>
+        <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
+        <logstash.version>7.4</logstash.version>
         <postgresql.version>42.7.3</postgresql.version>
         <maven.failsafe.version>3.1.0</maven.failsafe.version>
         <jib.version>3.4.2</jib.version>
@@ -62,17 +61,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-core</artifactId>
-            <version>${kotlinx.coroutines.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-test</artifactId>
-            <version>${kotlinx.coroutines.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

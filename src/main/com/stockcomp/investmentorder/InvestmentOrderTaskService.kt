@@ -8,7 +8,6 @@ import com.stockcomp.investmentorder.entity.OrderStatus
 import com.stockcomp.investmentorder.entity.TransactionType
 import com.stockcomp.participant.ParticipantService
 import com.stockcomp.participant.entity.Participant
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,12 +17,10 @@ class InvestmentOrderTaskService(
     private val symbolService: SymbolService,
     private val participantService: ParticipantService,
 ) {
-    private val logger = LoggerFactory.getLogger(InvestmentOrderTaskService::class.java)
 
     @Transactional
     fun processInvestmentOrders(participantId: Long) {
         val participant = participantService.getLockedParticipant(participantId)
-        logger.info("Processing orders for participant ${participant.id}")
         participant.investmentOrders
             .filter { it.orderStatus == OrderStatus.ACTIVE }
             .forEach { processOrder(it, participant) }
