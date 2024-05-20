@@ -5,7 +5,7 @@ import com.stockcomp.leaderboard.dto.LeaderboardEntryPageDto
 import com.stockcomp.leaderboard.dto.mapToLeaderboardEntryDto
 import com.stockcomp.leaderboard.dto.mapToLeaderboardEntryPageDto
 import com.stockcomp.leaderboard.service.LeaderboardService
-import com.stockcomp.token.service.TokenService
+import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

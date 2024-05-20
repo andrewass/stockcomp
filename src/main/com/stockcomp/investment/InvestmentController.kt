@@ -2,7 +2,7 @@ package com.stockcomp.investment
 
 import com.stockcomp.investment.dto.InvestmentDto
 import com.stockcomp.investment.dto.mapToInvestmentDto
-import com.stockcomp.token.service.TokenService
+import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

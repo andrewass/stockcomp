@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.contest.service.ContestService
 import com.stockcomp.exception.handler.CustomExceptionHandler
-import com.stockcomp.token.service.TokenService
+import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

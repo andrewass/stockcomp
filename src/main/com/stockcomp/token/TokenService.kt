@@ -1,12 +1,12 @@
-package com.stockcomp.token.service
+package com.stockcomp.token
 
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Service
 
 @Service
-class DefaultTokenService : TokenService {
+class TokenService {
 
-    override fun extractEmailFromToken(token: Jwt): String =
+    fun extractEmailFromToken(token: Jwt): String =
         when (extractIssuerFromToken()) {
             TokenIssuer.CUSTOM_AUTH -> extractEmailFromCustomAuth(token)
             else -> throw RuntimeException("Unsupported issuer")

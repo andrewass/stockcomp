@@ -1,6 +1,6 @@
 package com.stockcomp.user.controller
 
-import com.stockcomp.token.service.TokenService
+import com.stockcomp.token.TokenService
 import com.stockcomp.user.dto.UserDetailsDto
 import com.stockcomp.user.dto.UserPageDto
 import com.stockcomp.user.service.UserService

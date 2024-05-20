@@ -3,7 +3,7 @@ package com.stockcomp.investmentorder
 import com.stockcomp.investmentorder.dto.InvestmentOrderDto
 import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
 import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
-import com.stockcomp.token.service.TokenService
+import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
