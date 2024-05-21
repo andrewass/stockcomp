@@ -1,29 +1,8 @@
-version: "3.9"
 
 services:
-  #Prometheus
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - ./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-
-  #Grafana
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana-volume:/var/lib/grafana
-    depends_on:
-      - prometheus
-
   #PostgreSQL
   stock-comp-db:
-    image: postgres:13-alpine
+    image: postgres:16.3-bullseye
     container_name: postgresql
     environment:
       POSTGRES_DB: "stockdb"
@@ -35,31 +14,11 @@ services:
     volumes:
       - postgresql-volume:/var/lib/postgresql/data
 
-  #Spring Boot app
-  stock-comp-server:
-    image: stock-comp-server
-    container_name: stock-comp
-    build: .
-    depends_on:
-      - stock-comp-db
-    restart: on-failure
-    environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://stock-comp-db:5432/stockdb"
-      SPRING_DATASOURCE_USERNAME: "user"
-      SPRING_DATASOURCE_PASSWORD: "password"
-      JWT_SECRET: ${JWT_SECRET}
-      ADMIN_EMAIL: "admin@admin.com"
-      ADMIN_PASSWORD: "admin"
-    ports:
-      - "8080:8080"
-      - "5010:5010"
-
 networks:
   default:
     name: compose_network
     external: true
 
 volumes:
-  grafana-volume:
   postgresql-volume:
     driver: "local"

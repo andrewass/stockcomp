@@ -10,13 +10,13 @@ import org.testcontainers.junit.jupiter.Container
 abstract class SpringBootTestConfig {
 
     companion object {
-
         @Container
-        private val postgresContainer = PostgreSQLContainer<Nothing>("postgres:15.2-alpine").apply {
-            withDatabaseName("integration-test-db")
-            withUsername("testuser")
-            withPassword("testpassword")
-        }
+        private val postgresContainer = PostgreSQLContainer<Nothing>("postgres:16.3-bullseye")
+            .apply {
+                withDatabaseName("integration-test-db")
+                withUsername("testuser")
+                withPassword("testpassword")
+            }
 
         @JvmStatic
         @DynamicPropertySource
