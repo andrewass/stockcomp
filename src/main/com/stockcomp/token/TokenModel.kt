@@ -5,6 +5,10 @@ enum class TokenIssuer {
     GOOGLE
 }
 
-data class TokenData(
-    val email: String
+data class TokenClaims(
+    val userIdentification: String
 )
+
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.VALUE_PARAMETER)
+annotation class TokenData

@@ -1,6 +1,8 @@
 package com.stockcomp.participant
 
 import com.stockcomp.participant.dto.*
+import com.stockcomp.token.TokenClaims
+import com.stockcomp.token.TokenData
 import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,7 +31,8 @@ class ParticipantController(
 
     @GetMapping("/active")
     fun getAllActiveParticipantsForUser(
-        @AuthenticationPrincipal jwt: Jwt
+        @AuthenticationPrincipal jwt: Jwt,
+        @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<List<ParticipantDto>> =
         tokenService.extractEmailFromToken(jwt)
             .let { participantService.getActiveParticipants(it) }
