@@ -15,37 +15,32 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/participants")
 class ParticipantController(
-    private val tokenService: TokenService,
     private val participantService: ParticipantService,
 ) {
 
     @GetMapping("/contest")
     fun getParticipantForUser(
         @RequestParam contestNumber: Int,
-        @AuthenticationPrincipal jwt: Jwt
+        @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<DetailedParticipantDto> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { participantService.getParticipant(contestNumber, it) }
+        participantService.getParticipant(contestNumber, tokenClaims.userIdentification)
             ?.let { ResponseEntity.ok(toDetailedParticipant(it)) }
             ?: ResponseEntity(HttpStatus.NO_CONTENT)
 
     @GetMapping("/active")
     fun getAllActiveParticipantsForUser(
-        @AuthenticationPrincipal jwt: Jwt,
         @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<List<ParticipantDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { participantService.getActiveParticipants(it) }
+        participantService.getActiveParticipants(tokenClaims.userIdentification)
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
 
     @GetMapping("/running-participants")
     fun getAllRunningParticipants(
         @RequestParam symbol: String,
-        @AuthenticationPrincipal jwt: Jwt
+        @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<List<DetailedParticipantDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { participantService.getRunningDetailedParticipantsForSymbol(it, symbol) }
+        participantService.getRunningDetailedParticipantsForSymbol(tokenClaims.userIdentification, symbol)
             .let { ResponseEntity.ok(it) }
 
     @GetMapping("/sorted")

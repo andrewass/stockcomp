@@ -30,8 +30,7 @@ class LeaderboardController(
         @RequestParam pageSize: Int
     ): ResponseEntity<LeaderboardEntryPageDto> =
         leaderboardService.getSortedLeaderboardEntries(pageNumber, pageSize)
-            .let { ResponseEntity.ok(mapToLeaderboardEntryPageDto(it, pageNumber)) }
-
+            .let { ResponseEntity.ok(mapToLeaderboardEntryPageDto(it)) }
 
     @GetMapping("/user-entry")
     fun getLeaderboardEntryForUser(

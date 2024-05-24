@@ -1,7 +1,8 @@
 package com.stockcomp.token
 
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.core.ClaimAccessor
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
@@ -18,7 +19,8 @@ class TokenArgumentResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
     ): Any {
-        val request = (webRequest.nativeRequest as HttpServletRequest)
-        return TokenClaims("testData")
+        val subject =  (SecurityContextHolder.getContext().authentication.credentials as ClaimAccessor)
+            .getClaimAsString("sub")
+        return TokenClaims(subject)
     }
 }

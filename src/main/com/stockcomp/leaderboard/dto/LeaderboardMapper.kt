@@ -20,7 +20,7 @@ fun mapToLeaderboardEntryDto(src: LeaderboardEntry) =
         medals = src.medals.map { mapToMedalDto(it) }
     )
 
-fun mapToLeaderboardEntryPageDto(pageEntry: Page<LeaderboardEntry>, currentPage: Int) =
+fun mapToLeaderboardEntryPageDto(pageEntry: Page<LeaderboardEntry>) =
     LeaderboardEntryPageDto(
         entries = pageEntry.get().map { mapToLeaderboardEntryDto(it) }.toList(),
         totalEntriesCount = pageEntry.totalElements
