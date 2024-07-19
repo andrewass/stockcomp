@@ -2,7 +2,7 @@
 services:
   #PostgreSQL
   stock-comp-db:
-    image: postgres:16.3-bullseye
+    image: postgres:16.3-alpine
     container_name: postgresql
     environment:
       POSTGRES_DB: "stockdb"
