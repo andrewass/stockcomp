@@ -1,7 +1,7 @@
 package com.stockcomp.participant.dto
 
-import com.stockcomp.investment.dto.InvestmentDto
-import com.stockcomp.investmentorder.InvestmentOrderDto
+import com.stockcomp.participant.investment.InvestmentDto
+import com.stockcomp.participant.investmentorder.InvestmentOrderDto
 
 data class ParticipantDto(
     val displayName: String? = null,

@@ -1,7 +1,5 @@
-package com.stockcomp.investmentorder.internal
+package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.investmentorder.OrderStatus
-import com.stockcomp.investmentorder.TransactionType
 import com.stockcomp.participant.ParticipantService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

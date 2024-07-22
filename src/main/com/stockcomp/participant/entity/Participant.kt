@@ -1,9 +1,8 @@
 package com.stockcomp.participant.entity
 
 import com.stockcomp.common.entity.BaseEntity
-import com.stockcomp.contest.domain.Contest
-import com.stockcomp.investment.entity.Investment
-import com.stockcomp.investmentorder.internal.InvestmentOrder
+import com.stockcomp.participant.investment.Investment
+import com.stockcomp.participant.investmentorder.InvestmentOrder
 import com.stockcomp.user.entity.User
 import jakarta.persistence.*
 
@@ -12,7 +11,7 @@ import jakarta.persistence.*
 class Participant(
 
     @Id
-    @Column(name = "PARTICIPANT_ID")
+    @Column(name = "PARTICIPANT_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
@@ -26,9 +25,8 @@ class Participant(
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
     val investments: MutableList<Investment> = mutableListOf(),
 
-    @ManyToOne
-    @JoinColumn(name = "CONTEST_ID")
-    val contest: Contest,
+    @Column(name = "CONTEST_ID", nullable = false)
+    val contestId: Long,
 
     var remainingFunds: Double = 20000.00,
 

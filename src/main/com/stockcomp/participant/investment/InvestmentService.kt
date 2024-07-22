@@ -1,6 +1,5 @@
-package com.stockcomp.investment
+package com.stockcomp.participant.investment
 
-import com.stockcomp.investment.entity.Investment
 import com.stockcomp.participant.ParticipantService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

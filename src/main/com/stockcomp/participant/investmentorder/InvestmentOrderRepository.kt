@@ -1,6 +1,5 @@
-package com.stockcomp.investmentorder.internal
+package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.investmentorder.OrderStatus
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

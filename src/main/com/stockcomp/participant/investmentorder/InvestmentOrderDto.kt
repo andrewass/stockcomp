@@ -1,6 +1,5 @@
-package com.stockcomp.investmentorder
+package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.investmentorder.internal.InvestmentOrder
 import java.time.LocalDateTime
 
 data class InvestmentOrderDto(

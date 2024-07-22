@@ -1,6 +1,5 @@
-package com.stockcomp.investmentorder.internal
+package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.investmentorder.*
 import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

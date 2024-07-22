@@ -1,4 +1,4 @@
-package com.stockcomp.investment.entity
+package com.stockcomp.participant.investment
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.participant.entity.Participant

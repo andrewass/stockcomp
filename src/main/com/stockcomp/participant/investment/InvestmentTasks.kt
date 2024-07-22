@@ -1,4 +1,4 @@
-package com.stockcomp.investment
+package com.stockcomp.participant.investment
 
 import com.stockcomp.participant.ParticipantService
 import org.slf4j.LoggerFactory

@@ -1,7 +1,5 @@
-package com.stockcomp.investment
+package com.stockcomp.participant.investment
 
-import com.stockcomp.investment.dto.InvestmentDto
-import com.stockcomp.investment.dto.mapToInvestmentDto
 import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
