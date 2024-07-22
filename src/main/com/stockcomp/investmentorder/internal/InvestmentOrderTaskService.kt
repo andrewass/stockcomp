@@ -1,11 +1,10 @@
-package com.stockcomp.investmentorder
+package com.stockcomp.investmentorder.internal
 
 import com.stockcomp.contest.domain.CurrentPriceSymbol
 import com.stockcomp.contest.service.SymbolService
 import com.stockcomp.investment.entity.Investment
-import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.investmentorder.entity.OrderStatus
-import com.stockcomp.investmentorder.entity.TransactionType
+import com.stockcomp.investmentorder.OrderStatus
+import com.stockcomp.investmentorder.TransactionType
 import com.stockcomp.participant.ParticipantService
 import com.stockcomp.participant.entity.Participant
 import org.springframework.stereotype.Service

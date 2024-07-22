@@ -1,8 +1,8 @@
 package com.stockcomp.participant.dto
 
 import com.stockcomp.investment.dto.mapToInvestmentDto
-import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
-import com.stockcomp.investmentorder.entity.OrderStatus
+import com.stockcomp.investmentorder.mapToInvestmentOrderDto
+import com.stockcomp.investmentorder.OrderStatus
 import com.stockcomp.participant.entity.Participant
 import org.springframework.data.domain.Page
 

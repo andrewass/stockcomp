@@ -1,4 +1,4 @@
-package com.stockcomp.investmentorder.entity
+package com.stockcomp.investmentorder
 
 enum class OrderStatus(val decode : String){
     ACTIVE("Active"),

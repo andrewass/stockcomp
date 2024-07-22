@@ -1,11 +1,11 @@
-package com.stockcomp.investmentorder
+package com.stockcomp.investmentorder.internal
 
-import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
-import com.stockcomp.investmentorder.entity.InvestmentOrder
-import com.stockcomp.investmentorder.entity.OrderStatus
+import com.stockcomp.investmentorder.OrderStatus
+import com.stockcomp.investmentorder.TransactionType
 import com.stockcomp.participant.ParticipantService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class InvestmentOrderService(
@@ -14,16 +14,25 @@ class InvestmentOrderService(
 ) {
 
     @Transactional
-    fun placeInvestmentOrder(request: PlaceInvestmentOrderRequest, email: String) {
-        val participant = participantService.getParticipant(request.contestNumber, email)!!
+    fun placeInvestmentOrder(
+        contestNumber: Int,
+        currency: String,
+        acceptedPrice: Double,
+        symbol: String,
+        expirationTime: LocalDateTime,
+        email: String,
+        amount: Int,
+        transactionType: TransactionType
+    ) {
+        val participant = participantService.getParticipant(contestNumber, email)!!
         InvestmentOrder(
             participant = participant,
-            currency = request.currency,
-            acceptedPrice = request.acceptedPrice,
-            expirationTime = request.expirationTime,
-            symbol = request.symbol,
-            totalAmount = request.amount,
-            transactionType = request.transactionType
+            currency = currency,
+            acceptedPrice = acceptedPrice,
+            expirationTime = expirationTime,
+            symbol = symbol,
+            totalAmount = amount,
+            transactionType = transactionType
         ).also { participant.addInvestmentOrder(it) }
         participantService.saveParticipant(participant)
     }

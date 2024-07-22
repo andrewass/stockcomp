@@ -1,6 +1,19 @@
-package com.stockcomp.investmentorder.dto
+package com.stockcomp.investmentorder
 
-import com.stockcomp.investmentorder.entity.InvestmentOrder
+import com.stockcomp.investmentorder.internal.InvestmentOrder
+import java.time.LocalDateTime
+
+data class InvestmentOrderDto(
+    val orderId: Long?,
+    val symbol: String,
+    val totalAmount: Int,
+    val remainingAmount: Int,
+    val acceptedPrice: Double,
+    val currency: String,
+    val expirationTime: LocalDateTime,
+    val transactionType: TransactionType,
+    val orderStatus: OrderStatus
+)
 
 fun mapToInvestmentOrderDto(source : InvestmentOrder) =
     InvestmentOrderDto(

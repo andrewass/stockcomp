@@ -1,6 +1,8 @@
-package com.stockcomp.investmentorder.entity
+package com.stockcomp.investmentorder.internal
 
 import com.stockcomp.common.entity.BaseEntity
+import com.stockcomp.investmentorder.OrderStatus
+import com.stockcomp.investmentorder.TransactionType
 import com.stockcomp.participant.entity.Participant
 import java.time.LocalDateTime
 import jakarta.persistence.*

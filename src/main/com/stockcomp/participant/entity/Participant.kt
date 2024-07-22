@@ -3,7 +3,7 @@ package com.stockcomp.participant.entity
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.contest.domain.Contest
 import com.stockcomp.investment.entity.Investment
-import com.stockcomp.investmentorder.entity.InvestmentOrder
+import com.stockcomp.investmentorder.internal.InvestmentOrder
 import com.stockcomp.user.entity.User
 import jakarta.persistence.*
 

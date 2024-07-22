@@ -1,4 +1,4 @@
-package com.stockcomp.investmentorder.entity
+package com.stockcomp.investmentorder
 
 enum class TransactionType(val decode : String) {
     SELL("Sell"),

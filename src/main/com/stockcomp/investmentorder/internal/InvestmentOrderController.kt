@@ -1,14 +1,13 @@
-package com.stockcomp.investmentorder
+package com.stockcomp.investmentorder.internal
 
-import com.stockcomp.investmentorder.dto.InvestmentOrderDto
-import com.stockcomp.investmentorder.dto.PlaceInvestmentOrderRequest
-import com.stockcomp.investmentorder.dto.mapToInvestmentOrderDto
+import com.stockcomp.investmentorder.*
 import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/investmentorder")
@@ -23,7 +22,18 @@ class InvestmentOrderController(
         @RequestBody request: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
         tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.placeInvestmentOrder(request, it) }
+            .let {
+                investmentOrderService.placeInvestmentOrder(
+                    contestNumber = request.contestNumber,
+                    symbol = request.symbol,
+                    email = it,
+                    acceptedPrice = request.acceptedPrice,
+                    expirationTime = request.expirationTime,
+                    amount = request.amount,
+                    currency = request.currency,
+                    transactionType = request.transactionType
+                )
+            }
             .let { ResponseEntity(HttpStatus.OK) }
 
     @DeleteMapping("/delete")
@@ -77,4 +87,14 @@ class InvestmentOrderController(
             .let { investmentOrderService.getCompletedOrdersSymbol(symbol, contestNumber, it) }
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
+
+    data class PlaceInvestmentOrderRequest(
+        val contestNumber: Int,
+        val symbol: String,
+        val amount: Int,
+        val currency: String,
+        val expirationTime: LocalDateTime,
+        val acceptedPrice: Double,
+        val transactionType: TransactionType
+    )
 }
