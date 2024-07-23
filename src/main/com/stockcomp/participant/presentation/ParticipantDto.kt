@@ -1,10 +1,35 @@
-package com.stockcomp.participant.dto
+package com.stockcomp.participant.presentation
 
-import com.stockcomp.participant.investment.mapToInvestmentDto
-import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
-import com.stockcomp.participant.investmentorder.OrderStatus
-import com.stockcomp.participant.entity.Participant
-import org.springframework.data.domain.Page
+import com.stockcomp.participant.investment.InvestmentDto
+import com.stockcomp.participant.investmentorder.InvestmentOrderDto
+
+data class ParticipantDto(
+    val displayName: String? = null,
+    val rank: Int? = null,
+    val totalValue: Double,
+    val totalInvestmentValue: Double,
+    val remainingFunds: Double,
+    val country: String? = null,
+    val contestNumber: Int
+)
+
+data class ParticipantPageDto(
+    val participants: List<ParticipantDto>,
+    val totalEntriesCount: Long
+)
+
+data class HistoricParticipantDto(
+    val participant: ParticipantDto,
+    val investments: List<InvestmentDto>
+)
+
+data class DetailedParticipantDto(
+    val participant: ParticipantDto,
+    val investments: List<InvestmentDto>,
+    val activeOrders: List<InvestmentOrderDto>,
+    val completedOrders: List<InvestmentOrderDto>
+)
+
 
 fun mapToHistoricParticipant(source: Participant) =
     HistoricParticipantDto(
@@ -23,6 +48,7 @@ fun mapToParticipantDto(source: Participant) =
         country = source.user.country,
         contestNumber = source.contest.contestNumber
     )
+
 
 fun mapToDetailedParticipant(source: Participant, symbol: String) =
     DetailedParticipantDto(

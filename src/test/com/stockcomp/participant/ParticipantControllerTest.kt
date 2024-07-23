@@ -3,9 +3,8 @@ package com.stockcomp.participant
 import com.ninjasquad.springmockk.MockkBean
 import com.stockcomp.configuration.SecurityConfiguration
 import com.stockcomp.contest.domain.Contest
-import com.stockcomp.participant.dto.DetailedParticipantDto
-import com.stockcomp.participant.dto.ParticipantDto
-import com.stockcomp.participant.entity.Participant
+import com.stockcomp.participant.presentation.DetailedParticipantDto
+import com.stockcomp.participant.presentation.ParticipantDto
 import com.stockcomp.user.entity.User
 import com.stockcomp.util.mockMvcGetRequest
 import io.mockk.every

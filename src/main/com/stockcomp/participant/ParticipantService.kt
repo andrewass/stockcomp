@@ -1,9 +1,8 @@
 package com.stockcomp.participant
 
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.dto.DetailedParticipantDto
-import com.stockcomp.participant.dto.mapToDetailedParticipant
-import com.stockcomp.participant.entity.Participant
+import com.stockcomp.participant.presentation.DetailedParticipantDto
+import com.stockcomp.participant.presentation.mapToDetailedParticipant
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest

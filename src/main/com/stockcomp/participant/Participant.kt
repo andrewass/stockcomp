@@ -1,9 +1,8 @@
-package com.stockcomp.participant.entity
+package com.stockcomp.participant
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.participant.investment.Investment
 import com.stockcomp.participant.investmentorder.InvestmentOrder
-import com.stockcomp.user.entity.User
 import jakarta.persistence.*
 
 @Entity

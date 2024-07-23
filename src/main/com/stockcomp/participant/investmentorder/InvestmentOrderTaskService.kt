@@ -4,7 +4,7 @@ import com.stockcomp.contest.domain.CurrentPriceSymbol
 import com.stockcomp.contest.service.SymbolService
 import com.stockcomp.participant.investment.Investment
 import com.stockcomp.participant.ParticipantService
-import com.stockcomp.participant.entity.Participant
+import com.stockcomp.participant.Participant
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

@@ -61,7 +61,7 @@ class InvestmentOrderService(
         participantService.getParticipant(contestId = contestId, userId = userId)
             .let {
                 investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatus(
-                    it, symbol, OrderStatus.ACTIVE
+                    it, symbol, OrderStatus.COMPLETED
                 )
             }
 }

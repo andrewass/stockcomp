@@ -5,7 +5,7 @@ import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.entity.Medal
 import com.stockcomp.leaderboard.entity.MedalValue
 import com.stockcomp.participant.ParticipantService
-import com.stockcomp.participant.entity.Participant
+import com.stockcomp.participant.Participant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

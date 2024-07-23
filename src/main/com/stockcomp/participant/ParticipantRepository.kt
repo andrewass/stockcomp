@@ -1,6 +1,5 @@
 package com.stockcomp.participant
 
-import com.stockcomp.participant.entity.Participant
 import jakarta.persistence.LockModeType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
