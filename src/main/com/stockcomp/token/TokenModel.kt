@@ -1,12 +1,11 @@
 package com.stockcomp.token
 
 enum class TokenIssuer {
-    CUSTOM_AUTH,
-    GOOGLE
+    CUSTOM_AUTH
 }
 
 data class TokenClaims(
-    val userIdentification: String
+    val userId: Long
 )
 
 @Retention(AnnotationRetention.RUNTIME)

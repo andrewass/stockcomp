@@ -1,14 +1,19 @@
 package com.stockcomp.token
 
+import com.stockcomp.user.UserServiceExternal
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.ClaimAccessor
+import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
-class TokenArgumentResolver : HandlerMethodArgumentResolver {
+@Component
+class TokenArgumentResolver(
+    private val userService: UserServiceExternal
+) : HandlerMethodArgumentResolver {
 
     override fun supportsParameter(parameter: MethodParameter): Boolean =
         parameter.getParameterAnnotation(TokenData::class.java) != null
@@ -19,8 +24,9 @@ class TokenArgumentResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
     ): Any {
-        val subject =  (SecurityContextHolder.getContext().authentication.credentials as ClaimAccessor)
+        val subject = (SecurityContextHolder.getContext().authentication.credentials as ClaimAccessor)
             .getClaimAsString("sub")
-        return TokenClaims(subject)
+
+        return TokenClaims(userId = userService.getUserIdByEmail(subject))
     }
 }

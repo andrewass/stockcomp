@@ -1,9 +1,6 @@
 package com.stockcomp.participant
 
-import com.stockcomp.contest.domain.Contest
-import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.participant.entity.Participant
-import com.stockcomp.user.entity.User
 import jakarta.persistence.LockModeType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -15,22 +12,15 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ParticipantRepository : JpaRepository<Participant, Long> {
 
-    @Query("SELECT p FROM Participant p inner join p.user u where u.email = ?1 and p.contest = ?2")
-    fun findByEmailAndContest(username: String, contest: Contest): List<Participant>
+    fun findByUserIdAndContestId(userId: Long, contestId: Long): List<Participant>
 
-    @Query("SELECT p FROM Participant  p where p.contest = ?1")
-    fun findAllByContest(contest: Contest): List<Participant>
-
-    @Query("SELECT p FROM Participant p join p.contest c where c.contestStatus  = ?1")
-    fun findAllByContestStatus(contestStatus: ContestStatus): List<Participant>
+    fun findAllByContestId(contestId: Long): List<Participant>
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT p FROM Participant  p where p.participantId = ?1")
-    fun findByIdLocked(id: Long): Participant
+    @Query("SELECT p FROM Participant p where p.participantId = ?1")
+    fun findByIdLocked(participantId: Long): Participant
 
-    fun findAllByUser(user: User): List<Participant>
+    fun findAllByContestId(contestId: Long, request: PageRequest): Page<Participant>
 
-    fun findAllByContest(contest: Contest, request: PageRequest): Page<Participant>
-
-    fun findByContestAndUser(contest: Contest, user: User): Participant?
+    fun findAllByUserId(userId: Long): List<Participant>
 }

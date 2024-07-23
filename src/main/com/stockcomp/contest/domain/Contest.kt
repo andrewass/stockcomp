@@ -2,7 +2,6 @@ package com.stockcomp.contest.domain
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.leaderboard.entity.Medal
-import com.stockcomp.participant.entity.Participant
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -11,9 +10,9 @@ import java.time.LocalDateTime
 class Contest(
 
     @Id
-    @Column(name = "CONTEST_ID")
+    @Column(name = "CONTEST_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val contestId: Long? = null,
 
     var startTime: LocalDateTime,
 
@@ -29,18 +28,11 @@ class Contest(
     var leaderboardUpdateStatus: LeaderboardUpdateStatus = LeaderboardUpdateStatus.AWAITING,
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
-    val participants: MutableList<Participant> = mutableListOf(),
-
-    @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val medals: MutableList<Medal> = mutableListOf()
 
 ) : BaseEntity() {
 
-    fun addParticipant(participant: Participant) {
-        participants.add(participant)
-    }
-
-    fun getParticipantCount(): Int = participants.size
+    fun getParticipantCount(): Int = 0
 
     override fun equals(other: Any?): Boolean =
         other is Contest && other.contestNumber == contestNumber
