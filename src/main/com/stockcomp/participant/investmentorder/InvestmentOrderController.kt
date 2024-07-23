@@ -1,90 +1,82 @@
 package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.token.TokenService
+import com.stockcomp.token.TokenClaims
+import com.stockcomp.token.TokenData
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/participants/investmentorders")
 class InvestmentOrderController(
-    private val investmentOrderService: InvestmentOrderService,
-    private val tokenService: TokenService
+    private val investmentOrderService: InvestmentOrderService
 ) {
 
     @PostMapping("/post")
     fun placeInvestmentOrder(
-        @AuthenticationPrincipal jwt: Jwt,
+        @TokenData tokenClaims: TokenClaims,
         @RequestBody request: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
-        tokenService.extractEmailFromToken(jwt)
-            .let {
-                investmentOrderService.placeInvestmentOrder(
-                    participantId = request.participantId,
-                    symbol = request.symbol,
-                    email = it,
-                    acceptedPrice = request.acceptedPrice,
-                    expirationTime = request.expirationTime,
-                    amount = request.amount,
-                    currency = request.currency,
-                    transactionType = request.transactionType
-                )
-            }
-            .let { ResponseEntity(HttpStatus.OK) }
+        investmentOrderService.placeInvestmentOrder(
+            participantId = request.participantId,
+            symbol = request.symbol,
+            acceptedPrice = request.acceptedPrice,
+            expirationTime = request.expirationTime,
+            amount = request.amount,
+            currency = request.currency,
+            transactionType = request.transactionType
+        ).let { ResponseEntity(HttpStatus.OK) }
 
     @DeleteMapping("/delete")
     fun deleteInvestmentOrder(
-        @AuthenticationPrincipal jwt: Jwt,
+        @TokenData tokenClaims: TokenClaims,
         @RequestParam orderId: Long,
-        @RequestParam contestNumber: Int
+        @RequestParam contestId: Long
     ): ResponseEntity<HttpStatus> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.deleteInvestmentOrder(it, orderId, contestNumber) }
-            .let { ResponseEntity(HttpStatus.OK) }
+        investmentOrderService.deleteInvestmentOrder(
+            userId = tokenClaims.userId, orderId = orderId, contestId = contestId
+        ).let { ResponseEntity(HttpStatus.OK) }
 
     @GetMapping("/all-active")
     fun getActiveInvestmentOrders(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam contestNumber: Int
+        @TokenData tokenClaims: TokenClaims,
+        @RequestParam contestId: Long
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.getActiveOrders(contestNumber, it) }
+        investmentOrderService.getActiveOrders(contestId, tokenClaims.userId)
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
     @GetMapping("/all-completed")
     fun getCompletedInvestmentOrders(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam contestNumber: Int
+        @TokenData tokenClaims: TokenClaims,
+        @RequestParam contestId: Long
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.getCompletedOrders(contestNumber, it) }
-            .map { mapToInvestmentOrderDto(it) }
+        investmentOrderService.getCompletedOrders(
+            contestId = contestId, userId = tokenClaims.userId
+        ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
     @GetMapping("/symbol-active")
     fun getActiveInvestmentOrdersSymbol(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam contestNumber: Int,
+        @TokenData tokenClaims: TokenClaims,
+        @RequestParam contestId: Long,
         @RequestParam symbol: String
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.getActiveOrdersSymbol(symbol, contestNumber, it) }
-            .map { mapToInvestmentOrderDto(it) }
+        investmentOrderService.getActiveOrdersSymbol(
+            symbol = symbol, contestId = contestId, userId = tokenClaims.userId
+        ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
     @GetMapping("/symbol-completed")
     fun getCompletedInvestmentOrdersSymbol(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam contestNumber: Int,
+        @TokenData tokenClaims: TokenClaims,
+        @RequestParam contestId: Long,
         @RequestParam symbol: String
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentOrderService.getCompletedOrdersSymbol(symbol, contestNumber, it) }
-            .map { mapToInvestmentOrderDto(it) }
+        investmentOrderService.getCompletedOrdersSymbol(
+            symbol = symbol, contestId = contestId, userId = tokenClaims.userId
+        ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
     data class PlaceInvestmentOrderRequest(

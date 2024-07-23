@@ -18,9 +18,8 @@ class InvestmentOrderService(
         acceptedPrice: Double,
         symbol: String,
         expirationTime: LocalDateTime,
-        email: String,
         amount: Int,
-        transactionType: TransactionType
+        transactionType: TransactionType,
     ) {
         val participant = participantService.getParticipant(participantId)
         InvestmentOrder(
@@ -36,35 +35,33 @@ class InvestmentOrderService(
     }
 
     @Transactional
-    fun deleteInvestmentOrder(email: String, orderId: Long, contestNumber: Int) {
-        participantService.getParticipant(contestNumber, email)!!
+    fun deleteInvestmentOrder(userId: Long, orderId: Long, contestId: Long) {
+        participantService.getParticipant(contestId = contestId, userId = userId)
             .also { it.removeInvestmentOrder(orderId) }
             .also { participantService.saveParticipant(it) }
     }
 
-    fun getActiveOrders(contestNumber: Int, email: String): List<InvestmentOrder> =
-        participantService.getParticipant(contestNumber, email)
-            ?.let { investmentOrderRepository.findAllByParticipantAndOrderStatus(it, OrderStatus.ACTIVE) }
-            ?: emptyList()
+    fun getActiveOrders(contestId: Long, userId: Long): List<InvestmentOrder> =
+        participantService.getParticipant(contestId = contestId, userId = userId)
+            .let { investmentOrderRepository.findAllByParticipantAndOrderStatus(it, OrderStatus.ACTIVE) }
 
-    fun getCompletedOrders(contestNumber: Int, email: String): List<InvestmentOrder> =
-        participantService.getParticipant(contestNumber, email)
-            ?.let { investmentOrderRepository.findAllByParticipantAndOrderStatus(it, OrderStatus.COMPLETED) }
-            ?: emptyList()
+    fun getCompletedOrders(contestId: Long, userId: Long): List<InvestmentOrder> =
+        participantService.getParticipant(contestId = contestId, userId = userId)
+            .let { investmentOrderRepository.findAllByParticipantAndOrderStatus(it, OrderStatus.COMPLETED) }
 
-    fun getActiveOrdersSymbol(symbol: String, contestNumber: Int, email: String): List<InvestmentOrder> =
-        getSymbolOrdersByStatus(symbol, contestNumber, email)
-
-    fun getCompletedOrdersSymbol(symbol: String, contestNumber: Int, email: String): List<InvestmentOrder> =
-        getSymbolOrdersByStatus(symbol, contestNumber, email)
-
-    private fun getSymbolOrdersByStatus(
-        symbol: String, contestNumber: Int, email: String
-    ): List<InvestmentOrder> =
-        participantService.getParticipant(contestNumber, email)
-            ?.let {
+    fun getActiveOrdersSymbol(symbol: String, contestId: Long, userId: Long): List<InvestmentOrder> =
+        participantService.getParticipant(contestId = contestId, userId = userId)
+            .let {
                 investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatus(
-                    it, symbol, OrderStatus.COMPLETED
+                    it, symbol, OrderStatus.ACTIVE
                 )
-            } ?: emptyList()
+            }
+
+    fun getCompletedOrdersSymbol(symbol: String, contestId: Long, userId: Long): List<InvestmentOrder> =
+        participantService.getParticipant(contestId = contestId, userId = userId)
+            .let {
+                investmentOrderRepository.findAllByParticipantAndSymbolAndOrderStatus(
+                    it, symbol, OrderStatus.ACTIVE
+                )
+            }
 }

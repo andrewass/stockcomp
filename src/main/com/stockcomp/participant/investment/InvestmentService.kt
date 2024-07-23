@@ -11,11 +11,11 @@ class InvestmentService(
     private val participantService: ParticipantService
 ) {
 
-    fun getInvestmentForSymbol(contestNumber: Int, email: String, symbol: String): Investment? =
-        participantService.getParticipant(contestNumber, email)!!
+    fun getInvestmentForSymbol(contestId: Long, userId: Long, symbol: String): Investment? =
+        participantService.getParticipant(contestId = contestId, userId = userId)
             .investments.firstOrNull { it.symbol == symbol }
 
-    fun getAllInvestmentsForParticipant(email: String): List<Investment> =
-        participantService.getActiveParticipants(email)
-            .flatMap { investmentRepository.findAllByParticipant(it) }
+    fun getInvestmentsForParticipant(contestId: Long, userId: Long): List<Investment> =
+        participantService.getParticipant(contestId = contestId, userId = userId)
+            .investments
 }

@@ -1,10 +1,9 @@
 package com.stockcomp.participant.investment
 
-import com.stockcomp.token.TokenService
+import com.stockcomp.token.TokenClaims
+import com.stockcomp.token.TokenData
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -13,27 +12,28 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/investment")
 class InvestmentController(
-    private val investmentService: InvestmentService,
-    private val tokenService: TokenService
+    private val investmentService: InvestmentService
 ) {
 
     @GetMapping("/all")
     fun getAllFromContest(
-        @AuthenticationPrincipal jwt: Jwt
+        @TokenData tokenClaims: TokenClaims,
+        @RequestParam contestId: Long
     ): ResponseEntity<List<InvestmentDto>> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentService.getAllInvestmentsForParticipant(it) }
+        investmentService.getInvestmentsForParticipant(
+            contestId = contestId, userId = tokenClaims.userId
+        )
             .map { mapToInvestmentDto(it) }
             .let { ResponseEntity.ok(it) }
 
     @GetMapping
     fun getInvestmentBySymbolAndContest(
-        @AuthenticationPrincipal jwt: Jwt,
+        @TokenData tokenClaims: TokenClaims,
         @RequestParam symbol: String,
-        @RequestParam contestNumber: Int
+        @RequestParam contestId: Long
     ): ResponseEntity<InvestmentDto?> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { investmentService.getInvestmentForSymbol(contestNumber, it, symbol) }
-            ?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
+        investmentService.getInvestmentForSymbol(
+            contestId = contestId, symbol = symbol, userId = tokenClaims.userId
+        )?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 }

@@ -5,7 +5,6 @@ import com.stockcomp.participant.dto.DetailedParticipantDto
 import com.stockcomp.participant.dto.mapToDetailedParticipant
 import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.UserServiceExternal
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -29,13 +28,9 @@ class ParticipantService(
         )
     }
 
-    fun getActiveParticipants(userId: Long): List<Participant> =
-        contestService.getActiveContests()
-            .mapNotNull { getParticipant(userId = userId, contestId = it) }
-
     fun getRunningDetailedParticipantsForSymbol(userId: Long, symbol: String): List<DetailedParticipantDto> =
         contestService.getRunningContests()
-            .mapNotNull { getParticipant(userId = userId, contestId = it) }
+            .map { getParticipant(userId = userId, contestId = it) }
             .map { mapToDetailedParticipant(source = it, symbol = symbol) }
 
     fun getParticipantsSortedByRank(contestId: Long, pageNumber: Int, pageSize: Int): Page<Participant> =
@@ -44,9 +39,9 @@ class ParticipantService(
             request = PageRequest.of(pageNumber, pageSize, Sort.by("rank"))
         )
 
-    fun getParticipant(contestId: Long, userId: Long): Participant? =
+    fun getParticipant(contestId: Long, userId: Long): Participant =
         participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
-            .firstOrNull()
+            .first()
 
     fun getParticipant(participantId: Long): Participant =
         participantRepository.findById(participantId)
