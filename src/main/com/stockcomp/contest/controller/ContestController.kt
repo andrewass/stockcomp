@@ -2,7 +2,7 @@ package com.stockcomp.contest.controller
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.stockcomp.contest.domain.ContestStatus
-import com.stockcomp.contest.service.ContestService
+import com.stockcomp.contest.service.ContestServiceInternal
 import com.stockcomp.exception.handler.CustomExceptionHandler
 import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/contests")
 class ContestController(
-    private val contestService: ContestService,
+    private val contestService: ContestServiceInternal,
     private val tokenService: TokenService,
 ) : CustomExceptionHandler() {
 

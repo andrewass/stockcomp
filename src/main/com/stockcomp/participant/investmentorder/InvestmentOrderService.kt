@@ -13,7 +13,7 @@ class InvestmentOrderService(
 
     @Transactional
     fun placeInvestmentOrder(
-        contestNumber: Int,
+        participantId: Long,
         currency: String,
         acceptedPrice: Double,
         symbol: String,
@@ -22,7 +22,7 @@ class InvestmentOrderService(
         amount: Int,
         transactionType: TransactionType
     ) {
-        val participant = participantService.getParticipant(contestNumber, email)!!
+        val participant = participantService.getParticipant(participantId)
         InvestmentOrder(
             participant = participant,
             currency = currency,

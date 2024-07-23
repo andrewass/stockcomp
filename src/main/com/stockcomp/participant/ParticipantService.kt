@@ -1,8 +1,8 @@
 package com.stockcomp.participant
 
+import com.stockcomp.contest.ContestServicePublic
 import com.stockcomp.contest.domain.Contest
 import com.stockcomp.contest.domain.ContestStatus
-import com.stockcomp.contest.service.ContestService
 import com.stockcomp.participant.dto.DetailedParticipantDto
 import com.stockcomp.participant.dto.mapToDetailedParticipant
 import com.stockcomp.participant.entity.Participant
@@ -17,13 +17,20 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class ParticipantService(
-    private val contestService: ContestService,
+    private val contestService: ContestServicePublic,
     private val participantRepository: ParticipantRepository,
     private val userService: UserService
 ) {
     private val logger = LoggerFactory.getLogger(ParticipantService::class.java)
 
-    fun getActiveParticipants(email: String): List<Participant> =
+    fun signUpParticipant(userId: Long, contestId: Long){
+        participantRepository.save(Participant(
+            userId = userId,
+            contestId = contestId
+        ))
+    }
+
+    fun getActiveParticipants(userId: Long): List<Participant> =
         contestService.getActiveContests()
             .mapNotNull { getAllByEmailAndContest(email, it) }
 
@@ -42,6 +49,10 @@ class ParticipantService(
             userService.findUserByEmail(email)!!
         )
 
+    fun getParticipant(participantId: Long): Participant =
+        participantRepository.findById(participantId)
+            .orElseThrow { IllegalArgumentException("Partipant Id $participantId not found") }
+
     fun getLockedParticipant(participantId: Long): Participant =
         participantRepository.findByIdLocked(participantId)
 
@@ -50,7 +61,6 @@ class ParticipantService(
 
     fun getAllActiveParticipants(): List<Participant> =
         participantRepository.findAllByContestStatus(ContestStatus.RUNNING)
-
 
     fun getParticipantHistory(username: String): List<Participant> =
         userService.findUserByUsername(username)

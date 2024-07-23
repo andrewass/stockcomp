@@ -16,7 +16,7 @@ class InvestmentOrderTasks(
     fun runMaintainInvestmentOrders() {
         try {
             participantService.getAllActiveParticipants()
-                .forEach { investmentOrderTaskService.processInvestmentOrders(it.id!!) }
+                .forEach { investmentOrderTaskService.processInvestmentOrders(it.participantId!!) }
         } catch (e: Exception) {
             logger.error("Failed order processing : ${e.message}")
         }

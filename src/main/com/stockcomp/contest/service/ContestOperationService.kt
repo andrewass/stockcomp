@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 @Service
 class ContestOperationService(
-    private val contestService: ContestService,
+    private val contestService: ContestServiceInternal,
     private val leaderboardOperationService: LeaderboardOperationService,
 ) {
     private val logger = LoggerFactory.getLogger(ContestOperationService::class.java)

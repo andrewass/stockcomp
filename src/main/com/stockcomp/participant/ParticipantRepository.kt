@@ -25,7 +25,7 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
     fun findAllByContestStatus(contestStatus: ContestStatus): List<Participant>
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT p FROM Participant  p where p.id = ?1")
+    @Query("SELECT p FROM Participant  p where p.participantId = ?1")
     fun findByIdLocked(id: Long): Participant
 
     fun findAllByUser(user: User): List<Participant>

@@ -4,7 +4,6 @@ import com.stockcomp.contest.domain.Contest
 import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.contest.domain.ContestStatus.*
 import com.stockcomp.contest.repository.ContestRepository
-import com.stockcomp.participant.entity.Participant
 import com.stockcomp.user.service.UserService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -15,7 +14,7 @@ import java.time.LocalDateTime
 
 @Service
 @Transactional
-class ContestService(
+class ContestServiceInternal(
     private val contestRepository: ContestRepository,
     private val userService: UserService,
 ) {
@@ -26,17 +25,6 @@ class ContestService(
             startTime = startTime,
             endTime = startTime.plusMonths(2)
         ).also { contestRepository.save(it) }
-    }
-
-    fun signUpToContest(email: String, contestNumber: Int) {
-        val contest = contestRepository.findByContestNumber(contestNumber)
-        assert(contest.contestStatus in listOf(RUNNING, STOPPED, AWAITING_START))
-        Participant(
-            user = userService.findUserByEmail(email)!!,
-            contest = contest,
-            rank = contest.getParticipantCount() + 1
-        ).also { contest.addParticipant(it) }
-        contestRepository.save(contest)
     }
 
     fun deleteContest(contestNumber: Int) {

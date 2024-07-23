@@ -13,11 +13,10 @@ class Participant(
     @Id
     @Column(name = "PARTICIPANT_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val participantId: Long? = null,
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    val user: User,
+    @Column(name = "USER_ID", nullable = false)
+    val userId: Long,
 
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
     val investmentOrders: MutableList<InvestmentOrder> = mutableListOf(),
@@ -31,7 +30,7 @@ class Participant(
     var remainingFunds: Double = 20000.00,
 
     @Column(name = "PARTICIPANT_RANK")
-    var rank: Int?,
+    var rank: Int? = null,
 
     var totalValue: Double = 20000.00,
 

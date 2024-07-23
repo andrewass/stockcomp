@@ -18,6 +18,14 @@ class ParticipantController(
     private val participantService: ParticipantService,
 ) {
 
+    @PostMapping("/sign-up")
+    fun signUpParticipant(
+        @RequestParam userId: Long,
+        @RequestParam contestNumber: Int
+    ) {
+
+    }
+
     @GetMapping("/contest")
     fun getParticipantForUser(
         @RequestParam contestNumber: Int,
@@ -35,7 +43,7 @@ class ParticipantController(
             .map { mapToParticipantDto(it) }
             .let { ResponseEntity.ok(it) }
 
-    @GetMapping("/running-participants")
+    @GetMapping("/running")
     fun getAllRunningParticipants(
         @RequestParam symbol: String,
         @TokenData tokenClaims: TokenClaims

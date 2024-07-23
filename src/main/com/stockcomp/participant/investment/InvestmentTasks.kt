@@ -16,7 +16,7 @@ class InvestmentTasks(
     fun runMaintainInvestments() {
         try {
             participantService.getAllActiveParticipants()
-                .forEach { investmentTaskService.maintainInvestments(it.id!!) }
+                .forEach { investmentTaskService.maintainInvestments(it.participantId!!) }
         } catch (e: Exception) {
             logger.error("Failed maintain investments : ${e.message}")
         }

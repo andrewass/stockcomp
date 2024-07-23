@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/investmentorder")
+@RequestMapping("/participants/investmentorders")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService,
     private val tokenService: TokenService
@@ -23,7 +23,7 @@ class InvestmentOrderController(
         tokenService.extractEmailFromToken(jwt)
             .let {
                 investmentOrderService.placeInvestmentOrder(
-                    contestNumber = request.contestNumber,
+                    participantId = request.participantId,
                     symbol = request.symbol,
                     email = it,
                     acceptedPrice = request.acceptedPrice,
@@ -88,7 +88,7 @@ class InvestmentOrderController(
             .let { ResponseEntity.ok(it) }
 
     data class PlaceInvestmentOrderRequest(
-        val contestNumber: Int,
+        val participantId: Long,
         val symbol: String,
         val amount: Int,
         val currency: String,
