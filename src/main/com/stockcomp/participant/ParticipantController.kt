@@ -1,9 +1,6 @@
 package com.stockcomp.participant
 
-import com.stockcomp.participant.dto.*
 import com.stockcomp.participant.presentation.*
-import com.stockcomp.token.TokenClaims
-import com.stockcomp.token.TokenData
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -29,22 +26,6 @@ class ParticipantController(
     ): ResponseEntity<DetailedParticipantDto> =
         participantService.getParticipant(participantId)
             .let { ResponseEntity.ok(toDetailedParticipant(it)) }
-
-    @GetMapping("/active")
-    fun getAllActiveParticipantsForUser(
-        @TokenData tokenClaims: TokenClaims
-    ): ResponseEntity<List<ParticipantDto>> =
-        participantService.getActiveParticipants(tokenClaims.userId)
-            .map { mapToParticipantDto(it) }
-            .let { ResponseEntity.ok(it) }
-
-    @GetMapping("/running")
-    fun getAllRunningParticipants(
-        @RequestParam symbol: String,
-        @TokenData tokenClaims: TokenClaims
-    ): ResponseEntity<List<DetailedParticipantDto>> =
-        participantService.getRunningDetailedParticipantsForSymbol(tokenClaims.userId, symbol)
-            .let { ResponseEntity.ok(it) }
 
     @GetMapping("/sorted")
     fun getSortedParticipantsForContest(

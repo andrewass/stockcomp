@@ -9,13 +9,10 @@ import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
 import org.springframework.data.domain.Page
 
 data class ParticipantDto(
-    val displayName: String? = null,
     val rank: Int? = null,
     val totalValue: Double,
     val totalInvestmentValue: Double,
     val remainingFunds: Double,
-    val country: String? = null,
-    val contestNumber: Int
 )
 
 data class ParticipantPageDto(
@@ -45,13 +42,10 @@ fun mapToHistoricParticipant(source: Participant) =
 
 fun mapToParticipantDto(source: Participant, ) =
     ParticipantDto(
-        displayName = source.user.username,
         rank = source.rank,
         totalValue = source.totalValue,
         totalInvestmentValue = source.totalInvestmentValue,
-        remainingFunds = source.remainingFunds,
-        country = source.user.country,
-        contestNumber = source.contest.contestNumber
+        remainingFunds = source.remainingFunds
     )
 
 

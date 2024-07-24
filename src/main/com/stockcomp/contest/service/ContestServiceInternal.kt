@@ -4,6 +4,7 @@ import com.stockcomp.contest.domain.Contest
 import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.contest.domain.ContestStatus.*
 import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.user.internal.UserServiceInternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -15,7 +16,7 @@ import java.time.LocalDateTime
 @Transactional
 class ContestServiceInternal(
     private val contestRepository: ContestRepository,
-    private val userService: UserService,
+    private val userService: UserServiceInternal,
 ) {
 
     fun createContest(contestNumber: Int, startTime: LocalDateTime) {
@@ -44,7 +45,7 @@ class ContestServiceInternal(
 
     fun getActiveContestsSignedUp(email: String): List<Contest> =
         userService.findUserByEmail(email)
-            .let { return contestRepository.getAllActiveContestsSignedUp(it!!) }
+            .let { return contestRepository.getAllActiveContestsSignedUp(it!!.id!!) }
 
     fun getActiveContestsNotSignedUp(email: String): List<Contest> =
         userService.findUserByEmail(email)

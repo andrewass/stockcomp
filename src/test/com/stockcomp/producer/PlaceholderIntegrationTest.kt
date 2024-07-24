@@ -11,7 +11,5 @@ import org.testcontainers.junit.jupiter.Testcontainers
 internal class PlaceholderIntegrationTest : SpringBootTestConfig() {
 
     @Test
-    fun `application context test`() {
-        assertEquals(2, 2)
-    }
+    fun `application context test`() {}
 }

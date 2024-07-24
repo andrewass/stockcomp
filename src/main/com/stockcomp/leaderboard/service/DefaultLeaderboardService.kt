@@ -3,6 +3,7 @@ package com.stockcomp.leaderboard.service
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.LeaderboardEntryRepository
 import com.stockcomp.user.domain.User
+import com.stockcomp.user.internal.UserServiceInternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class DefaultLeaderboardService(
     private val leaderboardEntryRepository: LeaderboardEntryRepository,
-    private val userService: UserService
+    private val userService: UserServiceInternal
 ) : LeaderboardService {
 
     override fun getSortedLeaderboardEntries(pageNumber: Int, pageSize: Int): Page<LeaderboardEntry> =

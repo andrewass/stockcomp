@@ -14,21 +14,22 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class LeaderboardOperationService(
     private val participantService: ParticipantService,
-    private val leaderboardService: LeaderboardService
+    private val leaderboardService: LeaderboardService,
 ) {
 
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
     fun updateLeaderboardEntries(contest: Contest) {
         logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
-        updateLeaderboardEntryValues(contest)
+        //updateLeaderboardEntryValues(contest)
         logger.info("Update of participant score completed")
-        updateRankingForLeaderboardEntries()
+        //updateRankingForLeaderboardEntries()
         logger.info("Update of each ranking completed")
     }
 
+    /*
     private fun updateLeaderboardEntryValues(contest: Contest) {
-        participantService.getAllByContest(contest)
+        participantService.getAllByContest(contest.contestId!!)
             .map { updatedLeaderboardEntry(it, contest) }
             .also { leaderboardService.saveAllEntries(it) }
     }
@@ -71,4 +72,5 @@ class LeaderboardOperationService(
             else -> null
         }
     }
+    */
 }
