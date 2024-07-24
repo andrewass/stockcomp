@@ -2,8 +2,7 @@ package com.stockcomp.leaderboard.service
 
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
 import com.stockcomp.leaderboard.LeaderboardEntryRepository
-import com.stockcomp.user.entity.User
-import com.stockcomp.user.service.UserService
+import com.stockcomp.user.domain.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort

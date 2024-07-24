@@ -1,8 +1,8 @@
 package com.stockcomp.service.user
 
-import com.stockcomp.user.entity.User
-import com.stockcomp.user.repository.UserRepository
-import com.stockcomp.user.service.DefaultUserService
+import com.stockcomp.user.domain.User
+import com.stockcomp.user.internal.UserRepository
+import com.stockcomp.user.internal.UserServiceInternal
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -19,7 +19,7 @@ internal class CustomUserServiceTest {
     private lateinit var userRepository: UserRepository
 
     @InjectMockKs
-    private lateinit var defaultUserService: DefaultUserService
+    private lateinit var userServiceInternal: UserServiceInternal
 
     private val username = "testUser"
     private val email = "testEmail"
@@ -35,7 +35,7 @@ internal class CustomUserServiceTest {
 
     @Test
     fun `should get peristed user`() {
-        val user = defaultUserService.findUserByEmail(email)!!
+        val user = userServiceInternal.findUserByEmail(email)!!
 
         Assertions.assertEquals(username, user.username)
         Assertions.assertEquals(email, user.email)

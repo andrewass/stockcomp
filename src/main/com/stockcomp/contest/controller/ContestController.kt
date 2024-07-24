@@ -19,16 +19,6 @@ class ContestController(
     private val tokenService: TokenService,
 ) : CustomExceptionHandler() {
 
-    @PostMapping("/sign-up/{contestNumber}")
-    fun signUp(
-        @PathVariable contestNumber: Int,
-        @AuthenticationPrincipal jwt: Jwt
-    ): ResponseEntity<HttpStatus> {
-        tokenService.extractEmailFromToken(jwt)
-            .let { contestService.signUpToContest(it, contestNumber) }
-        return ResponseEntity(HttpStatus.OK)
-    }
-
     @GetMapping("/all")
     fun getAllContestsSortedByContestNumber(
         @RequestParam pageNumber: Int,

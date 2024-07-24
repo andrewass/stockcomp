@@ -1,7 +1,7 @@
-package com.stockcomp.user.dto
+package com.stockcomp.user
 
-import com.stockcomp.user.entity.UserRole
-import com.stockcomp.user.entity.UserStatus
+import com.stockcomp.user.domain.UserRole
+import com.stockcomp.user.domain.UserStatus
 
 data class UserDto(
     val username: String,

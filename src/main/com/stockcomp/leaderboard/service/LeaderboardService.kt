@@ -1,7 +1,7 @@
 package com.stockcomp.leaderboard.service
 
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.user.entity.User
+import com.stockcomp.user.domain.User
 import org.springframework.data.domain.Page
 
 interface LeaderboardService {

@@ -1,7 +1,7 @@
 package com.stockcomp.leaderboard
 
 import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.user.entity.User
+import com.stockcomp.user.domain.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

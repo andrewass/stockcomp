@@ -1,7 +1,12 @@
 package com.stockcomp.participant.presentation
 
+import com.stockcomp.participant.Participant
 import com.stockcomp.participant.investment.InvestmentDto
+import com.stockcomp.participant.investment.mapToInvestmentDto
 import com.stockcomp.participant.investmentorder.InvestmentOrderDto
+import com.stockcomp.participant.investmentorder.OrderStatus
+import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
+import org.springframework.data.domain.Page
 
 data class ParticipantDto(
     val displayName: String? = null,
@@ -38,7 +43,7 @@ fun mapToHistoricParticipant(source: Participant) =
     )
 
 
-fun mapToParticipantDto(source: Participant) =
+fun mapToParticipantDto(source: Participant, ) =
     ParticipantDto(
         displayName = source.user.username,
         rank = source.rank,

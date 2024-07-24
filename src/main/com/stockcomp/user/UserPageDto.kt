@@ -1,4 +1,4 @@
-package com.stockcomp.user.dto
+package com.stockcomp.user
 
 data class UserPageDto(
     val users: List<UserDto>,

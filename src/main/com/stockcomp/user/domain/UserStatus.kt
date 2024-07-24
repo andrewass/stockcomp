@@ -1,4 +1,4 @@
-package com.stockcomp.user.entity
+package com.stockcomp.user.domain
 
 enum class UserStatus {
     ACTIVE,

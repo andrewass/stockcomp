@@ -4,7 +4,6 @@ import com.stockcomp.contest.domain.Contest
 import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.contest.domain.ContestStatus.*
 import com.stockcomp.contest.repository.ContestRepository
-import com.stockcomp.user.service.UserService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort

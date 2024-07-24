@@ -1,9 +1,8 @@
-package com.stockcomp.user.controller
+package com.stockcomp.user.domain
 
-import com.stockcomp.user.dto.UserDetailsDto
-import com.stockcomp.user.dto.UserDto
-import com.stockcomp.user.dto.UserPageDto
-import com.stockcomp.user.entity.User
+import com.stockcomp.user.UserDetailsDto
+import com.stockcomp.user.UserDto
+import com.stockcomp.user.UserPageDto
 import org.springframework.data.domain.Page
 
 fun mapToUserPageDto(source: Page<User>) = UserPageDto(
