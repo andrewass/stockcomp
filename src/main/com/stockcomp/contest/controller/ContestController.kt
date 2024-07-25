@@ -20,7 +20,7 @@ class ContestController(
 ) : CustomExceptionHandler() {
 
     @GetMapping("/all")
-    fun getAllContestsSortedByContestNumber(
+    fun getAllContestsSortedByContestId(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
     ): ResponseEntity<ContestPageDto> =
@@ -47,35 +47,35 @@ class ContestController(
             .map { mapToContestDto(it) }
             .let { ResponseEntity.ok(ContestsResponse(it)) }
 
-    @GetMapping("/{contestNumber}")
-    fun getContest(@PathVariable contestNumber: Int): ResponseEntity<ContestDto> =
-        contestService.findByContestNumber(contestNumber)
+    @GetMapping("/{contestId}")
+    fun getContest(@PathVariable contestId: Long): ResponseEntity<ContestDto> =
+        contestService.findByContestId(contestId)
             .let { ResponseEntity.ok(mapToContestDto(it)) }
 
     @PostMapping("/create")
     fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.createContest(request.contestNumber, request.startTime)
+        contestService.createContest(contestName = request.contestName, startTime = request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
     @PatchMapping("/update")
     fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.updateContest(request.contestNumber, request.contestStatus, request.startTime)
+        contestService.updateContest(request.contestId, request.contestStatus, request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
-    @DeleteMapping("/{contestNumber}")
-    fun deleteContest(@PathVariable contestNumber: Int): ResponseEntity<HttpStatus> =
-        contestService.deleteContest(contestNumber)
+    @DeleteMapping("/{contestId}")
+    fun deleteContest(@PathVariable contestId: Long): ResponseEntity<HttpStatus> =
+        contestService.deleteContest(contestId)
             .let { ResponseEntity(HttpStatus.OK) }
 
     data class CreateContestRequest(
-        val contestNumber: Int,
+        val contestName: String,
         val startTime: LocalDateTime
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class UpdateContestRequest(
         val startTime: LocalDateTime,
-        val contestNumber: Int,
+        val contestId: Long,
         val contestStatus: ContestStatus
     )
 

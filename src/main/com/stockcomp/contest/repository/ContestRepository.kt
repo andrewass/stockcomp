@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ContestRepository : JpaRepository<Contest, Long> {
 
-    fun findByContestNumber(contestNumber: Int): Contest
+    fun findByContestId(contestId: Long): Contest
 
     fun findAllByContestStatusIn(contestStatusList: List<ContestStatus>): List<Contest>
 
@@ -32,5 +32,5 @@ interface ContestRepository : JpaRepository<Contest, Long> {
     )
     fun getAllActiveContestsNotSignedUp(userId: Long): List<Contest>
 
-    fun deleteByContestNumber(contestNumber: Int)
+    fun deleteByContestId(contestId: Long)
 }

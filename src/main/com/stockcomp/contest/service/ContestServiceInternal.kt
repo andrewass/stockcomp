@@ -19,9 +19,9 @@ class ContestServiceInternal(
     private val userService: UserServiceInternal,
 ) {
 
-    fun createContest(contestNumber: Int, startTime: LocalDateTime) {
+    fun createContest(contestName: String, startTime: LocalDateTime) {
         Contest(
-            contestNumber = contestNumber,
+            contestName = contestName,
             startTime = startTime,
             endTime = startTime.plusMonths(2)
         ).also { contestRepository.save(it) }
@@ -31,12 +31,12 @@ class ContestServiceInternal(
         contestRepository.findById(contestId)
             .orElseThrow { IllegalArgumentException("Contest $contestId not found") }
 
-    fun deleteContest(contestNumber: Int) {
-        contestRepository.deleteByContestNumber(contestNumber)
+    fun deleteContest(contestId: Long) {
+        contestRepository.deleteByContestId(contestId)
     }
 
-    fun updateContest(number: Int, status: ContestStatus, start: LocalDateTime) {
-        contestRepository.findByContestNumber(number).apply {
+    fun updateContest(contestId: Long, status: ContestStatus, start: LocalDateTime) {
+        contestRepository.findByContestId(contestId).apply {
             contestStatus = status
             startTime = start
             endTime = startTime.plusMonths(2)
@@ -62,11 +62,14 @@ class ContestServiceInternal(
     fun getCompletedContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
 
-    fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
-        contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestNumber")))
+    fun getContestsAwaitingCompletion() : List<Contest> =
+        contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
 
-    fun findByContestNumber(contestNumber: Int): Contest =
-        contestRepository.findByContestNumber(contestNumber)
+    fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
+        contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestId")))
+
+    fun findByContestId(contestId: Long): Contest =
+        contestRepository.findByContestId(contestId)
 
     fun saveContest(contest: Contest) {
         contestRepository.save(contest)

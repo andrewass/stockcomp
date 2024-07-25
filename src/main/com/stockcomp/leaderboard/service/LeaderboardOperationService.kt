@@ -20,7 +20,7 @@ class LeaderboardOperationService(
     private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
 
     fun updateLeaderboardEntries(contest: Contest) {
-        logger.info("Starting update of leaderboard based on contest ${contest.contestNumber}")
+        logger.info("Starting update of leaderboard based on contest ${contest.contestId}")
         //updateLeaderboardEntryValues(contest)
         logger.info("Update of participant score completed")
         //updateRankingForLeaderboardEntries()

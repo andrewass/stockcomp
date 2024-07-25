@@ -4,6 +4,7 @@ import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.leaderboard.entity.Medal
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import java.util.EnumSet
 
 @Entity
 @Table(name = "T_CONTEST")
@@ -18,26 +19,23 @@ class Contest(
 
     var endTime: LocalDateTime,
 
-    val contestNumber: Int,
+    val contestName: String,
 
     @Enumerated(EnumType.STRING)
     var contestStatus: ContestStatus = ContestStatus.AWAITING_START,
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "LEADERBOARD_UPDATE")
-    var leaderboardUpdateStatus: LeaderboardUpdateStatus = LeaderboardUpdateStatus.AWAITING,
 
     @OneToMany(mappedBy = "contest", cascade = [CascadeType.ALL])
     val medals: MutableList<Medal> = mutableListOf()
 
 ) : BaseEntity() {
 
-    fun getParticipantCount(): Int = 0
+    fun isActive() = EnumSet.of(ContestStatus.AWAITING_START, ContestStatus.RUNNING, ContestStatus.STOPPED)
+        .contains(contestStatus)
 
     override fun equals(other: Any?): Boolean =
-        other is Contest && other.contestNumber == contestNumber
+        other is Contest && other.contestName == contestName
 
     override fun hashCode(): Int {
-        return contestNumber
+        return contestName.toInt()
     }
 }

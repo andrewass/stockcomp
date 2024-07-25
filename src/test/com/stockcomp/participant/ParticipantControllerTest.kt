@@ -33,7 +33,7 @@ class ParticipantControllerTest(
             .returns(Participant(userId = 1L, contestId = 1L))
         mockMvc.perform(
             mockMvcGetRequest("$basePath/contest")
-                .queryParam("contestNumber", "1")
+                .queryParam("contestId", "1")
         ).andExpect(status().isOk)
     }
 
@@ -53,7 +53,7 @@ class ParticipantControllerTest(
             .returns(PageImpl(listOf(Participant(userId = 1L, contestId = 1L))))
         mockMvc.perform(
             mockMvcGetRequest("$basePath/sorted")
-                .queryParam("contestNumber", "1")
+                .queryParam("contestId", "1")
                 .queryParam("pageNumber", "1")
                 .queryParam("pageSize", "1")
         ).andExpect(status().isOk)
