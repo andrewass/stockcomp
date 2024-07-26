@@ -1,5 +1,7 @@
 package com.stockcomp.token
 
+import com.stockcomp.common.TokenClaims
+import com.stockcomp.common.TokenData
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder

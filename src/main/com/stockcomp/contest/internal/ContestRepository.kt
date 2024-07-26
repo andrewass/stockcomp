@@ -1,7 +1,6 @@
 package com.stockcomp.contest.internal
 
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -10,25 +9,6 @@ interface ContestRepository : JpaRepository<Contest, Long> {
     fun findByContestId(contestId: Long): Contest
 
     fun findAllByContestStatusIn(contestStatusList: List<ContestStatus>): List<Contest>
-
-    @Query(
-        value = "SELECT C.* FROM T_CONTEST C" +
-                "INNER JOIN T_PARTICIPANT P ON P.CONTEST_ID = C.CONTEST_ID " +
-                "   AND P.USER_ID = ?1" +
-                "WHERE C.CONTEST_STATUS IN ('AWAITING_START','RUNNING','STOPPED') ", nativeQuery = true
-    )
-    fun getAllActiveContestsSignedUp(userId: Long): List<Contest>
-
-    @Query(
-        value = "SELECT C.* FROM T_CONTEST C " +
-                "WHERE C.CONTEST_STATUS IN ('AWAITING_START','RUNNING','STOPPED') " +
-                "   AND NOT EXISTS (" +
-                "       SELECT 1 FROM T_PARTICIPANT P" +
-                "       WHERE P.CONTEST_ID = C.CONTEST_ID" +
-                "           AND P.USER_ID = ?1" +
-                ")", nativeQuery = true
-    )
-    fun getAllActiveContestsNotSignedUp(userId: Long): List<Contest>
 
     fun deleteByContestId(contestId: Long)
 }

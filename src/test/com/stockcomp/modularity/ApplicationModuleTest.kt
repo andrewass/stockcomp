@@ -1,10 +1,9 @@
-package com.stockcomp
+package com.stockcomp.modularity
 
-import org.junit.jupiter.api.Disabled
+import com.stockcomp.StockCompApplication
 import org.junit.jupiter.api.Test
 import org.springframework.modulith.core.ApplicationModules
 
-@Disabled("Disabled while fixing application module dependency")
 class ApplicationModuleTest {
 
     @Test

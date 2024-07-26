@@ -1,24 +1,22 @@
 package com.stockcomp.user.internal
 
-import com.stockcomp.token.TokenService
+import com.stockcomp.common.TokenClaims
+import com.stockcomp.common.TokenData
 import com.stockcomp.user.UserDetailsDto
 import com.stockcomp.user.UserPageDto
 import com.stockcomp.user.mapToUserDetailsDto
 import com.stockcomp.user.mapToUserPageDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/user")
 class UserController(
-    private val userService: UserServiceInternal,
-    private val tokenService: TokenService
+    private val userService: UserServiceInternal
 ) {
 
-    @GetMapping("/get-all-sorted")
+    @GetMapping("/sorted")
     fun getAllUsersSortedByEmail(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
@@ -26,29 +24,18 @@ class UserController(
         userService.getAllUsersSortedByEmail(pageNumber, pageSize)
             .let { ResponseEntity.ok(mapToUserPageDto(it)) }
 
-
-    @GetMapping("/get-details")
+    @GetMapping("/details")
     fun getUserDetails(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam username: String?
+        @RequestParam userId: Long
     ): ResponseEntity<UserDetailsDto> =
-        tokenService.extractEmailFromToken(jwt)
-            .let {
-                username
-                    ?.let { userService.findUserByUsername(username) }
-                    ?: userService.findUserByTokenClaim(it)
-            }
-            .let { mapToUserDetailsDto(it) }
+        mapToUserDetailsDto(userService.findUserById(userId))
             .let { ResponseEntity.ok(it) }
 
-
-    @PatchMapping("/update-details")
+    @PatchMapping("/update")
     fun updateUserDetails(
-        @AuthenticationPrincipal jwt: Jwt,
+        @TokenData tokenClaims: TokenClaims,
         @RequestBody userDetailsDto: UserDetailsDto
     ): ResponseEntity<HttpStatus> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { userService.findUserByTokenClaim(it) }
-            .let { userService.updateUser(it, userDetailsDto) }
+            userService.updateUser(tokenClaims.userId, userDetailsDto)
             .let { ResponseEntity(HttpStatus.OK) }
 }

@@ -1,5 +1,6 @@
 package com.stockcomp.token
 
+import com.stockcomp.common.TokenIssuer
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Service
 

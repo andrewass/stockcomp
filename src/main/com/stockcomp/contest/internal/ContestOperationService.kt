@@ -1,24 +1,15 @@
 package com.stockcomp.contest.internal
 
-import com.stockcomp.leaderboard.leaderboard.LeaderboardOperationService
+import com.stockcomp.leaderboard.LeaderboardServiceExternal
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class ContestOperationService(
-    private val contestService: ContestServiceInternal,
-    private val leaderboardOperationService: LeaderboardOperationService,
+    private val contestService: ContestServiceInternal
 ) {
     private val logger = LoggerFactory.getLogger(ContestOperationService::class.java)
-
-    fun updateLeaderboard() {
-        contestService.getContestsAwaitingCompletion()
-            .forEach {
-                leaderboardOperationService.updateLeaderboardEntries(it)
-                contestService.saveContest(it)
-            }
-    }
 
     fun maintainContestStatus() {
         contestService.getActiveContests()

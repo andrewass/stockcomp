@@ -25,4 +25,11 @@ class LeaderboardController(
     ): ResponseEntity<LeaderboardEntryDto> =
         leaderboardService.getLeaderboardEntryForUser(userId)
             .let { ResponseEntity.ok(mapToLeaderboardEntryDto(it)) }
+
+    @PostMapping("/update")
+    fun updateLeaderboard(
+        @RequestParam contestId: Long
+    ) {
+        leaderboardService.updateLeaderboard(contestId)
+    }
 }

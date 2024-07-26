@@ -1,7 +1,7 @@
 package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.token.TokenClaims
-import com.stockcomp.token.TokenData
+import com.stockcomp.common.TokenClaims
+import com.stockcomp.common.TokenData
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

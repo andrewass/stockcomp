@@ -17,8 +17,7 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/contests")
 class ContestController(
-    private val contestService: ContestServiceInternal,
-    private val tokenService: TokenService,
+    private val contestService: ContestServiceInternal
 ) : CustomExceptionHandler() {
 
     @GetMapping("/all")
@@ -32,20 +31,6 @@ class ContestController(
     @GetMapping("/active")
     fun getActiveContests(): ResponseEntity<ContestsResponse> =
         contestService.getActiveContests()
-            .map { mapToContestDto(it) }
-            .let { ResponseEntity.ok(ContestsResponse(it)) }
-
-    @GetMapping("/registered")
-    fun getActiveContestsSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<ContestsResponse> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { contestService.getActiveContestsSignedUp(it) }
-            .map { mapToContestDto(it) }
-            .let { ResponseEntity.ok(ContestsResponse(it)) }
-
-    @GetMapping("/unregistered")
-    fun getActiveContestsNotSignedUp(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<ContestsResponse> =
-        tokenService.extractEmailFromToken(jwt)
-            .let { contestService.getActiveContestsNotSignedUp(it) }
             .map { mapToContestDto(it) }
             .let { ResponseEntity.ok(ContestsResponse(it)) }
 

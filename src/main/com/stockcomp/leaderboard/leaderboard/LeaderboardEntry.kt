@@ -1,7 +1,6 @@
 package com.stockcomp.leaderboard.leaderboard
 
 import com.stockcomp.common.BaseEntity
-import com.stockcomp.contest.internal.Contest
 import com.stockcomp.leaderboard.medal.Medal
 import jakarta.persistence.*
 
@@ -10,9 +9,9 @@ import jakarta.persistence.*
 class LeaderboardEntry(
 
     @Id
-    @Column(name = "LEADERBOARD_ENTRY_ID")
+    @Column(name = "LEADERBOARD_ENTRY_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val leaderboardEntryId: Long? = null,
 
     var contestCount: Int = 0,
 
@@ -22,10 +21,6 @@ class LeaderboardEntry(
 
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL])
     val medals: MutableList<Medal> = mutableListOf(),
-
-    @OneToOne
-    @JoinColumn(name = "LAST_CONTEST_ID")
-    var lastContest: Contest? = null,
 
     @Column(name = "USER_ID", nullable = false)
     val userId: Long,

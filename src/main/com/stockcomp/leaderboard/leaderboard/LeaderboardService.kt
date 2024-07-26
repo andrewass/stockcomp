@@ -21,6 +21,10 @@ class LeaderboardService(
     fun getLeaderboardentriesByOrderByScore(): List<LeaderboardEntry> =
         leaderboardEntryRepository.findAllByOrderByScore()
 
+    fun updateLeaderboard(contestId: Long) {
+
+    }
+
     fun saveEntry(leaderboardEntry: LeaderboardEntry) {
         leaderboardEntryRepository.save(leaderboardEntry)
     }

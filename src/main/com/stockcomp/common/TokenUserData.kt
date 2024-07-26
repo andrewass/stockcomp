@@ -1,4 +1,4 @@
-package com.stockcomp.token
+package com.stockcomp.common
 
 enum class TokenIssuer {
     CUSTOM_AUTH

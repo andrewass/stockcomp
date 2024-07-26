@@ -32,13 +32,12 @@ class UserServiceInternal(
         userRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User with id $userId not found") }
 
-    fun updateUser(user: User, userDetailsDto: UserDetailsDto) {
-        user.also {
-            it.country = userDetailsDto.country ?: it.country
-            it.username = userDetailsDto.username ?: it.username
-            it.fullName = userDetailsDto.fullName ?: it.fullName
-            userRepository.save(it)
-        }
+    fun updateUser(userId: Long, userDetailsDto: UserDetailsDto) {
+        userRepository.getReferenceById(userId).apply {
+            country = userDetailsDto.country
+            username = userDetailsDto.username
+            fullName = userDetailsDto.fullName
+        }.also { userRepository.save(it) }
     }
 
     fun getUserDetails(username: String): UserDetailsDto =

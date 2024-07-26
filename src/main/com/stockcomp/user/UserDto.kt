@@ -13,7 +13,7 @@ data class UserDto(
 )
 
 data class UserDetailsDto(
-    val username: String? = null,
+    val username: String,
     val fullName: String? = null,
     val country: String? = null,
 )

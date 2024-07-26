@@ -1,4 +1,4 @@
-package com.stockcomp.service.user
+package com.stockcomp.user
 
 import com.stockcomp.user.internal.User
 import com.stockcomp.user.internal.UserRepository
