@@ -1,7 +1,7 @@
-package com.stockcomp.leaderboard.entity
+package com.stockcomp.leaderboard.medal
 
 import com.stockcomp.common.entity.BaseEntity
-import com.stockcomp.contest.domain.Contest
+import com.stockcomp.leaderboard.leaderboard.LeaderboardEntry
 import jakarta.persistence.*
 
 @Entity
@@ -18,9 +18,8 @@ class Medal(
 
     val position: Int,
 
-    @ManyToOne
-    @JoinColumn(name = "CONTEST_ID", nullable = false)
-    val contest: Contest,
+    @Column(name = "CONTEST_ID", nullable = false)
+    val contestId: Long,
 
     @ManyToOne
     @JoinColumn(name = "LEADERBOARD_ENTRY_ID", nullable = false)

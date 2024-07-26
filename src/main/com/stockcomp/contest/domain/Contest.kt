@@ -1,7 +1,7 @@
 package com.stockcomp.contest.domain
 
 import com.stockcomp.common.entity.BaseEntity
-import com.stockcomp.leaderboard.entity.Medal
+import com.stockcomp.leaderboard.medal.Medal
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.EnumSet

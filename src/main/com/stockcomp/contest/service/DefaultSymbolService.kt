@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service
 @Service
 class DefaultSymbolService(
     @Qualifier("fastfinance.quote.consumer") private val quoteConsumer: QuoteConsumer
-) : SymbolService {
+) {
 
-    override fun getCurrentPrice(symbol: String): CurrentPriceSymbol {
+    fun getCurrentPrice(symbol: String): CurrentPriceSymbol {
         return quoteConsumer.getCurrentPrice(symbol)
     }
 }

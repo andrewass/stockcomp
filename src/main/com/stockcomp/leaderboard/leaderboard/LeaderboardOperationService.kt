@@ -1,11 +1,7 @@
-package com.stockcomp.leaderboard.service
+package com.stockcomp.leaderboard.leaderboard
 
 import com.stockcomp.contest.domain.Contest
-import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.leaderboard.entity.Medal
-import com.stockcomp.leaderboard.entity.MedalValue
-import com.stockcomp.participant.ParticipantService
-import com.stockcomp.participant.Participant
+import com.stockcomp.participant.participant.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +13,7 @@ class LeaderboardOperationService(
     private val leaderboardService: LeaderboardService,
 ) {
 
-    private val logger = LoggerFactory.getLogger(DefaultLeaderboardService::class.java)
+    private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
     fun updateLeaderboardEntries(contest: Contest) {
         logger.info("Starting update of leaderboard based on contest ${contest.contestId}")

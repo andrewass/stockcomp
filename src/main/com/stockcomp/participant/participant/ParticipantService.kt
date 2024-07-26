@@ -1,4 +1,4 @@
-package com.stockcomp.participant
+package com.stockcomp.participant.participant
 
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.presentation.DetailedParticipantDto

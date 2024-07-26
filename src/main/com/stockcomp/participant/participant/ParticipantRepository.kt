@@ -1,4 +1,4 @@
-package com.stockcomp.participant
+package com.stockcomp.participant.participant
 
 import jakarta.persistence.LockModeType
 import org.springframework.data.domain.Page

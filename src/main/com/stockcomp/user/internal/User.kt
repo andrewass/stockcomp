@@ -1,4 +1,4 @@
-package com.stockcomp.user.domain
+package com.stockcomp.user.internal
 
 import com.stockcomp.common.entity.BaseEntity
 import jakarta.persistence.*

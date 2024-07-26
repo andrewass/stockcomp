@@ -1,6 +1,6 @@
 package com.stockcomp.service.user
 
-import com.stockcomp.user.domain.User
+import com.stockcomp.user.internal.User
 import com.stockcomp.user.internal.UserRepository
 import com.stockcomp.user.internal.UserServiceInternal
 import io.mockk.MockKAnnotations

@@ -1,22 +1,26 @@
-package com.stockcomp.leaderboard.dto
+package com.stockcomp.leaderboard.leaderboard
 
-import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.leaderboard.entity.Medal
+import com.stockcomp.leaderboard.medal.MedalDto
+import com.stockcomp.leaderboard.medal.mapToMedalDto
 import org.springframework.data.domain.Page
 
-fun mapToMedalDto(src: Medal) =
-    MedalDto(
-        medalValue = src.medalValue.decode,
-        position = src.position
-    )
+data class LeaderboardEntryDto(
+    val ranking: Int,
+    val score: Int,
+    val contestCount: Int,
+    val medals: List<MedalDto>
+)
+
+data class LeaderboardEntryPageDto(
+    val entries: List<LeaderboardEntryDto>,
+    val totalEntriesCount: Long
+)
 
 fun mapToLeaderboardEntryDto(src: LeaderboardEntry) =
     LeaderboardEntryDto(
         ranking = src.ranking,
         contestCount = src.contestCount,
         score = src.score,
-        displayName = src.user.username,
-        country = src.user.country,
         medals = src.medals.map { mapToMedalDto(it) }
     )
 

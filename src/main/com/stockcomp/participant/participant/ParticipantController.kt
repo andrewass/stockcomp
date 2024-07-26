@@ -1,4 +1,4 @@
-package com.stockcomp.participant
+package com.stockcomp.participant.participant
 
 import com.stockcomp.participant.presentation.*
 import org.springframework.http.ResponseEntity

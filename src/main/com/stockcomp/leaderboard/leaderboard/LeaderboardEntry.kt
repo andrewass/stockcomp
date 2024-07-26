@@ -1,8 +1,8 @@
-package com.stockcomp.leaderboard.entity
+package com.stockcomp.leaderboard.leaderboard
 
 import com.stockcomp.common.entity.BaseEntity
 import com.stockcomp.contest.domain.Contest
-import com.stockcomp.user.domain.User
+import com.stockcomp.leaderboard.medal.Medal
 import jakarta.persistence.*
 
 @Entity
@@ -27,8 +27,7 @@ class LeaderboardEntry(
     @JoinColumn(name = "LAST_CONTEST_ID")
     var lastContest: Contest? = null,
 
-    @OneToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    val user: User,
+    @Column(name = "USER_ID", nullable = false)
+    val userId: Long,
 
     ) : BaseEntity()

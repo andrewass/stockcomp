@@ -1,7 +1,5 @@
-package com.stockcomp.leaderboard
+package com.stockcomp.leaderboard.leaderboard
 
-import com.stockcomp.leaderboard.entity.LeaderboardEntry
-import com.stockcomp.user.domain.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -9,5 +7,5 @@ import org.springframework.stereotype.Repository
 interface LeaderboardEntryRepository : JpaRepository<LeaderboardEntry, Long> {
     fun findAllByOrderByScore(): List<LeaderboardEntry>
 
-    fun findByUser(user: User): LeaderboardEntry?
+    fun findByUserId(userId: Long): LeaderboardEntry
 }

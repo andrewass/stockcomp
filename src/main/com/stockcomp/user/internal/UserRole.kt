@@ -1,4 +1,4 @@
-package com.stockcomp.user.domain
+package com.stockcomp.user.internal
 
 enum class UserRole {
     USER,

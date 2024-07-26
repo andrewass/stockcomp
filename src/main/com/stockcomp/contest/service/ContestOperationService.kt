@@ -1,7 +1,7 @@
 package com.stockcomp.contest.service
 
 import com.stockcomp.contest.domain.ContestStatus
-import com.stockcomp.leaderboard.service.LeaderboardOperationService
+import com.stockcomp.leaderboard.leaderboard.LeaderboardOperationService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime

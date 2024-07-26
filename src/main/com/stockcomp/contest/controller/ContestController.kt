@@ -3,7 +3,7 @@ package com.stockcomp.contest.controller
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.stockcomp.contest.domain.ContestStatus
 import com.stockcomp.contest.service.ContestServiceInternal
-import com.stockcomp.exception.handler.CustomExceptionHandler
+import com.stockcomp.exception.CustomExceptionHandler
 import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

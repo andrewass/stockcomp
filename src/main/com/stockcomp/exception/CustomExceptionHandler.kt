@@ -1,4 +1,4 @@
-package com.stockcomp.exception.handler
+package com.stockcomp.exception
 
 import com.stockcomp.exception.InsufficientFundsException
 import com.stockcomp.exception.InvalidRoleException

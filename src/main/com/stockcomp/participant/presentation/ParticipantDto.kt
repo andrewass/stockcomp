@@ -1,6 +1,6 @@
 package com.stockcomp.participant.presentation
 
-import com.stockcomp.participant.Participant
+import com.stockcomp.participant.participant.Participant
 import com.stockcomp.participant.investment.InvestmentDto
 import com.stockcomp.participant.investment.mapToInvestmentDto
 import com.stockcomp.participant.investmentorder.InvestmentOrderDto

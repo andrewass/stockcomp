@@ -1,6 +1,5 @@
 package com.stockcomp.user
 
-import com.stockcomp.user.domain.mapToUserDto
 import com.stockcomp.user.internal.UserServiceInternal
 import org.springframework.stereotype.Service
 

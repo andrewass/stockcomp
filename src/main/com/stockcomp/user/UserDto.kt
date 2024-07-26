@@ -1,7 +1,9 @@
 package com.stockcomp.user
 
-import com.stockcomp.user.domain.UserRole
-import com.stockcomp.user.domain.UserStatus
+import com.stockcomp.user.internal.User
+import com.stockcomp.user.internal.UserRole
+import com.stockcomp.user.internal.UserStatus
+import org.springframework.data.domain.Page
 
 data class UserDto(
     val username: String,
@@ -9,3 +11,34 @@ data class UserDto(
     val userStatus: UserStatus,
     val userRole: UserRole
 )
+
+data class UserDetailsDto(
+    val username: String? = null,
+    val fullName: String? = null,
+    val country: String? = null,
+)
+
+data class UserPageDto(
+    val users: List<UserDto>,
+    val totalEntriesCount: Long
+)
+
+fun mapToUserPageDto(source: Page<User>) = UserPageDto(
+    users = source.get().map { mapToUserDto(it) }.toList(),
+    totalEntriesCount = source.totalElements
+)
+
+fun mapToUserDto(src: User) =
+    UserDto(
+        username = src.username,
+        email = src.email,
+        userRole = src.userRole,
+        userStatus = src.userStatus
+    )
+
+fun mapToUserDetailsDto(src: User) =
+    UserDetailsDto(
+        fullName = src.fullName,
+        username = src.username,
+        country = src.country,
+    )

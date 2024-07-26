@@ -1,9 +1,7 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.user.UserDetailsDto
-import com.stockcomp.user.domain.User
-import com.stockcomp.user.domain.UserRole
-import com.stockcomp.user.domain.mapToUserDetailsDto
+import com.stockcomp.user.mapToUserDetailsDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
