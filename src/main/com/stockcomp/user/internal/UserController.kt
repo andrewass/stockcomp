@@ -1,10 +1,10 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.token.TokenService
-import com.stockcomp.user.domain.mapToUserDetailsDto
-import com.stockcomp.user.domain.mapToUserPageDto
 import com.stockcomp.user.UserDetailsDto
 import com.stockcomp.user.UserPageDto
+import com.stockcomp.user.mapToUserDetailsDto
+import com.stockcomp.user.mapToUserPageDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

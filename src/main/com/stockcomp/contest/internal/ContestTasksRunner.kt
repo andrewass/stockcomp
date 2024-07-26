@@ -1,11 +1,10 @@
-package com.stockcomp.contest.task
+package com.stockcomp.contest.internal
 
-import com.stockcomp.contest.service.ContestOperationService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
-class ContestTasks(
+class ContestTasksRunner(
     private val contestOperationService: ContestOperationService
 ) {
 

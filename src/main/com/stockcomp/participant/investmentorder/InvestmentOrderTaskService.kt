@@ -1,16 +1,17 @@
 package com.stockcomp.participant.investmentorder
 
-import com.stockcomp.contest.domain.CurrentPriceSymbol
+import com.stockcomp.symbol.CurrentPriceSymbolDto
 import com.stockcomp.participant.investment.Investment
 import com.stockcomp.participant.participant.ParticipantService
 import com.stockcomp.participant.participant.Participant
+import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 
 @Service
 class InvestmentOrderTaskService(
-    private val symbolService: SymbolService,
+    private val symbolService: SymbolServiceExternal,
     private val participantService: ParticipantService,
 ) {
 
@@ -32,7 +33,7 @@ class InvestmentOrderTaskService(
     }
 
     private fun processBuyOrder(
-        participant: Participant, currentPrice: CurrentPriceSymbol, order: InvestmentOrder
+        participant: Participant, currentPrice: CurrentPriceSymbolDto, order: InvestmentOrder
     ) {
         if (currentPrice.currentPrice <= order.acceptedPrice) {
             val investment = participant.investments.firstOrNull { it.symbol == order.symbol }
@@ -47,7 +48,7 @@ class InvestmentOrderTaskService(
     }
 
     private fun processSellOrder(
-        participant: Participant, currentPrice: CurrentPriceSymbol, order: InvestmentOrder
+        participant: Participant, currentPrice: CurrentPriceSymbolDto, order: InvestmentOrder
     ) {
         if (currentPrice.currentPrice >= order.acceptedPrice) {
             val investment = participant.investments.first { it.symbol == order.symbol }
@@ -59,7 +60,7 @@ class InvestmentOrderTaskService(
     }
 
     private fun calculateAverageUnitCost(
-        investment: Investment, currentPrice: CurrentPriceSymbol, amountToBuy: Int
+        investment: Investment, currentPrice: CurrentPriceSymbolDto, amountToBuy: Int
     ): Double {
         val totalCost = (investment.amount * investment.averageUnitCost) + (amountToBuy * currentPrice.currentPrice)
         val totalAmount = investment.amount + amountToBuy
@@ -67,7 +68,7 @@ class InvestmentOrderTaskService(
     }
 
     private fun getAvailableAmountToBuy(
-        participant: Participant, currentPrice: CurrentPriceSymbol, order: InvestmentOrder
+        participant: Participant, currentPrice: CurrentPriceSymbolDto, order: InvestmentOrder
     ): Int {
         val maxAvailAmount = participant.remainingFunds / currentPrice.currentPrice
         return Integer.min(maxAvailAmount.toInt(), order.remainingAmount)

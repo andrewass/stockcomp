@@ -1,7 +1,7 @@
 package com.stockcomp.leaderboard.leaderboard
 
-import com.stockcomp.common.entity.BaseEntity
-import com.stockcomp.contest.domain.Contest
+import com.stockcomp.common.BaseEntity
+import com.stockcomp.contest.internal.Contest
 import com.stockcomp.leaderboard.medal.Medal
 import jakarta.persistence.*
 

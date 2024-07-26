@@ -1,12 +1,13 @@
 package com.stockcomp.participant.investment
 
 import com.stockcomp.participant.participant.ParticipantService
+import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class InvestmentTaskService(
-    private val symbolService: SymbolService,
+    private val symbolService: SymbolServiceExternal,
     private val participantService: ParticipantService,
 ) {
     @Transactional

@@ -1,7 +1,7 @@
 package com.stockcomp.contest
 
-import com.stockcomp.contest.domain.ContestStatus
-import com.stockcomp.contest.service.ContestServiceInternal
+import com.stockcomp.contest.internal.ContestStatus
+import com.stockcomp.contest.internal.ContestServiceInternal
 import org.springframework.stereotype.Service
 
 @Service

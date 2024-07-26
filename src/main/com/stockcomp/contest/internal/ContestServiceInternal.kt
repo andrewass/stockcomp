@@ -1,9 +1,6 @@
-package com.stockcomp.contest.service
+package com.stockcomp.contest.internal
 
-import com.stockcomp.contest.domain.Contest
-import com.stockcomp.contest.domain.ContestStatus
-import com.stockcomp.contest.domain.ContestStatus.*
-import com.stockcomp.contest.repository.ContestRepository
+import com.stockcomp.contest.internal.ContestStatus.*
 import com.stockcomp.user.internal.UserServiceInternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest

@@ -1,4 +1,4 @@
-package com.stockcomp.contest.domain
+package com.stockcomp.contest.internal
 
 enum class ContestStatus(val decode: String) {
     AWAITING_START("Awaiting Start"),

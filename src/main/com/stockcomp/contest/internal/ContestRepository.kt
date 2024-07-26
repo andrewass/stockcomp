@@ -1,7 +1,5 @@
-package com.stockcomp.contest.repository
+package com.stockcomp.contest.internal
 
-import com.stockcomp.contest.domain.Contest
-import com.stockcomp.contest.domain.ContestStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository

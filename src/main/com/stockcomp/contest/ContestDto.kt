@@ -1,7 +1,7 @@
-package com.stockcomp.contest.controller
+package com.stockcomp.contest
 
-import com.stockcomp.contest.domain.Contest
-import com.stockcomp.contest.domain.ContestStatus
+import com.stockcomp.contest.internal.Contest
+import com.stockcomp.contest.internal.ContestStatus
 import org.springframework.data.domain.Page
 import java.time.LocalDateTime
 

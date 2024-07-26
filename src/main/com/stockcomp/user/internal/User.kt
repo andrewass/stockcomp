@@ -1,6 +1,6 @@
 package com.stockcomp.user.internal
 
-import com.stockcomp.common.entity.BaseEntity
+import com.stockcomp.common.BaseEntity
 import jakarta.persistence.*
 
 @Entity

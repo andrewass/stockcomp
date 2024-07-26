@@ -1,6 +1,6 @@
 package com.stockcomp.leaderboard.leaderboard
 
-import com.stockcomp.contest.domain.Contest
+import com.stockcomp.contest.internal.Contest
 import com.stockcomp.participant.participant.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

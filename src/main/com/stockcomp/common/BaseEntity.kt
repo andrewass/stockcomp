@@ -1,4 +1,4 @@
-package com.stockcomp.common.entity
+package com.stockcomp.common
 
 import jakarta.persistence.MappedSuperclass
 import org.hibernate.annotations.CreationTimestamp

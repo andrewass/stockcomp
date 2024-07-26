@@ -1,6 +1,6 @@
 package com.stockcomp.participant.participant
 
-import com.stockcomp.common.entity.BaseEntity
+import com.stockcomp.common.BaseEntity
 import com.stockcomp.participant.investment.Investment
 import com.stockcomp.participant.investmentorder.InvestmentOrder
 import jakarta.persistence.*
