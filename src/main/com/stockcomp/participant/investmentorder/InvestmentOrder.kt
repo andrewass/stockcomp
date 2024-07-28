@@ -22,7 +22,7 @@ class InvestmentOrder(
 
     val acceptedPrice: Double,
 
-    val currency : String,
+    val currency: String,
 
     val expirationTime: LocalDateTime,
 
@@ -32,10 +32,50 @@ class InvestmentOrder(
     @Enumerated(EnumType.STRING)
     var orderStatus: OrderStatus = OrderStatus.ACTIVE,
 
-    var errorMessage : String? = null,
+    var errorMessage: String? = null,
 
     @ManyToOne
     @JoinColumn(name = "PARTICIPANT_ID", nullable = false)
     val participant: Participant
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun isActive(): Boolean = orderStatus == OrderStatus.ACTIVE
+
+    fun processOrder(currentPrice: Double) {
+        if (transactionType == TransactionType.BUY && participant.remainingFunds >= currentPrice) {
+            processBuyOrder(currentPrice)
+        } else if (transactionType == TransactionType.SELL) {
+            processSellOrder(currentPrice)
+        }
+    }
+
+    private fun processBuyOrder(currentPrice: Double) {
+        if (currentPrice <= acceptedPrice) {
+            val amountToBuy = getAvailableAmountToBuy(currentPrice)
+            participant.updateParticipantWhenBuying(amountToBuy, symbol, currentPrice)
+            postProcessOrder(amountToBuy)
+        }
+    }
+
+    private fun processSellOrder(currentPrice: Double) {
+        if (currentPrice >= acceptedPrice) {
+            val availableAmount = participant.getInvestmentAmount(symbol)
+            val amountToSell = Integer.min(availableAmount, remainingAmount)
+            participant.updateParticipantWhenSelling(amountToSell, symbol, currentPrice)
+            postProcessOrder(amountToSell)
+        }
+    }
+
+    private fun getAvailableAmountToBuy(currentPrice: Double): Int {
+        val maxAvailAmount = participant.remainingFunds / currentPrice
+        return Integer.min(maxAvailAmount.toInt(), remainingAmount)
+    }
+
+    private fun postProcessOrder(amount: Int) {
+        remainingAmount -= amount
+        if (remainingAmount == 0) {
+            orderStatus = OrderStatus.COMPLETED
+        }
+    }
+}

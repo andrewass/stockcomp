@@ -24,6 +24,24 @@ class Contest(
 
     ) : BaseEntity() {
 
+    fun isCompleted(): Boolean =
+        contestStatus === ContestStatus.COMPLETED
+
+    fun shouldStartContest(): Boolean =
+        contestStatus == ContestStatus.AWAITING_START && startTime.isBefore(LocalDateTime.now())
+
+    fun shouldStopFinishedContest(): Boolean =
+        setOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START).contains(contestStatus)
+                && endTime.isBefore(LocalDateTime.now())
+
+    fun startContest() {
+        contestStatus = ContestStatus.RUNNING
+    }
+
+    fun stopFinishedContest() {
+        contestStatus = ContestStatus.AWAITING_COMPLETION
+    }
+
     override fun equals(other: Any?): Boolean =
         other is Contest && other.contestName == contestName
 

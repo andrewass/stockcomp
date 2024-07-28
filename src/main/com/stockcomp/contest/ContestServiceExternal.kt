@@ -1,6 +1,5 @@
 package com.stockcomp.contest
 
-import com.stockcomp.contest.internal.ContestStatus
 import com.stockcomp.contest.internal.ContestServiceInternal
 import org.springframework.stereotype.Service
 
@@ -15,7 +14,6 @@ class ContestServiceExternal(
     fun getActiveContests(): List<Long> =
         contestService.getActiveContests().map { it.contestId!! }
 
-    fun isCompletedContest(contestId: Long) =
-        contestService.getContest(contestId)
-            .contestStatus === ContestStatus.COMPLETED
+    fun isCompletedContest(contestId: Long) : Boolean =
+        contestService.getContest(contestId).isCompleted()
 }

@@ -1,9 +1,7 @@
 package com.stockcomp.contest.internal
 
-import com.stockcomp.leaderboard.LeaderboardServiceExternal
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 
 @Service
 class ContestOperationService(
@@ -14,14 +12,14 @@ class ContestOperationService(
     fun maintainContestStatus() {
         contestService.getActiveContests()
             .forEach {
-                if (it.contestStatus == ContestStatus.AWAITING_START && it.startTime.isBefore(LocalDateTime.now())) {
-                    logger.info("Changing contest status to RUNNING for contest ${it.contestId}")
-                    it.contestStatus = ContestStatus.RUNNING
+                if (it.shouldStartContest()) {
+                    logger.info("Starting contest ${it.contestId}")
+                    it.startContest()
                     contestService.saveContest(it)
                 }
-                if (it.endTime.isBefore(LocalDateTime.now())) {
-                    logger.info("Changing contest status to COMPLETED for contest ${it.contestId}")
-                    it.contestStatus = ContestStatus.COMPLETED
+                if (it.shouldStopFinishedContest()) {
+                    logger.info("Stopping finished contest ${it.contestId}")
+                    it.stopFinishedContest()
                     contestService.saveContest(it)
                 }
             }

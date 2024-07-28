@@ -22,9 +22,7 @@ class ContestServiceInternal(
         ).also { contestRepository.save(it) }
     }
 
-    fun getContest(contestId: Long) : Contest =
-        contestRepository.findById(contestId)
-            .orElseThrow { IllegalArgumentException("Contest $contestId not found") }
+    fun getContest(contestId: Long) : Contest = contestRepository.getReferenceById(contestId)
 
     fun deleteContest(contestId: Long) {
         contestRepository.deleteByContestId(contestId)

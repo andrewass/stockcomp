@@ -16,7 +16,7 @@ class InvestmentTaskService(
         participant.investments
             .onEach {
                 val price = symbolService.getCurrentPrice(it.symbol)
-                it.updateValues(price.currentPrice)
+                it.maintainInvestment(price.currentPrice)
             }
         participant.updateInvestmentValues()
         participantService.saveParticipant(participant)

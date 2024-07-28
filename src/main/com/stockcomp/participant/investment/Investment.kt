@@ -29,9 +29,24 @@ class Investment(
 
 ) : BaseEntity() {
 
-    fun updateValues(updatedPrice: Double) {
+    fun updateWhenBuying(amount: Int, currentPrice: Double){
+        averageUnitCost = calculateAverageUnitCost(currentPrice = currentPrice, amount = amount)
+        this.amount += amount
+    }
+
+    fun updateWhenSelling(amount: Int){
+        this.amount -= amount
+    }
+
+    fun maintainInvestment(updatedPrice: Double) {
         val newTotalValueInvestment = amount * updatedPrice
         totalValue = newTotalValueInvestment
         totalProfit = newTotalValueInvestment - (amount * averageUnitCost)
+    }
+
+    private fun calculateAverageUnitCost(currentPrice: Double, amount: Int): Double {
+        val totalCost = (this.amount * averageUnitCost) + (amount * currentPrice)
+        val totalAmount = this.amount + amount
+        return totalCost / totalAmount
     }
 }

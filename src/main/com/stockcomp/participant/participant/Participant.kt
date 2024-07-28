@@ -17,10 +17,10 @@ class Participant(
     @Column(name = "USER_ID", nullable = false)
     val userId: Long,
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
     val investmentOrders: MutableList<InvestmentOrder> = mutableListOf(),
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
     val investments: MutableList<Investment> = mutableListOf(),
 
     @Column(name = "CONTEST_ID", nullable = false)
@@ -37,6 +37,37 @@ class Participant(
 
 ) : BaseEntity() {
 
+    fun getActiveInvestmentOrders(): List<InvestmentOrder> =
+        investmentOrders.filter { it.isActive() }
+
+    fun updateParticipantWhenBuying(amount: Int, symbol: String, currentPrice: Double) {
+        val investment = getOrCreateInvestment(symbol)
+        investment.updateWhenBuying(amount, currentPrice)
+        remainingFunds -= currentPrice * amount
+        if (remainingFunds < 0) {
+            throw IllegalStateException(
+                "Remaining funds for $participantId is $remainingFunds. This value should never be negative"
+            )
+        }
+    }
+
+    fun updateParticipantWhenSelling(amount: Int, symbol: String, currentPrice: Double) {
+        val investment = getInvestment(symbol)
+        investment.updateWhenSelling(amount)
+        remainingFunds += currentPrice * amount
+    }
+
+    fun getInvestmentAmount(symbol: String): Int =
+        investments.firstOrNull { it.symbol == symbol }?.amount ?: 0
+
+    private fun getOrCreateInvestment(symbol: String): Investment =
+        investments.firstOrNull { it.symbol == symbol }
+            ?: Investment(symbol = symbol, participant = this)
+                .also { investments.add(it) }
+
+    private fun getInvestment(symbol: String): Investment =
+        investments.first { it.symbol == symbol }
+
     fun updateInvestmentValues() {
         val updatedTotalInvestmentsValue = investments.sumOf { it.totalValue }
         totalInvestmentValue = updatedTotalInvestmentsValue
@@ -49,10 +80,6 @@ class Participant(
 
     fun removeInvestmentOrder(orderId: Long) {
         investmentOrders.removeIf { it.orderId == orderId }
-    }
-
-    fun addInvestment(investment: Investment) {
-        investments.add(investment)
     }
 
     fun removeInvestment(investment: Investment) {
