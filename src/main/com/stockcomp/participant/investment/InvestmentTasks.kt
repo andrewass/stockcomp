@@ -18,8 +18,8 @@ class InvestmentTasks(
     fun runMaintainInvestments() {
         try {
             contestService.getActiveContests()
-                .forEach { contestId ->
-                    participantService.getAllByContest(contestId)
+                .forEach { contest ->
+                    participantService.getAllByContest(contest.contestId)
                         .forEach { participant ->
                             investmentTaskService.maintainInvestments(participant.participantId!!)
                         }

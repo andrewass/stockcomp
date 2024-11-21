@@ -1,6 +1,6 @@
-package com.stockcomp.participant.presentation
+package com.stockcomp.participant.participant
 
-import com.stockcomp.participant.participant.Participant
+import com.stockcomp.contest.ContestDto
 import com.stockcomp.participant.investment.InvestmentDto
 import com.stockcomp.participant.investment.mapToInvestmentDto
 import com.stockcomp.participant.investmentorder.InvestmentOrderDto
@@ -20,6 +20,11 @@ data class ParticipantPageDto(
     val totalEntriesCount: Long
 )
 
+data class ContestParticipantDto(
+    val participant: ParticipantDto,
+    val contestDto: ContestDto
+)
+
 data class HistoricParticipantDto(
     val participant: ParticipantDto,
     val investments: List<InvestmentDto>
@@ -35,12 +40,12 @@ data class DetailedParticipantDto(
 
 fun mapToHistoricParticipant(source: Participant) =
     HistoricParticipantDto(
-        participant = mapToParticipantDto(source),
+        participant = toParticipantDto(source),
         investments = source.investments.map { mapToInvestmentDto(it) }
     )
 
 
-fun mapToParticipantDto(source: Participant, ) =
+fun toParticipantDto(source: Participant) =
     ParticipantDto(
         rank = source.rank,
         totalValue = source.totalValue,
@@ -51,7 +56,7 @@ fun mapToParticipantDto(source: Participant, ) =
 
 fun mapToDetailedParticipant(source: Participant, symbol: String) =
     DetailedParticipantDto(
-        participant = mapToParticipantDto(source),
+        participant = toParticipantDto(source),
         investments = source.investments.filter { it.symbol == symbol }
             .map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders.filter { it.symbol == symbol }
@@ -64,7 +69,7 @@ fun mapToDetailedParticipant(source: Participant, symbol: String) =
 
 fun toDetailedParticipant(source: Participant) =
     DetailedParticipantDto(
-        participant = mapToParticipantDto(source),
+        participant = toParticipantDto(source),
         investments = source.investments.map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders
             .filter { it.orderStatus == OrderStatus.ACTIVE }
@@ -76,6 +81,6 @@ fun toDetailedParticipant(source: Participant) =
 
 fun mapToParticipantPage(source: Page<Participant>) =
     ParticipantPageDto(
-        participants = source.get().map { mapToParticipantDto(it) }.toList(),
+        participants = source.get().map { toParticipantDto(it) }.toList(),
         totalEntriesCount = source.totalElements
     )

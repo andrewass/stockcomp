@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ParticipantRepository : JpaRepository<Participant, Long> {
 
-    fun findByUserIdAndContestId(userId: Long, contestId: Long): List<Participant>
+    fun findByUserIdAndContestId(userId: Long, contestId: Long): Participant?
 
     fun findAllByContestId(contestId: Long): List<Participant>
+
+    fun existsByUserIdAndContestId(userId: Long, contestId: Long): Boolean
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT p FROM Participant p where p.participantId = ?1")

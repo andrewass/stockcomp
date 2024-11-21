@@ -19,7 +19,7 @@ class InvestmentOrderTasks(
         try {
             contestService.getActiveContests()
                 .forEach {
-                    participantService.getAllByContest(it)
+                    participantService.getAllByContest(it.contestId)
                         .forEach {participant ->
                             investmentOrderTaskService.processInvestmentOrders(participant.participantId!!)
                         }

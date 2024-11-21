@@ -5,8 +5,8 @@ import com.stockcomp.configuration.SecurityConfiguration
 import com.stockcomp.participant.participant.Participant
 import com.stockcomp.participant.participant.ParticipantController
 import com.stockcomp.participant.participant.ParticipantService
-import com.stockcomp.participant.presentation.DetailedParticipantDto
-import com.stockcomp.participant.presentation.ParticipantDto
+import com.stockcomp.participant.participant.DetailedParticipantDto
+import com.stockcomp.participant.participant.ParticipantDto
 import com.stockcomp.util.mockMvcGetRequest
 import io.mockk.every
 import org.junit.jupiter.api.Disabled

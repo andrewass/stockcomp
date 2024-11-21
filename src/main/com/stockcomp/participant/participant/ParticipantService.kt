@@ -1,8 +1,7 @@
 package com.stockcomp.participant.participant
 
+import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.presentation.DetailedParticipantDto
-import com.stockcomp.participant.presentation.mapToDetailedParticipant
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -27,10 +26,20 @@ class ParticipantService(
         )
     }
 
+    fun getRegisteredParticipatingContests(userId: Long): List<ContestParticipantDto> =
+        contestService.getActiveContests().mapNotNull { contest ->
+            participantRepository.findByUserIdAndContestId(userId, contest.contestId)
+                ?.let { ContestParticipantDto(toParticipantDto(it), contest) }
+        }
+
+    fun getUnregisteredContests(userId: Long): List<ContestDto> =
+        contestService.getActiveContests()
+            .filter { !participantRepository.existsByUserIdAndContestId(userId, it.contestId) }
+
     fun getRunningDetailedParticipantsForSymbol(userId: Long, symbol: String): List<DetailedParticipantDto> =
         contestService.getRunningContests()
-            .map { getParticipant(userId = userId, contestId = it) }
-            .map { mapToDetailedParticipant(source = it, symbol = symbol) }
+            .map { getParticipant(userId, it.contestId) }
+            .map { mapToDetailedParticipant(it, symbol) }
 
     fun getParticipantsSortedByRank(contestId: Long, pageNumber: Int, pageSize: Int): Page<Participant> =
         participantRepository.findAllByContestId(
@@ -39,8 +48,7 @@ class ParticipantService(
         )
 
     fun getParticipant(contestId: Long, userId: Long): Participant =
-        participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
-            .first()
+        participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)!!
 
     fun getParticipant(participantId: Long): Participant =
         participantRepository.findById(participantId)

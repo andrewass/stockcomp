@@ -1,6 +1,6 @@
 package com.stockcomp.participant.participant
 
-import com.stockcomp.participant.presentation.*
+import com.stockcomp.contest.ContestDto
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -19,6 +19,18 @@ class ParticipantController(
     ) {
         participantService.signUpParticipant(userId = userId, contestId = contestId)
     }
+
+    @GetMapping("/registered/{userId}")
+    fun registeredParticipant(
+        @PathVariable userId: Long,
+    ): ResponseEntity<List<ContestParticipantDto>> =
+        ResponseEntity.ok(participantService.getRegisteredParticipatingContests(userId))
+
+    @GetMapping("/unregistered/{userId}")
+    fun unregisteredParticipant(
+        @PathVariable userId: Long,
+    ): ResponseEntity<List<ContestDto>> =
+        ResponseEntity.ok(participantService.getUnregisteredContests(userId))
 
     @GetMapping("/{participantId}")
     fun getParticipant(

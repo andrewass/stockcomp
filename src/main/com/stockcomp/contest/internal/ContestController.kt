@@ -3,14 +3,11 @@ package com.stockcomp.contest.internal
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
-import com.stockcomp.contest.mapToContestDto
+import com.stockcomp.contest.toContestDto
 import com.stockcomp.contest.mapToContestPageDto
 import com.stockcomp.exception.CustomExceptionHandler
-import com.stockcomp.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -31,13 +28,13 @@ class ContestController(
     @GetMapping("/active")
     fun getActiveContests(): ResponseEntity<ContestsResponse> =
         contestService.getActiveContests()
-            .map { mapToContestDto(it) }
+            .map { toContestDto(it) }
             .let { ResponseEntity.ok(ContestsResponse(it)) }
 
     @GetMapping("/{contestId}")
     fun getContest(@PathVariable contestId: Long): ResponseEntity<ContestDto> =
         contestService.findByContestId(contestId)
-            .let { ResponseEntity.ok(mapToContestDto(it)) }
+            .let { ResponseEntity.ok(toContestDto(it)) }
 
     @PostMapping("/create")
     fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> =

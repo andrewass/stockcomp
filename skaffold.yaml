@@ -3,7 +3,7 @@ kind: Config
 build:
   artifacts:
     - image: stockcomp-server-image
-      jib: {}
+      jib: { }
 
 manifests:
   rawYaml:

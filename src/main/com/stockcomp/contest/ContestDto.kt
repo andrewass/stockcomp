@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import java.time.LocalDateTime
 
 data class ContestDto(
+    val contestId: Long,
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
     val contestName: String,
@@ -17,7 +18,8 @@ data class ContestPageDto(
     val totalEntriesCount: Long
 )
 
-fun mapToContestDto(source: Contest) = ContestDto(
+fun toContestDto(source: Contest) = ContestDto(
+    contestId = source.contestId!!,
     contestName = source.contestName,
     contestStatus = source.contestStatus,
     endTime = source.endTime,
@@ -25,6 +27,6 @@ fun mapToContestDto(source: Contest) = ContestDto(
 )
 
 fun mapToContestPageDto(source: Page<Contest>) = ContestPageDto(
-    contests = source.get().map { mapToContestDto(it) }.toList(),
+    contests = source.get().map { toContestDto(it) }.toList(),
     totalEntriesCount = source.totalElements
 )
