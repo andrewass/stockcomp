@@ -17,6 +17,8 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
 
     fun existsByUserIdAndContestId(userId: Long, contestId: Long): Boolean
 
+    fun countByContestId(contestId: Long): Long
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT p FROM Participant p where p.participantId = ?1")
     fun findByIdLocked(participantId: Long): Participant

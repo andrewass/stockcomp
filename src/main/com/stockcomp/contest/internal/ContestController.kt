@@ -53,7 +53,8 @@ class ContestController(
 
     data class CreateContestRequest(
         val contestName: String,
-        val startTime: LocalDateTime
+        val startTime: LocalDateTime,
+        val duration: Int,
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)

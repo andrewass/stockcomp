@@ -4,7 +4,7 @@ import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.user.UserDetailsDto
 import com.stockcomp.user.UserPageDto
-import com.stockcomp.user.mapToUserDetailsDto
+import com.stockcomp.user.toUserDetailsDto
 import com.stockcomp.user.mapToUserPageDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,7 +28,7 @@ class UserController(
     fun getUserDetails(
         @RequestParam userId: Long
     ): ResponseEntity<UserDetailsDto> =
-        mapToUserDetailsDto(userService.findUserById(userId))
+        toUserDetailsDto(userService.findUserById(userId))
             .let { ResponseEntity.ok(it) }
 
     @PatchMapping("/update")
@@ -36,6 +36,6 @@ class UserController(
         @TokenData tokenClaims: TokenClaims,
         @RequestBody userDetailsDto: UserDetailsDto
     ): ResponseEntity<HttpStatus> =
-            userService.updateUser(tokenClaims.userId, userDetailsDto)
+        userService.updateUser(tokenClaims.userId, userDetailsDto)
             .let { ResponseEntity(HttpStatus.OK) }
 }

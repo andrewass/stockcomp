@@ -26,11 +26,16 @@ class ParticipantService(
         )
     }
 
-    fun getRegisteredParticipatingContests(userId: Long): List<ContestParticipantDto> =
-        contestService.getActiveContests().mapNotNull { contest ->
+    fun getRegisteredParticipatingContests(userId: Long): List<ContestParticipantDto> {
+        val user = userService.getUserByUserId(userId)
+        return contestService.getActiveContests().mapNotNull { contest ->
             participantRepository.findByUserIdAndContestId(userId, contest.contestId)
-                ?.let { ContestParticipantDto(toParticipantDto(it), contest) }
+                ?.let { participant ->
+                    val participantCount = participantRepository.countByContestId(participant.contestId)
+                    ContestParticipantDto(toParticipantDto(participant, participantCount), contest)
+                }
         }
+    }
 
     fun getUnregisteredContests(userId: Long): List<ContestDto> =
         contestService.getActiveContests()
@@ -69,4 +74,7 @@ class ParticipantService(
     fun saveParticipant(participant: Participant) {
         participantRepository.save(participant)
     }
+
+    private fun getParticipantCount(contestId: Long): Long =
+        participantRepository.countByContestId(contestId)
 }

@@ -36,7 +36,7 @@ fun mapToUserDto(src: User) =
         userStatus = src.userStatus
     )
 
-fun mapToUserDetailsDto(src: User) =
+fun toUserDetailsDto(src: User) =
     UserDetailsDto(
         fullName = src.fullName,
         username = src.username,

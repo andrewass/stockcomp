@@ -1,5 +1,7 @@
 package com.stockcomp.participant.participant
 
+import com.stockcomp.common.TokenClaims
+import com.stockcomp.common.TokenData
 import com.stockcomp.contest.ContestDto
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -12,25 +14,32 @@ class ParticipantController(
     private val participantService: ParticipantService
 ) {
 
-    @PostMapping("/sign-up")
+    @PostMapping("/sign-up/{contestId}")
     fun signUpParticipant(
-        @RequestParam userId: Long,
-        @RequestParam contestId: Long
+        @PathVariable contestId: Long,
+        @TokenData tokenClaims: TokenClaims
     ) {
-        participantService.signUpParticipant(userId = userId, contestId = contestId)
+        participantService.signUpParticipant(userId = tokenClaims.userId, contestId = contestId)
     }
 
-    @GetMapping("/registered/{userId}")
+    @GetMapping("/registered")
     fun registeredParticipant(
-        @PathVariable userId: Long,
+        @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<List<ContestParticipantDto>> =
-        ResponseEntity.ok(participantService.getRegisteredParticipatingContests(userId))
+        ResponseEntity.ok(participantService.getRegisteredParticipatingContests(tokenClaims.userId))
 
-    @GetMapping("/unregistered/{userId}")
+    @GetMapping("/symbol")
+    fun getParticipantsForSymbol(
+        @RequestParam symbol: String,
+        @TokenData tokenClaims: TokenClaims
+    ): ResponseEntity<List<DetailedParticipantDto>> =
+        ResponseEntity.ok(participantService.getRunningDetailedParticipantsForSymbol(tokenClaims.userId, symbol))
+
+    @GetMapping("/unregistered")
     fun unregisteredParticipant(
-        @PathVariable userId: Long,
+        @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<List<ContestDto>> =
-        ResponseEntity.ok(participantService.getUnregisteredContests(userId))
+        ResponseEntity.ok(participantService.getUnregisteredContests(tokenClaims.userId))
 
     @GetMapping("/{participantId}")
     fun getParticipant(
@@ -40,7 +49,7 @@ class ParticipantController(
             .let { ResponseEntity.ok(toDetailedParticipant(it)) }
 
     @GetMapping("/sorted")
-    fun getSortedParticipantsForContest(
+    fun getSortedParticipantWithUserDetailsForContest(
         @RequestParam contestId: Long,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int

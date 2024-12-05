@@ -1,7 +1,7 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.user.UserDetailsDto
-import com.stockcomp.user.mapToUserDetailsDto
+import com.stockcomp.user.toUserDetailsDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -41,7 +41,7 @@ class UserServiceInternal(
     }
 
     fun getUserDetails(username: String): UserDetailsDto =
-        mapToUserDetailsDto(userRepository.findByUsername(username))
+        toUserDetailsDto(userRepository.findByUsername(username))
 
     fun verifyAdminUser(username: String): Boolean =
         userRepository.findByUsername(username).userRole == UserRole.ADMIN

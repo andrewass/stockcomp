@@ -6,6 +6,9 @@ import com.stockcomp.participant.investment.mapToInvestmentDto
 import com.stockcomp.participant.investmentorder.InvestmentOrderDto
 import com.stockcomp.participant.investmentorder.OrderStatus
 import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
+import com.stockcomp.user.UserDetailsDto
+import com.stockcomp.user.internal.User
+import com.stockcomp.user.toUserDetailsDto
 import org.springframework.data.domain.Page
 
 data class ParticipantDto(
@@ -13,6 +16,12 @@ data class ParticipantDto(
     val totalValue: Double,
     val totalInvestmentValue: Double,
     val remainingFunds: Double,
+    val participantCount: Long? = null,
+)
+
+data class ParticipantWithUserDetailsDto(
+    val participant: ParticipantDto,
+    val userDetails: UserDetailsDto
 )
 
 data class ParticipantPageDto(
@@ -22,7 +31,7 @@ data class ParticipantPageDto(
 
 data class ContestParticipantDto(
     val participant: ParticipantDto,
-    val contestDto: ContestDto
+    val contest: ContestDto
 )
 
 data class HistoricParticipantDto(
@@ -44,19 +53,26 @@ fun mapToHistoricParticipant(source: Participant) =
         investments = source.investments.map { mapToInvestmentDto(it) }
     )
 
+fun toParticipantWithUserDetailsDto(participant: Participant, user: User) {
+    ParticipantWithUserDetailsDto(
+        participant = toParticipantDto(participant),
+        userDetails = toUserDetailsDto(user)
+    )
+}
 
-fun toParticipantDto(source: Participant) =
+fun toParticipantDto(source: Participant, participantCount: Long? = null) =
     ParticipantDto(
         rank = source.rank,
         totalValue = source.totalValue,
         totalInvestmentValue = source.totalInvestmentValue,
-        remainingFunds = source.remainingFunds
+        remainingFunds = source.remainingFunds,
+        participantCount = participantCount
     )
 
 
-fun mapToDetailedParticipant(source: Participant, symbol: String) =
+fun mapToDetailedParticipant(source: Participant, symbol: String, participantCount: Long? = null) =
     DetailedParticipantDto(
-        participant = toParticipantDto(source),
+        participant = toParticipantDto(source, participantCount),
         investments = source.investments.filter { it.symbol == symbol }
             .map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders.filter { it.symbol == symbol }
@@ -67,9 +83,9 @@ fun mapToDetailedParticipant(source: Participant, symbol: String) =
             .map { mapToInvestmentOrderDto(it) }
     )
 
-fun toDetailedParticipant(source: Participant) =
+fun toDetailedParticipant(source: Participant, participantCount: Long? = null) =
     DetailedParticipantDto(
-        participant = toParticipantDto(source),
+        participant = toParticipantDto(source, participantCount),
         investments = source.investments.map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders
             .filter { it.orderStatus == OrderStatus.ACTIVE }
