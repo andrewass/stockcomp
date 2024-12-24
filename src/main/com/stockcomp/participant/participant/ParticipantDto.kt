@@ -12,6 +12,7 @@ import com.stockcomp.user.toUserDetailsDto
 import org.springframework.data.domain.Page
 
 data class ParticipantDto(
+    val participantId: Long,
     val rank: Int? = null,
     val totalValue: Double,
     val totalInvestmentValue: Double,
@@ -40,6 +41,7 @@ data class HistoricParticipantDto(
 )
 
 data class DetailedParticipantDto(
+    val contest: ContestDto,
     val participant: ParticipantDto,
     val investments: List<InvestmentDto>,
     val activeOrders: List<InvestmentOrderDto>,
@@ -66,13 +68,20 @@ fun toParticipantDto(source: Participant, participantCount: Long? = null) =
         totalValue = source.totalValue,
         totalInvestmentValue = source.totalInvestmentValue,
         remainingFunds = source.remainingFunds,
-        participantCount = participantCount
+        participantCount = participantCount,
+        participantId = source.participantId!!
     )
 
 
-fun mapToDetailedParticipant(source: Participant, symbol: String, participantCount: Long? = null) =
+fun mapToDetailedParticipant(
+    source: Participant,
+    symbol: String,
+    participantCount: Long? = null,
+    contest: ContestDto,
+) =
     DetailedParticipantDto(
         participant = toParticipantDto(source, participantCount),
+        contest = contest,
         investments = source.investments.filter { it.symbol == symbol }
             .map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders.filter { it.symbol == symbol }
@@ -83,9 +92,14 @@ fun mapToDetailedParticipant(source: Participant, symbol: String, participantCou
             .map { mapToInvestmentOrderDto(it) }
     )
 
-fun toDetailedParticipant(source: Participant, participantCount: Long? = null) =
+fun toDetailedParticipant(
+    source: Participant,
+    participantCount: Long? = null,
+    contest: ContestDto
+) =
     DetailedParticipantDto(
         participant = toParticipantDto(source, participantCount),
+        contest = contest,
         investments = source.investments.map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders
             .filter { it.orderStatus == OrderStatus.ACTIVE }

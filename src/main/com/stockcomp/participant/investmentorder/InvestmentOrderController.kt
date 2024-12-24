@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/participants/investmentorders")
+@RequestMapping("/investmentorders")
 class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService
 ) {
 
-    @PostMapping("/post")
+    @PostMapping
     fun placeInvestmentOrder(
         @TokenData tokenClaims: TokenClaims,
         @RequestBody request: PlaceInvestmentOrderRequest

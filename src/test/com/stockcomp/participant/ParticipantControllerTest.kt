@@ -82,6 +82,7 @@ class ParticipantControllerTest(
     private fun getParticipantDto() = ParticipantDto(
         totalValue = 0.00,
         totalInvestmentValue = 0.00,
-        remainingFunds = 0.00
+        remainingFunds = 0.00,
+        participantId = 1L
     )
 }

@@ -17,7 +17,7 @@ class Contest(
 
     var endTime: LocalDateTime,
 
-    val contestName: String,
+    var contestName: String,
 
     @Enumerated(EnumType.STRING)
     var contestStatus: ContestStatus = ContestStatus.AWAITING_START,

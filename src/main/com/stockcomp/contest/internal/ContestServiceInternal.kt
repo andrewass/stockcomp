@@ -22,17 +22,23 @@ class ContestServiceInternal(
         ).also { contestRepository.save(it) }
     }
 
-    fun getContest(contestId: Long) : Contest = contestRepository.getReferenceById(contestId)
+    fun getContest(contestId: Long): Contest = contestRepository.getReferenceById(contestId)
 
     fun deleteContest(contestId: Long) {
         contestRepository.deleteByContestId(contestId)
     }
 
-    fun updateContest(contestId: Long, status: ContestStatus, start: LocalDateTime) {
+    fun updateContest(
+        contestId: Long,
+        contestName: String,
+        contestStatus: ContestStatus,
+        startTime: LocalDateTime
+    ) {
         contestRepository.findByContestId(contestId).apply {
-            contestStatus = status
-            startTime = start
-            endTime = startTime.plusMonths(2)
+            this.contestStatus = contestStatus
+            this.contestName = contestName
+            this.startTime = startTime
+            endTime = this.startTime.plusMonths(2)
         }.also { contestRepository.save(it) }
     }
 
@@ -47,7 +53,7 @@ class ContestServiceInternal(
     fun getCompletedContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
 
-    fun getContestsAwaitingCompletion() : List<Contest> =
+    fun getContestsAwaitingCompletion(): List<Contest> =
         contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
 
     fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =

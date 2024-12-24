@@ -26,16 +26,14 @@ class ParticipantService(
         )
     }
 
-    fun getRegisteredParticipatingContests(userId: Long): List<ContestParticipantDto> {
-        val user = userService.getUserByUserId(userId)
-        return contestService.getActiveContests().mapNotNull { contest ->
+    fun getRegisteredParticipatingContests(userId: Long): List<ContestParticipantDto> =
+        contestService.getActiveContests().mapNotNull { contest ->
             participantRepository.findByUserIdAndContestId(userId, contest.contestId)
                 ?.let { participant ->
                     val participantCount = participantRepository.countByContestId(participant.contestId)
                     ContestParticipantDto(toParticipantDto(participant, participantCount), contest)
                 }
         }
-    }
 
     fun getUnregisteredContests(userId: Long): List<ContestDto> =
         contestService.getActiveContests()
@@ -43,8 +41,11 @@ class ParticipantService(
 
     fun getRunningDetailedParticipantsForSymbol(userId: Long, symbol: String): List<DetailedParticipantDto> =
         contestService.getRunningContests()
-            .map { getParticipant(userId, it.contestId) }
-            .map { mapToDetailedParticipant(it, symbol) }
+            .mapNotNull { getOptionalParticipant(userId, it.contestId) }
+            .map {participant: Participant ->
+                val contest = contestService.get
+                mapToDetailedParticipant(participant, symbol, )
+            }
 
     fun getParticipantsSortedByRank(contestId: Long, pageNumber: Int, pageSize: Int): Page<Participant> =
         participantRepository.findAllByContestId(
@@ -74,6 +75,9 @@ class ParticipantService(
     fun saveParticipant(participant: Participant) {
         participantRepository.save(participant)
     }
+
+    private fun getOptionalParticipant(contestId: Long, userId: Long): Participant? =
+        participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
 
     private fun getParticipantCount(contestId: Long): Long =
         participantRepository.countByContestId(contestId)

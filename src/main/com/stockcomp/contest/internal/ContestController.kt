@@ -1,10 +1,9 @@
 package com.stockcomp.contest.internal
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
-import com.stockcomp.contest.toContestDto
 import com.stockcomp.contest.mapToContestPageDto
+import com.stockcomp.contest.toContestDto
 import com.stockcomp.exception.CustomExceptionHandler
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,7 +42,7 @@ class ContestController(
 
     @PatchMapping("/update")
     fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.updateContest(request.contestId, request.contestStatus, request.startTime)
+        contestService.updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
     @DeleteMapping("/{contestId}")
@@ -57,10 +56,10 @@ class ContestController(
         val duration: Int,
     )
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     data class UpdateContestRequest(
         val startTime: LocalDateTime,
         val contestId: Long,
+        val contestName: String,
         val contestStatus: ContestStatus
     )
 

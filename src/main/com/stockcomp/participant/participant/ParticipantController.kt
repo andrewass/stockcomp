@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
-@Transactional
 @RestController
 @RequestMapping("/participants")
 class ParticipantController(
@@ -28,9 +27,9 @@ class ParticipantController(
     ): ResponseEntity<List<ContestParticipantDto>> =
         ResponseEntity.ok(participantService.getRegisteredParticipatingContests(tokenClaims.userId))
 
-    @GetMapping("/symbol")
+    @GetMapping("/symbol/{symbol}")
     fun getParticipantsForSymbol(
-        @RequestParam symbol: String,
+        @PathVariable symbol: String,
         @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<List<DetailedParticipantDto>> =
         ResponseEntity.ok(participantService.getRunningDetailedParticipantsForSymbol(tokenClaims.userId, symbol))
