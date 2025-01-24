@@ -7,8 +7,6 @@ import com.stockcomp.participant.investmentorder.InvestmentOrderDto
 import com.stockcomp.participant.investmentorder.OrderStatus
 import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserDetailsDto
-import com.stockcomp.user.internal.User
-import com.stockcomp.user.toUserDetailsDto
 import org.springframework.data.domain.Page
 
 data class ParticipantDto(
@@ -55,10 +53,10 @@ fun mapToHistoricParticipant(source: Participant) =
         investments = source.investments.map { mapToInvestmentDto(it) }
     )
 
-fun toParticipantWithUserDetailsDto(participant: Participant, user: User) {
+fun toParticipantWithUserDetailsDto(participant: Participant, userDetails: UserDetailsDto) {
     ParticipantWithUserDetailsDto(
         participant = toParticipantDto(participant),
-        userDetails = toUserDetailsDto(user)
+        userDetails = userDetails
     )
 }
 
@@ -73,7 +71,7 @@ fun toParticipantDto(source: Participant, participantCount: Long? = null) =
     )
 
 
-fun mapToDetailedParticipant(
+fun toDetailedParticipant(
     source: Participant,
     symbol: String,
     participantCount: Long? = null,
@@ -109,7 +107,7 @@ fun toDetailedParticipant(
             .map { mapToInvestmentOrderDto(it) }
     )
 
-fun mapToParticipantPage(source: Page<Participant>) =
+fun toParticipantPage(source: Page<Participant>) =
     ParticipantPageDto(
         participants = source.get().map { toParticipantDto(it) }.toList(),
         totalEntriesCount = source.totalElements

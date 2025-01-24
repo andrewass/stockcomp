@@ -17,25 +17,25 @@ class Participant(
     @Column(name = "USER_ID", nullable = false)
     val userId: Long,
 
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val investmentOrders: MutableList<InvestmentOrder> = mutableListOf(),
-
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val investments: MutableList<Investment> = mutableListOf(),
-
     @Column(name = "CONTEST_ID", nullable = false)
     val contestId: Long,
 
-    var remainingFunds: Double = 20000.00,
+    ) : BaseEntity() {
 
-    @Column(name = "PARTICIPANT_RANK")
-    var rank: Int? = null,
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val investmentOrders: MutableList<InvestmentOrder> = mutableListOf()
 
-    var totalValue: Double = 20000.00,
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val investments: MutableList<Investment> = mutableListOf()
+
+    var totalValue: Double = 20000.00
 
     var totalInvestmentValue: Double = 0.00
 
-) : BaseEntity() {
+    var remainingFunds: Double = 20000.00
+
+    @Column(name = "PARTICIPANT_RANK")
+    var rank: Int? = null
 
     fun getActiveInvestmentOrders(): List<InvestmentOrder> =
         investmentOrders.filter { it.isActive() }

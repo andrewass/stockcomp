@@ -2,11 +2,9 @@ package com.stockcomp.participant
 
 import com.ninjasquad.springmockk.MockkBean
 import com.stockcomp.configuration.SecurityConfiguration
-import com.stockcomp.participant.participant.Participant
-import com.stockcomp.participant.participant.ParticipantController
-import com.stockcomp.participant.participant.ParticipantService
-import com.stockcomp.participant.participant.DetailedParticipantDto
-import com.stockcomp.participant.participant.ParticipantDto
+import com.stockcomp.contest.ContestDto
+import com.stockcomp.contest.internal.ContestStatus
+import com.stockcomp.participant.participant.*
 import com.stockcomp.util.mockMvcGetRequest
 import io.mockk.every
 import org.junit.jupiter.api.Disabled
@@ -17,6 +15,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageImpl
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDateTime
 
 @Disabled
 @Import(SecurityConfiguration::class)
@@ -52,7 +51,7 @@ class ParticipantControllerTest(
 
     @Test
     fun `should get sorted participants`() {
-        every { participantService.getParticipantsSortedByRank(1,1,1) }
+        every { participantService.getParticipantsSortedByRank(1, 1, 1) }
             .returns(PageImpl(listOf(Participant(userId = 1L, contestId = 1L))))
         mockMvc.perform(
             mockMvcGetRequest("$basePath/sorted")
@@ -76,7 +75,16 @@ class ParticipantControllerTest(
         activeOrders = emptyList(),
         completedOrders = emptyList(),
         investments = emptyList(),
-        participant = getParticipantDto()
+        participant = getParticipantDto(),
+        contest = getContestDto()
+    )
+
+    private fun getContestDto() = ContestDto(
+        contestId = 1L,
+        contestName = "Test Contest",
+        startTime = LocalDateTime.now(),
+        endTime = LocalDateTime.now(),
+        contestStatus = ContestStatus.AWAITING_START
     )
 
     private fun getParticipantDto() = ParticipantDto(

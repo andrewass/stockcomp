@@ -42,10 +42,7 @@ class ParticipantService(
     fun getRunningDetailedParticipantsForSymbol(userId: Long, symbol: String): List<DetailedParticipantDto> =
         contestService.getRunningContests()
             .mapNotNull { getOptionalParticipant(userId, it.contestId) }
-            .map {participant: Participant ->
-                val contest = contestService.get
-                mapToDetailedParticipant(participant, symbol, )
-            }
+            .map { getDetailedParticipant(it.participantId!!) }
 
     fun getParticipantsSortedByRank(contestId: Long, pageNumber: Int, pageSize: Int): Page<Participant> =
         participantRepository.findAllByContestId(
@@ -57,8 +54,18 @@ class ParticipantService(
         participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)!!
 
     fun getParticipant(participantId: Long): Participant =
-        participantRepository.findById(participantId)
+        participantRepository.findByParticipantId(participantId)
+
+    fun getDetailedParticipant(participantId: Long): DetailedParticipantDto {
+        val participant = participantRepository.findById(participantId)
             .orElseThrow { IllegalArgumentException("Partipant Id $participantId not found") }
+        val contest = contestService.getContest(participant.contestId)
+        return toDetailedParticipant(
+            source = participant,
+            contest = contest,
+            participantCount = getParticipantCount(participant.contestId)
+        )
+    }
 
     fun getLockedParticipant(participantId: Long): Participant =
         participantRepository.findByIdLocked(participantId)

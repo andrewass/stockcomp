@@ -4,7 +4,6 @@ import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.contest.ContestDto
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -44,8 +43,7 @@ class ParticipantController(
     fun getParticipant(
         @PathVariable participantId: Long
     ): ResponseEntity<DetailedParticipantDto> =
-        participantService.getParticipant(participantId)
-            .let { ResponseEntity.ok(toDetailedParticipant(it)) }
+        ResponseEntity.ok(participantService.getDetailedParticipant(participantId))
 
     @GetMapping("/sorted")
     fun getSortedParticipantWithUserDetailsForContest(
@@ -54,7 +52,7 @@ class ParticipantController(
         @RequestParam pageSize: Int
     ): ResponseEntity<ParticipantPageDto> =
         participantService.getParticipantsSortedByRank(contestId, pageNumber, pageSize)
-            .let { ResponseEntity.ok(mapToParticipantPage(it)) }
+            .let { ResponseEntity.ok(toParticipantPage(it)) }
 
     @GetMapping("/history")
     fun getDetailedParticipantHistoryForUser(
