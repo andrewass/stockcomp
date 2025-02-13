@@ -13,7 +13,7 @@ class InvestmentOrderController(
     private val investmentOrderService: InvestmentOrderService
 ) {
 
-    @PostMapping
+    @PostMapping("/order")
     fun placeInvestmentOrder(
         @TokenData tokenClaims: TokenClaims,
         @RequestBody request: PlaceInvestmentOrderRequest

@@ -14,8 +14,7 @@ data class ParticipantDto(
     val rank: Int? = null,
     val totalValue: Double,
     val totalInvestmentValue: Double,
-    val remainingFunds: Double,
-    val participantCount: Long? = null,
+    val remainingFunds: Double
 )
 
 data class ParticipantWithUserDetailsDto(
@@ -60,13 +59,12 @@ fun toParticipantWithUserDetailsDto(participant: Participant, userDetails: UserD
     )
 }
 
-fun toParticipantDto(source: Participant, participantCount: Long? = null) =
+fun toParticipantDto(source: Participant) =
     ParticipantDto(
         rank = source.rank,
         totalValue = source.totalValue,
         totalInvestmentValue = source.totalInvestmentValue,
         remainingFunds = source.remainingFunds,
-        participantCount = participantCount,
         participantId = source.participantId!!
     )
 
@@ -78,7 +76,7 @@ fun toDetailedParticipant(
     contest: ContestDto,
 ) =
     DetailedParticipantDto(
-        participant = toParticipantDto(source, participantCount),
+        participant = toParticipantDto(source),
         contest = contest,
         investments = source.investments.filter { it.symbol == symbol }
             .map { mapToInvestmentDto(it) },
@@ -96,7 +94,7 @@ fun toDetailedParticipant(
     contest: ContestDto
 ) =
     DetailedParticipantDto(
-        participant = toParticipantDto(source, participantCount),
+        participant = toParticipantDto(source),
         contest = contest,
         investments = source.investments.map { mapToInvestmentDto(it) },
         activeOrders = source.investmentOrders

@@ -50,7 +50,6 @@ class SecurityConfiguration {
             addAllowedOrigin("http://localhost:3000")
             addAllowedOrigin("http://stockclient-service:80")
             addAllowedOrigin("http://localhost:80")
-            addAllowedOrigin("http://stockcompclient.io")
             allowCredentials = true
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf(

@@ -31,7 +31,7 @@ class ParticipantService(
             participantRepository.findByUserIdAndContestId(userId, contest.contestId)
                 ?.let { participant ->
                     val participantCount = participantRepository.countByContestId(participant.contestId)
-                    ContestParticipantDto(toParticipantDto(participant, participantCount), contest)
+                    ContestParticipantDto(toParticipantDto(participant), contest)
                 }
         }
 
