@@ -37,8 +37,17 @@ class Participant(
     @Column(name = "PARTICIPANT_RANK")
     var rank: Int? = null
 
-    fun getActiveInvestmentOrders(): List<InvestmentOrder> =
-        investmentOrders.filter { it.isActive() }
+    fun getActiveInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isActive() }
+
+    fun getCompletedInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isCompleted() }
+
+    fun getCompletedInvestmentOrdersForSymbol(symbol: String): List<InvestmentOrder> =
+        getCompletedInvestmentOrders().filter { it.symbol == symbol }
+
+    fun getActiveInvestmentOrdersForSymbol(symbol: String): List<InvestmentOrder> =
+        getActiveInvestmentOrders().filter { it.symbol == symbol }
+
+    fun getInvestmentsForSymbol(symbol: String): List<Investment> = investments.filter { it.symbol == symbol }
 
     fun updateParticipantWhenBuying(amount: Int, symbol: String, currentPrice: Double) {
         val investment = getOrCreateInvestment(symbol)

@@ -2,6 +2,8 @@ package com.stockcomp.participant.participant
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
+import com.stockcomp.participant.investment.mapToInvestmentDto
+import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -26,11 +28,10 @@ class ParticipantService(
         )
     }
 
-    fun getRegisteredParticipatingContests(userId: Long): List<ContestParticipantDto> =
+    fun getParticipatingContests(userId: Long): List<ContestParticipantDto> =
         contestService.getActiveContests().mapNotNull { contest ->
             participantRepository.findByUserIdAndContestId(userId, contest.contestId)
                 ?.let { participant ->
-                    val participantCount = participantRepository.countByContestId(participant.contestId)
                     ContestParticipantDto(toParticipantDto(participant), contest)
                 }
         }
@@ -39,10 +40,32 @@ class ParticipantService(
         contestService.getActiveContests()
             .filter { !participantRepository.existsByUserIdAndContestId(userId, it.contestId) }
 
-    fun getRunningDetailedParticipantsForSymbol(userId: Long, symbol: String): List<DetailedParticipantDto> =
+    fun getDetailedParticipantsForSymbol(userId: Long, symbol: String): List<DetailedParticipantDto> =
         contestService.getRunningContests()
-            .mapNotNull { getOptionalParticipant(userId, it.contestId) }
-            .map { getDetailedParticipant(it.participantId!!) }
+            .mapNotNull { getOptionalParticipant(it.contestId, userId) }
+            .map { participant ->
+                DetailedParticipantDto(
+                    contest = contestService.getContest(participant.contestId),
+                    participant = toParticipantDto(participant),
+                    investments = participant.getInvestmentsForSymbol(symbol).map { mapToInvestmentDto(it) },
+                    completedOrders = participant.getCompletedInvestmentOrdersForSymbol(symbol)
+                        .map { mapToInvestmentOrderDto(it) },
+                    activeOrders = participant.getActiveInvestmentOrders()
+                        .map { mapToInvestmentOrderDto(it) }
+                )
+            }
+
+    fun getDetailedParticipantForContest(contestId: Long, userId: Long): DetailedParticipantDto? {
+        val contest = contestService.getContest(contestId)
+        val participant = participantRepository.findByUserIdAndContestId(userId, contestId)!!
+        return DetailedParticipantDto(
+            contest = contest,
+            participant = toParticipantDto(participant),
+            investments = participant.investments.map { mapToInvestmentDto(it) },
+            completedOrders = participant.getCompletedInvestmentOrders().map { mapToInvestmentOrderDto(it) },
+            activeOrders = participant.getActiveInvestmentOrders().map { mapToInvestmentOrderDto(it) }
+        )
+    }
 
     fun getParticipantsSortedByRank(contestId: Long, pageNumber: Int, pageSize: Int): Page<Participant> =
         participantRepository.findAllByContestId(
@@ -56,16 +79,6 @@ class ParticipantService(
     fun getParticipant(participantId: Long): Participant =
         participantRepository.findByParticipantId(participantId)
 
-    fun getDetailedParticipant(participantId: Long): DetailedParticipantDto {
-        val participant = participantRepository.findById(participantId)
-            .orElseThrow { IllegalArgumentException("Partipant Id $participantId not found") }
-        val contest = contestService.getContest(participant.contestId)
-        return toDetailedParticipant(
-            source = participant,
-            contest = contest,
-            participantCount = getParticipantCount(participant.contestId)
-        )
-    }
 
     fun getLockedParticipant(participantId: Long): Participant =
         participantRepository.findByIdLocked(participantId)

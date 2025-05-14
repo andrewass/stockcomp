@@ -42,6 +42,12 @@ class InvestmentOrder(
 
     fun isActive(): Boolean = orderStatus == OrderStatus.ACTIVE
 
+    fun isCompleted(): Boolean = orderStatus == OrderStatus.COMPLETED
+
+    fun isActiveForSymbol(symbol: String) = isActive() && this.symbol == symbol
+
+    fun isCompletedForSymbol(symbol: String) = isCompleted() && this.symbol == symbol
+
     fun processOrder(currentPrice: Double) {
         if (transactionType == TransactionType.BUY && participant.remainingFunds >= currentPrice) {
             processBuyOrder(currentPrice)

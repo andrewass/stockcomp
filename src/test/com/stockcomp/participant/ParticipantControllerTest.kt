@@ -41,7 +41,7 @@ class ParticipantControllerTest(
 
     @Test
     fun `should get running participants`() {
-        every { participantService.getRunningDetailedParticipantsForSymbol(identifier, "AAPL") }
+        every { participantService.getDetailedParticipantsForSymbol(identifier, "AAPL") }
             .returns(listOf(getDetailedParticipant()))
         mockMvc.perform(
             mockMvcGetRequest("$basePath/running-participants")
