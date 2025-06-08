@@ -25,6 +25,7 @@
         <maven.failsafe.version>3.5.2</maven.failsafe.version>
         <jib.version>3.4.5</jib.version>
         <flyway.version>11.3.1</flyway.version>
+        <loki.logback.version>1.6.0</loki.logback.version>
     </properties>
 
     <dependencies>
@@ -96,6 +97,11 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.loki4j</groupId>
+            <artifactId>loki-logback-appender</artifactId>
+            <version>${loki.logback.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>

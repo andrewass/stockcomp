@@ -10,7 +10,6 @@ class TokenService {
     fun extractEmailFromToken(token: Jwt): String =
         when (extractIssuerFromToken()) {
             TokenIssuer.CUSTOM_AUTH -> extractEmailFromCustomAuth(token)
-            else -> throw RuntimeException("Unsupported issuer")
         }
 
     private fun extractEmailFromCustomAuth(token: Jwt): String =

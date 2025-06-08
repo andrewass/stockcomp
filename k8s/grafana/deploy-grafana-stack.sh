@@ -16,4 +16,4 @@ helm upgrade --install --namespace=grafana-stack loki grafana/loki --values loki
 echo "✅ Installing Grafana Alloy..."
 helm upgrade --install --namespace=grafana-stack alloy grafana/alloy
 
-##kubectl get secret --namespace monitoring grafana-stack -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+##kubectl get secret --namespace grafana-stack grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
