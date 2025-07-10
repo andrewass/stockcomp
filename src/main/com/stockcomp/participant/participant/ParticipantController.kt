@@ -59,7 +59,9 @@ class ParticipantController(
         @PathVariable contestId: Long,
         @TokenData tokenClaims: TokenClaims
     ): ResponseEntity<DetailedParticipantDto> =
-        ResponseEntity.ok(participantService.getDetailedParticipantForContest(contestId, tokenClaims.userId))
+        participantService.getDetailedParticipantForContest(contestId, tokenClaims.userId)
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.noContent().build()
 
     /**
      * Get sorted participants for a given contest

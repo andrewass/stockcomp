@@ -10,5 +10,7 @@ interface ContestRepository : JpaRepository<Contest, Long> {
 
     fun findAllByContestStatusIn(contestStatusList: List<ContestStatus>): List<Contest>
 
+    fun existsByContestStatusIn(contestStatusList: List<ContestStatus>): Boolean
+
     fun deleteByContestId(contestId: Long)
 }

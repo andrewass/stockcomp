@@ -47,6 +47,9 @@ class ContestServiceInternal(
             listOf(RUNNING, STOPPED, AWAITING_START)
         )
 
+    fun existsActiveContest(): Boolean =
+        contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
+
     fun getRunningContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(listOf(RUNNING))
 

@@ -57,20 +57,24 @@ class ParticipantService(
 
     fun getDetailedParticipantForContest(contestId: Long, userId: Long): DetailedParticipantDto? {
         val contest = contestService.getContest(contestId)
-        val participant = participantRepository.findByUserIdAndContestId(userId, contestId)!!
-        return DetailedParticipantDto(
-            contest = contest,
-            participant = toParticipantDto(participant),
-            investments = participant.investments.map { mapToInvestmentDto(it) },
-            completedOrders = participant.getCompletedInvestmentOrders().map { mapToInvestmentOrderDto(it) },
-            activeOrders = participant.getActiveInvestmentOrders().map { mapToInvestmentOrderDto(it) }
-        )
+        return participantRepository.findByUserIdAndContestId(userId, contestId)
+            ?.let {
+                DetailedParticipantDto(
+                    contest = contest,
+                    participant = toParticipantDto(it),
+                    investments = it.investments.map { investment -> mapToInvestmentDto(investment) },
+                    completedOrders = it.getCompletedInvestmentOrders()
+                        .map { investmentOrder -> mapToInvestmentOrderDto(investmentOrder) },
+                    activeOrders = it.getActiveInvestmentOrders()
+                        .map { investmentOrder -> mapToInvestmentOrderDto(investmentOrder) }
+                )
+            }
     }
 
     fun getParticipantsSortedByRank(contestId: Long, pageNumber: Int, pageSize: Int): Page<Participant> =
         participantRepository.findAllByContestId(
-            contestId,
-            request = PageRequest.of(pageNumber, pageSize, Sort.by("rank"))
+            contestId = contestId,
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.by("rank"))
         )
 
     fun getParticipant(contestId: Long, userId: Long): Participant =

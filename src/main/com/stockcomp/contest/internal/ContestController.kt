@@ -7,6 +7,7 @@ import com.stockcomp.contest.toContestDto
 import com.stockcomp.exception.CustomExceptionHandler
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -24,6 +25,10 @@ class ContestController(
         contestService.getAllContestsSorted(pageNumber, pageSize)
             .let { ResponseEntity.ok(mapToContestPageDto(it)) }
 
+    @GetMapping("/exists-active")
+    fun existsActiveContest(): ResponseEntity<ExistsActiveContestResponse> =
+        ResponseEntity.ok(ExistsActiveContestResponse(contestService.existsActiveContest()))
+
     @GetMapping("/active")
     fun getActiveContests(): ResponseEntity<ContestsResponse> =
         contestService.getActiveContests()
@@ -36,6 +41,7 @@ class ContestController(
             .let { ResponseEntity.ok(toContestDto(it)) }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> =
         contestService.createContest(contestName = request.contestName, startTime = request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
@@ -61,6 +67,10 @@ class ContestController(
         val contestId: Long,
         val contestName: String,
         val contestStatus: ContestStatus
+    )
+
+    data class ExistsActiveContestResponse(
+        val existsActiveContests: Boolean
     )
 
     data class ContestsResponse(
