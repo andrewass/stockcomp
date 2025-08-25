@@ -8,6 +8,7 @@ import com.stockcomp.user.toUserDetailsDto
 import com.stockcomp.user.mapToUserPageDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -17,6 +18,7 @@ class UserController(
 ) {
 
     @GetMapping("/sorted")
+    @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsersSortedByEmail(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
@@ -32,6 +34,7 @@ class UserController(
             .let { ResponseEntity.ok(it) }
 
     @PatchMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     fun updateUserDetails(
         @TokenData tokenClaims: TokenClaims,
         @RequestBody userDetailsDto: UserDetailsDto

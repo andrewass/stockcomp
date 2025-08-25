@@ -1,5 +1,6 @@
 package com.stockcomp.user
 
+import com.stockcomp.user.internal.UserRole
 import com.stockcomp.user.internal.UserServiceInternal
 import org.springframework.stereotype.Service
 
@@ -9,13 +10,12 @@ class UserServiceExternal(
 ) {
 
     fun getUserIdByEmail(email: String): Long =
-        userService.findUserByEmail(email)?.id
+        userService.findOrCreateUserByEmail(email).id
             ?: throw IllegalArgumentException("No user found for email $email")
 
     fun getUserIdByUsername(username: String): Long =
         userService.findUserByUsername(username).id
             ?: throw IllegalArgumentException("No user found for username $username")
 
-    fun getUserByUserId(userId: Long): UserDto =
-        mapToUserDto(userService.findUserById(userId))
+    fun getUserRole(email: String): UserRole = userService.findUserByEmail(email).userRole
 }

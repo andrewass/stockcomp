@@ -1,5 +1,6 @@
 package com.stockcomp.configuration
 
+import com.stockcomp.user.UserServiceExternal
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -7,8 +8,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -18,7 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfiguration {
+class SecurityConfiguration(
+    private val userService: UserServiceExternal
+) {
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     var jwkSetUri: String? = null
@@ -39,7 +44,9 @@ class SecurityConfiguration {
                     "/v2/api-docs"
                 ).permitAll().anyRequest().authenticated()
             }
-            .oauth2ResourceServer { it.jwt { } }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()) }
+            }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .build()
 
@@ -64,5 +71,15 @@ class SecurityConfiguration {
         return UrlBasedCorsConfigurationSource().also {
             it.registerCorsConfiguration("/**", courseConfiguration)
         }
+    }
+
+    private fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
+        val converter = JwtAuthenticationConverter()
+        converter.setJwtGrantedAuthoritiesConverter { jwt ->
+            val email = jwt.claims["email"] as String
+            val userRole = userService.getUserRole(email)
+            listOf(SimpleGrantedAuthority("ROLE_$userRole"))
+        }
+        return converter
     }
 }

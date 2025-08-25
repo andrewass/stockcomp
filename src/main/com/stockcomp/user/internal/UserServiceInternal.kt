@@ -17,13 +17,10 @@ class UserServiceInternal(
     fun getAllUsersSortedByEmail(pageNumber: Int, pageSize: Int): Page<User> =
         userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("email")))
 
-    fun findUserByTokenClaim(email: String): User =
-        userRepository.findByEmail(email)
-            ?: createUser(email)
+    fun findOrCreateUserByEmail(email: String): User = userRepository.findByEmail(email) ?: createUser(email)
 
-    fun findUserByEmail(email: String): User? =
-        userRepository.findByEmail(email)
-            ?: createUser(email)
+    fun findUserByEmail(email: String): User =
+        userRepository.findByEmail(email) ?: throw IllegalStateException("User with email $email not found")
 
     fun findUserByUsername(username: String): User =
         userRepository.findByUsername(username)
