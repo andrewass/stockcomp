@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class SymbolServiceExternal(
-    @Qualifier("fastfinance.quote.consumer") private val quoteConsumer: QuoteConsumer
+    @param:Qualifier("fastfinance.quote.consumer") private val quoteConsumer: QuoteConsumer
 ) {
 
     fun getCurrentPrice(symbol: String): CurrentPriceSymbolDto {

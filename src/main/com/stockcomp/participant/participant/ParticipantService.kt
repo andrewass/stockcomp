@@ -32,7 +32,7 @@ class ParticipantService(
         contestService.getActiveContests().mapNotNull { contest ->
             participantRepository.findByUserIdAndContestId(userId, contest.contestId)
                 ?.let { participant ->
-                    ContestParticipantDto(toParticipantDto(participant), contest)
+                    ContestParticipantDto(toUserParticipantDto(participant), contest)
                 }
         }
 
@@ -46,7 +46,7 @@ class ParticipantService(
             .map { participant ->
                 DetailedParticipantDto(
                     contest = contestService.getContest(participant.contestId),
-                    participant = toParticipantDto(participant),
+                    participant = toUserParticipantDto(participant),
                     investments = participant.getInvestmentsForSymbol(symbol).map { mapToInvestmentDto(it) },
                     completedOrders = participant.getCompletedInvestmentOrdersForSymbol(symbol)
                         .map { mapToInvestmentOrderDto(it) },
@@ -61,7 +61,7 @@ class ParticipantService(
             ?.let {
                 DetailedParticipantDto(
                     contest = contest,
-                    participant = toParticipantDto(it),
+                    participant = toUserParticipantDto(it),
                     investments = it.investments.map { investment -> mapToInvestmentDto(investment) },
                     completedOrders = it.getCompletedInvestmentOrders()
                         .map { investmentOrder -> mapToInvestmentOrderDto(investmentOrder) },

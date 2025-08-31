@@ -13,6 +13,7 @@ data class UserDto(
 )
 
 data class UserDetailsDto(
+    val userId: Long,
     val username: String,
     val fullName: String? = null,
     val country: String? = null,
@@ -36,9 +37,10 @@ fun mapToUserDto(src: User) =
         userStatus = src.userStatus
     )
 
-fun toUserDetailsDto(src: User) =
+fun toUserDetailsDto(user: User) =
     UserDetailsDto(
-        fullName = src.fullName,
-        username = src.username,
-        country = src.country,
+        userId = user.id!!,
+        fullName = user.fullName,
+        username = user.username,
+        country = user.country,
     )

@@ -1,7 +1,6 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.user.UserDetailsDto
-import com.stockcomp.user.toUserDetailsDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -25,6 +24,8 @@ class UserServiceInternal(
     fun findUserByUsername(username: String): User =
         userRepository.findByUsername(username)
 
+    fun findUsersById(userIds: List<Long>): List<User> = userRepository.findAllById(userIds)
+
     fun findUserById(userId: Long): User =
         userRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User with id $userId not found") }
@@ -36,12 +37,6 @@ class UserServiceInternal(
             fullName = userDetailsDto.fullName
         }.also { userRepository.save(it) }
     }
-
-    fun getUserDetails(username: String): UserDetailsDto =
-        toUserDetailsDto(userRepository.findByUsername(username))
-
-    fun verifyAdminUser(username: String): Boolean =
-        userRepository.findByUsername(username).userRole == UserRole.ADMIN
 
     private fun createUser(email: String): User {
         var username: String

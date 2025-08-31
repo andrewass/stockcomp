@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service
 class UserServiceExternal(
     private val userService: UserServiceInternal
 ) {
-
     fun getUserIdByEmail(email: String): Long =
         userService.findOrCreateUserByEmail(email).id
             ?: throw IllegalArgumentException("No user found for email $email")
@@ -18,4 +17,7 @@ class UserServiceExternal(
             ?: throw IllegalArgumentException("No user found for username $username")
 
     fun getUserRole(email: String): UserRole = userService.findUserByEmail(email).userRole
+
+    fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> =
+        userService.findUsersById(userIds).map { toUserDetailsDto(it) }
 }

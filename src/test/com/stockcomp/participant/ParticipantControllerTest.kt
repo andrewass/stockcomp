@@ -75,7 +75,7 @@ class ParticipantControllerTest(
         activeOrders = emptyList(),
         completedOrders = emptyList(),
         investments = emptyList(),
-        participant = getParticipantDto(),
+        participant = getUserParticipantDto(),
         contest = getContestDto()
     )
 
@@ -87,10 +87,10 @@ class ParticipantControllerTest(
         contestStatus = ContestStatus.AWAITING_START
     )
 
-    private fun getParticipantDto() = ParticipantDto(
+    private fun getUserParticipantDto() = UserParticipantDto(
         totalValue = 0.00,
         totalInvestmentValue = 0.00,
         remainingFunds = 0.00,
-        participantId = 1L
+        participantId = 1L,
     )
 }

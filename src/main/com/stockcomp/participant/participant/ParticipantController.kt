@@ -3,13 +3,15 @@ package com.stockcomp.participant.participant
 import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.contest.ContestDto
+import com.stockcomp.user.UserServiceExternal
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/participants")
 class ParticipantController(
-    private val participantService: ParticipantService
+    private val participantService: ParticipantService,
+    private val userService: UserServiceExternal
 ) {
 
     /**
@@ -71,9 +73,12 @@ class ParticipantController(
         @RequestParam contestId: Long,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
-    ): ResponseEntity<ParticipantPageDto> =
-        participantService.getParticipantsSortedByRank(contestId, pageNumber, pageSize)
-            .let { ResponseEntity.ok(toParticipantPage(it)) }
+    ): ResponseEntity<CommonParticipantPageDto> {
+        val participantPage = participantService.getParticipantsSortedByRank(contestId, pageNumber, pageSize)
+        val userDetails = userService.getUserDetails(participantPage.content.map { it.userId })
+
+        return ResponseEntity.ok(toParticipantPage(participantPage.content, userDetails))
+    }
 
     /**
      * Get participant history for a given username

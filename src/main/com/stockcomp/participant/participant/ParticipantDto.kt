@@ -7,9 +7,18 @@ import com.stockcomp.participant.investmentorder.InvestmentOrderDto
 import com.stockcomp.participant.investmentorder.OrderStatus
 import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserDetailsDto
-import org.springframework.data.domain.Page
 
-data class ParticipantDto(
+data class CommonParticipantDto(
+    val participantId: Long,
+    val rank: Int? = null,
+    val totalValue: Double,
+    val username: String,
+    val country: String?,
+    val totalInvestmentValue: Double,
+    val remainingFunds: Double
+)
+
+data class UserParticipantDto(
     val participantId: Long,
     val rank: Int? = null,
     val totalValue: Double,
@@ -17,96 +26,95 @@ data class ParticipantDto(
     val remainingFunds: Double
 )
 
-data class ParticipantWithUserDetailsDto(
-    val participant: ParticipantDto,
-    val userDetails: UserDetailsDto
-)
-
-data class ParticipantPageDto(
-    val participants: List<ParticipantDto>,
-    val totalEntriesCount: Long
+data class CommonParticipantPageDto(
+    val participants: List<CommonParticipantDto>,
+    val totalEntriesCount: Int
 )
 
 data class ContestParticipantDto(
-    val participant: ParticipantDto,
+    val participant: UserParticipantDto,
     val contest: ContestDto
 )
 
 data class HistoricParticipantDto(
-    val participant: ParticipantDto,
+    val participant: UserParticipantDto,
     val investments: List<InvestmentDto>
 )
 
 data class DetailedParticipantDto(
     val contest: ContestDto,
-    val participant: ParticipantDto,
+    val participant: UserParticipantDto,
     val investments: List<InvestmentDto>,
     val activeOrders: List<InvestmentOrderDto>,
     val completedOrders: List<InvestmentOrderDto>
 )
 
-
-fun mapToHistoricParticipant(source: Participant) =
+fun mapToHistoricParticipant(participant: Participant) =
     HistoricParticipantDto(
-        participant = toParticipantDto(source),
-        investments = source.investments.map { mapToInvestmentDto(it) }
+        participant = toUserParticipantDto(participant),
+        investments = participant.investments.map { mapToInvestmentDto(it) }
     )
-
-fun toParticipantWithUserDetailsDto(participant: Participant, userDetails: UserDetailsDto) {
-    ParticipantWithUserDetailsDto(
-        participant = toParticipantDto(participant),
-        userDetails = userDetails
-    )
-}
-
-fun toParticipantDto(source: Participant) =
-    ParticipantDto(
-        rank = source.rank,
-        totalValue = source.totalValue,
-        totalInvestmentValue = source.totalInvestmentValue,
-        remainingFunds = source.remainingFunds,
-        participantId = source.participantId!!
-    )
-
 
 fun toDetailedParticipant(
-    source: Participant,
+    participant: Participant,
     symbol: String,
     participantCount: Long? = null,
     contest: ContestDto,
 ) =
     DetailedParticipantDto(
-        participant = toParticipantDto(source),
+        participant = toUserParticipantDto(participant),
         contest = contest,
-        investments = source.investments.filter { it.symbol == symbol }
+        investments = participant.investments.filter { it.symbol == symbol }
             .map { mapToInvestmentDto(it) },
-        activeOrders = source.investmentOrders.filter { it.symbol == symbol }
+        activeOrders = participant.investmentOrders.filter { it.symbol == symbol }
             .filter { it.orderStatus == OrderStatus.ACTIVE }
             .map { mapToInvestmentOrderDto(it) },
-        completedOrders = source.investmentOrders.filter { it.symbol == symbol }
+        completedOrders = participant.investmentOrders.filter { it.symbol == symbol }
             .filter { it.orderStatus == OrderStatus.COMPLETED }
             .map { mapToInvestmentOrderDto(it) }
     )
 
 fun toDetailedParticipant(
-    source: Participant,
+    participant: Participant,
     participantCount: Long? = null,
     contest: ContestDto
 ) =
     DetailedParticipantDto(
-        participant = toParticipantDto(source),
+        participant = toUserParticipantDto(participant),
         contest = contest,
-        investments = source.investments.map { mapToInvestmentDto(it) },
-        activeOrders = source.investmentOrders
+        investments = participant.investments.map { mapToInvestmentDto(it) },
+        activeOrders = participant.investmentOrders
             .filter { it.orderStatus == OrderStatus.ACTIVE }
             .map { mapToInvestmentOrderDto(it) },
-        completedOrders = source.investmentOrders
+        completedOrders = participant.investmentOrders
             .filter { it.orderStatus == OrderStatus.COMPLETED }
             .map { mapToInvestmentOrderDto(it) }
     )
 
-fun toParticipantPage(source: Page<Participant>) =
-    ParticipantPageDto(
-        participants = source.get().map { toParticipantDto(it) }.toList(),
-        totalEntriesCount = source.totalElements
+fun toParticipantPage(participants: List<Participant>, userDetails: List<UserDetailsDto>) =
+    CommonParticipantPageDto(
+        participants = participants.map { participant ->
+            toCommonParticipantDto(participant, userDetails.first { user -> user.userId == participant.userId})
+        }.toList(),
+        totalEntriesCount = participants.size
+    )
+
+fun toUserParticipantDto(participant: Participant) =
+    UserParticipantDto(
+        participantId = participant.participantId!!,
+        rank = participant.rank,
+        totalValue = participant.totalValue,
+        totalInvestmentValue = participant.totalInvestmentValue,
+        remainingFunds = participant.remainingFunds,
+    )
+
+fun toCommonParticipantDto(participant: Participant, userDetails: UserDetailsDto) =
+    CommonParticipantDto(
+        rank = participant.rank,
+        totalValue = participant.totalValue,
+        totalInvestmentValue = participant.totalInvestmentValue,
+        remainingFunds = participant.remainingFunds,
+        participantId = participant.participantId!!,
+        username = userDetails.username,
+        country = userDetails.country,
     )
