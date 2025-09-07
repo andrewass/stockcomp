@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 @Import(SecurityConfiguration::class)
 @WebMvcTest(ParticipantController::class)
 class ParticipantControllerTest(
-    @Autowired val mockMvc: MockMvc
+    @param:Autowired val mockMvc: MockMvc
 ) {
     private val identifier = 123L
     private val basePath = "/participants"

@@ -17,8 +17,9 @@
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.2.10</kotlin.version>
-        <testcontainers.version>1.21.0</testcontainers.version>
+        <testcontainers.version>1.21.3</testcontainers.version>
         <mockk.version>1.13.16</mockk.version>
+        <micrometer.version>1.15.3</micrometer.version>
         <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
         <logstash.version>7.4</logstash.version>
         <postgresql.version>42.7.5</postgresql.version>
@@ -92,6 +93,11 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -222,7 +228,9 @@
                         <image>stockcomp-server-image</image>
                     </to>
                     <from>
-                        <image>eclipse-temurin:21.0.4_7-jre-alpine@sha256:3f716d52e4045433e94a28d029c93d3c23179822a5d40b1c82b63aedd67c5081</image>
+                        <image>
+                            eclipse-temurin:21.0.4_7-jre-alpine@sha256:3f716d52e4045433e94a28d029c93d3c23179822a5d40b1c82b63aedd67c5081
+                        </image>
                     </from>
                 </configuration>
             </plugin>

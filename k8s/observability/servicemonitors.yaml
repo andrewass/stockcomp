@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: stockcomp-monitor
+  namespace: prometheus-space   # namespace of Prometheus
+  labels:
+    release: prometheus   # must match your Helm release name
+spec:
+  selector:
+    matchLabels:
+      app: stockcomp      # must match your Service’s labels
+  namespaceSelector:
+    matchNames:
+      - default           # namespace where the Service lives
+  endpoints:
+    - port: http          # matches the Service port name
+      path: /actuator/prometheus
+      interval: 15s
