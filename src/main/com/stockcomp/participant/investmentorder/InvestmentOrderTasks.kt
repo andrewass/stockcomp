@@ -1,7 +1,7 @@
 package com.stockcomp.participant.investmentorder
 
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.participant.ParticipantService
+import com.stockcomp.participant.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

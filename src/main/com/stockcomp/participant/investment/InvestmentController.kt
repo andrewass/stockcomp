@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/investment")
+@RequestMapping("/participants/investments")
 class InvestmentController(
-    private val investmentService: InvestmentService
+    private val investmentService: InvestmentProcessingService
 ) {
 
     @GetMapping("/all")

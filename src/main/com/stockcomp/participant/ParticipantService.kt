@@ -1,8 +1,7 @@
-package com.stockcomp.participant.participant
+package com.stockcomp.participant
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.*
 import com.stockcomp.participant.investment.mapToInvestmentDto
 import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserServiceExternal
@@ -37,7 +36,7 @@ class ParticipantService(
                 }
         }
 
-    fun getUnregisteredContests(userId: Long): List<ContestDto> =
+    fun getNonParticipatingContests(userId: Long): List<ContestDto> =
         contestService.getActiveContests()
             .filter { !participantRepository.existsByUserIdAndContestId(userId, it.contestId) }
 
@@ -81,13 +80,6 @@ class ParticipantService(
     fun getParticipant(contestId: Long, userId: Long): Participant =
         participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)!!
 
-    fun getParticipant(participantId: Long): Participant =
-        participantRepository.findByParticipantId(participantId)
-
-
-    fun getLockedParticipant(participantId: Long): Participant =
-        participantRepository.findByIdLocked(participantId)
-
     fun getAllByContest(contestId: Long): List<Participant> =
         participantRepository.findAllByContestId(contestId)
 
@@ -95,10 +87,6 @@ class ParticipantService(
         val userId = userService.getUserIdByUsername(username)
         return participantRepository.findAllByUserId(userId)
             .filter { contestService.isCompletedContest(it.contestId) }
-    }
-
-    fun saveParticipant(participant: Participant) {
-        participantRepository.save(participant)
     }
 
     private fun getOptionalParticipant(contestId: Long, userId: Long): Participant? =

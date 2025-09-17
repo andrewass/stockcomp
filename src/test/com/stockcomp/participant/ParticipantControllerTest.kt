@@ -4,7 +4,6 @@ import com.ninjasquad.springmockk.MockkBean
 import com.stockcomp.configuration.SecurityConfiguration
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.internal.ContestStatus
-import com.stockcomp.participant.participant.*
 import com.stockcomp.util.mockMvcGetRequest
 import io.mockk.every
 import org.junit.jupiter.api.Disabled

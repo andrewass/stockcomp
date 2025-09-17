@@ -1,15 +1,10 @@
 package com.stockcomp.exception
 
-import com.stockcomp.exception.InsufficientFundsException
-import com.stockcomp.exception.InvalidRoleException
 import io.jsonwebtoken.ExpiredJwtException
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 
@@ -37,6 +32,6 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
 
 
     @ExceptionHandler(InvalidRoleException::class)
-    fun handleExceptionsForForbidden(exception: InvalidRoleException) : ResponseEntity<Any> =
+    fun handleExceptionsForForbidden(exception: InvalidRoleException): ResponseEntity<Any> =
         ResponseEntity(exception.message, HttpStatus.FORBIDDEN)
 }

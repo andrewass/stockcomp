@@ -1,7 +1,6 @@
 package com.stockcomp.participant.investmentorder
 
 import com.stockcomp.participant.ParticipantRepository
-import com.stockcomp.participant.participant.ParticipantService
 import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,13 +9,12 @@ import java.time.LocalDateTime
 @Service
 class InvestmentOrderProcessingService(
     private val symbolService: SymbolServiceExternal,
-    private val participantService: ParticipantService,
     private val participantRepository: ParticipantRepository,
 ) {
 
     @Transactional
     fun processInvestmentOrders(participantId: Long) {
-        val participant = participantService.getLockedParticipant(participantId)
+        val participant = participantRepository.findByIdLocked(participantId)
         participant.getActiveInvestmentOrders()
             .forEach {
                 val currentPrice = symbolService.getCurrentPrice(it.symbol)

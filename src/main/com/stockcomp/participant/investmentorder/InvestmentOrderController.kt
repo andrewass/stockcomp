@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/investmentorders")
+@RequestMapping("/participants/investmentorders")
 class InvestmentOrderController(
     private val investmentOrderProcessingService: InvestmentOrderProcessingService
 ) {

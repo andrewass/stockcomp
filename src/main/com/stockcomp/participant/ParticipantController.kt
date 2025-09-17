@@ -1,9 +1,8 @@
-package com.stockcomp.participant.participant
+package com.stockcomp.participant
 
 import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.contest.ContestDto
-import com.stockcomp.participant.*
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -42,7 +41,7 @@ class ParticipantController(
     fun unregisteredParticipant(
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<List<ContestDto>> =
-        ResponseEntity.ok(participantService.getUnregisteredContests(tokenClaims.userId))
+        ResponseEntity.ok(participantService.getNonParticipatingContests(tokenClaims.userId))
 
     /**
      * Get all the active participants for a given user, including investment and orders for the given symbol

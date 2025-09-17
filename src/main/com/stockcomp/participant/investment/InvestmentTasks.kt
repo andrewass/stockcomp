@@ -1,7 +1,7 @@
 package com.stockcomp.participant.investment
 
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.participant.ParticipantService
+import com.stockcomp.participant.ParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class InvestmentTasks(
     private val participantService: ParticipantService,
     private val contestService: ContestServiceExternal,
-    private val investmentTaskService: InvestmentTaskService,
+    private val investmentProcessingService: InvestmentProcessingService,
 ) {
     private val logger = LoggerFactory.getLogger(InvestmentTasks::class.java)
 
@@ -21,7 +21,7 @@ class InvestmentTasks(
                 .forEach { contest ->
                     participantService.getAllByContest(contest.contestId)
                         .forEach { participant ->
-                            investmentTaskService.maintainInvestments(participant.participantId!!)
+                            investmentProcessingService.maintainInvestments(participant.participantId!!)
                         }
                 }
         } catch (e: Exception) {
