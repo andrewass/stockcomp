@@ -2,6 +2,7 @@ package com.stockcomp.participant.participant
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
+import com.stockcomp.participant.*
 import com.stockcomp.participant.investment.mapToInvestmentDto
 import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserServiceExternal

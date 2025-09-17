@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class InvestmentOrderTasks(
-    private val investmentOrderTaskService: InvestmentOrderTaskService,
+    private val investmentOrderProcessingService: InvestmentOrderProcessingService,
     private val participantService: ParticipantService,
     private val contestService: ContestServiceExternal
 ) {
@@ -20,8 +20,8 @@ class InvestmentOrderTasks(
             contestService.getActiveContests()
                 .forEach {
                     participantService.getAllByContest(it.contestId)
-                        .forEach {participant ->
-                            investmentOrderTaskService.processInvestmentOrders(participant.participantId!!)
+                        .forEach { participant ->
+                            investmentOrderProcessingService.processInvestmentOrders(participant.participantId!!)
                         }
                 }
         } catch (e: Exception) {

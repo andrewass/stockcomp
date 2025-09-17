@@ -1,4 +1,4 @@
-package com.stockcomp.participant.participant
+package com.stockcomp.participant
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.participant.investment.InvestmentDto

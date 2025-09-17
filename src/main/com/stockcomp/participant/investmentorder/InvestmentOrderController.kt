@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/investmentorders")
 class InvestmentOrderController(
-    private val investmentOrderService: InvestmentOrderService
+    private val investmentOrderProcessingService: InvestmentOrderProcessingService
 ) {
 
     @PostMapping("/order")
@@ -18,7 +18,7 @@ class InvestmentOrderController(
         @TokenData tokenClaims: TokenClaims,
         @RequestBody request: PlaceInvestmentOrderRequest
     ): ResponseEntity<HttpStatus> =
-        investmentOrderService.placeInvestmentOrder(
+        investmentOrderProcessingService.placeInvestmentOrder(
             participantId = request.participantId,
             symbol = request.symbol,
             acceptedPrice = request.acceptedPrice,
@@ -34,7 +34,7 @@ class InvestmentOrderController(
         @RequestParam orderId: Long,
         @RequestParam contestId: Long
     ): ResponseEntity<HttpStatus> =
-        investmentOrderService.deleteInvestmentOrder(
+        investmentOrderProcessingService.deleteInvestmentOrder(
             userId = tokenClaims.userId, orderId = orderId, contestId = contestId
         ).let { ResponseEntity(HttpStatus.OK) }
 
@@ -43,7 +43,7 @@ class InvestmentOrderController(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam contestId: Long
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        investmentOrderService.getActiveOrders(contestId, tokenClaims.userId)
+        investmentOrderProcessingService.getActiveOrders(contestId, tokenClaims.userId)
             .map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
 
@@ -52,7 +52,7 @@ class InvestmentOrderController(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam contestId: Long
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        investmentOrderService.getCompletedOrders(
+        investmentOrderProcessingService.getCompletedOrders(
             contestId = contestId, userId = tokenClaims.userId
         ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
@@ -63,7 +63,7 @@ class InvestmentOrderController(
         @RequestParam contestId: Long,
         @RequestParam symbol: String
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        investmentOrderService.getActiveOrdersSymbol(
+        investmentOrderProcessingService.getActiveOrdersSymbol(
             symbol = symbol, contestId = contestId, userId = tokenClaims.userId
         ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
@@ -74,7 +74,7 @@ class InvestmentOrderController(
         @RequestParam contestId: Long,
         @RequestParam symbol: String
     ): ResponseEntity<List<InvestmentOrderDto>> =
-        investmentOrderService.getCompletedOrdersSymbol(
+        investmentOrderProcessingService.getCompletedOrdersSymbol(
             symbol = symbol, contestId = contestId, userId = tokenClaims.userId
         ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }

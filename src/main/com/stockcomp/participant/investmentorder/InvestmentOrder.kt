@@ -1,7 +1,7 @@
 package com.stockcomp.participant.investmentorder
 
 import com.stockcomp.common.BaseEntity
-import com.stockcomp.participant.participant.Participant
+import com.stockcomp.participant.Participant
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -43,10 +43,6 @@ class InvestmentOrder(
     fun isActive(): Boolean = orderStatus == OrderStatus.ACTIVE
 
     fun isCompleted(): Boolean = orderStatus == OrderStatus.COMPLETED
-
-    fun isActiveForSymbol(symbol: String) = isActive() && this.symbol == symbol
-
-    fun isCompletedForSymbol(symbol: String) = isCompleted() && this.symbol == symbol
 
     fun processOrder(currentPrice: Double) {
         if (transactionType == TransactionType.BUY && participant.remainingFunds >= currentPrice) {
