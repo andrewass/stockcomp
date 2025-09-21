@@ -1,14 +1,12 @@
-#Tell Docker to use a given image, tagged with version
+# Build stage (with Maven)
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Runtime stage (slim JRE)
 FROM eclipse-temurin:21-jre-alpine
-
-#Arguements only available during image build
-ARG JAR_FILE=target/stockcomp-0.0.1-SNAPSHOT.jar
-
-#Copy the argument jar file into the image as app.jar
-COPY ${JAR_FILE} app.jar
-
-#Telling Docker which port our application is using. Port will be published to host
+WORKDIR /app
+COPY --from=builder /app/target/stockcomp-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-#Specifies the executable to start when the container is booting
-ENTRYPOINT ["java","-jar","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010","/app.jar"]
+ENTRYPOINT ["java","-jar","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010","app.jar"]
