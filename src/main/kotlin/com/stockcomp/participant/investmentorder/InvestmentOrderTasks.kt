@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class InvestmentOrderTasks(
-    private val investmentOrderProcessingService: InvestmentOrderProcessingService,
+    private val investmentOrderProcessingService: com.stockcomp.participant.investmentorder.InvestmentOrderProcessingService,
     private val participantService: ParticipantService,
     private val contestService: ContestServiceExternal
 ) {
-    private val logger = LoggerFactory.getLogger(InvestmentOrderTasks::class.java)
+    private val logger = LoggerFactory.getLogger(com.stockcomp.participant.investmentorder.InvestmentOrderTasks::class.java)
 
     @Scheduled(fixedRate = 15000)
     fun runMaintainInvestmentOrders() {

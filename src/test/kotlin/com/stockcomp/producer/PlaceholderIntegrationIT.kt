@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import
 
 @SpringBootTest
 @Import(TestcontainersConfiguration::class)
-internal class PlaceholderIntegrationIT {
+class PlaceholderIntegrationIT {
 
     @Test
     fun `application context test`() {
