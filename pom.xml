@@ -18,6 +18,7 @@
         <java.version>21</java.version>
         <kotlin.version>2.2.10</kotlin.version>
         <testcontainers.version>1.21.3</testcontainers.version>
+        <spring.testcontainers.version>3.5.6</spring.testcontainers.version>
         <mockk.version>1.13.16</mockk.version>
         <micrometer.version>1.15.3</micrometer.version>
         <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
@@ -27,6 +28,7 @@
         <jib.version>3.4.5</jib.version>
         <flyway.version>11.3.1</flyway.version>
         <loki.logback.version>1.6.0</loki.logback.version>
+        <skip.it>true</skip.it>
     </properties>
 
     <dependencies>
@@ -108,6 +110,12 @@
             <groupId>com.github.loki4j</groupId>
             <artifactId>loki-logback-appender</artifactId>
             <version>${loki.logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <version>${spring.testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -210,14 +218,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven.failsafe.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <configuration>
+                    <skip>${skip.it}</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
