@@ -25,10 +25,11 @@
         <logstash.version>7.4</logstash.version>
         <postgresql.version>42.7.5</postgresql.version>
         <maven.failsafe.version>3.5.2</maven.failsafe.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
         <jib.version>3.4.5</jib.version>
         <flyway.version>11.3.1</flyway.version>
         <loki.logback.version>1.6.0</loki.logback.version>
-        <skip.it>true</skip.it>
+        <skip.ut>false</skip.ut>
     </properties>
 
     <dependencies>
@@ -218,8 +219,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven.failsafe.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
                 <configuration>
-                    <skip>${skip.it}</skip>
+                    <skipTests>${skip.ut}</skipTests>
                 </configuration>
             </plugin>
             <plugin>
