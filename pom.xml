@@ -24,7 +24,7 @@
         <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
         <logstash.version>7.4</logstash.version>
         <postgresql.version>42.7.8</postgresql.version>
-        <maven.failsafe.version>3.5.2</maven.failsafe.version>
+        <maven.failsafe.version>3.5.4</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <jib.version>3.4.5</jib.version>
         <flyway.version>11.3.1</flyway.version>
