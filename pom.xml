@@ -21,7 +21,7 @@
         <spring.testcontainers.version>3.5.6</spring.testcontainers.version>
         <mockk.version>1.14.5</mockk.version>
         <micrometer.version>1.15.4</micrometer.version>
-        <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
+        <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
         <logstash.version>7.4</logstash.version>
         <postgresql.version>42.7.8</postgresql.version>
         <maven.failsafe.version>3.5.4</maven.failsafe.version>
