@@ -27,7 +27,7 @@
         <maven.failsafe.version>3.5.4</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <jib.version>3.4.6</jib.version>
-        <flyway.version>11.13.1</flyway.version>
+        <flyway.version>11.13.2</flyway.version>
         <loki.logback.version>2.0.0</loki.logback.version>
         <skip.ut>false</skip.ut>
     </properties>
