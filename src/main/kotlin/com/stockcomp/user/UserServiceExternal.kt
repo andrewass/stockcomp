@@ -16,7 +16,7 @@ class UserServiceExternal(
         userService.findUserByUsername(username).id
             ?: throw IllegalArgumentException("No user found for username $username")
 
-    fun getUserRole(email: String): UserRole = userService.findUserByEmail(email).userRole
+    fun getUserRole(email: String): UserRole = userService.findOrCreateUserByEmail(email).userRole
 
     fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> =
         userService.findUsersById(userIds).map { toUserDetailsDto(it) }
