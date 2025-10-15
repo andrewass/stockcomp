@@ -13,20 +13,28 @@ class LeaderboardEntry(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val leaderboardEntryId: Long? = null,
 
-    var contestCount: Int = 0,
-
-    var ranking: Int = 0,
-
-    var score: Int = 0,
-
     @ManyToOne
     @JoinColumn(name = "LEADERBOARD_ID", nullable = false)
     val leaderboard: Leaderboard,
 
-    @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL])
-    val medals: MutableList<Medal> = mutableListOf(),
-
     @Column(name = "USER_ID", nullable = false)
     val userId: Long,
 
-    ) : BaseEntity()
+    ) : BaseEntity() {
+
+    @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val medals: MutableList<Medal> = mutableListOf()
+
+    var contestCount: Int = 0
+        private set
+
+    var ranking: Int = 0
+        private set
+
+    var score: Int = 0
+        private set
+
+    fun addMedal(medal: Medal) {
+        medals.add(medal)
+    }
+}

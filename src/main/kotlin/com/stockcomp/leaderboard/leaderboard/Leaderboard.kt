@@ -9,12 +9,30 @@ class Leaderboard(
 
     @Id
     @Column(name = "LEADERBOARD_ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val leaderboardId: Long? = null,
 
-    var contestCount: Int = 0,
+    ) : BaseEntity() {
 
     @OneToMany(mappedBy = "leaderboard", cascade = [CascadeType.ALL])
-    val entries: MutableList<LeaderboardEntry> = mutableListOf()
+    private val entries: MutableList<LeaderboardEntry> = mutableListOf()
 
-) : BaseEntity()
+    var contestCount: Int = 0
+        private set
+
+    fun addEntry(leaderboardEntry: LeaderboardEntry) {
+        entries.add(leaderboardEntry)
+    }
+
+    fun updateEntry(userId: Long) {
+        entries.find { it.userId == userId }
+    }
+
+    fun recalculateRankings() {
+
+    }
+
+    private fun incrementContestCount() {
+        contestCount += 1
+    }
+
+}

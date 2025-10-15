@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/leaderboard")
 class LeaderboardController(
-    private val leaderboardService: LeaderboardService
+    private val leaderboardService: LeaderboardService,
+    private val leaderboardQueryService: LeaderboardQueryService
 ) {
 
     @GetMapping("/sorted")
@@ -16,14 +17,14 @@ class LeaderboardController(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
     ): ResponseEntity<LeaderboardEntryPageDto> =
-        leaderboardService.getSortedLeaderboardEntries(pageNumber, pageSize)
+        leaderboardQueryService.getSortedLeaderboardEntries(pageNumber, pageSize)
             .let { ResponseEntity.ok(mapToLeaderboardEntryPageDto(it)) }
 
     @GetMapping("/user/{userId}")
     fun getLeaderboardEntryForUser(
         @PathVariable userId: Long
     ): ResponseEntity<LeaderboardEntryDto> =
-        leaderboardService.getLeaderboardEntryForUser(userId)
+        leaderboardQueryService.getLeaderboardEntryForUser(userId)
             .let { ResponseEntity.ok(mapToLeaderboardEntryDto(it)) }
 
     @PostMapping("/update")
