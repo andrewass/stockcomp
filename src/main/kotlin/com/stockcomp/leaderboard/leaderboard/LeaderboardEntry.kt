@@ -19,6 +19,10 @@ class LeaderboardEntry(
 
     var score: Int = 0,
 
+    @ManyToOne
+    @JoinColumn(name = "LEADERBOARD_ID", nullable = false)
+    val leaderboard: Leaderboard,
+
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL])
     val medals: MutableList<Medal> = mutableListOf(),
 

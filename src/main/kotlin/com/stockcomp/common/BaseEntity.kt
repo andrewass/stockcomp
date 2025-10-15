@@ -1,6 +1,8 @@
 package com.stockcomp.common
 
+import jakarta.persistence.Column
 import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.Version
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
@@ -9,8 +11,12 @@ import java.time.LocalDateTime
 open class BaseEntity(
 
     @CreationTimestamp
-    val dateCreated: LocalDateTime? = null,
+    @Column(updatable = false)
+    protected var dateCreated: LocalDateTime? = null,
 
     @UpdateTimestamp
-    val dateUpdated: LocalDateTime? = null
+    protected var dateUpdated: LocalDateTime? = null,
+
+    @Version
+    protected var version: Long? = null,
 )
