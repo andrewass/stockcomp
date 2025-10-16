@@ -18,9 +18,12 @@ class LeaderboardInitializer(
         if (!leaderboardRepository.existsById(leaderboardId)) {
             try {
                 leaderboardRepository.save(Leaderboard(leaderboardId = leaderboardId))
+                logger.info("Created new general leaderboard")
             } catch (e: DataIntegrityViolationException) {
                 logger.error(e.message)
             }
+        } else {
+            logger.info("Leaderboard already exists, skipping...")
         }
     }
 }

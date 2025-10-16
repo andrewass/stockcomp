@@ -23,7 +23,10 @@ class LeaderboardEntry(
     ) : BaseEntity() {
 
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL], orphanRemoval = true)
-    private val medals: MutableList<Medal> = mutableListOf()
+    private val _medals: MutableList<Medal> = mutableListOf()
+
+    val medals: List<Medal>
+        get() = _medals.toList()
 
     var contestCount: Int = 0
         private set
@@ -35,6 +38,6 @@ class LeaderboardEntry(
         private set
 
     fun addMedal(medal: Medal) {
-        medals.add(medal)
+        _medals.add(medal)
     }
 }
