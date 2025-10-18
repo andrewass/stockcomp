@@ -40,4 +40,8 @@ class LeaderboardEntry(
     fun addMedal(medal: Medal) {
         _medals.add(medal)
     }
+
+    fun incrementContestCount() {
+        contestCount += 1
+    }
 }

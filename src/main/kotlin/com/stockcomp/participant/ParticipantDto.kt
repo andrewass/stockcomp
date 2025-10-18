@@ -20,6 +20,7 @@ data class CommonParticipantDto(
 
 data class UserParticipantDto(
     val participantId: Long,
+    val userId: Long,
     val rank: Int? = null,
     val totalValue: Double,
     val totalInvestmentValue: Double,
@@ -94,7 +95,7 @@ fun toDetailedParticipant(
 fun toParticipantPage(participants: List<Participant>, userDetails: List<UserDetailsDto>) =
     CommonParticipantPageDto(
         participants = participants.map { participant ->
-            toCommonParticipantDto(participant, userDetails.first { user -> user.userId == participant.userId})
+            toCommonParticipantDto(participant, userDetails.first { user -> user.userId == participant.userId })
         }.toList(),
         totalEntriesCount = participants.size
     )
@@ -102,6 +103,7 @@ fun toParticipantPage(participants: List<Participant>, userDetails: List<UserDet
 fun toUserParticipantDto(participant: Participant) =
     UserParticipantDto(
         participantId = participant.participantId!!,
+        userId = participant.userId,
         rank = participant.rank,
         totalValue = participant.totalValue,
         totalInvestmentValue = participant.totalInvestmentValue,

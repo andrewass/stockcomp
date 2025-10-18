@@ -12,10 +12,7 @@ class LeaderboardService(
     fun updateLeaderboard(contestId: Long) {
     }
 
-    fun addEntry(leaderboardEntry: LeaderboardEntry) {
-    }
-
-    private fun getLeaderboard(): Leaderboard {
+    fun getLeaderboard(): Leaderboard {
         val leaderboards = leaderboardRepository.findAll()
         if (leaderboards.size != 1) {
             throw IllegalStateException("Should only exist 1 leaderboard")

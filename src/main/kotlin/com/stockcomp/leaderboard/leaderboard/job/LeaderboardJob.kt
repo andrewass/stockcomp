@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.leaderboard.job
 
 import com.stockcomp.common.BaseEntity
 import jakarta.persistence.*
@@ -8,14 +8,14 @@ import java.time.LocalDateTime
 @Table(name = "T_LEADERBOARD_JOB")
 class LeaderboardJob(
     @Id
-    @Column(name = "LEADERBOARD_JOB_ID", nullable = false)
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val leaderboardJobId: Long? = null,
 
     @Column(nullable = false)
-    val contestId: Long? = null,
+    val contestId: Long
 
-    ) : BaseEntity() {
+) : BaseEntity() {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -28,11 +28,22 @@ class LeaderboardJob(
     @Column(nullable = false)
     var attempts: Int = 0
         private set
+
+    fun markAsCompleted() {
+        jobStatus = JobStatus.COMPLETED
+        attempts += 1
+    }
+
+    fun markAsFailed() {
+        jobStatus = JobStatus.FAILED
+        attempts += 1
+        nextRunAt = LocalDateTime.now().plusMinutes(1L)
+    }
 }
 
 
 enum class JobStatus {
     COMPLETED,
     CREATED,
-    FAILED
+    FAILED,
 }
