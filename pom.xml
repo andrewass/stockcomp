@@ -30,6 +30,9 @@
         <flyway.version>11.14.1</flyway.version>
         <loki.logback.version>2.0.1</loki.logback.version>
         <shedlock.version>6.10.0</shedlock.version>
+        <spring.modulith.version>1.4.3</spring.modulith.version>
+        <spring.modulith.test.version>2.0.0-M3</spring.modulith.test.version>
+        <springmockk.version>4.0.2</springmockk.version>
         <skip.ut>false</skip.ut>
     </properties>
 
@@ -63,10 +66,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.modulith</groupId>
-            <artifactId>spring-modulith-starter-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -143,6 +142,7 @@
         <dependency>
             <groupId>org.springframework.modulith</groupId>
             <artifactId>spring-modulith-starter-test</artifactId>
+            <version>${spring.modulith.test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -160,7 +160,7 @@
         <dependency>
             <groupId>com.ninja-squad</groupId>
             <artifactId>springmockk</artifactId>
-            <version>4.0.2</version>
+            <version>${springmockk.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -170,7 +170,7 @@
             <dependency>
                 <groupId>org.springframework.modulith</groupId>
                 <artifactId>spring-modulith-bom</artifactId>
-                <version>1.4.3</version>
+                <version>${spring.modulith.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

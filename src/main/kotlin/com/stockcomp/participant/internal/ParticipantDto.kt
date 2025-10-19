@@ -1,11 +1,11 @@
-package com.stockcomp.participant
+package com.stockcomp.participant.internal
 
 import com.stockcomp.contest.ContestDto
-import com.stockcomp.participant.investment.InvestmentDto
-import com.stockcomp.participant.investment.mapToInvestmentDto
-import com.stockcomp.participant.investmentorder.InvestmentOrderDto
-import com.stockcomp.participant.investmentorder.OrderStatus
-import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
+import com.stockcomp.participant.internal.investment.InvestmentDto
+import com.stockcomp.participant.internal.investment.mapToInvestmentDto
+import com.stockcomp.participant.internal.investmentorder.InvestmentOrderDto
+import com.stockcomp.participant.internal.investmentorder.OrderStatus
+import com.stockcomp.participant.internal.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserDetailsDto
 
 data class CommonParticipantDto(

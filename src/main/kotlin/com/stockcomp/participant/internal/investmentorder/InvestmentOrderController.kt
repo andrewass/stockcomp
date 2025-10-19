@@ -1,4 +1,4 @@
-package com.stockcomp.participant.investmentorder
+package com.stockcomp.participant.internal.investmentorder
 
 import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData

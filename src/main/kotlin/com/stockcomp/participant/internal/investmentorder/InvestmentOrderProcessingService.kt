@@ -1,6 +1,6 @@
-package com.stockcomp.participant.investmentorder
+package com.stockcomp.participant.internal.investmentorder
 
-import com.stockcomp.participant.ParticipantRepository
+import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

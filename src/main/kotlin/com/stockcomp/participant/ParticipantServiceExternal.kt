@@ -1,5 +1,8 @@
 package com.stockcomp.participant
 
+import com.stockcomp.participant.internal.ParticipantService
+import com.stockcomp.participant.internal.UserParticipantDto
+import com.stockcomp.participant.internal.toUserParticipantDto
 import org.springframework.stereotype.Service
 
 @Service

@@ -1,7 +1,7 @@
-package com.stockcomp.participant.investmentorder
+package com.stockcomp.participant.internal.investmentorder
 
 import com.stockcomp.common.BaseEntity
-import com.stockcomp.participant.Participant
+import com.stockcomp.participant.internal.Participant
 import jakarta.persistence.*
 import java.time.LocalDateTime
 

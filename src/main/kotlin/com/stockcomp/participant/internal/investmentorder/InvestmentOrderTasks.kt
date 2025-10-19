@@ -1,7 +1,7 @@
-package com.stockcomp.participant.investmentorder
+package com.stockcomp.participant.internal.investmentorder
 
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.ParticipantService
+import com.stockcomp.participant.internal.ParticipantService
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

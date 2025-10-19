@@ -1,9 +1,9 @@
-package com.stockcomp.participant
+package com.stockcomp.participant.internal
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.investment.mapToInvestmentDto
-import com.stockcomp.participant.investmentorder.mapToInvestmentOrderDto
+import com.stockcomp.participant.internal.investment.mapToInvestmentDto
+import com.stockcomp.participant.internal.investmentorder.mapToInvestmentOrderDto
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
