@@ -1,11 +1,11 @@
 package com.stockcomp.contest
 
-import com.stockcomp.contest.internal.ContestServiceInternal
+import com.stockcomp.contest.internal.ContestService
 import org.springframework.stereotype.Service
 
 @Service
 class ContestServiceExternal(
-    private val contestService: ContestServiceInternal
+    private val contestService: ContestService
 ) {
     fun getContest(contestId: Long): ContestDto =
         toContestDto(contestService.getContest(contestId))

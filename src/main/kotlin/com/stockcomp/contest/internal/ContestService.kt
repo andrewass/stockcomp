@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Service
 @Transactional
-class ContestServiceInternal(
+class ContestService(
     private val contestRepository: ContestRepository
 ) {
 

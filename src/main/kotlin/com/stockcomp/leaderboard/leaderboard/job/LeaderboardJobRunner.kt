@@ -1,5 +1,6 @@
 package com.stockcomp.leaderboard.leaderboard.job
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -13,6 +14,7 @@ class LeaderboardJobRunner(
 
     @Transactional
     @Scheduled(fixedDelay = 5000)
+    @SchedulerLock(name = "lockForLeaderboardJobs")
     fun process() {
         leaderboardJobRepository.fetchNextJobForProcessing(timeLimit = LocalDateTime.now())?.also {
             leaderboardJobProcessService.processJob(it)

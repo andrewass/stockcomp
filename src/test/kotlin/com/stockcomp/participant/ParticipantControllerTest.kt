@@ -92,5 +92,6 @@ class ParticipantControllerTest(
         totalInvestmentValue = 0.00,
         remainingFunds = 0.00,
         participantId = 1L,
+        userId = 10L
     )
 }

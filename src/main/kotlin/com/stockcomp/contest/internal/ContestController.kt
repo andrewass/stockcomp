@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/contests")
 class ContestController(
-    private val contestService: ContestServiceInternal
+    private val contestService: ContestService
 ) : CustomExceptionHandler() {
 
     @GetMapping("/all")

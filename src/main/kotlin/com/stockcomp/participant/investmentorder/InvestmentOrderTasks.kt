@@ -2,6 +2,7 @@ package com.stockcomp.participant.investmentorder
 
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.ParticipantService
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -14,7 +15,8 @@ class InvestmentOrderTasks(
 ) {
     private val logger = LoggerFactory.getLogger(InvestmentOrderTasks::class.java)
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 5000)
+    @SchedulerLock(name = "lockForMaintainInvestmentOrders")
     fun runMaintainInvestmentOrders() {
         try {
             contestService.getActiveContests()
