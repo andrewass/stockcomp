@@ -1,7 +1,7 @@
-package com.stockcomp.leaderboard.leaderboard.job
+package com.stockcomp.leaderboard.internal.job
 
-import com.stockcomp.leaderboard.leaderboard.LeaderboardEntryRepository
-import com.stockcomp.leaderboard.leaderboard.LeaderboardService
+import com.stockcomp.leaderboard.internal.entry.LeaderboardEntryRepository
+import com.stockcomp.leaderboard.internal.LeaderboardService
 import com.stockcomp.participant.ParticipantServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

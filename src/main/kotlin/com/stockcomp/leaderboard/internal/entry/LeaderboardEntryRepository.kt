@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.internal.entry
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

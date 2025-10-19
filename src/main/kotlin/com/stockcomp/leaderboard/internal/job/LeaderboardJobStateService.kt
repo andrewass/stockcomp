@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard.job
+package com.stockcomp.leaderboard.internal.job
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation

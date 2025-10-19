@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard.job
+package com.stockcomp.leaderboard.internal.job
 
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.springframework.scheduling.annotation.Scheduled

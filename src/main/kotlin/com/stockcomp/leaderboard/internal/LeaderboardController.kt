@@ -1,5 +1,9 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.internal
 
+import com.stockcomp.leaderboard.LeaderboardEntryDto
+import com.stockcomp.leaderboard.LeaderboardEntryPageDto
+import com.stockcomp.leaderboard.mapToLeaderboardEntryDto
+import com.stockcomp.leaderboard.mapToLeaderboardEntryPageDto
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*

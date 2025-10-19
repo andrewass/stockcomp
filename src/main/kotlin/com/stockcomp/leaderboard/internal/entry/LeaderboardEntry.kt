@@ -1,7 +1,8 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.internal.entry
 
 import com.stockcomp.common.BaseEntity
-import com.stockcomp.leaderboard.medal.Medal
+import com.stockcomp.leaderboard.internal.medal.Medal
+import com.stockcomp.leaderboard.internal.Leaderboard
 import jakarta.persistence.*
 
 @Entity

@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.medal
+package com.stockcomp.leaderboard.internal.medal
 
 enum class MedalValue(val decode : String) {
     GOLD("Gold"),

@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard.job
+package com.stockcomp.leaderboard.internal.job
 
 import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.JpaRepository

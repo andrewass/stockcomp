@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.internal
 
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments

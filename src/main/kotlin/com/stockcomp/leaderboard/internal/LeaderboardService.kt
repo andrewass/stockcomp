@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.internal
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

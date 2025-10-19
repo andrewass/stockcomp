@@ -1,7 +1,8 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard
 
-import com.stockcomp.leaderboard.medal.MedalDto
-import com.stockcomp.leaderboard.medal.mapToMedalDto
+import com.stockcomp.leaderboard.internal.entry.LeaderboardEntry
+import com.stockcomp.leaderboard.internal.medal.MedalDto
+import com.stockcomp.leaderboard.internal.medal.mapToMedalDto
 import org.springframework.data.domain.Page
 
 data class LeaderboardEntryDto(

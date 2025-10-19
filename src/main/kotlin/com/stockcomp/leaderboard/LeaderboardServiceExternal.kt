@@ -1,6 +1,6 @@
 package com.stockcomp.leaderboard
 
-import com.stockcomp.leaderboard.leaderboard.LeaderboardService
+import com.stockcomp.leaderboard.internal.LeaderboardService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

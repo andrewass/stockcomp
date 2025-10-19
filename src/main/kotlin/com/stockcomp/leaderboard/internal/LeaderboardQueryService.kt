@@ -1,5 +1,7 @@
-package com.stockcomp.leaderboard.leaderboard
+package com.stockcomp.leaderboard.internal
 
+import com.stockcomp.leaderboard.internal.entry.LeaderboardEntry
+import com.stockcomp.leaderboard.internal.entry.LeaderboardEntryRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort

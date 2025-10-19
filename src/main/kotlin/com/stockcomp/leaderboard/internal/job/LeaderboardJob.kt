@@ -1,4 +1,4 @@
-package com.stockcomp.leaderboard.leaderboard.job
+package com.stockcomp.leaderboard.internal.job
 
 import com.stockcomp.common.BaseEntity
 import jakarta.persistence.*
