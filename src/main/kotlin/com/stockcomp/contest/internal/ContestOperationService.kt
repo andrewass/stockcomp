@@ -1,6 +1,5 @@
 package com.stockcomp.contest.internal
 
-import com.stockcomp.leaderboard.LeaderboardServiceExternal
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -8,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ContestOperationService(
     private val contestService: ContestService,
-    private val leaderboardService: LeaderboardServiceExternal
 ) {
     private val logger = LoggerFactory.getLogger(ContestOperationService::class.java)
 
@@ -23,7 +21,6 @@ class ContestOperationService(
                 if (it.shouldStopFinishedContest()) {
                     logger.info("Stopping finished contest ${it.contestId}")
                     it.stopFinishedContest()
-                    leaderboardService.updateLeaderboardEntries(it.contestId!!)
                 }
             }
     }

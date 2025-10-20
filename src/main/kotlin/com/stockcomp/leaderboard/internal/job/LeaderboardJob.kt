@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "T_LEADERBOARD_JOB")
 class LeaderboardJob(
+
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

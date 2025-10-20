@@ -16,6 +16,13 @@ class ContestServiceExternal(
     fun getActiveContests(): List<ContestDto> =
         contestService.getActiveContests().map { toContestDto(it) }
 
+    fun getContestsAwaitingCompletion(): List<ContestDto> =
+        contestService.getContestsAwaitingCompletion().map { toContestDto(it) }
+
     fun isCompletedContest(contestId: Long): Boolean =
         contestService.getContest(contestId).isCompleted()
+
+    fun markContestAsCompleted(contestId: Long) {
+        contestService.markContestAsCompleted(contestId)
+    }
 }

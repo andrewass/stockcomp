@@ -3,6 +3,12 @@ package com.stockcomp.participant.internal
 import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.contest.ContestDto
+import com.stockcomp.participant.CommonParticipantPageDto
+import com.stockcomp.participant.ContestParticipantDto
+import com.stockcomp.participant.DetailedParticipantDto
+import com.stockcomp.participant.HistoricParticipantDto
+import com.stockcomp.participant.mapToHistoricParticipant
+import com.stockcomp.participant.toParticipantPage
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

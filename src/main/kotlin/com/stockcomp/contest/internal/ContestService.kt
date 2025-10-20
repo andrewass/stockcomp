@@ -65,6 +65,11 @@ class ContestService(
     fun findByContestId(contestId: Long): Contest =
         contestRepository.findByContestId(contestId)
 
+    fun markContestAsCompleted(contestId: Long) {
+        contestRepository.findByContestId(contestId)
+            .also { it.contestStatus = COMPLETED }
+    }
+
     fun saveContest(contest: Contest) {
         contestRepository.save(contest)
     }

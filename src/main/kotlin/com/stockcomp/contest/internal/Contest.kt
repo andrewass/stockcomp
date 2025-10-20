@@ -17,12 +17,12 @@ class Contest(
 
     var endTime: LocalDateTime,
 
-    var contestName: String,
+    var contestName: String
+
+) : BaseEntity() {
 
     @Enumerated(EnumType.STRING)
-    var contestStatus: ContestStatus = ContestStatus.AWAITING_START,
-
-    ) : BaseEntity() {
+    var contestStatus: ContestStatus = ContestStatus.AWAITING_START
 
     fun isCompleted(): Boolean =
         contestStatus === ContestStatus.COMPLETED
@@ -40,6 +40,10 @@ class Contest(
 
     fun stopFinishedContest() {
         contestStatus = ContestStatus.AWAITING_COMPLETION
+    }
+
+    fun setContestAsCompleted() {
+        contestStatus = ContestStatus.COMPLETED
     }
 
     override fun equals(other: Any?): Boolean =

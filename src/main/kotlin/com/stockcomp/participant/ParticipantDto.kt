@@ -1,6 +1,7 @@
-package com.stockcomp.participant.internal
+package com.stockcomp.participant
 
 import com.stockcomp.contest.ContestDto
+import com.stockcomp.participant.internal.Participant
 import com.stockcomp.participant.internal.investment.InvestmentDto
 import com.stockcomp.participant.internal.investment.mapToInvestmentDto
 import com.stockcomp.participant.internal.investmentorder.InvestmentOrderDto
