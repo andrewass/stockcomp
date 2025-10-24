@@ -1,10 +1,9 @@
 package com.stockcomp.leaderboard.internal.job
 
-import com.stockcomp.leaderboard.internal.entry.LeaderboardEntryRepository
 import com.stockcomp.leaderboard.internal.LeaderboardService
+import com.stockcomp.leaderboard.internal.entry.LeaderboardEntryRepository
 import com.stockcomp.participant.ParticipantServiceExternal
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LeaderboardJobProcessService(
@@ -14,7 +13,6 @@ class LeaderboardJobProcessService(
     private val participantService: ParticipantServiceExternal,
 ) {
 
-    @Transactional
     fun processJob(job: LeaderboardJob) {
         try {
             leaderboardService.getLeaderboard()

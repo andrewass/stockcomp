@@ -14,6 +14,7 @@ class LeaderboardJobScheduler(
     private val contestService: ContestServiceExternal
 ) {
 
+    @Transactional
     @Scheduled(fixedDelay = 5000)
     @SchedulerLock(name = "lockForProcessLeaderboardJob")
     fun processLeaderboardJob() {
