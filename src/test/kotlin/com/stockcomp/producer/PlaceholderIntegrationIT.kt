@@ -1,14 +1,9 @@
 package com.stockcomp.producer
 
-import com.stockcomp.TestcontainersConfiguration
+import com.stockcomp.util.StockCompIntegrationTest
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.ActiveProfiles
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Import(TestcontainersConfiguration::class)
+@StockCompIntegrationTest
 class PlaceholderIntegrationIT {
 
     @Test
