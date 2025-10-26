@@ -6,14 +6,13 @@ import org.springframework.stereotype.Service
 
 @Service
 class LeaderboardServiceExternal {
-
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
     fun updateLeaderboardEntries(contestId: Long) {
-        //logger.info("Starting update of leaderboard based on contest ${contest.contestId}")
-        //updateLeaderboardEntryValues(contest)
+        // logger.info("Starting update of leaderboard based on contest ${contest.contestId}")
+        // updateLeaderboardEntryValues(contest)
         logger.info("Update of participant score completed")
-        //updateRankingForLeaderboardEntries()
+        // updateRankingForLeaderboardEntries()
         logger.info("Update of each ranking completed")
     }
 
@@ -62,6 +61,5 @@ class LeaderboardServiceExternal {
             else -> null
         }
     }
-    */
-
+     */
 }

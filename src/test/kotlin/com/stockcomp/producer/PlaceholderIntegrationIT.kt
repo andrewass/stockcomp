@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 
 @StockCompIntegrationTest
 class PlaceholderIntegrationIT {
-
     @Test
     fun `application context test`() {
     }

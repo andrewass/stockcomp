@@ -8,20 +8,15 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "T_PARTICIPANT")
 class Participant(
-
     @Id
     @Column(name = "PARTICIPANT_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val participantId: Long? = null,
-
     @Column(name = "USER_ID", nullable = false)
     val userId: Long,
-
     @Column(name = "CONTEST_ID", nullable = false)
     val contestId: Long,
-
-    ) : BaseEntity() {
-
+) : BaseEntity() {
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
     val investmentOrders: MutableList<InvestmentOrder> = mutableListOf()
 
@@ -49,33 +44,39 @@ class Participant(
 
     fun getInvestmentsForSymbol(symbol: String): List<Investment> = investments.filter { it.symbol == symbol }
 
-    fun updateParticipantWhenBuying(amount: Int, symbol: String, currentPrice: Double) {
+    fun updateParticipantWhenBuying(
+        amount: Int,
+        symbol: String,
+        currentPrice: Double,
+    ) {
         val investment = getOrCreateInvestment(symbol)
         investment.updateWhenBuying(amount, currentPrice)
         remainingFunds -= currentPrice * amount
         if (remainingFunds < 0) {
             throw IllegalStateException(
-                "Remaining funds for $participantId is $remainingFunds. This value should never be negative"
+                "Remaining funds for $participantId is $remainingFunds. This value should never be negative",
             )
         }
     }
 
-    fun updateParticipantWhenSelling(amount: Int, symbol: String, currentPrice: Double) {
+    fun updateParticipantWhenSelling(
+        amount: Int,
+        symbol: String,
+        currentPrice: Double,
+    ) {
         val investment = getInvestment(symbol)
         investment.updateWhenSelling(amount)
         remainingFunds += currentPrice * amount
     }
 
-    fun getInvestmentAmount(symbol: String): Int =
-        investments.firstOrNull { it.symbol == symbol }?.amount ?: 0
+    fun getInvestmentAmount(symbol: String): Int = investments.firstOrNull { it.symbol == symbol }?.amount ?: 0
 
     private fun getOrCreateInvestment(symbol: String): Investment =
         investments.firstOrNull { it.symbol == symbol }
             ?: Investment(symbol = symbol, participant = this)
                 .also { investments.add(it) }
 
-    private fun getInvestment(symbol: String): Investment =
-        investments.first { it.symbol == symbol }
+    private fun getInvestment(symbol: String): Investment = investments.first { it.symbol == symbol }
 
     fun updateInvestmentValues() {
         val updatedTotalInvestmentsValue = investments.sumOf { it.totalValue }

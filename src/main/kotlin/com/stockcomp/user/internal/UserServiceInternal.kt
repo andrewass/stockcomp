@@ -8,34 +8,40 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserServiceInternal(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
-
     private val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
 
-    fun getAllUsersSortedByEmail(pageNumber: Int, pageSize: Int): Page<User> =
-        userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("email")))
+    fun getAllUsersSortedByEmail(
+        pageNumber: Int,
+        pageSize: Int,
+    ): Page<User> = userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("email")))
 
     fun findOrCreateUserByEmail(email: String): User = userRepository.findByEmail(email) ?: createUser(email)
 
     fun findUserByEmail(email: String): User =
         userRepository.findByEmail(email) ?: throw IllegalStateException("User with email $email not found")
 
-    fun findUserByUsername(username: String): User =
-        userRepository.findByUsername(username)
+    fun findUserByUsername(username: String): User = userRepository.findByUsername(username)
 
     fun findUsersById(userIds: List<Long>): List<User> = userRepository.findAllById(userIds)
 
     fun findUserById(userId: Long): User =
-        userRepository.findById(userId)
+        userRepository
+            .findById(userId)
             .orElseThrow { IllegalArgumentException("User with id $userId not found") }
 
-    fun updateUser(userId: Long, userDetailsDto: UserDetailsDto) {
-        userRepository.getReferenceById(userId).apply {
-            country = userDetailsDto.country
-            username = userDetailsDto.username
-            fullName = userDetailsDto.fullName
-        }.also { userRepository.save(it) }
+    fun updateUser(
+        userId: Long,
+        userDetailsDto: UserDetailsDto,
+    ) {
+        userRepository
+            .getReferenceById(userId)
+            .apply {
+                country = userDetailsDto.country
+                username = userDetailsDto.username
+                fullName = userDetailsDto.fullName
+            }.also { userRepository.save(it) }
     }
 
     private fun createUser(email: String): User {
@@ -49,6 +55,7 @@ class UserServiceInternal(
     }
 
     private fun generateRandomUsername(): String =
-        (1..15).map { allowedChars.random() }
+        (1..15)
+            .map { allowedChars.random() }
             .joinToString("")
 }

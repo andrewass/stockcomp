@@ -8,17 +8,16 @@ import java.net.URI
 
 @Component("fastfinance.quote.consumer")
 class FastFinanceConsumer(
-    private val webClient: WebClient
+    private val webClient: WebClient,
 ) : QuoteConsumer {
-
     @Value("\${fastfinance.base.url}")
     private lateinit var baseUrl: String
 
-    override fun getCurrentPrice(symbol: String): CurrentPriceSymbolDto {
-        return webClient.get()
+    override fun getCurrentPrice(symbol: String): CurrentPriceSymbolDto =
+        webClient
+            .get()
             .uri(URI("$baseUrl/price/current-price/$symbol"))
             .retrieve()
             .bodyToMono(CurrentPriceSymbolDto::class.java)
             .block()!!
-    }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserServiceExternal(
-    private val userService: UserServiceInternal
+    private val userService: UserServiceInternal,
 ) {
     fun getUserIdByEmail(email: String): Long =
         userService.findOrCreateUserByEmail(email).id
@@ -18,6 +18,5 @@ class UserServiceExternal(
 
     fun getUserRole(email: String): UserRole = userService.findOrCreateUserByEmail(email).userRole
 
-    fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> =
-        userService.findUsersById(userIds).map { toUserDetailsDto(it) }
+    fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> = userService.findUsersById(userIds).map { toUserDetailsDto(it) }
 }

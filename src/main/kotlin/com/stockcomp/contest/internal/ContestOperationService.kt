@@ -12,7 +12,8 @@ class ContestOperationService(
 
     @Transactional
     fun maintainContestStatus() {
-        contestService.getActiveContests()
+        contestService
+            .getActiveContests()
             .forEach {
                 if (it.shouldStartContest()) {
                     logger.info("Starting contest ${it.contestId}")

@@ -19,9 +19,11 @@ class InvestmentTasks(
     @SchedulerLock(name = "lockForMaintainInvestments")
     fun runMaintainInvestments() {
         try {
-            contestService.getActiveContests()
+            contestService
+                .getActiveContests()
                 .forEach { contest ->
-                    participantService.getAllByContest(contest.contestId)
+                    participantService
+                        .getAllByContest(contest.contestId)
                         .forEach { participant ->
                             investmentProcessingService.maintainInvestments(participant.participantId!!)
                         }

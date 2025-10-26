@@ -11,20 +11,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class WebConfiguration(
-    private val userService: UserServiceExternal
-): WebMvcConfigurer {
-
+    private val userService: UserServiceExternal,
+) : WebMvcConfigurer {
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(TokenArgumentResolver(userService))
     }
 
     @Bean
     fun webClient(): WebClient =
-        WebClient.builder()
+        WebClient
+            .builder()
             .codecs { configurer: ClientCodecConfigurer ->
                 configurer
                     .defaultCodecs()
                     .maxInMemorySize(20 * 1024 * 1024)
-            }
-            .build()
+            }.build()
 }

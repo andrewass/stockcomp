@@ -11,14 +11,12 @@ import org.springframework.stereotype.Service
 class LeaderboardQueryService(
     private val leaderboardEntryRepository: LeaderboardEntryRepository,
 ) {
+    fun getSortedLeaderboardEntries(
+        pageNumber: Int,
+        pageSize: Int,
+    ): Page<LeaderboardEntry> = leaderboardEntryRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("ranking")))
 
-    fun getSortedLeaderboardEntries(pageNumber: Int, pageSize: Int): Page<LeaderboardEntry> =
-        leaderboardEntryRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("ranking")))
+    fun getLeaderboardEntryForUser(userId: Long): LeaderboardEntry = leaderboardEntryRepository.findByUserId(userId)
 
-    fun getLeaderboardEntryForUser(userId: Long): LeaderboardEntry =
-        leaderboardEntryRepository.findByUserId(userId)
-
-    fun getLeaderboardentriesByOrderByScore(): List<LeaderboardEntry> =
-        leaderboardEntryRepository.findAllByOrderByScore()
-
+    fun getLeaderboardentriesByOrderByScore(): List<LeaderboardEntry> = leaderboardEntryRepository.findAllByOrderByScore()
 }

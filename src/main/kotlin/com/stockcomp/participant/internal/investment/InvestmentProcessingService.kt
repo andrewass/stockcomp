@@ -11,7 +11,6 @@ class InvestmentProcessingService(
     private val participantRepository: ParticipantRepository,
     private val symbolService: SymbolServiceExternal,
 ) {
-
     fun maintainInvestments(participantId: Long) {
         val participant = participantRepository.findByIdLocked(participantId)
         participant.investments
@@ -23,11 +22,21 @@ class InvestmentProcessingService(
         participantRepository.save(participant)
     }
 
-    fun getInvestmentForSymbol(contestId: Long, userId: Long, symbol: String): Investment? =
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)
-            ?.investments?.firstOrNull { it.symbol == symbol }
+    fun getInvestmentForSymbol(
+        contestId: Long,
+        userId: Long,
+        symbol: String,
+    ): Investment? =
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)
+            ?.investments
+            ?.firstOrNull { it.symbol == symbol }
 
-    fun getInvestmentsForParticipant(contestId: Long, userId: Long): List<Investment> =
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)
+    fun getInvestmentsForParticipant(
+        contestId: Long,
+        userId: Long,
+    ): List<Investment> =
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)
             ?.investments ?: emptyList()
 }

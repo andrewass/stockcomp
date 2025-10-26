@@ -7,17 +7,13 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "T_LEADERBOARD_JOB")
 class LeaderboardJob(
-
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val leaderboardJobId: Long? = null,
-
     @Column(nullable = false)
-    val contestId: Long
-
+    val contestId: Long,
 ) : BaseEntity() {
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private var jobStatus = JobStatus.CREATED
@@ -41,7 +37,6 @@ class LeaderboardJob(
         nextRunAt = LocalDateTime.now().plusMinutes(1L)
     }
 }
-
 
 enum class JobStatus {
     COMPLETED,

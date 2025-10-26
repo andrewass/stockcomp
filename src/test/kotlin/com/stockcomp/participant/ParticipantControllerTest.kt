@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 @Import(SecurityConfiguration::class)
 @WebMvcTest(ParticipantController::class)
 class ParticipantControllerTest(
-    @param:Autowired val mockMvc: MockMvc
+    @param:Autowired val mockMvc: MockMvc,
 ) {
     private val identifier = 123L
     private val basePath = "/participants"
@@ -33,65 +33,72 @@ class ParticipantControllerTest(
     fun `should get participant for given contest`() {
         every { participantService.getParticipant(1, identifier) }
             .returns(Participant(userId = 1L, contestId = 1L))
-        mockMvc.perform(
-            mockMvcGetRequest("$basePath/contest")
-                .queryParam("contestId", "1")
-        ).andExpect(status().isOk)
+        mockMvc
+            .perform(
+                mockMvcGetRequest("$basePath/contest")
+                    .queryParam("contestId", "1"),
+            ).andExpect(status().isOk)
     }
 
     @Test
     fun `should get running participants`() {
         every { participantService.getDetailedParticipantsForSymbol(identifier, "AAPL") }
             .returns(listOf(getDetailedParticipant()))
-        mockMvc.perform(
-            mockMvcGetRequest("$basePath/running-participants")
-                .queryParam("symbol", "AAPL")
-        ).andExpect(status().isOk)
+        mockMvc
+            .perform(
+                mockMvcGetRequest("$basePath/running-participants")
+                    .queryParam("symbol", "AAPL"),
+            ).andExpect(status().isOk)
     }
 
     @Test
     fun `should get sorted participants`() {
         every { participantService.getParticipantsSortedByRank(1, 1, 1) }
             .returns(PageImpl(listOf(Participant(userId = 1L, contestId = 1L))))
-        mockMvc.perform(
-            mockMvcGetRequest("$basePath/sorted")
-                .queryParam("contestId", "1")
-                .queryParam("pageNumber", "1")
-                .queryParam("pageSize", "1")
-        ).andExpect(status().isOk)
+        mockMvc
+            .perform(
+                mockMvcGetRequest("$basePath/sorted")
+                    .queryParam("contestId", "1")
+                    .queryParam("pageNumber", "1")
+                    .queryParam("pageSize", "1"),
+            ).andExpect(status().isOk)
     }
 
     @Test
     fun `should get participant history for user`() {
         every { participantService.getParticipantHistory("testUser") }
             .returns(listOf(Participant(contestId = 1L, userId = 1L)))
-        mockMvc.perform(
-            mockMvcGetRequest("$basePath/history")
-                .queryParam("username", "testUser")
-        ).andExpect(status().isOk)
+        mockMvc
+            .perform(
+                mockMvcGetRequest("$basePath/history")
+                    .queryParam("username", "testUser"),
+            ).andExpect(status().isOk)
     }
 
-    private fun getDetailedParticipant() = DetailedParticipantDto(
-        activeOrders = emptyList(),
-        completedOrders = emptyList(),
-        investments = emptyList(),
-        participant = getUserParticipantDto(),
-        contest = getContestDto()
-    )
+    private fun getDetailedParticipant() =
+        DetailedParticipantDto(
+            activeOrders = emptyList(),
+            completedOrders = emptyList(),
+            investments = emptyList(),
+            participant = getUserParticipantDto(),
+            contest = getContestDto(),
+        )
 
-    private fun getContestDto() = ContestDto(
-        contestId = 1L,
-        contestName = "Test Contest",
-        startTime = LocalDateTime.now(),
-        endTime = LocalDateTime.now(),
-        contestStatus = ContestStatus.AWAITING_START
-    )
+    private fun getContestDto() =
+        ContestDto(
+            contestId = 1L,
+            contestName = "Test Contest",
+            startTime = LocalDateTime.now(),
+            endTime = LocalDateTime.now(),
+            contestStatus = ContestStatus.AWAITING_START,
+        )
 
-    private fun getUserParticipantDto() = UserParticipantDto(
-        totalValue = 0.00,
-        totalInvestmentValue = 0.00,
-        remainingFunds = 0.00,
-        participantId = 1L,
-        userId = 10L
-    )
+    private fun getUserParticipantDto() =
+        UserParticipantDto(
+            totalValue = 0.00,
+            totalInvestmentValue = 0.00,
+            remainingFunds = 0.00,
+            participantId = 1L,
+            userId = 10L,
+        )
 }

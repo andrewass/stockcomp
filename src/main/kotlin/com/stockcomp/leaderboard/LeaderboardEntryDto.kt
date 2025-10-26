@@ -9,12 +9,12 @@ data class LeaderboardEntryDto(
     val ranking: Int,
     val score: Int,
     val contestCount: Int,
-    val medals: List<MedalDto>
+    val medals: List<MedalDto>,
 )
 
 data class LeaderboardEntryPageDto(
     val entries: List<LeaderboardEntryDto>,
-    val totalEntriesCount: Long
+    val totalEntriesCount: Long,
 )
 
 fun mapToLeaderboardEntryDto(src: LeaderboardEntry) =
@@ -22,11 +22,11 @@ fun mapToLeaderboardEntryDto(src: LeaderboardEntry) =
         ranking = src.ranking,
         contestCount = src.contestCount,
         score = src.score,
-        medals = src.medals.map { mapToMedalDto(it) }
+        medals = src.medals.map { mapToMedalDto(it) },
     )
 
 fun mapToLeaderboardEntryPageDto(pageEntry: Page<LeaderboardEntry>) =
     LeaderboardEntryPageDto(
         entries = pageEntry.get().map { mapToLeaderboardEntryDto(it) }.toList(),
-        totalEntriesCount = pageEntry.totalElements
+        totalEntriesCount = pageEntry.totalElements,
     )

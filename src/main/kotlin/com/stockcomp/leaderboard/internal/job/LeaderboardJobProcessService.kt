@@ -12,7 +12,6 @@ class LeaderboardJobProcessService(
     private val leaderboardService: LeaderboardService,
     private val participantService: ParticipantServiceExternal,
 ) {
-
     fun processJob(job: LeaderboardJob) {
         try {
             leaderboardService.getLeaderboard()

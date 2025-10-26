@@ -11,14 +11,16 @@ import java.time.LocalDateTime
 @Service
 @Transactional
 class ContestService(
-    private val contestRepository: ContestRepository
+    private val contestRepository: ContestRepository,
 ) {
-
-    fun createContest(contestName: String, startTime: LocalDateTime) {
+    fun createContest(
+        contestName: String,
+        startTime: LocalDateTime,
+    ) {
         Contest(
             contestName = contestName,
             startTime = startTime,
-            endTime = startTime.plusMonths(2)
+            endTime = startTime.plusMonths(2),
         ).also { contestRepository.save(it) }
     }
 
@@ -32,41 +34,41 @@ class ContestService(
         contestId: Long,
         contestName: String,
         contestStatus: ContestStatus,
-        startTime: LocalDateTime
+        startTime: LocalDateTime,
     ) {
-        contestRepository.findByContestId(contestId).apply {
-            this.contestStatus = contestStatus
-            this.contestName = contestName
-            this.startTime = startTime
-            endTime = this.startTime.plusMonths(2)
-        }.also { contestRepository.save(it) }
+        contestRepository
+            .findByContestId(contestId)
+            .apply {
+                this.contestStatus = contestStatus
+                this.contestName = contestName
+                this.startTime = startTime
+                endTime = this.startTime.plusMonths(2)
+            }.also { contestRepository.save(it) }
     }
 
     fun getActiveContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(
-            listOf(RUNNING, STOPPED, AWAITING_START)
+            listOf(RUNNING, STOPPED, AWAITING_START),
         )
 
-    fun existsActiveContest(): Boolean =
-        contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
+    fun existsActiveContest(): Boolean = contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
 
-    fun getRunningContests(): List<Contest> =
-        contestRepository.findAllByContestStatusIn(listOf(RUNNING))
+    fun getRunningContests(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(RUNNING))
 
-    fun getCompletedContests(): List<Contest> =
-        contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
+    fun getCompletedContests(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
 
-    fun getContestsAwaitingCompletion(): List<Contest> =
-        contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
+    fun getContestsAwaitingCompletion(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
 
-    fun getAllContestsSorted(pageNumber: Int, pageSize: Int): Page<Contest> =
-        contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestId")))
+    fun getAllContestsSorted(
+        pageNumber: Int,
+        pageSize: Int,
+    ): Page<Contest> = contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestId")))
 
-    fun findByContestId(contestId: Long): Contest =
-        contestRepository.findByContestId(contestId)
+    fun findByContestId(contestId: Long): Contest = contestRepository.findByContestId(contestId)
 
     fun markContestAsCompleted(contestId: Long) {
-        contestRepository.findByContestId(contestId)
+        contestRepository
+            .findByContestId(contestId)
             .also { it.contestStatus = COMPLETED }
     }
 

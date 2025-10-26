@@ -10,14 +10,19 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ParticipantRepository : JpaRepository<Participant, Long> {
-
     fun findByParticipantId(participantId: Long): Participant
 
-    fun findByUserIdAndContestId(userId: Long, contestId: Long): Participant?
+    fun findByUserIdAndContestId(
+        userId: Long,
+        contestId: Long,
+    ): Participant?
 
     fun findAllByContestId(contestId: Long): List<Participant>
 
-    fun existsByUserIdAndContestId(userId: Long, contestId: Long): Boolean
+    fun existsByUserIdAndContestId(
+        userId: Long,
+        contestId: Long,
+    ): Boolean
 
     fun countByContestId(contestId: Long): Long
 
@@ -25,7 +30,10 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
     @Query("SELECT p FROM Participant p where p.participantId = ?1")
     fun findByIdLocked(participantId: Long): Participant
 
-    fun findAllByContestId(contestId: Long, pageable: Pageable): Page<Participant>
+    fun findAllByContestId(
+        contestId: Long,
+        pageable: Pageable,
+    ): Page<Participant>
 
     fun findAllByUserId(userId: Long): List<Participant>
 }

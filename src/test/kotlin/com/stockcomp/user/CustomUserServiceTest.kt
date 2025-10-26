@@ -14,7 +14,6 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class CustomUserServiceTest {
-
     @MockK
     private lateinit var userRepository: UserRepository
 

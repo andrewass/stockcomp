@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ContestTasksRunner(
-    private val contestOperationService: ContestOperationService
+    private val contestOperationService: ContestOperationService,
 ) {
-
     @Scheduled(fixedRate = 30000)
     @SchedulerLock(name = "lockForMaintainContests")
     fun runMaintainContests() {

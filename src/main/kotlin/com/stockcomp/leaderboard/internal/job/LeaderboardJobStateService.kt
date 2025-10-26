@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 class LeaderboardJobStateService(
     private val leaderboardJobRepository: LeaderboardJobRepository,
 ) {
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun markAsCompleted(job: LeaderboardJob) {
         job.markAsCompleted()

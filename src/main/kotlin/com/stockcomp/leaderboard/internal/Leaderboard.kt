@@ -7,13 +7,10 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "T_LEADERBOARD")
 class Leaderboard(
-
     @Id
     @Column(name = "LEADERBOARD_ID", nullable = false)
     val leaderboardId: Long? = null,
-
-    ) : BaseEntity() {
-
+) : BaseEntity() {
     @OneToMany(mappedBy = "leaderboard", cascade = [CascadeType.ALL])
     private val entries: MutableList<LeaderboardEntry> = mutableListOf()
 
@@ -29,11 +26,9 @@ class Leaderboard(
     }
 
     fun recalculateRankings() {
-
     }
 
     private fun incrementContestCount() {
         contestCount += 1
     }
-
 }

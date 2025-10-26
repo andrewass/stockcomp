@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class InvestmentOrderTasks(
     private val investmentOrderProcessingService: InvestmentOrderProcessingService,
     private val participantService: ParticipantService,
-    private val contestService: ContestServiceExternal
+    private val contestService: ContestServiceExternal,
 ) {
     private val logger = LoggerFactory.getLogger(InvestmentOrderTasks::class.java)
 
@@ -19,9 +19,11 @@ class InvestmentOrderTasks(
     @SchedulerLock(name = "lockForMaintainInvestmentOrders")
     fun runMaintainInvestmentOrders() {
         try {
-            contestService.getActiveContests()
+            contestService
+                .getActiveContests()
                 .forEach {
-                    participantService.getAllByContest(it.contestId)
+                    participantService
+                        .getAllByContest(it.contestId)
                         .forEach { participant ->
                             investmentOrderProcessingService.processInvestmentOrders(participant.participantId!!)
                         }

@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class LeaderboardInitializer(
-    private val leaderboardRepository: LeaderboardRepository
+    private val leaderboardRepository: LeaderboardRepository,
 ) : ApplicationRunner {
-
     private val leaderboardId = 1L
     private val logger = LoggerFactory.getLogger(ApplicationRunner::class.java)
 

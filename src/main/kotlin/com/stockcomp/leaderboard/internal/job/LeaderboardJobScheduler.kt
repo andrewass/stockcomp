@@ -11,9 +11,8 @@ import java.time.LocalDateTime
 class LeaderboardJobScheduler(
     private val leaderboardJobRepository: LeaderboardJobRepository,
     private val leaderboardJobProcessService: LeaderboardJobProcessService,
-    private val contestService: ContestServiceExternal
+    private val contestService: ContestServiceExternal,
 ) {
-
     @Transactional
     @Scheduled(fixedDelay = 5000)
     @SchedulerLock(name = "lockForProcessLeaderboardJob")

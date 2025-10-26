@@ -11,11 +11,11 @@ class InvestmentOrderProcessingService(
     private val symbolService: SymbolServiceExternal,
     private val participantRepository: ParticipantRepository,
 ) {
-
     @Transactional
     fun processInvestmentOrders(participantId: Long) {
         val participant = participantRepository.findByIdLocked(participantId)
-        participant.getActiveInvestmentOrders()
+        participant
+            .getActiveInvestmentOrders()
             .forEach {
                 val currentPrice = symbolService.getCurrentPrice(it.symbol)
                 it.processOrder(currentPrice.currentPrice)
@@ -41,32 +41,55 @@ class InvestmentOrderProcessingService(
             expirationTime = expirationTime,
             symbol = symbol,
             totalAmount = amount,
-            transactionType = transactionType
+            transactionType = transactionType,
         ).also { participant.addInvestmentOrder(it) }
     }
 
     @Transactional
-    fun deleteInvestmentOrder(userId: Long, orderId: Long, contestId: Long) {
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)!!
+    fun deleteInvestmentOrder(
+        userId: Long,
+        orderId: Long,
+        contestId: Long,
+    ) {
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)!!
             .also { it.removeInvestmentOrder(orderId) }
     }
 
-    fun getActiveOrders(contestId: Long, userId: Long): List<InvestmentOrder> =
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)
+    fun getActiveOrders(
+        contestId: Long,
+        userId: Long,
+    ): List<InvestmentOrder> =
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)
             ?.getActiveInvestmentOrders() ?: emptyList()
 
-    fun getCompletedOrders(contestId: Long, userId: Long): List<InvestmentOrder> =
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)
+    fun getCompletedOrders(
+        contestId: Long,
+        userId: Long,
+    ): List<InvestmentOrder> =
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)
             ?.getCompletedInvestmentOrders() ?: emptyList()
 
-    fun getActiveOrdersSymbol(symbol: String, contestId: Long, userId: Long): List<InvestmentOrder> =
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)
+    fun getActiveOrdersSymbol(
+        symbol: String,
+        contestId: Long,
+        userId: Long,
+    ): List<InvestmentOrder> =
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)
             ?.getActiveInvestmentOrders()
             ?.filter { it.symbol == symbol }
             ?: emptyList()
 
-    fun getCompletedOrdersSymbol(symbol: String, contestId: Long, userId: Long): List<InvestmentOrder> =
-        participantRepository.findByUserIdAndContestId(contestId = contestId, userId = userId)
+    fun getCompletedOrdersSymbol(
+        symbol: String,
+        contestId: Long,
+        userId: Long,
+    ): List<InvestmentOrder> =
+        participantRepository
+            .findByUserIdAndContestId(contestId = contestId, userId = userId)
             ?.getCompletedInvestmentOrders()
             ?.filter { it.symbol == symbol }
             ?: emptyList()

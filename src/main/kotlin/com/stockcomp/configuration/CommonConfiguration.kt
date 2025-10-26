@@ -12,7 +12,6 @@ import javax.sql.DataSource
 
 @Configuration
 class CommonConfiguration {
-
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
@@ -20,12 +19,12 @@ class CommonConfiguration {
     fun simpleMeterRegistry() = SimpleMeterRegistry()
 
     @Bean
-    fun lockProvider(dataSource: DataSource): LockProvider {
-        return JdbcTemplateLockProvider(
-            JdbcTemplateLockProvider.Configuration.builder()
+    fun lockProvider(dataSource: DataSource): LockProvider =
+        JdbcTemplateLockProvider(
+            JdbcTemplateLockProvider.Configuration
+                .builder()
                 .withJdbcTemplate(JdbcTemplate(dataSource))
                 .usingDbTime()
-                .build()
+                .build(),
         )
-    }
 }

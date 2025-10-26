@@ -1,6 +1,8 @@
 package com.stockcomp.participant.internal.investmentorder
 
-enum class TransactionType(val decode : String) {
+enum class TransactionType(
+    val decode: String,
+) {
     SELL("Sell"),
-    BUY("Buy")
+    BUY("Buy"),
 }

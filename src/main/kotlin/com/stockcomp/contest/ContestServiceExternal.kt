@@ -5,22 +5,17 @@ import org.springframework.stereotype.Service
 
 @Service
 class ContestServiceExternal(
-    private val contestService: ContestService
+    private val contestService: ContestService,
 ) {
-    fun getContest(contestId: Long): ContestDto =
-        toContestDto(contestService.getContest(contestId))
+    fun getContest(contestId: Long): ContestDto = toContestDto(contestService.getContest(contestId))
 
-    fun getRunningContests(): List<ContestDto> =
-        contestService.getRunningContests().map { toContestDto(it) }
+    fun getRunningContests(): List<ContestDto> = contestService.getRunningContests().map { toContestDto(it) }
 
-    fun getActiveContests(): List<ContestDto> =
-        contestService.getActiveContests().map { toContestDto(it) }
+    fun getActiveContests(): List<ContestDto> = contestService.getActiveContests().map { toContestDto(it) }
 
-    fun getContestsAwaitingCompletion(): List<ContestDto> =
-        contestService.getContestsAwaitingCompletion().map { toContestDto(it) }
+    fun getContestsAwaitingCompletion(): List<ContestDto> = contestService.getContestsAwaitingCompletion().map { toContestDto(it) }
 
-    fun isCompletedContest(contestId: Long): Boolean =
-        contestService.getContest(contestId).isCompleted()
+    fun isCompletedContest(contestId: Long): Boolean = contestService.getContest(contestId).isCompleted()
 
     fun markContestAsCompleted(contestId: Long) {
         contestService.markContestAsCompleted(contestId)

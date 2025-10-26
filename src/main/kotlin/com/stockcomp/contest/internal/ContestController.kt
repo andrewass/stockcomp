@@ -14,15 +14,15 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/contests")
 class ContestController(
-    private val contestService: ContestService
+    private val contestService: ContestService,
 ) : CustomExceptionHandler() {
-
     @GetMapping("/all")
     fun getAllContestsSortedByContestId(
         @RequestParam pageNumber: Int,
-        @RequestParam pageSize: Int
+        @RequestParam pageSize: Int,
     ): ResponseEntity<ContestPageDto> =
-        contestService.getAllContestsSorted(pageNumber, pageSize)
+        contestService
+            .getAllContestsSorted(pageNumber, pageSize)
             .let { ResponseEntity.ok(mapToContestPageDto(it)) }
 
     @GetMapping("/exists-active")
@@ -31,29 +31,42 @@ class ContestController(
 
     @GetMapping("/active")
     fun getActiveContests(): ResponseEntity<ContestsResponse> =
-        contestService.getActiveContests()
+        contestService
+            .getActiveContests()
             .map { toContestDto(it) }
             .let { ResponseEntity.ok(ContestsResponse(it)) }
 
     @GetMapping("/{contestId}")
-    fun getContest(@PathVariable contestId: Long): ResponseEntity<ContestDto> =
-        contestService.findByContestId(contestId)
+    fun getContest(
+        @PathVariable contestId: Long,
+    ): ResponseEntity<ContestDto> =
+        contestService
+            .findByContestId(contestId)
             .let { ResponseEntity.ok(toContestDto(it)) }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    fun createContest(@RequestBody request: CreateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.createContest(contestName = request.contestName, startTime = request.startTime)
+    fun createContest(
+        @RequestBody request: CreateContestRequest,
+    ): ResponseEntity<HttpStatus> =
+        contestService
+            .createContest(contestName = request.contestName, startTime = request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
     @PatchMapping("/update")
-    fun updateContest(@RequestBody request: UpdateContestRequest): ResponseEntity<HttpStatus> =
-        contestService.updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)
+    fun updateContest(
+        @RequestBody request: UpdateContestRequest,
+    ): ResponseEntity<HttpStatus> =
+        contestService
+            .updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)
             .let { ResponseEntity(HttpStatus.OK) }
 
     @DeleteMapping("/{contestId}")
-    fun deleteContest(@PathVariable contestId: Long): ResponseEntity<HttpStatus> =
-        contestService.deleteContest(contestId)
+    fun deleteContest(
+        @PathVariable contestId: Long,
+    ): ResponseEntity<HttpStatus> =
+        contestService
+            .deleteContest(contestId)
             .let { ResponseEntity(HttpStatus.OK) }
 
     data class CreateContestRequest(
@@ -66,14 +79,14 @@ class ContestController(
         val startTime: LocalDateTime,
         val contestId: Long,
         val contestName: String,
-        val contestStatus: ContestStatus
+        val contestStatus: ContestStatus,
     )
 
     data class ExistsActiveContestResponse(
-        val existsActiveContests: Boolean
+        val existsActiveContests: Boolean,
     )
 
     data class ContestsResponse(
-        val contests: List<ContestDto>
+        val contests: List<ContestDto>,
     )
 }

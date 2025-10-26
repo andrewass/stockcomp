@@ -10,7 +10,6 @@ import java.time.LocalDateTime
 
 @Repository
 interface LeaderboardJobRepository : JpaRepository<LeaderboardJob, Long> {
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
         """
@@ -19,7 +18,9 @@ interface LeaderboardJobRepository : JpaRepository<LeaderboardJob, Long> {
           AND j.nextRunAt <= :timeLimit
           ORDER BY j.nextRunAt
           LIMIT 1
-    """
+    """,
     )
-    fun fetchNextJobForProcessing(@Param("timeLimit") timeLimit: LocalDateTime): LeaderboardJob?
+    fun fetchNextJobForProcessing(
+        @Param("timeLimit") timeLimit: LocalDateTime,
+    ): LeaderboardJob?
 }

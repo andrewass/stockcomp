@@ -11,10 +11,10 @@ data class InvestmentOrderDto(
     val currency: String,
     val expirationTime: LocalDateTime,
     val transactionType: TransactionType,
-    val orderStatus: OrderStatus
+    val orderStatus: OrderStatus,
 )
 
-fun mapToInvestmentOrderDto(source : InvestmentOrder) =
+fun mapToInvestmentOrderDto(source: InvestmentOrder) =
     InvestmentOrderDto(
         orderId = source.orderId,
         symbol = source.symbol,
@@ -24,5 +24,5 @@ fun mapToInvestmentOrderDto(source : InvestmentOrder) =
         orderStatus = source.orderStatus,
         remainingAmount = source.remainingAmount,
         totalAmount = source.totalAmount,
-        transactionType = source.transactionType
+        transactionType = source.transactionType,
     )

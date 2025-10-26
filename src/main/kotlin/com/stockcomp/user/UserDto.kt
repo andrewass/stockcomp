@@ -9,7 +9,7 @@ data class UserDto(
     val username: String,
     val email: String,
     val userStatus: UserStatus,
-    val userRole: UserRole
+    val userRole: UserRole,
 )
 
 data class UserDetailsDto(
@@ -21,20 +21,21 @@ data class UserDetailsDto(
 
 data class UserPageDto(
     val users: List<UserDto>,
-    val totalEntriesCount: Long
+    val totalEntriesCount: Long,
 )
 
-fun mapToUserPageDto(source: Page<User>) = UserPageDto(
-    users = source.get().map { mapToUserDto(it) }.toList(),
-    totalEntriesCount = source.totalElements
-)
+fun mapToUserPageDto(source: Page<User>) =
+    UserPageDto(
+        users = source.get().map { mapToUserDto(it) }.toList(),
+        totalEntriesCount = source.totalElements,
+    )
 
 fun mapToUserDto(src: User) =
     UserDto(
         username = src.username,
         email = src.email,
         userRole = src.userRole,
-        userStatus = src.userStatus
+        userStatus = src.userStatus,
     )
 
 fun toUserDetailsDto(user: User) =

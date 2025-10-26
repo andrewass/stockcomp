@@ -14,20 +14,19 @@ import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
 class TokenArgumentResolver(
-    private val userService: UserServiceExternal
+    private val userService: UserServiceExternal,
 ) : HandlerMethodArgumentResolver {
-
-    override fun supportsParameter(parameter: MethodParameter): Boolean =
-        parameter.getParameterAnnotation(TokenData::class.java) != null
+    override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.getParameterAnnotation(TokenData::class.java) != null
 
     override fun resolveArgument(
         parameter: MethodParameter,
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
-        binderFactory: WebDataBinderFactory?
+        binderFactory: WebDataBinderFactory?,
     ): Any {
-        val email = (SecurityContextHolder.getContext().authentication.credentials as ClaimAccessor)
-            .getClaimAsString("email")
+        val email =
+            (SecurityContextHolder.getContext().authentication.credentials as ClaimAccessor)
+                .getClaimAsString("email")
 
         return TokenClaims(userId = userService.getUserIdByEmail(email))
     }

@@ -9,14 +9,11 @@ import java.time.LocalDateTime
 
 @MappedSuperclass
 open class BaseEntity(
-
     @CreationTimestamp
     @Column(updatable = false)
     protected var dateCreated: LocalDateTime? = null,
-
     @UpdateTimestamp
     protected var dateUpdated: LocalDateTime? = null,
-
     @Version
     protected var version: Long? = null,
 )

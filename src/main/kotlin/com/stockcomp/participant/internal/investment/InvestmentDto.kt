@@ -5,7 +5,7 @@ data class InvestmentDto(
     val amount: Int,
     val averageUnitCost: Double,
     val totalProfit: Double,
-    val totalValue: Double
+    val totalValue: Double,
 )
 
 fun mapToInvestmentDto(source: Investment) =
@@ -14,5 +14,5 @@ fun mapToInvestmentDto(source: Investment) =
         averageUnitCost = source.averageUnitCost,
         symbol = source.symbol,
         totalProfit = source.totalProfit,
-        totalValue = source.totalValue
+        totalValue = source.totalValue,
     )

@@ -12,28 +12,31 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/participants/investments")
 class InvestmentController(
-    private val investmentService: InvestmentProcessingService
+    private val investmentService: InvestmentProcessingService,
 ) {
-
     @GetMapping("/all")
     fun getAllFromContest(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam contestId: Long
+        @RequestParam contestId: Long,
     ): ResponseEntity<List<InvestmentDto>> =
-        investmentService.getInvestmentsForParticipant(
-            contestId = contestId, userId = tokenClaims.userId
-        )
-            .map { mapToInvestmentDto(it) }
+        investmentService
+            .getInvestmentsForParticipant(
+                contestId = contestId,
+                userId = tokenClaims.userId,
+            ).map { mapToInvestmentDto(it) }
             .let { ResponseEntity.ok(it) }
 
     @GetMapping
     fun getInvestmentBySymbolAndContest(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam symbol: String,
-        @RequestParam contestId: Long
+        @RequestParam contestId: Long,
     ): ResponseEntity<InvestmentDto?> =
-        investmentService.getInvestmentForSymbol(
-            contestId = contestId, symbol = symbol, userId = tokenClaims.userId
-        )?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
+        investmentService
+            .getInvestmentForSymbol(
+                contestId = contestId,
+                symbol = symbol,
+                userId = tokenClaims.userId,
+            )?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
             ?: ResponseEntity(HttpStatus.OK)
 }

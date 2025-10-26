@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 class LeaderboardService(
     private val leaderboardRepository: LeaderboardRepository,
 ) {
-
     fun updateLeaderboard(contestId: Long) {
     }
 
