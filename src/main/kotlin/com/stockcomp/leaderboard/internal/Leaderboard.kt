@@ -2,7 +2,12 @@ package com.stockcomp.leaderboard.internal
 
 import com.stockcomp.common.BaseEntity
 import com.stockcomp.leaderboard.internal.entry.LeaderboardEntry
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "T_LEADERBOARD")
