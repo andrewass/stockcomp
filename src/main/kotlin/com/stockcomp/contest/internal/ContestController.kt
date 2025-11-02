@@ -61,44 +61,45 @@ class ContestController(
             .createContest(
                 contestName = request.contestName,
                 startTime = request.startTime,
-                durationDays = request.durationDays
-            )
-            .let { ResponseEntity.ok(toContestDto(it)) }
+                durationDays = request.durationDays,
+            ).let { ResponseEntity.ok(toContestDto(it)) }
 
     @PatchMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     fun updateContest(
         @RequestBody request: UpdateContestRequest,
-    ): ResponseEntity<HttpStatus> =
+    ): ResponseEntity<ContestDto> =
         contestService
             .updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)
-            .let { ResponseEntity(HttpStatus.OK) }
+            .let { ResponseEntity.ok(toContestDto(it)) }
 
     @DeleteMapping("/{contestId}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun deleteContest(
         @PathVariable contestId: Long,
     ): ResponseEntity<HttpStatus> =
         contestService
             .deleteContest(contestId)
             .let { ResponseEntity(HttpStatus.OK) }
-
-    data class CreateContestRequest(
-        val contestName: String,
-        val startTime: LocalDateTime,
-        val durationDays: Long,
-    )
-
-    data class UpdateContestRequest(
-        val startTime: LocalDateTime,
-        val contestId: Long,
-        val contestName: String,
-        val contestStatus: ContestStatus,
-    )
-
-    data class ExistsActiveContestResponse(
-        val existsActiveContests: Boolean,
-    )
-
-    data class ContestsResponse(
-        val contests: List<ContestDto>,
-    )
 }
+
+data class CreateContestRequest(
+    val contestName: String,
+    val startTime: LocalDateTime,
+    val durationDays: Long,
+)
+
+data class UpdateContestRequest(
+    val contestId: Long,
+    val startTime: LocalDateTime? = null,
+    val contestName: String? = null,
+    val contestStatus: ContestStatus? = null,
+)
+
+data class ExistsActiveContestResponse(
+    val existsActiveContests: Boolean,
+)
+
+data class ContestsResponse(
+    val contests: List<ContestDto>,
+)

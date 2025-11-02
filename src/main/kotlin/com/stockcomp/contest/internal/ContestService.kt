@@ -20,7 +20,7 @@ class ContestService(
     fun createContest(
         contestName: String,
         startTime: LocalDateTime,
-        durationDays: Long
+        durationDays: Long,
     ): Contest =
         Contest(
             contestName = contestName,
@@ -36,34 +36,29 @@ class ContestService(
 
     fun updateContest(
         contestId: Long,
-        contestName: String,
-        contestStatus: ContestStatus,
-        startTime: LocalDateTime,
-    ) {
+        contestName: String?,
+        contestStatus: ContestStatus?,
+        startTime: LocalDateTime?,
+    ): Contest =
         contestRepository
             .findByContestId(contestId)
             .apply {
-                this.contestStatus = contestStatus
-                this.contestName = contestName
-                this.startTime = startTime
-                endTime = this.startTime.plusMonths(2)
+                this.contestStatus = contestStatus ?: this.contestStatus
+                this.contestName = contestName ?: this.contestName
+                this.startTime = startTime ?: this.startTime
+                endTime = this.startTime.plusDays(30)
             }.also { contestRepository.save(it) }
-    }
 
     fun getActiveContests(): List<Contest> =
         contestRepository.findAllByContestStatusIn(
             listOf(RUNNING, STOPPED, AWAITING_START),
         )
 
-    fun existsActiveContest(): Boolean =
-        contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
+    fun existsActiveContest(): Boolean = contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
 
     fun getRunningContests(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(RUNNING))
 
-    fun getCompletedContests(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
-
-    fun getContestsAwaitingCompletion(): List<Contest> =
-        contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
+    fun getContestsAwaitingCompletion(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
 
     fun getAllContestsSorted(
         pageNumber: Int,
@@ -76,9 +71,5 @@ class ContestService(
         contestRepository
             .findByContestId(contestId)
             .also { it.contestStatus = COMPLETED }
-    }
-
-    fun saveContest(contest: Contest) {
-        contestRepository.save(contest)
     }
 }
