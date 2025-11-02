@@ -56,10 +56,14 @@ class ContestController(
     @PreAuthorize("hasRole('ADMIN')")
     fun createContest(
         @RequestBody request: CreateContestRequest,
-    ): ResponseEntity<HttpStatus> =
+    ): ResponseEntity<ContestDto> =
         contestService
-            .createContest(contestName = request.contestName, startTime = request.startTime)
-            .let { ResponseEntity(HttpStatus.OK) }
+            .createContest(
+                contestName = request.contestName,
+                startTime = request.startTime,
+                durationDays = request.durationDays
+            )
+            .let { ResponseEntity.ok(toContestDto(it)) }
 
     @PatchMapping("/update")
     fun updateContest(
@@ -80,7 +84,7 @@ class ContestController(
     data class CreateContestRequest(
         val contestName: String,
         val startTime: LocalDateTime,
-        val duration: Int,
+        val durationDays: Long,
     )
 
     data class UpdateContestRequest(

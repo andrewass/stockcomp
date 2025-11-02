@@ -7,7 +7,7 @@ import com.stockcomp.contest.internal.ContestStatus
 import com.stockcomp.participant.internal.Participant
 import com.stockcomp.participant.internal.ParticipantController
 import com.stockcomp.participant.internal.ParticipantService
-import com.stockcomp.util.mockMvcGetRequest
+import com.stockcomp.configuration.mockMvcGetRequest
 import io.mockk.every
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

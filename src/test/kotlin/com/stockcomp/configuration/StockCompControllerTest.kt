@@ -1,6 +1,5 @@
-package com.stockcomp.util
+package com.stockcomp.configuration
 
-import com.stockcomp.TestcontainersConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
@@ -9,4 +8,4 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 @Target(AnnotationTarget.CLASS)
 @Import(TestcontainersConfiguration::class)
-annotation class StockCompIntegrationTest
+annotation class ControllerIntegrationTest

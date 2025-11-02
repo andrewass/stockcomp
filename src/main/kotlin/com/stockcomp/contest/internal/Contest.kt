@@ -27,11 +27,12 @@ class Contest(
 
     fun isCompleted(): Boolean = contestStatus === ContestStatus.COMPLETED
 
-    fun shouldStartContest(): Boolean = contestStatus == ContestStatus.AWAITING_START && startTime.isBefore(LocalDateTime.now())
+    fun shouldStartContest(): Boolean =
+        contestStatus == ContestStatus.AWAITING_START && startTime.isBefore(LocalDateTime.now())
 
     fun shouldStopFinishedContest(): Boolean =
         setOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START).contains(contestStatus) &&
-            endTime.isBefore(LocalDateTime.now())
+                endTime.isBefore(LocalDateTime.now())
 
     fun startContest() {
         contestStatus = ContestStatus.RUNNING
@@ -47,5 +48,5 @@ class Contest(
 
     override fun equals(other: Any?): Boolean = other is Contest && other.contestName == contestName
 
-    override fun hashCode(): Int = contestName.toInt()
+    override fun hashCode(): Int = contestName.hashCode()
 }

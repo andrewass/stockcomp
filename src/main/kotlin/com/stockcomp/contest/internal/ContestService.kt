@@ -20,13 +20,13 @@ class ContestService(
     fun createContest(
         contestName: String,
         startTime: LocalDateTime,
-    ) {
+        durationDays: Long
+    ): Contest =
         Contest(
             contestName = contestName,
             startTime = startTime,
-            endTime = startTime.plusMonths(2),
+            endTime = startTime.plusDays(durationDays),
         ).also { contestRepository.save(it) }
-    }
 
     fun getContest(contestId: Long): Contest = contestRepository.getReferenceById(contestId)
 
@@ -55,13 +55,15 @@ class ContestService(
             listOf(RUNNING, STOPPED, AWAITING_START),
         )
 
-    fun existsActiveContest(): Boolean = contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
+    fun existsActiveContest(): Boolean =
+        contestRepository.existsByContestStatusIn(listOf(RUNNING, STOPPED, AWAITING_START))
 
     fun getRunningContests(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(RUNNING))
 
     fun getCompletedContests(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(COMPLETED))
 
-    fun getContestsAwaitingCompletion(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
+    fun getContestsAwaitingCompletion(): List<Contest> =
+        contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
 
     fun getAllContestsSorted(
         pageNumber: Int,
