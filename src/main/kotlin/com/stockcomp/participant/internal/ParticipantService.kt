@@ -24,14 +24,13 @@ class ParticipantService(
     fun signUpParticipant(
         userId: Long,
         contestId: Long,
-    ) {
+    ): Participant =
         participantRepository.save(
             Participant(
                 userId = userId,
                 contestId = contestId,
             ),
         )
-    }
 
     fun getParticipatingContests(userId: Long): List<ContestParticipantDto> =
         contestService.getActiveContests().mapNotNull { contest ->

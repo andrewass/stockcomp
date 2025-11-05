@@ -51,6 +51,10 @@ data class DetailedParticipantDto(
     val completedOrders: List<InvestmentOrderDto>,
 )
 
+data class SignUpParticipantRequest(
+    val contestId: Long,
+)
+
 fun mapToHistoricParticipant(participant: Participant) =
     HistoricParticipantDto(
         participant = toUserParticipantDto(participant),

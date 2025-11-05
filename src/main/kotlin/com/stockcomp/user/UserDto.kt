@@ -24,6 +24,10 @@ data class UserPageDto(
     val totalEntriesCount: Long,
 )
 
+data class CreateUserRequest(
+    val email: String,
+)
+
 fun mapToUserPageDto(source: Page<User>) =
     UserPageDto(
         users = source.get().map { mapToUserDto(it) }.toList(),

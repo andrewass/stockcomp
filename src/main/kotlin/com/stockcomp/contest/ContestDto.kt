@@ -18,6 +18,12 @@ data class ContestPageDto(
     val totalEntriesCount: Long,
 )
 
+data class CreateContestRequest(
+    val contestName: String,
+    val startTime: LocalDateTime,
+    val durationDays: Long,
+)
+
 fun toContestDto(source: Contest) =
     ContestDto(
         contestId = source.contestId!!,

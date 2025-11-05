@@ -44,7 +44,7 @@ class UserServiceInternal(
             }.also { userRepository.save(it) }
     }
 
-    private fun createUser(email: String): User {
+    fun createUser(email: String): User {
         var username: String
         do {
             username = generateRandomUsername()

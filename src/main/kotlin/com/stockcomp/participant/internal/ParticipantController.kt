@@ -7,13 +7,17 @@ import com.stockcomp.participant.CommonParticipantPageDto
 import com.stockcomp.participant.ContestParticipantDto
 import com.stockcomp.participant.DetailedParticipantDto
 import com.stockcomp.participant.HistoricParticipantDto
+import com.stockcomp.participant.SignUpParticipantRequest
+import com.stockcomp.participant.UserParticipantDto
 import com.stockcomp.participant.mapToHistoricParticipant
 import com.stockcomp.participant.toParticipantPage
+import com.stockcomp.participant.toUserParticipantDto
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -27,13 +31,14 @@ class ParticipantController(
     /**
      * Sign up a participant for a given contest
      */
-    @PostMapping("/sign-up/{contestId}")
+    @PostMapping("/sign-up")
     fun signUpParticipant(
-        @PathVariable contestId: Long,
+        @RequestBody request: SignUpParticipantRequest,
         @TokenData tokenClaims: TokenClaims,
-    ) {
-        participantService.signUpParticipant(userId = tokenClaims.userId, contestId = contestId)
-    }
+    ): ResponseEntity<UserParticipantDto> =
+        participantService
+            .signUpParticipant(userId = tokenClaims.userId, contestId = request.contestId)
+            .let { ResponseEntity.ok(toUserParticipantDto(it)) }
 
     /**
      * Get all the signed up participants for a given user
@@ -41,7 +46,10 @@ class ParticipantController(
     @GetMapping("/registered")
     fun registeredParticipant(
         @TokenData tokenClaims: TokenClaims,
-    ): ResponseEntity<List<ContestParticipantDto>> = ResponseEntity.ok(participantService.getParticipatingContests(tokenClaims.userId))
+    ): ResponseEntity<List<ContestParticipantDto>> =
+        participantService
+            .getParticipatingContests(tokenClaims.userId)
+            .let { ResponseEntity.ok(it) }
 
     /**
      * Get all the contests the user has not signed up for

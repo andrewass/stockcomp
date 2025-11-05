@@ -2,6 +2,7 @@ package com.stockcomp.contest.internal
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
+import com.stockcomp.contest.CreateContestRequest
 import com.stockcomp.contest.mapToContestPageDto
 import com.stockcomp.contest.toContestDto
 import com.stockcomp.exception.CustomExceptionHandler
@@ -82,12 +83,6 @@ class ContestController(
             .deleteContest(contestId)
             .let { ResponseEntity(HttpStatus.OK) }
 }
-
-data class CreateContestRequest(
-    val contestName: String,
-    val startTime: LocalDateTime,
-    val durationDays: Long,
-)
 
 data class UpdateContestRequest(
     val contestId: Long,

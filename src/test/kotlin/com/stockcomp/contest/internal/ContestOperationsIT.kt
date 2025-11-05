@@ -8,6 +8,7 @@ import com.stockcomp.configuration.mockMvcPatchRequest
 import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
+import com.stockcomp.contest.CreateContestRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -20,9 +21,9 @@ import java.time.LocalDateTime
 class ContestOperationsIT
     @Autowired
     constructor(
-        val mockMvc: MockMvc,
-        val objectMapper: ObjectMapper,
-        val contestService: ContestService,
+        private val mockMvc: MockMvc,
+        private val objectMapper: ObjectMapper,
+        private val contestService: ContestService,
     ) {
         private val basePath = "/contests"
         private val contestStartTime = LocalDateTime.now()
