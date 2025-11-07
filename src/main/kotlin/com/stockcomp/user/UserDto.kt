@@ -6,6 +6,7 @@ import com.stockcomp.user.internal.UserStatus
 import org.springframework.data.domain.Page
 
 data class UserDto(
+    val userId: Long,
     val username: String,
     val email: String,
     val userStatus: UserStatus,
@@ -36,6 +37,7 @@ fun mapToUserPageDto(source: Page<User>) =
 
 fun mapToUserDto(src: User) =
     UserDto(
+        userId = src.userId!!,
         username = src.username,
         email = src.email,
         userRole = src.userRole,
@@ -44,7 +46,7 @@ fun mapToUserDto(src: User) =
 
 fun toUserDetailsDto(user: User) =
     UserDetailsDto(
-        userId = user.id!!,
+        userId = user.userId!!,
         fullName = user.fullName,
         username = user.username,
         country = user.country,

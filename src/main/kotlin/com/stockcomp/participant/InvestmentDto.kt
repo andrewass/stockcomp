@@ -1,4 +1,6 @@
-package com.stockcomp.participant.internal.investment
+package com.stockcomp.participant
+
+import com.stockcomp.participant.internal.investment.Investment
 
 data class InvestmentDto(
     val symbol: String,

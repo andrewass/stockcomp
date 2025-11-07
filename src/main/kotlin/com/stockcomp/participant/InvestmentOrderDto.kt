@@ -1,6 +1,19 @@
-package com.stockcomp.participant.internal.investmentorder
+package com.stockcomp.participant
 
+import com.stockcomp.participant.internal.investmentorder.InvestmentOrder
+import com.stockcomp.participant.internal.investmentorder.OrderStatus
+import com.stockcomp.participant.internal.investmentorder.TransactionType
 import java.time.LocalDateTime
+
+data class PlaceInvestmentOrderRequest(
+    val participantId: Long,
+    val symbol: String,
+    val amount: Int,
+    val currency: String,
+    val expirationTime: LocalDateTime,
+    val acceptedPrice: Double,
+    val transactionType: String,
+)
 
 data class InvestmentOrderDto(
     val orderId: Long?,

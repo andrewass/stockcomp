@@ -13,6 +13,6 @@ class TestcontainersConfiguration {
     fun postgresContainer() = postgresContainer
 
     companion object {
-        private val postgresContainer = PostgreSQLContainer<Nothing>(DockerImageName.parse("postgres:16.3-bullseye"))
+        private val postgresContainer = PostgreSQLContainer<Nothing>(DockerImageName.parse("postgres:18.0-alpine3.22"))
     }
 }

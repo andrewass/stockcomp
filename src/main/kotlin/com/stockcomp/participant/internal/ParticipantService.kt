@@ -4,8 +4,8 @@ import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.ContestParticipantDto
 import com.stockcomp.participant.DetailedParticipantDto
-import com.stockcomp.participant.internal.investment.mapToInvestmentDto
-import com.stockcomp.participant.internal.investmentorder.mapToInvestmentOrderDto
+import com.stockcomp.participant.mapToInvestmentDto
+import com.stockcomp.participant.mapToInvestmentOrderDto
 import com.stockcomp.participant.toUserParticipantDto
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.data.domain.Page

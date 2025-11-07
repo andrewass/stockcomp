@@ -2,6 +2,9 @@ package com.stockcomp.participant.internal.investmentorder
 
 import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
+import com.stockcomp.participant.InvestmentOrderDto
+import com.stockcomp.participant.PlaceInvestmentOrderRequest
+import com.stockcomp.participant.mapToInvestmentOrderDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -11,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/participants/investmentorders")
@@ -31,7 +33,7 @@ class InvestmentOrderController(
                 expirationTime = request.expirationTime,
                 amount = request.amount,
                 currency = request.currency,
-                transactionType = request.transactionType,
+                transactionType = TransactionType.valueOf(request.transactionType),
             ).let { ResponseEntity(HttpStatus.OK) }
 
     @DeleteMapping("/delete")
@@ -96,14 +98,4 @@ class InvestmentOrderController(
                 userId = tokenClaims.userId,
             ).map { mapToInvestmentOrderDto(it) }
             .let { ResponseEntity.ok(it) }
-
-    data class PlaceInvestmentOrderRequest(
-        val participantId: Long,
-        val symbol: String,
-        val amount: Int,
-        val currency: String,
-        val expirationTime: LocalDateTime,
-        val acceptedPrice: Double,
-        val transactionType: TransactionType,
-    )
 }

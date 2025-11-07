@@ -35,6 +35,8 @@
         <spring.modulith.test.version>2.0.0-RC1</spring.modulith.test.version>
         <springmockk.version>4.0.2</springmockk.version>
         <ktlint.version>1.7.1</ktlint.version>
+        <jackson.kotin.version>2.20.1</jackson.kotin.version>
+        <jackson.datatype.version>2.20.1</jackson.datatype.version>
         <skip.ut>false</skip.ut>
     </properties>
 
@@ -102,6 +104,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson.kotin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.datatype.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
