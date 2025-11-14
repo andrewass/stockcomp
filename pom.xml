@@ -294,7 +294,7 @@
                     <dependency>
                         <groupId>com.pinterest.ktlint</groupId>
                         <artifactId>ktlint-cli</artifactId>
-                        <version>1.7.1</version>
+                        <version>1.8.0</version>
                         <classifier>all</classifier>
                         <type>jar</type>
                     </dependency>
