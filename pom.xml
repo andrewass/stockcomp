@@ -32,7 +32,7 @@
         <loki.logback.version>2.0.1</loki.logback.version>
         <shedlock.version>6.10.0</shedlock.version>
         <spring.modulith.version>1.4.4</spring.modulith.version>
-        <spring.modulith.test.version>2.0.0-RC1</spring.modulith.test.version>
+        <spring.modulith.test.version>2.0.0</spring.modulith.test.version>
         <springmockk.version>4.0.2</springmockk.version>
         <ktlint.version>1.7.1</ktlint.version>
         <jackson.kotin.version>2.20.1</jackson.kotin.version>
