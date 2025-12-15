@@ -33,12 +33,12 @@ class InvestmentController(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam symbol: String,
         @RequestParam contestId: Long,
-    ): ResponseEntity<InvestmentDto?> =
+    ): ResponseEntity<InvestmentDto> =
         investmentService
             .getInvestmentForSymbol(
                 contestId = contestId,
                 symbol = symbol,
                 userId = tokenClaims.userId,
             )?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
-            ?: ResponseEntity(HttpStatus.OK)
+            ?: ResponseEntity(HttpStatus.NOT_FOUND)
 }

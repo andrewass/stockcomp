@@ -1,6 +1,7 @@
 package com.stockcomp.contest.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.stockcomp.configuration.ControllerIntegrationTest
 import com.stockcomp.configuration.mockMvcDeleteRequest
 import com.stockcomp.configuration.mockMvcGetRequest
@@ -22,11 +23,11 @@ class ContestOperationsIT
     @Autowired
     constructor(
         private val mockMvc: MockMvc,
-        private val objectMapper: ObjectMapper,
         private val contestService: ContestService,
     ) {
         private val basePath = "/contests"
         private val contestStartTime = LocalDateTime.now()
+        private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
         @Test
         fun `should create a new contest with expected fields`() {
@@ -35,14 +36,14 @@ class ContestOperationsIT
                     .perform(
                         mockMvcPostRequest("$basePath/create", "ADMIN")
                             .content(
-                                objectMapper.writeValueAsString(
+                                mapper.writeValueAsString(
                                     CreateContestRequest("TestContest", contestStartTime, 30L),
                                 ),
                             ),
                     ).andExpect(status().isOk)
                     .andReturn()
 
-            val contest = objectMapper.readValue(result.response.contentAsString, ContestDto::class.java)
+            val contest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
             assertEquals("TestContest", contest.contestName)
             assertEquals(contestStartTime, contest.startTime)
             assertEquals(contestStartTime.plusDays(30), contest.endTime)
@@ -59,7 +60,7 @@ class ContestOperationsIT
                     .andExpect(status().isOk)
                     .andReturn()
 
-            val response = objectMapper.readValue(result.response.contentAsString, ExistsActiveContestResponse::class.java)
+            val response = mapper.readValue(result.response.contentAsString, ExistsActiveContestResponse::class.java)
             assertTrue(response.existsActiveContests)
         }
 
@@ -73,7 +74,7 @@ class ContestOperationsIT
                     .andExpect(status().isOk)
                     .andReturn()
 
-            val response = objectMapper.readValue(result.response.contentAsString, ContestsResponse::class.java)
+            val response = mapper.readValue(result.response.contentAsString, ContestsResponse::class.java)
             assertTrue(response.contests.size == 1)
             assertEquals(existingContest.contestId, response.contests.first().contestId)
         }
@@ -88,7 +89,7 @@ class ContestOperationsIT
                     .andExpect(status().isOk)
                     .andReturn()
 
-            val contest = objectMapper.readValue(result.response.contentAsString, ContestDto::class.java)
+            val contest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
             assertEquals(existingContest.contestId, contest.contestId)
         }
 
@@ -106,7 +107,7 @@ class ContestOperationsIT
                     ).andExpect(status().isOk)
                     .andReturn()
 
-            val contestPage = objectMapper.readValue(result.response.contentAsString, ContestPageDto::class.java)
+            val contestPage = mapper.readValue(result.response.contentAsString, ContestPageDto::class.java)
             assertTrue(contestPage.contests.size == 2)
             assertTrue(contestPage.contests.any { it.contestId == firstContest.contestId })
             assertTrue(contestPage.contests.any { it.contestId == secondContest.contestId })
@@ -121,7 +122,7 @@ class ContestOperationsIT
                     .perform(
                         mockMvcPatchRequest("$basePath/update", "ADMIN")
                             .content(
-                                objectMapper.writeValueAsString(
+                                mapper.writeValueAsString(
                                     UpdateContestRequest(
                                         contestId = existingContest.contestId!!,
                                         contestStatus = ContestStatus.RUNNING,
@@ -131,7 +132,7 @@ class ContestOperationsIT
                     ).andExpect(status().isOk)
                     .andReturn()
 
-            val contest = objectMapper.readValue(result.response.contentAsString, ContestDto::class.java)
+            val contest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
             assertEquals(existingContest.contestId, contest.contestId)
             assertEquals(ContestStatus.RUNNING, contest.contestStatus)
         }
