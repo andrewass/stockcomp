@@ -9,31 +9,45 @@
         </layout>
     </appender>
 
-    <appender name="Loki" class="com.github.loki4j.logback.Loki4jAppender">
-        <http>
-            <url>http://loki.grafana-stack:3100/loki/api/v1/push</url>
-        </http>
-        <format>
-            <label>
-                <pattern>app=${name},host=${HOSTNAME},level=%level</pattern>
-                <readMarkers>true</readMarkers>
-            </label>
-            <message>
-                <pattern>
-                    {
-                    "level":"%level",
-                    "class":"%logger{36}",
-                    "thread":"%thread",
-                    "message": "%message",
-                    "requestId": "%X{X-Request-ID}"
-                    }
-                </pattern>
-            </message>
-        </format>
-    </appender>
+    <!-- Loki appender is only used in non-local profiles -->
+    <springProfile name="!local">
+        <appender name="Loki" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>http://loki.grafana-stack:3100/loki/api/v1/push</url>
+            </http>
+            <format>
+                <label>
+                    <pattern>app=${name},host=${HOSTNAME},level=%level</pattern>
+                    <readMarkers>true</readMarkers>
+                </label>
+                <message>
+                    <pattern>
+                        {
+                        "level":"%level",
+                        "class":"%logger{36}",
+                        "thread":"%thread",
+                        "message": "%message",
+                        "requestId": "%X{X-Request-ID}"
+                        }
+                    </pattern>
+                </message>
+            </format>
+        </appender>
+    </springProfile>
 
-    <root level="info">
-        <appender-ref ref="Console"/>
-        <appender-ref ref="Loki"/>
-    </root>
+    <!-- ROOT logger for LOCAL -->
+    <springProfile name="local">
+        <root level="info">
+            <appender-ref ref="Console"/>
+        </root>
+    </springProfile>
+
+    <!-- ROOT logger for NON-LOCAL -->
+    <springProfile name="!local">
+        <root level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Loki"/>
+        </root>
+    </springProfile>
+
 </configuration>
