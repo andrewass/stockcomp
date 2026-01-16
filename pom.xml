@@ -19,7 +19,7 @@
         <kotlin.version>2.3.0</kotlin.version>
         <testcontainers.version>1.21.3</testcontainers.version>
         <spring.testcontainers.version>4.0.1</spring.testcontainers.version>
-        <mockk.version>1.14.6</mockk.version>
+        <mockk.version>1.14.7</mockk.version>
         <micrometer.version>1.16.0</micrometer.version>
         <logstash.version>9.0</logstash.version>
         <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
