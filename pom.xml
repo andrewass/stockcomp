@@ -31,7 +31,7 @@
         <flyway.version>11.20.2</flyway.version>
         <loki.logback.version>2.0.2</loki.logback.version>
         <shedlock.version>7.5.0</shedlock.version>
-        <spring.modulith.version>2.0.0</spring.modulith.version>
+        <spring.modulith.version>2.0.1</spring.modulith.version>
         <spring.modulith.test.version>2.0.1</spring.modulith.test.version>
         <springmockk.version>5.0.1</springmockk.version>
         <ktlint.version>1.7.1</ktlint.version>
