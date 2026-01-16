@@ -28,7 +28,7 @@
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <maven.exec.version>3.6.2</maven.exec.version>
         <jib.version>3.5.1</jib.version>
-        <flyway.version>11.18.0</flyway.version>
+        <flyway.version>11.20.2</flyway.version>
         <loki.logback.version>2.0.1</loki.logback.version>
         <shedlock.version>7.2.0</shedlock.version>
         <spring.modulith.version>2.0.0</spring.modulith.version>
