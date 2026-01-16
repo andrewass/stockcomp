@@ -23,7 +23,7 @@
         <micrometer.version>1.16.0</micrometer.version>
         <logstash.version>9.0</logstash.version>
         <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
-        <postgresql.version>42.7.8</postgresql.version>
+        <postgresql.version>42.7.9</postgresql.version>
         <maven.failsafe.version>3.5.4</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <maven.exec.version>3.6.2</maven.exec.version>
