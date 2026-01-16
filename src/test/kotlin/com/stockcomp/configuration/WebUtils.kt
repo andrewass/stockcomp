@@ -18,7 +18,7 @@ fun mockMvcGetRequest(
 fun mockMvcPostRequest(
     url: String,
     role: String = "USER",
-    emailClaim: String?? = null,
+    emailClaim: String? = null,
 ) = MockMvcRequestBuilders
     .post(url)
     .with(getJwtRequestPostProcessor(role, emailClaim))

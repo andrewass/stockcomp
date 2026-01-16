@@ -2,7 +2,7 @@
 services:
   #PostgreSQL
   stock-comp-db:
-    image: postgres:16.3-alpine
+    image: postgres:18.0-alpine3.22
     container_name: postgresql
     environment:
       POSTGRES_DB: "stockdb"
@@ -13,11 +13,6 @@ services:
       - "5432:5432"
     volumes:
       - postgresql-volume:/var/lib/postgresql/data
-
-networks:
-  default:
-    name: compose_network
-    external: true
 
 volumes:
   postgresql-volume:

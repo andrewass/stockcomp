@@ -13,7 +13,7 @@ class LeaderboardInitializer(
     private val leaderboardId = 1L
     private val logger = LoggerFactory.getLogger(ApplicationRunner::class.java)
 
-    override fun run(args: ApplicationArguments?) {
+    override fun run(args: ApplicationArguments) {
         if (!leaderboardRepository.existsById(leaderboardId)) {
             try {
                 leaderboardRepository.save(Leaderboard(leaderboardId = leaderboardId))

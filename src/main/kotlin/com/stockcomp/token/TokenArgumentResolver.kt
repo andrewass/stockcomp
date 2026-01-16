@@ -25,7 +25,7 @@ class TokenArgumentResolver(
         binderFactory: WebDataBinderFactory?,
     ): Any {
         val email =
-            (SecurityContextHolder.getContext().authentication.credentials as ClaimAccessor)
+            (SecurityContextHolder.getContext().authentication?.credentials as ClaimAccessor)
                 .getClaimAsString("email")
 
         return TokenClaims(userId = userService.getUserIdByEmail(email))
