@@ -35,7 +35,7 @@
         <spring.modulith.test.version>2.0.1</spring.modulith.test.version>
         <springmockk.version>5.0.1</springmockk.version>
         <ktlint.version>1.7.1</ktlint.version>
-        <jackson.kotlin.version>2.20.1</jackson.kotlin.version>
+        <jackson.kotlin.version>2.21.0</jackson.kotlin.version>
         <jackson.datatype.version>2.20.1</jackson.datatype.version>
         <skip.ut>false</skip.ut>
     </properties>
