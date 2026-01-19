@@ -20,7 +20,7 @@
         <testcontainers.version>1.21.4</testcontainers.version>
         <spring.testcontainers.version>4.0.1</spring.testcontainers.version>
         <mockk.version>1.14.7</mockk.version>
-        <micrometer.version>1.16.0</micrometer.version>
+        <micrometer.version>1.16.2</micrometer.version>
         <logstash.version>9.0</logstash.version>
         <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
         <postgresql.version>42.7.9</postgresql.version>
