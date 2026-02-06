@@ -1,5 +1,6 @@
 package com.stockcomp.symbol
 
+import com.stockcomp.symbol.dto.CurrentPriceSymbolDto
 import com.stockcomp.symbol.internal.QuoteConsumer
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
