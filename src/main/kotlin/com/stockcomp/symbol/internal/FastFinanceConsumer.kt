@@ -1,6 +1,6 @@
 package com.stockcomp.symbol.internal
 
-import com.stockcomp.symbol.dto.CurrentPriceSymbolDto
+import com.stockcomp.symbol.CurrentPriceSymbolDto
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient

@@ -1,6 +1,6 @@
 package com.stockcomp.symbol.internal
 
-import com.stockcomp.symbol.dto.CurrentPriceSymbolDto
+import com.stockcomp.symbol.CurrentPriceSymbolDto
 import org.springframework.stereotype.Service
 
 @Service

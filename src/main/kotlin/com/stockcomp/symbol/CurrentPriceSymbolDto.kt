@@ -1,4 +1,4 @@
-package com.stockcomp.symbol.dto
+package com.stockcomp.symbol
 
 data class CurrentPriceSymbolDto(
     val symbol: String,
