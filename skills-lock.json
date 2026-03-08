@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "jpa-patterns": {
+      "source": "affaan-m/everything-claude-code",
+      "sourceType": "github",
+      "computedHash": "74b8bd782aa7aac7942415a0533cc592a2b913490b449e60fb1afc395ea35e3c"
+    },
     "kotlin-springboot": {
       "source": "github/awesome-copilot",
       "sourceType": "github",
