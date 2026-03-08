@@ -60,4 +60,10 @@ class UserController(
         userService
             .updateUser(tokenClaims.userId, userDetailsDto)
             .let { ResponseEntity(HttpStatus.OK) }
+
+    @GetMapping("/admin")
+    fun isAdmin(
+        @TokenData tokenClaims: TokenClaims
+    ): ResponseEntity<Boolean> =
+        ResponseEntity.ok(userService.isAdmin(tokenClaims.userId))
 }

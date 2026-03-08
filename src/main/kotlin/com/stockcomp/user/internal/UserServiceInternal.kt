@@ -54,6 +54,8 @@ class UserServiceInternal(
             .let { userRepository.save(it) }
     }
 
+    fun isAdmin(userId: Long): Boolean = userId == 1L
+
     private fun generateRandomUsername(): String =
         (1..15)
             .map { allowedChars.random() }
