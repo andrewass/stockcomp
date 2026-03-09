@@ -63,7 +63,6 @@ class UserController(
 
     @GetMapping("/admin")
     fun isAdmin(
-        @TokenData tokenClaims: TokenClaims
-    ): ResponseEntity<Boolean> =
-        ResponseEntity.ok(userService.isAdmin(tokenClaims.userId))
+        @TokenData tokenClaims: TokenClaims,
+    ): ResponseEntity<Boolean> = ResponseEntity.ok(userService.isAdmin(tokenClaims.userId))
 }

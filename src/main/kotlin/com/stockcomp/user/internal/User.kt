@@ -1,6 +1,7 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.common.BaseEntity
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -8,6 +9,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 @Entity
@@ -25,4 +27,10 @@ class User(
     val userRole: UserRole = UserRole.USER,
     @Enumerated(EnumType.STRING)
     val userStatus: UserStatus = UserStatus.ACTIVE,
-) : BaseEntity()
+) : BaseEntity() {
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val _userSubjects: MutableList<UserSubject> = mutableListOf()
+
+    val userSubjects: List<UserSubject>
+        get() = _userSubjects.toList()
+}
