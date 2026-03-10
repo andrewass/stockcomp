@@ -33,4 +33,8 @@ class User(
 
     val userSubjects: List<UserSubject>
         get() = _userSubjects.toList()
+
+    fun addUserSubject(userSubject: UserSubject) {
+        _userSubjects.add(userSubject)
+    }
 }

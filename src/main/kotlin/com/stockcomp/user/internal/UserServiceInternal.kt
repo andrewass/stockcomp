@@ -17,10 +17,7 @@ class UserServiceInternal(
         pageSize: Int,
     ): Page<User> = userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("email")))
 
-    fun findOrCreateUserByEmail(email: String): User = userRepository.findByEmail(email) ?: createUser(email)
-
-    fun findUserByEmail(email: String): User =
-        userRepository.findByEmail(email) ?: throw IllegalStateException("User with email $email not found")
+    fun findOrCreateUserBySubject(userSubject: String): User = userRepository.findByUserSubject(userSubject) ?: createUser(userSubject)
 
     fun findUserByUsername(username: String): User = userRepository.findByUsername(username)
 

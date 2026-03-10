@@ -3,6 +3,7 @@ package com.stockcomp.user
 import com.stockcomp.user.internal.User
 import com.stockcomp.user.internal.UserRepository
 import com.stockcomp.user.internal.UserServiceInternal
+import com.stockcomp.user.internal.UserSubject
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -22,19 +23,20 @@ internal class CustomUserServiceTest {
 
     private val username = "testUser"
     private val email = "testEmail"
+    private val userSubject = "testSubject"
     private val user = User(username = username, email = email, country = "Canada")
 
     @BeforeAll
     fun setUp() {
         MockKAnnotations.init(this)
         every {
-            userRepository.findByEmail(email)
+            userRepository.findByUserSubject(userSubject)
         } returns user
     }
 
     @Test
     fun `should get peristed user`() {
-        val user = userServiceInternal.findOrCreateUserByEmail(email)
+        val user = userServiceInternal.findOrCreateUserBySubject(userSubject)
 
         Assertions.assertEquals(username, user.username)
         Assertions.assertEquals(email, user.email)

@@ -24,10 +24,10 @@ class TokenArgumentResolver(
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any {
-        val email =
+        val userSubject =
             (SecurityContextHolder.getContext().authentication?.credentials as ClaimAccessor)
-                .getClaimAsString("email")
+                .getClaimAsString("sub")
 
-        return TokenClaims(userId = userService.getUserIdByEmail(email))
+        return TokenClaims(userId = userService.getUserIdBySubject(userSubject))
     }
 }

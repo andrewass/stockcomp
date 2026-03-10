@@ -85,8 +85,8 @@ class SecurityConfiguration(
     private fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
         val converter = JwtAuthenticationConverter()
         converter.setJwtGrantedAuthoritiesConverter { jwt ->
-            val email = jwt.claims["email"] as String
-            val userRole = userService.getUserRole(email)
+            val subjectClaim = jwt.claims["sub"] as String
+            val userRole = userService.getUserRole(subjectClaim)
             listOf(SimpleGrantedAuthority("ROLE_$userRole"))
         }
         return converter
