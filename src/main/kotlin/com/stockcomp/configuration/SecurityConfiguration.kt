@@ -9,7 +9,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
+import org.springframework.security.oauth2.core.OAuth2Error
+import org.springframework.security.oauth2.core.OAuth2TokenValidator
+import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.JwtValidators
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
@@ -22,10 +28,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfiguration(
     private val userService: UserServiceExternal,
+    @param:Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private val jwkSetUri: String,
+    @param:Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private val issuerUri: String,
+    @param:Value("\${spring.security.oauth2.resourceserver.jwt.audience}")
+    private val audience: String,
 ) {
-    @Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
-    var jwkSetUri: String? = null
-
     @Bean
     fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain =
         httpSecurity
@@ -50,7 +59,28 @@ class SecurityConfiguration(
             .build()
 
     @Bean
-    fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build()
+    fun jwtDecoder(): JwtDecoder {
+        val decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build()
+        val issuerValidator = JwtValidators.createDefaultWithIssuer(issuerUri)
+        val audienceValidator = audienceValidator()
+        decoder.setJwtValidator(DelegatingOAuth2TokenValidator(issuerValidator, audienceValidator))
+        return decoder
+    }
+
+    private fun audienceValidator(): OAuth2TokenValidator<Jwt> =
+        OAuth2TokenValidator { jwt ->
+            if (jwt.audience.contains(audience)) {
+                OAuth2TokenValidatorResult.success()
+            } else {
+                OAuth2TokenValidatorResult.failure(
+                    OAuth2Error(
+                        "invalid_token",
+                        "The required audience is missing",
+                        null,
+                    ),
+                )
+            }
+        }
 
     private fun createCorsConfiguration(): CorsConfigurationSource {
         val courseConfiguration =
