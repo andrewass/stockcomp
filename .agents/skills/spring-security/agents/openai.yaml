@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spring Security"
+  short_description: "Secure Spring apps with current best practices"
+  default_prompt: "Use $spring-security to design and implement authentication and authorization for this Spring application."

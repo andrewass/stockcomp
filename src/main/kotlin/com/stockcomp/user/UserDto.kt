@@ -21,7 +21,7 @@ data class UserDetailsDto(
 )
 
 data class UserPageDto(
-    val users: List<UserDto>,
+    val entries: List<UserDto>,
     val totalEntriesCount: Long,
 )
 
@@ -31,7 +31,7 @@ data class CreateUserRequest(
 
 fun mapToUserPageDto(source: Page<User>) =
     UserPageDto(
-        users = source.get().map { mapToUserDto(it) }.toList(),
+        entries = source.get().map { mapToUserDto(it) }.toList(),
         totalEntriesCount = source.totalElements,
     )
 

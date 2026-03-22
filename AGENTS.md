@@ -36,4 +36,17 @@ This file gives short, practical instructions for working in this repository.
 - When adding endpoints, consider both WebMVC and WebFlux usage; follow existing patterns.
 
 ## Skills
-If a task matches a listed skill in `.agents/skills`, use that skill’s instructions for this turn.
+- Skills under `.agents/skills/**` should be repo-agnostic by default so they can be reused across projects.
+- Place reusable skills in `.agents/skills/**` as the default location.
+- Do not hardcode repository names, repo-specific paths, or project-only assumptions in reusable skills.
+- If project-specific behavior is needed, keep it clearly marked as optional project overlay guidance.
+- If `.agents/skills/**` is not writable, stop and ask the user how to proceed before creating skills in any alternate directory.
+
+## Skill routing
+- If the user says `use relevant skills`, automatically select and apply all matching skills from `.agents/skills/**`.
+- If the user names a skill explicitly (for example `$kotlin-springboot`), always include it.
+- Activate `kotlin-springboot` for Spring Boot + Kotlin architecture, idiomatic Kotlin patterns, bean/service design, and framework integration work.
+- Activate `jpa-patterns` for JPA/Hibernate entity mapping, relationships, query optimization, transaction boundaries, auditing, indexing, pagination, and pooling.
+- Activate `spring-security` for authentication/authorization config, SecurityFilterChain rules, method security, OAuth2 resource server/client setup, and security test coverage.
+- For mixed tasks, combine all relevant skills rather than choosing only one.
+- Use this priority when guidance conflicts: correctness/security (`spring-security`, `kotlin-springboot`) before data integrity/performance (`jpa-patterns`) before style/ergonomics (`kotlin-springboot`).
