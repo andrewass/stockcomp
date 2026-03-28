@@ -16,7 +16,9 @@ class LeaderboardQueryService(
         pageSize: Int,
     ): Page<LeaderboardEntry> = leaderboardEntryRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("ranking")))
 
-    fun getLeaderboardEntryForUser(userId: Long): LeaderboardEntry = leaderboardEntryRepository.findByUserId(userId)
+    fun getLeaderboardEntryForUser(userId: Long): LeaderboardEntry =
+        leaderboardEntryRepository.findByUserId(userId)
+            ?: throw NoSuchElementException("No leaderboard entry found for user id $userId")
 
     fun getLeaderboardentriesByOrderByScore(): List<LeaderboardEntry> = leaderboardEntryRepository.findAllByOrderByScore()
 }

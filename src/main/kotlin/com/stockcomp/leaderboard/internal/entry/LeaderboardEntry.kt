@@ -33,20 +33,22 @@ class LeaderboardEntry(
     val medals: List<Medal>
         get() = _medals.toList()
 
-    var contestCount: Int = 0
-        private set
+    @Column(name = "CONTEST_COUNT", nullable = false)
+    private var contestCount: Int = 0
 
-    var ranking: Int = 0
-        private set
+    @Column(name = "RANKING", nullable = false)
+    private var ranking: Int = 0
 
-    var score: Int = 0
-        private set
-
-    fun addMedal(medal: Medal) {
-        _medals.add(medal)
-    }
+    @Column(name = "SCORE", nullable = false)
+    private var score: Int = 0
 
     fun incrementContestCount() {
         contestCount += 1
     }
+
+    fun contestCount(): Int = contestCount
+
+    fun ranking(): Int = ranking
+
+    fun score(): Int = score
 }

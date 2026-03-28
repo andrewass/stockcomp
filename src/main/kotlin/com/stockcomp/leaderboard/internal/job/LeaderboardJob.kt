@@ -26,12 +26,10 @@ class LeaderboardJob(
     private var jobStatus = JobStatus.CREATED
 
     @Column(nullable = false)
-    var nextRunAt: LocalDateTime = LocalDateTime.now()
-        private set
+    private var nextRunAt: LocalDateTime = LocalDateTime.now()
 
     @Column(nullable = false)
-    var attempts: Int = 0
-        private set
+    private var attempts: Int = 0
 
     fun markAsCompleted() {
         jobStatus = JobStatus.COMPLETED
@@ -43,6 +41,10 @@ class LeaderboardJob(
         attempts += 1
         nextRunAt = LocalDateTime.now().plusMinutes(1L)
     }
+
+    fun nextRunAt(): LocalDateTime = nextRunAt
+
+    fun attempts(): Int = attempts
 }
 
 enum class JobStatus {

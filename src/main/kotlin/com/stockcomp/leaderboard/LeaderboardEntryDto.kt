@@ -19,9 +19,9 @@ data class LeaderboardEntryPageDto(
 
 fun mapToLeaderboardEntryDto(src: LeaderboardEntry) =
     LeaderboardEntryDto(
-        ranking = src.ranking,
-        contestCount = src.contestCount,
-        score = src.score,
+        ranking = src.ranking(),
+        contestCount = src.contestCount(),
+        score = src.score(),
         medals = src.medals.map { mapToMedalDto(it) },
     )
 

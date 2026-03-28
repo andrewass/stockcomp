@@ -49,6 +49,15 @@ This file gives short, practical instructions for working in this repository.
 - Prefer communication through existing exposed services/contracts and established module interaction patterns.
 - When architectural/module boundaries change, update and verify modulith tests (for example `ApplicationModules.verify()` coverage).
 - Keep module responsibilities cohesive; do not move business logic across modules without explicit architectural intent.
+- Do not import `com.stockcomp.<other-module>.internal.*` across module boundaries (also in tests). Use external services/contracts or public API endpoints instead.
+
+## Kotlin JPA entity rules
+- These rules apply to all JPA entities in this repository.
+- Prefer private mutable entity state (`private var`) and expose behavior through domain methods.
+- Expose read values via read-only methods/properties when needed by DTO mapping/query code.
+- Do not use `protected set`/`internal set` as a default mutation pattern for entity fields.
+- Keep immutable fields as `val` where possible.
+- For nullable entity IDs in Kotlin (`id: Long?`), avoid relying on smart-cast from open entities; extract once to a local non-null `val` (for example `val id = entity.id!!`) before reuse.
 
 ## Skills
 - Skills under `.agents/skills/**` should be repo-agnostic by default so they can be reused across projects.

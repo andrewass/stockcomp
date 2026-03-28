@@ -19,21 +19,12 @@ class Leaderboard(
     @OneToMany(mappedBy = "leaderboard", cascade = [CascadeType.ALL])
     private val entries: MutableList<LeaderboardEntry> = mutableListOf()
 
-    var contestCount: Int = 0
-        private set
+    @Column(name = "CONTEST_COUNT", nullable = false)
+    private var contestCount: Int = 0
 
     fun addEntry(leaderboardEntry: LeaderboardEntry) {
         entries.add(leaderboardEntry)
     }
 
-    fun updateEntry(userId: Long) {
-        entries.find { it.userId == userId }
-    }
-
-    fun recalculateRankings() {
-    }
-
-    private fun incrementContestCount() {
-        contestCount += 1
-    }
+    fun contestCount(): Int = contestCount
 }

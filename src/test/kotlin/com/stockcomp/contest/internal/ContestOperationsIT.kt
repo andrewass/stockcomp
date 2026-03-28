@@ -195,8 +195,9 @@ class ContestOperationsIT
         @Test
         fun `should reject start time update when contest status is not awaiting start`() {
             val contest = contestService.createContest("StartedContest", LocalDateTime.now().plusDays(5), 10L)
+            val contestId = contest.contestId!!
             contestService.updateContest(
-                contestId = contest.contestId!!,
+                contestId = contestId,
                 contestName = null,
                 contestStatus = ContestStatus.RUNNING,
                 startTime = null,
@@ -209,7 +210,7 @@ class ContestOperationsIT
                             .content(
                                 mapper.writeValueAsString(
                                     UpdateContestRequest(
-                                        contestId = contest.contestId,
+                                        contestId = contestId,
                                         startTime = LocalDateTime.now().plusDays(2),
                                     ),
                                 ),
@@ -347,8 +348,9 @@ class ContestOperationsIT
         fun `should set contest to awaiting completion when maintain status runs past end time`() {
             val now = LocalDateTime.of(2030, 1, 10, 12, 0)
             val contest = contestService.createContest("RunningContest", now.minusDays(2), 1L)
+            val contestId = contest.contestId!!
             contestService.updateContest(
-                contestId = contest.contestId!!,
+                contestId = contestId,
                 contestName = null,
                 contestStatus = ContestStatus.RUNNING,
                 startTime = null,
@@ -357,7 +359,7 @@ class ContestOperationsIT
             stubClock(now)
             contestOperationService.maintainContestStatus()
 
-            val persistedContest = contestService.getContest(contest.contestId)
+            val persistedContest = contestService.getContest(contestId)
             assertEquals(ContestStatus.AWAITING_COMPLETION, persistedContest.contestStatus)
         }
 

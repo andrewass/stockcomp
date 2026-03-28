@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 interface LeaderboardEntryRepository : JpaRepository<LeaderboardEntry, Long> {
     fun findAllByOrderByScore(): List<LeaderboardEntry>
 
-    fun findByUserId(userId: Long): LeaderboardEntry
+    fun findByUserId(userId: Long): LeaderboardEntry?
 }

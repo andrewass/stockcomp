@@ -1,28 +1,23 @@
 package com.stockcomp.leaderboard.internal.job
 
 import com.stockcomp.leaderboard.internal.LeaderboardService
-import com.stockcomp.leaderboard.internal.entry.LeaderboardEntryRepository
-import com.stockcomp.participant.ParticipantServiceExternal
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class LeaderboardJobProcessService(
-    private val leaderboardEntryRepository: LeaderboardEntryRepository,
     private val leaderboardJobStateService: LeaderboardJobStateService,
     private val leaderboardService: LeaderboardService,
-    private val participantService: ParticipantServiceExternal,
 ) {
+    private val logger = LoggerFactory.getLogger(LeaderboardJobProcessService::class.java)
+
     fun processJob(job: LeaderboardJob) {
         try {
-            leaderboardService.getLeaderboard()
-            participantService.getParticipantsFromContest(job.contestId).forEach { participant ->
-                val leaderboardEntry = leaderboardEntryRepository.findByUserId(participant.userId)
-                leaderboardEntry.incrementContestCount()
-            }
+            leaderboardService.updateLeaderboard(job.contestId)
             leaderboardJobStateService.markAsCompleted(job)
         } catch (e: Exception) {
+            logger.error("Failed to process leaderboard job {}", job.leaderboardJobId, e)
             leaderboardJobStateService.markAsFailed(job)
-            throw e
         }
     }
 }

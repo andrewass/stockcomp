@@ -13,11 +13,16 @@ class LeaderboardJobScheduler(
     private val leaderboardJobProcessService: LeaderboardJobProcessService,
     private val contestService: ContestServiceExternal,
 ) {
+    private val openStatuses = listOf(JobStatus.CREATED, JobStatus.FAILED)
+
     @Transactional
     @Scheduled(fixedDelay = 5000)
     @SchedulerLock(name = "lockForProcessLeaderboardJob")
     fun processLeaderboardJob() {
-        leaderboardJobRepository.fetchNextJobForProcessing(timeLimit = LocalDateTime.now())?.also {
+        leaderboardJobRepository.findFirstByJobStatusInAndNextRunAtLessThanEqualOrderByNextRunAtAsc(
+            jobStatuses = openStatuses,
+            timeLimit = LocalDateTime.now(),
+        )?.also {
             leaderboardJobProcessService.processJob(it)
         }
     }
@@ -27,7 +32,9 @@ class LeaderboardJobScheduler(
     @SchedulerLock(name = "lockForCreateLeaderboardJob")
     fun createLeaderboardJobs() {
         contestService.getContestsAwaitingCompletion().forEach { contest ->
-            leaderboardJobRepository.save(LeaderboardJob(contestId = contest.contestId))
+            if (!leaderboardJobRepository.existsByContestIdAndJobStatusIn(contest.contestId, openStatuses)) {
+                leaderboardJobRepository.save(LeaderboardJob(contestId = contest.contestId))
+            }
         }
     }
 }
