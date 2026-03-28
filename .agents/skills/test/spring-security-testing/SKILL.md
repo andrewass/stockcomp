@@ -1,0 +1,34 @@
+---
+name: spring-security-testing
+description: Test Spring Security behavior in web and service layers. Use for endpoint authorization, JWT/OAuth2 request simulation, and method security verification with allow/deny coverage.
+---
+
+# Spring Security Testing
+
+Use this skill to prove security behavior, not just happy-path functionality.
+
+## Workflow
+
+1. Test web security paths
+- Use MockMvc with Spring Security integration.
+- Cover unauthenticated (`401` where expected), unauthorized (`403`), and authorized access.
+
+2. Test authentication simulation correctly
+- Use `@WithMockUser` for method security and simple role cases.
+- Use request post processors such as `jwt()` and `oauth2Login()` for OAuth2/JWT flows.
+
+3. Test method security explicitly
+- Add tests for `@PreAuthorize` / `@PostAuthorize` behavior at service boundary.
+- Assert both allow and deny outcomes.
+
+4. Keep claims/authorities mapping visible
+- When using JWT scopes/claims, assert mapped authorities drive authorization as expected.
+
+## Quality Gate
+
+- Every protected route/service has both allow and deny tests.
+- Security tests assert status/result and not just that code executes.
+
+## Source Baseline
+
+See [references/security-testing-reference.md](references/security-testing-reference.md).
