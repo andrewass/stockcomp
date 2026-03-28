@@ -5,8 +5,9 @@ import com.stockcomp.contest.ContestPageDto
 import com.stockcomp.contest.CreateContestRequest
 import com.stockcomp.contest.mapToContestPageDto
 import com.stockcomp.contest.toContestDto
-import com.stockcomp.exception.CustomExceptionHandler
-import org.springframework.http.HttpStatus
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Positive
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -24,7 +25,7 @@ import java.time.LocalDateTime
 @RequestMapping("/contests")
 class ContestController(
     private val contestService: ContestService,
-) : CustomExceptionHandler() {
+) {
     @GetMapping("/all")
     fun getAllContestsSortedByContestId(
         @RequestParam pageNumber: Int,
@@ -56,7 +57,7 @@ class ContestController(
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     fun createContest(
-        @RequestBody request: CreateContestRequest,
+        @Valid @RequestBody request: CreateContestRequest,
     ): ResponseEntity<ContestDto> =
         contestService
             .createContest(
@@ -68,7 +69,7 @@ class ContestController(
     @PatchMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateContest(
-        @RequestBody request: UpdateContestRequest,
+        @Valid @RequestBody request: UpdateContestRequest,
     ): ResponseEntity<ContestDto> =
         contestService
             .updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)
@@ -78,15 +79,17 @@ class ContestController(
     @PreAuthorize("hasRole('ADMIN')")
     fun deleteContest(
         @PathVariable contestId: Long,
-    ): ResponseEntity<HttpStatus> =
+    ): ResponseEntity<Void> =
         contestService
             .deleteContest(contestId)
-            .let { ResponseEntity(HttpStatus.OK) }
+            .let { ResponseEntity.noContent().build() }
 }
 
 data class UpdateContestRequest(
+    @field:Positive
     val contestId: Long,
     val startTime: LocalDateTime? = null,
+    @field:Pattern(regexp = ".*\\S.*", message = "contestName must not be blank")
     val contestName: String? = null,
     val contestStatus: ContestStatus? = null,
 )

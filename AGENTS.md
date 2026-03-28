@@ -31,6 +31,14 @@ This file gives short, practical instructions for working in this repository.
 - Kotlin formatting is enforced in CI via ktlint. Run the commands above before opening a PR.
 - Add or update tests for behavioral changes.
 
+## Dependency & import hygiene
+- When introducing new framework annotations/APIs/imports, verify required dependencies are present in `pom.xml` (for example validation annotations require `spring-boot-starter-validation`).
+- If a change introduces unresolved references due to missing dependencies, update the build file as part of the same change.
+- Remove unused imports in all touched files before finishing.
+
+## Commit conventions
+- Commit messages must start with a capital letter.
+
 ## Working Notes
 - If you touch database code, scan for transaction boundaries and lazy-loading pitfalls.
 - When adding endpoints, consider both WebMVC and WebFlux usage; follow existing patterns.

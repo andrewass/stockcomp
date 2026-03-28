@@ -2,6 +2,7 @@ package com.stockcomp.contest.internal
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.ninjasquad.springmockk.MockkBean
 import com.stockcomp.configuration.ControllerIntegrationTest
 import com.stockcomp.configuration.mockMvcDeleteRequest
 import com.stockcomp.configuration.mockMvcGetRequest
@@ -10,13 +11,17 @@ import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
 import com.stockcomp.contest.CreateContestRequest
+import io.mockk.every
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.Clock
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @ControllerIntegrationTest
 class ContestOperationsIT
@@ -24,7 +29,11 @@ class ContestOperationsIT
     constructor(
         private val mockMvc: MockMvc,
         private val contestService: ContestService,
+        private val contestOperationService: ContestOperationService,
     ) {
+        @MockkBean
+        private lateinit var clock: Clock
+
         private val basePath = "/contests"
         private val contestStartTime = LocalDateTime.now()
         private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
@@ -95,9 +104,21 @@ class ContestOperationsIT
 
         @Test
         fun `should return not found for unknown contest id`() {
-            mockMvc
-                .perform(mockMvcGetRequest("$basePath/99999999"))
-                .andExpect(status().isNotFound)
+            val result =
+                mockMvc
+                    .perform(mockMvcGetRequest("$basePath/99999999"))
+                    .andExpect(status().isNotFound)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(404, response["status"].asInt())
+            assertEquals("Contest not found", response["title"].asText())
+            assertEquals("/problems/contest/not-found", response["type"].asText())
+            assertEquals("$basePath/99999999", response["instance"].asText())
         }
 
         @Test
@@ -181,18 +202,29 @@ class ContestOperationsIT
                 startTime = null,
             )
 
-            mockMvc
-                .perform(
-                    mockMvcPatchRequest("$basePath/update", "ADMIN")
-                        .content(
-                            mapper.writeValueAsString(
-                                UpdateContestRequest(
-                                    contestId = contest.contestId!!,
-                                    startTime = LocalDateTime.now().plusDays(2),
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcPatchRequest("$basePath/update", "ADMIN")
+                            .content(
+                                mapper.writeValueAsString(
+                                    UpdateContestRequest(
+                                        contestId = contest.contestId,
+                                        startTime = LocalDateTime.now().plusDays(2),
+                                    ),
                                 ),
                             ),
-                        ),
-                ).andExpect(status().isConflict)
+                    ).andExpect(status().isConflict)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(409, response["status"].asInt())
+            assertEquals("Contest state conflict", response["title"].asText())
+            assertEquals("/problems/contest/state-conflict", response["type"].asText())
         }
 
         @Test
@@ -201,7 +233,7 @@ class ContestOperationsIT
 
             mockMvc
                 .perform(mockMvcDeleteRequest("$basePath/${existingContest.contestId}", "ADMIN"))
-                .andExpect(status().isOk)
+                .andExpect(status().isNoContent)
 
             val persistedContests = contestService.getAllContestsSorted(0, 5)
             assertTrue(persistedContests.totalElements == 0L)
@@ -212,5 +244,125 @@ class ContestOperationsIT
             mockMvc
                 .perform(mockMvcDeleteRequest("$basePath/99999999", "ADMIN"))
                 .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `should return forbidden when non-admin tries to create contest`() {
+            mockMvc
+                .perform(
+                    mockMvcPostRequest("$basePath/create", "USER")
+                        .content(
+                            mapper.writeValueAsString(
+                                CreateContestRequest("ForbiddenContest", contestStartTime, 5L),
+                            ),
+                        ),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return forbidden when non-admin tries to update contest`() {
+            val contest = contestService.createContest("UpdatableContest", contestStartTime.plusDays(2), 10L)
+
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("$basePath/update", "USER")
+                        .content(
+                            mapper.writeValueAsString(
+                                UpdateContestRequest(
+                                    contestId = contest.contestId!!,
+                                    contestName = "RenamedByUser",
+                                ),
+                            ),
+                        ),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return forbidden when non-admin tries to delete contest`() {
+            val contest = contestService.createContest("DeletableContest", contestStartTime.plusDays(2), 10L)
+
+            mockMvc
+                .perform(mockMvcDeleteRequest("$basePath/${contest.contestId}", "USER"))
+                .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return bad request for invalid contest create payload`() {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                            .content(
+                                mapper.writeValueAsString(
+                                    CreateContestRequest(
+                                        contestName = "   ",
+                                        startTime = contestStartTime,
+                                        durationDays = 0L,
+                                    ),
+                                ),
+                            ),
+                    ).andExpect(status().isBadRequest)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(400, response["status"].asInt())
+            assertEquals("Invalid contest request", response["title"].asText())
+            assertEquals("/problems/contest/validation", response["type"].asText())
+            assertTrue(response["errors"].isArray)
+        }
+
+        @Test
+        fun `should return bad request for invalid contest update payload`() {
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("$basePath/update", "ADMIN")
+                        .content(
+                            mapper.writeValueAsString(
+                                UpdateContestRequest(
+                                    contestId = 0L,
+                                    contestName = "   ",
+                                ),
+                            ),
+                        ),
+                ).andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `should set contest to running when maintain status runs past start time`() {
+            val now = LocalDateTime.of(2030, 1, 10, 12, 0)
+            val contest = contestService.createContest("AwaitingContest", now.minusHours(1), 2L)
+
+            stubClock(now)
+            contestOperationService.maintainContestStatus()
+
+            val persistedContest = contestService.getContest(contest.contestId!!)
+            assertEquals(ContestStatus.RUNNING, persistedContest.contestStatus)
+        }
+
+        @Test
+        fun `should set contest to awaiting completion when maintain status runs past end time`() {
+            val now = LocalDateTime.of(2030, 1, 10, 12, 0)
+            val contest = contestService.createContest("RunningContest", now.minusDays(2), 1L)
+            contestService.updateContest(
+                contestId = contest.contestId!!,
+                contestName = null,
+                contestStatus = ContestStatus.RUNNING,
+                startTime = null,
+            )
+
+            stubClock(now)
+            contestOperationService.maintainContestStatus()
+
+            val persistedContest = contestService.getContest(contest.contestId)
+            assertEquals(ContestStatus.AWAITING_COMPLETION, persistedContest.contestStatus)
+        }
+
+        private fun stubClock(now: LocalDateTime) {
+            every { clock.instant() } returns now.toInstant(ZoneOffset.UTC)
+            every { clock.zone } returns ZoneOffset.UTC
         }
     }
