@@ -1,11 +1,16 @@
 ---
 name: spring-security-testing
-description: Test Spring Security behavior in web and service layers. Use for endpoint authorization, JWT/OAuth2 request simulation, and method security verification with allow/deny coverage.
+description: Test Spring Security behavior in web and service layers (MockMvc/Web tests, @WithMockUser, jwt(), oauth2Login(), method security allow/deny). Use for security test mechanics; pair with spring-security for architecture/configuration decisions.
 ---
 
 # Spring Security Testing
 
 Use this skill to prove security behavior, not just happy-path functionality.
+
+## Scope and Precedence
+
+- This skill is authoritative for security test cases and assertions.
+- If `spring-security` is also active, let `spring-security` drive architecture/configuration and let this skill drive test mechanics.
 
 ## Workflow
 

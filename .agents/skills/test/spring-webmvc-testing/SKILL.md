@@ -1,11 +1,16 @@
 ---
 name: spring-webmvc-testing
-description: Test Spring MVC controllers with focused slice tests and stable API contract assertions. Use for @RestController request/response behavior, validation errors, and JSON error payloads.
+description: Test Spring MVC controller/API contracts with focused slice tests (MockMvc, @WebMvcTest), including validation and error payload assertions. Use for web contract test mechanics; pair with spring-security-testing for security-specific assertions.
 ---
 
 # Spring WebMvc Testing
 
 Use this skill for controller contract tests with fast feedback.
+
+## Scope and Precedence
+
+- This skill is authoritative for controller/API contract test mechanics.
+- If `spring-security-testing` is also active, use it as authoritative for security-specific assertions and role/claim modeling.
 
 ## Workflow
 

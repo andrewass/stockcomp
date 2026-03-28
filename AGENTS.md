@@ -42,6 +42,13 @@ This file gives short, practical instructions for working in this repository.
 - If project-specific behavior is needed, keep it clearly marked as optional project overlay guidance.
 - If `.agents/skills/**` is not writable, stop and ask the user how to proceed before creating skills in any alternate directory.
 
+## Skill update guardrails
+- Treat every skill listed in `skills-lock.json` as read-only.
+- When asked to update skills, only modify skills not listed in `skills-lock.json`.
+- If a requested skill is listed in `skills-lock.json`, do not edit it unless the user explicitly says `override lock for <skill-name>`.
+- Do not modify `skills-lock.json` unless explicitly requested.
+- If lock status is unclear, stop and ask before editing.
+
 ## Skill routing
 - If the user says `use relevant skills`, automatically select and apply all matching skills from `.agents/skills/**`.
 - If the user names a skill explicitly (for example `$kotlin-springboot`), always include it.
@@ -50,3 +57,9 @@ This file gives short, practical instructions for working in this repository.
 - Activate `spring-security` for authentication/authorization config, SecurityFilterChain rules, method security, OAuth2 resource server/client setup, and security test coverage.
 - For mixed tasks, combine all relevant skills rather than choosing only one.
 - Use this priority when guidance conflicts: correctness/security (`spring-security`, `kotlin-springboot`) before data integrity/performance (`jpa-patterns`) before style/ergonomics (`kotlin-springboot`).
+
+## Skill conflict resolution
+- Overlap between skills is allowed when it improves standalone usability.
+- For overlapping topics, prefer the most specialized active skill for concrete implementation details.
+- Treat strategy/router skills as scope selectors, not as authoritative sources for low-level framework assertions.
+- For security tasks: `spring-security` is authoritative for architecture/configuration, while `spring-security-testing` is authoritative for test mechanics.

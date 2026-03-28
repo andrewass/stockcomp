@@ -1,11 +1,16 @@
 ---
 name: spring-integration-testcontainers
-description: Build reliable Spring integration tests with real infrastructure. Use for full-context tests that validate HTTP, transactions, migrations, and database behavior with Testcontainers.
+description: Build reliable full-context Spring integration tests with real infrastructure (Testcontainers) to validate cross-layer HTTP, persistence, transactions, and migrations. Use when slice tests are insufficient.
 ---
 
 # Spring Integration Testcontainers
 
 Use this skill for cross-layer tests where slice tests are insufficient.
+
+## Scope and Precedence
+
+- This skill is authoritative for full-context integration test patterns and container realism.
+- It does not replace slice-test guidance; use specialized slice skills for controller/repository/security detail assertions.
 
 ## Workflow
 

@@ -1,11 +1,16 @@
 ---
 name: spring-modulith-testing
-description: Test modular monolith boundaries and inter-module behavior with Spring Modulith. Use for module structure verification, targeted module integration tests, and event-driven module scenarios.
+description: Test modular monolith boundaries and inter-module behavior with Spring Modulith (ApplicationModules.verify, @ApplicationModuleTest modes, Scenario DSL). Use for module-level verification; combine with layer-specific testing skills for controller/repository/security detail tests.
 ---
 
 # Spring Modulith Testing
 
 Use this skill when a Spring Boot application uses modular boundaries that need explicit verification.
+
+## Scope and Precedence
+
+- This skill is authoritative for module-boundary and inter-module scenario testing.
+- Use it alongside other testing skills for layer-specific behavior, without duplicating those layer assertions here.
 
 ## Workflow
 

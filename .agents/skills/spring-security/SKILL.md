@@ -1,11 +1,16 @@
 ---
 name: spring-security
-description: Design, implement, review, and migrate Spring Security configurations in Spring Boot applications. Use when tasks involve authentication, authorization, SecurityFilterChain or HttpSecurity changes, @EnableMethodSecurity and @PreAuthorize rules, OAuth2/OIDC client or resource server setup, JWT or opaque tokens, CSRF/CORS/session policy decisions, or spring-security-test coverage.
+description: Design and review Spring Security architecture/configuration in Spring Boot (SecurityFilterChain, authorization rules, OAuth2/JWT, CSRF/CORS, session policy, migration from deprecated APIs). Use for security design/config; use spring-security-testing for detailed test mechanics.
 ---
 
 # Spring Security
 
 Use this skill to deliver secure, explicit, testable Spring Security configurations without relying on deprecated APIs.
+
+## Scope and Precedence
+
+- This skill is authoritative for security architecture and configuration choices.
+- For detailed security test design and assertion patterns, prefer `spring-security-testing` when available.
 
 ## Workflow
 
@@ -35,6 +40,7 @@ Use this skill to deliver secure, explicit, testable Spring Security configurati
 - Use `spring-security-test` and prove allowed + denied behavior.
 - For Servlet tests, use `@WithMockUser`, `jwt()`, `oauth2Login()`, or request post-processors based on auth mechanism.
 - Cover both filter-chain behavior (HTTP) and method-security behavior (service layer).
+- If `spring-security-testing` is active, follow its detailed test workflow and quality gate.
 
 6. Deliver migration-safe output
 - Flag and replace deprecated/legacy patterns:

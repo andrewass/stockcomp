@@ -1,11 +1,17 @@
 ---
 name: rest-controller-standards
-description: Standardize Spring REST controllers to current recommended practices. Use when creating or refactoring @RestController endpoints, request mapping, validation, RFC 9457 ProblemDetail errors, pagination, and API versioning in Spring Boot/Spring MVC applications.
+description: Standardize Spring REST controller contracts in Spring MVC/Boot (mappings, DTO boundaries, validation, RFC 9457 ProblemDetail, pagination, versioning). Use for controller/API design and refactoring; pair with testing skills for test mechanics.
 ---
 
 # Rest Controller Standards
 
 Use this skill to make Spring REST controllers consistent, testable, and aligned with current Spring recommendations.
+
+## Scope and Precedence
+
+- This skill is authoritative for controller contract design (mapping, DTO boundaries, validation model, error model, versioning).
+- For detailed controller test design, pair with `spring-webmvc-testing`.
+- For detailed security test behavior, pair with `spring-security-testing`.
 
 ## Workflow
 
@@ -41,6 +47,7 @@ Use this skill to make Spring REST controllers consistent, testable, and aligned
 7. Verify
 - Add/update web tests for happy path and error path.
 - Verify validation and exception flows return the expected `ProblemDetail` structure.
+- Delegate detailed test mechanics to specialized testing skills when available.
 
 ## Team Checklist
 

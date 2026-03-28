@@ -1,11 +1,16 @@
 ---
 name: spring-data-jpa-testing
-description: Test Spring Data JPA repositories and query behavior with focused persistence tests. Use for custom query correctness, paging/sorting behavior, and transactional data integrity checks.
+description: Test Spring Data JPA repository behavior with focused persistence tests (@DataJpaTest), including custom queries, paging/sorting, and transactional correctness. Use for repository test mechanics, not entity design guidance.
 ---
 
 # Spring Data JPA Testing
 
 Use this skill for repository-level behavior and persistence correctness.
+
+## Scope and Precedence
+
+- This skill is authoritative for repository test strategy and persistence assertions.
+- Keep entity/repository design guidance in dedicated design skills (for example `jpa-patterns`), and avoid redefining those rules here.
 
 ## Workflow
 
