@@ -35,12 +35,31 @@ This file gives short, practical instructions for working in this repository.
 - If you touch database code, scan for transaction boundaries and lazy-loading pitfalls.
 - When adding endpoints, consider both WebMVC and WebFlux usage; follow existing patterns.
 
+## Modulith architecture
+- This application is organized as a Spring Modulith modular monolith.
+- Respect module boundaries: avoid introducing direct dependencies on internal packages from other modules.
+- Prefer communication through existing exposed services/contracts and established module interaction patterns.
+- When architectural/module boundaries change, update and verify modulith tests (for example `ApplicationModules.verify()` coverage).
+- Keep module responsibilities cohesive; do not move business logic across modules without explicit architectural intent.
+
 ## Skills
 - Skills under `.agents/skills/**` should be repo-agnostic by default so they can be reused across projects.
 - Place reusable skills in `.agents/skills/**` as the default location.
 - Do not hardcode repository names, repo-specific paths, or project-only assumptions in reusable skills.
 - If project-specific behavior is needed, keep it clearly marked as optional project overlay guidance.
 - If `.agents/skills/**` is not writable, stop and ask the user how to proceed before creating skills in any alternate directory.
+
+## Skill folder grouping
+- Group skills by domain under `.agents/skills/**` to keep the root tidy.
+- Preferred groups:
+  - `core/` language/framework fundamentals
+  - `api/` controller and API contract skills
+  - `data/` persistence and migrations
+  - `security/` authn/authz and JWT handling
+  - `integration/` outbound clients and external APIs
+  - `runtime/` scheduling/background processing
+  - `ops/` observability and platform operations
+  - `test/` testing strategy and specialized testing skills
 
 ## Skill update guardrails
 - Treat every skill listed in `skills-lock.json` as read-only.
@@ -55,6 +74,11 @@ This file gives short, practical instructions for working in this repository.
 - Activate `kotlin-springboot` for Spring Boot + Kotlin architecture, idiomatic Kotlin patterns, bean/service design, and framework integration work.
 - Activate `jpa-patterns` for JPA/Hibernate entity mapping, relationships, query optimization, transaction boundaries, auditing, indexing, pagination, and pooling.
 - Activate `spring-security` for authentication/authorization config, SecurityFilterChain rules, method security, OAuth2 resource server/client setup, and security test coverage.
+- Activate `flyway-postgres-migrations` for Flyway SQL migration design, versioning, repeatable migrations, and safe rollout patterns.
+- Activate `spring-scheduling-shedlock` for `@Scheduled` + `@SchedulerLock` behavior, lock strategy, idempotency, and transactional job boundaries.
+- Activate `spring-webclient-outbound-http` for outbound HTTP client design with `WebClient`, timeout/retry/error mapping, and downstream resilience.
+- Activate `observability-prometheus-loki` for Actuator/Micrometer metrics exposure, Prometheus scraping, structured logging, and Loki integration.
+- Activate `spring-jwt-claims-resolution` for JWT issuer/audience validation, claim-to-authority mapping, and request-context user resolution patterns.
 - For mixed tasks, combine all relevant skills rather than choosing only one.
 - Use this priority when guidance conflicts: correctness/security (`spring-security`, `kotlin-springboot`) before data integrity/performance (`jpa-patterns`) before style/ergonomics (`kotlin-springboot`).
 
