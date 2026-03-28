@@ -28,10 +28,11 @@ class ContestService(
             endTime = startTime.plusDays(durationDays),
         ).also { contestRepository.save(it) }
 
-    fun getContest(contestId: Long): Contest = contestRepository.getReferenceById(contestId)
+    fun getContest(contestId: Long): Contest = findContestByIdOrThrow(contestId)
 
     fun deleteContest(contestId: Long) {
-        contestRepository.deleteByContestId(contestId)
+        findContestByIdOrThrow(contestId)
+        contestRepository.deleteById(contestId)
     }
 
     fun updateContest(
@@ -40,13 +41,16 @@ class ContestService(
         contestStatus: ContestStatus?,
         startTime: LocalDateTime?,
     ): Contest =
-        contestRepository
-            .findByContestId(contestId)
+        findContestByIdOrThrow(contestId)
             .apply {
+                if (startTime != null) {
+                    if (this.contestStatus != AWAITING_START) {
+                        throw IllegalStateException("Cannot update startTime unless contest status is AWAITING_START")
+                    }
+                    this.updateStartTimePreservingDuration(startTime)
+                }
                 this.contestStatus = contestStatus ?: this.contestStatus
                 this.contestName = contestName ?: this.contestName
-                this.startTime = startTime ?: this.startTime
-                endTime = this.startTime.plusDays(30)
             }.also { contestRepository.save(it) }
 
     fun getActiveContests(): List<Contest> =
@@ -65,11 +69,12 @@ class ContestService(
         pageSize: Int,
     ): Page<Contest> = contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestId")))
 
-    fun findByContestId(contestId: Long): Contest = contestRepository.findByContestId(contestId)
-
     fun markContestAsCompleted(contestId: Long) {
-        contestRepository
-            .findByContestId(contestId)
-            .also { it.contestStatus = COMPLETED }
+        findContestByIdOrThrow(contestId).also { it.contestStatus = COMPLETED }
     }
+
+    private fun findContestByIdOrThrow(contestId: Long): Contest =
+        contestRepository
+            .findById(contestId)
+            .orElseThrow { NoSuchElementException("Contest with id $contestId does not exist") }
 }

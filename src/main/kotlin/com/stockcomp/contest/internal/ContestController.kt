@@ -50,7 +50,7 @@ class ContestController(
         @PathVariable contestId: Long,
     ): ResponseEntity<ContestDto> =
         contestService
-            .findByContestId(contestId)
+            .getContest(contestId)
             .let { ResponseEntity.ok(toContestDto(it)) }
 
     @PostMapping("/create")

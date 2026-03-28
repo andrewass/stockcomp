@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.time.Duration
 import java.time.LocalDateTime
 
 @Entity
@@ -45,7 +46,17 @@ class Contest(
         contestStatus = ContestStatus.COMPLETED
     }
 
-    override fun equals(other: Any?): Boolean = other is Contest && other.contestName == contestName
+    fun updateStartTimePreservingDuration(newStartTime: LocalDateTime) {
+        val duration = Duration.between(startTime, endTime)
+        startTime = newStartTime
+        endTime = newStartTime.plus(duration)
+    }
 
-    override fun hashCode(): Int = contestName.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Contest) return false
+        return contestId != null && contestId == other.contestId
+    }
+
+    override fun hashCode(): Int = contestId?.hashCode() ?: System.identityHashCode(this)
 }

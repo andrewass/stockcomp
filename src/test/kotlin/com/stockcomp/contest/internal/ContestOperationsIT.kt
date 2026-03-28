@@ -94,6 +94,13 @@ class ContestOperationsIT
         }
 
         @Test
+        fun `should return not found for unknown contest id`() {
+            mockMvc
+                .perform(mockMvcGetRequest("$basePath/99999999"))
+                .andExpect(status().isNotFound)
+        }
+
+        @Test
         fun `should find all contests`() {
             val firstContest = contestService.createContest("TestContest", contestStartTime, 30L)
             val secondContest = contestService.createContest("AnotherTestContest", contestStartTime, 30L)
@@ -138,6 +145,57 @@ class ContestOperationsIT
         }
 
         @Test
+        fun `should update start time and preserve contest duration before contest starts`() {
+            val initialStart = LocalDateTime.now().plusDays(7)
+            val durationDays = 12L
+            val contest = contestService.createContest("FutureContest", initialStart, durationDays)
+            val updatedStart = initialStart.plusDays(5)
+
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcPatchRequest("$basePath/update", "ADMIN")
+                            .content(
+                                mapper.writeValueAsString(
+                                    UpdateContestRequest(
+                                        contestId = contest.contestId!!,
+                                        startTime = updatedStart,
+                                    ),
+                                ),
+                            ),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            val updatedContest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
+            assertEquals(updatedStart, updatedContest.startTime)
+            assertEquals(updatedStart.plusDays(durationDays), updatedContest.endTime)
+        }
+
+        @Test
+        fun `should reject start time update when contest status is not awaiting start`() {
+            val contest = contestService.createContest("StartedContest", LocalDateTime.now().plusDays(5), 10L)
+            contestService.updateContest(
+                contestId = contest.contestId!!,
+                contestName = null,
+                contestStatus = ContestStatus.RUNNING,
+                startTime = null,
+            )
+
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("$basePath/update", "ADMIN")
+                        .content(
+                            mapper.writeValueAsString(
+                                UpdateContestRequest(
+                                    contestId = contest.contestId!!,
+                                    startTime = LocalDateTime.now().plusDays(2),
+                                ),
+                            ),
+                        ),
+                ).andExpect(status().isConflict)
+        }
+
+        @Test
         fun `should delete an existing contest`() {
             val existingContest = contestService.createContest("TestContest", contestStartTime, 30L)
 
@@ -147,5 +205,12 @@ class ContestOperationsIT
 
             val persistedContests = contestService.getAllContestsSorted(0, 5)
             assertTrue(persistedContests.totalElements == 0L)
+        }
+
+        @Test
+        fun `should return not found when deleting unknown contest`() {
+            mockMvc
+                .perform(mockMvcDeleteRequest("$basePath/99999999", "ADMIN"))
+                .andExpect(status().isNotFound)
         }
     }
