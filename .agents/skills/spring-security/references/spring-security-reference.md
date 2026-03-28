@@ -2,6 +2,13 @@
 
 This file captures the official-source baseline used when authoring this skill. Refresh against official Spring documentation before major changes.
 
+## Verification Metadata
+
+- Last verified: 2026-03-28
+- Verification method: Context7 against official Spring Security documentation
+- Primary Context7 library:
+  - `/websites/spring_io_spring-security_reference_7_0`
+
 ## Source Baseline
 
 - Preferred docs: official Spring Security 7.0 reference pages.

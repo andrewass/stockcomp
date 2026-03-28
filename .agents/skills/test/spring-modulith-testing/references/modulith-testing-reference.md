@@ -1,5 +1,12 @@
 # Spring Modulith Testing Reference
 
+## Verification Metadata
+
+- Last verified: 2026-03-28
+- Verification method: Context7 against official Spring Modulith docs
+- Primary Context7 library:
+  - `/spring-projects/spring-modulith`
+
 ## Source Baseline
 
 - Spring Modulith testing docs and examples:

@@ -1,5 +1,12 @@
 # Spring Integration Testcontainers Reference
 
+## Verification Metadata
+
+- Last verified: 2026-03-28
+- Verification method: Context7 against official Spring Boot docs
+- Primary Context7 library:
+  - `/spring-projects/spring-boot/v4.0.3`
+
 ## Source Baseline
 
 - Spring Boot testing docs for full-context integration testing.

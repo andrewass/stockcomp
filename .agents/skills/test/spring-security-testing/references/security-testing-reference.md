@@ -1,5 +1,12 @@
 # Spring Security Testing Reference
 
+## Verification Metadata
+
+- Last verified: 2026-03-28
+- Verification method: Context7 against official Spring Security docs
+- Primary Context7 library:
+  - `/websites/spring_io_spring-security_reference_7_0`
+
 ## Source Baseline
 
 - Spring Security test reference for Servlet stack:
@@ -16,6 +23,6 @@
 
 ## Links
 
-- https://docs.spring.io/spring-security/reference/6.5/servlet/test/mockmvc/setup.html
-- https://docs.spring.io/spring-security/reference/6.5/servlet/test/mockmvc/index.html
-- https://docs.spring.io/spring-security/reference/6.5/servlet/authorization/method-security.html
+- https://docs.spring.io/spring-security/reference/7.0/servlet/test/mockmvc/setup.html
+- https://docs.spring.io/spring-security/reference/7.0/servlet/test/mockmvc/index.html
+- https://docs.spring.io/spring-security/reference/7.0/servlet/authorization/method-security.html

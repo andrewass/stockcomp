@@ -1,5 +1,13 @@
 # Spring Data JPA Testing Reference
 
+## Verification Metadata
+
+- Last verified: 2026-03-28
+- Verification method: Context7 against official Spring docs
+- Primary Context7 libraries:
+  - `/spring-projects/spring-boot/v4.0.3`
+  - `/spring-projects/spring-data-jpa`
+
 ## Source Baseline
 
 - Spring Boot testing docs (`@DataJpaTest`).
