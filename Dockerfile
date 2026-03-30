@@ -1,8 +1,9 @@
-# Build stage (with Maven)
-FROM maven:3.9.11-eclipse-temurin-21 AS builder
+# Build stage (with Maven Wrapper)
+FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
 # Runtime stage (Distroless JRE)
 FROM gcr.io/distroless/java21:nonroot

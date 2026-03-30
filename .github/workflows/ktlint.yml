@@ -22,4 +22,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Ktlint check
-        run: mvn exec:exec@ktlint-check
+        run: ./mvnw exec:exec@ktlint-check
