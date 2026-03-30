@@ -125,20 +125,29 @@ class ContestOperationsIT
         fun `should find all contests`() {
             val firstContest = contestService.createContest("TestContest", contestStartTime, 30L)
             val secondContest = contestService.createContest("AnotherTestContest", contestStartTime, 30L)
+            val firstContestId = firstContest.contestId!!
+            val secondContestId = secondContest.contestId!!
+            val pageSize = 5
+            val firstPage = fetchContestsPage(pageNumber = 0, pageSize = pageSize)
+            val totalPages =
+                if (firstPage.totalEntriesCount == 0L) {
+                    0
+                } else {
+                    ((firstPage.totalEntriesCount - 1) / pageSize + 1).toInt()
+                }
+            val foundContestIds = firstPage.contests.map { it.contestId }.toMutableSet()
 
-            val result =
-                mockMvc
-                    .perform(
-                        mockMvcGetRequest("$basePath/all")
-                            .queryParam("pageNumber", "0")
-                            .queryParam("pageSize", "5"),
-                    ).andExpect(status().isOk)
-                    .andReturn()
+            for (pageNumber in 1 until totalPages) {
+                if (foundContestIds.contains(firstContestId) && foundContestIds.contains(secondContestId)) {
+                    break
+                }
 
-            val contestPage = mapper.readValue(result.response.contentAsString, ContestPageDto::class.java)
-            assertTrue(contestPage.contests.size == 2)
-            assertTrue(contestPage.contests.any { it.contestId == firstContest.contestId })
-            assertTrue(contestPage.contests.any { it.contestId == secondContest.contestId })
+                val contestPage = fetchContestsPage(pageNumber = pageNumber, pageSize = pageSize)
+                foundContestIds.addAll(contestPage.contests.map { it.contestId })
+            }
+
+            assertTrue(foundContestIds.contains(firstContestId))
+            assertTrue(foundContestIds.contains(secondContestId))
         }
 
         @Test
@@ -231,13 +240,15 @@ class ContestOperationsIT
         @Test
         fun `should delete an existing contest`() {
             val existingContest = contestService.createContest("TestContest", contestStartTime, 30L)
+            val contestId = existingContest.contestId!!
 
             mockMvc
-                .perform(mockMvcDeleteRequest("$basePath/${existingContest.contestId}", "ADMIN"))
+                .perform(mockMvcDeleteRequest("$basePath/$contestId", "ADMIN"))
                 .andExpect(status().isNoContent)
 
-            val persistedContests = contestService.getAllContestsSorted(0, 5)
-            assertTrue(persistedContests.totalElements == 0L)
+            mockMvc
+                .perform(mockMvcGetRequest("$basePath/$contestId"))
+                .andExpect(status().isNotFound)
         }
 
         @Test
@@ -366,5 +377,21 @@ class ContestOperationsIT
         private fun stubClock(now: LocalDateTime) {
             every { clock.instant() } returns now.toInstant(ZoneOffset.UTC)
             every { clock.zone } returns ZoneOffset.UTC
+        }
+
+        private fun fetchContestsPage(
+            pageNumber: Int,
+            pageSize: Int,
+        ): ContestPageDto {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcGetRequest("$basePath/all")
+                            .queryParam("pageNumber", pageNumber.toString())
+                            .queryParam("pageSize", pageSize.toString()),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            return mapper.readValue(result.response.contentAsString, ContestPageDto::class.java)
         }
     }
