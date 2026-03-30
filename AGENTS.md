@@ -21,6 +21,18 @@ This file gives short, practical instructions for working in this repository.
 - Ktlint check (verify only): `./mvnw exec:exec@ktlint-check`
 - Ktlint format (auto-fix): `./mvnw exec:exec@ktlint-format`
 
+## Maven and verification policy
+- Use Maven Wrapper for all Maven operations in this repository.
+- Run the wrapper script appropriate for the current environment (`mvnw` or `mvnw.cmd`).
+- Do not default to system `mvn`.
+- Fall back to local `mvn` only if wrapper execution is not possible; explicitly report the fallback reason and `mvn -v`.
+- Prefer fixing wrapper issues instead of switching to local Maven.
+- After code changes, run this command flow via Maven Wrapper: `mvnw clean verify -DskipITs=false` then `mvnw exec:exec@ktlint-format`.
+- If tests cannot run because a Testcontainers-compatible runtime is unavailable (for example Docker Desktop, Colima, or Podman), report that test execution is blocked and why.
+- Never claim tests passed if they were not executed.
+- If test execution is blocked by missing container runtime, still run `mvnw exec:exec@ktlint-format`.
+- Include formatting-only file changes in the same change set/commit.
+
 ## Conventions
 - Prefer Kotlin data classes for DTOs and use immutable collections where possible.
 - Keep Spring beans small and single-purpose; favor constructor injection.
