@@ -24,6 +24,8 @@ class UserSubject(
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,
-    val isvalid: Boolean,
+    @Column(name = "IS_VALID", nullable = false)
+    val isValid: Boolean,
+    @Column(name = "EXTERNAL_SUBJECT_ID", nullable = false)
     val externalSubjectId: String,
 ) : BaseEntity()

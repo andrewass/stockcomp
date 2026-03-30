@@ -77,17 +77,11 @@ class InvestmentOperationsIT
             participantId: Long,
             symbol: String,
         ) {
-            val participant = participantRepository.findByParticipantId(participantId)
-            val investment =
-                Investment(
-                    symbol = symbol,
-                    participant = participant,
-                    amount = 4,
-                    averageUnitCost = 100.0,
-                    totalProfit = 5.0,
-                    totalValue = 400.0,
-                )
-            participant.investments.add(investment)
+            val participant =
+                participantRepository.findByParticipantId(participantId)
+                    ?: throw NoSuchElementException("Participant $participantId was not found in test setup")
+            participant.updateParticipantWhenBuying(amount = 4, symbol = symbol, currentPrice = 100.0)
+            participant.updateInvestmentValues()
             participantRepository.save(participant)
         }
 

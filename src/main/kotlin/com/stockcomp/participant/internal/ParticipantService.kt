@@ -24,13 +24,18 @@ class ParticipantService(
     fun signUpParticipant(
         userId: Long,
         contestId: Long,
-    ): Participant =
-        participantRepository.save(
+    ): Participant {
+        contestService.getContest(contestId)
+        if (participantRepository.existsByUserIdAndContestId(userId, contestId)) {
+            throw IllegalStateException("User $userId is already signed up for contest $contestId")
+        }
+        return participantRepository.save(
             Participant(
                 userId = userId,
                 contestId = contestId,
             ),
         )
+    }
 
     fun getParticipatingContests(userId: Long): List<ContestParticipantDto> =
         contestService.getActiveContests().mapNotNull { contest ->
@@ -49,25 +54,30 @@ class ParticipantService(
     fun getDetailedParticipantsForSymbol(
         userId: Long,
         symbol: String,
-    ): List<DetailedParticipantDto> =
-        contestService
+    ): List<DetailedParticipantDto> {
+        val normalizedSymbol = symbol.trim().uppercase()
+        return contestService
             .getRunningContests()
-            .mapNotNull { getOptionalParticipant(it.contestId, userId) }
-            .map { participant ->
-                DetailedParticipantDto(
-                    contest = contestService.getContest(participant.contestId),
-                    participant = toUserParticipantDto(participant),
-                    investments = participant.getInvestmentsForSymbol(symbol).map { mapToInvestmentDto(it) },
-                    completedOrders =
-                        participant
-                            .getCompletedInvestmentOrdersForSymbol(symbol)
-                            .map { mapToInvestmentOrderDto(it) },
-                    activeOrders =
-                        participant
-                            .getActiveInvestmentOrders()
-                            .map { mapToInvestmentOrderDto(it) },
-                )
+            .mapNotNull { contest ->
+                participantRepository
+                    .findByUserIdAndContestId(userId = userId, contestId = contest.contestId)
+                    ?.let { participant ->
+                        DetailedParticipantDto(
+                            contest = contest,
+                            participant = toUserParticipantDto(participant),
+                            investments = participant.getInvestmentsForSymbol(normalizedSymbol).map { mapToInvestmentDto(it) },
+                            completedOrders =
+                                participant
+                                    .getCompletedInvestmentOrdersForSymbol(normalizedSymbol)
+                                    .map { mapToInvestmentOrderDto(it) },
+                            activeOrders =
+                                participant
+                                    .getActiveInvestmentOrdersForSymbol(normalizedSymbol)
+                                    .map { mapToInvestmentOrderDto(it) },
+                        )
+                    }
             }
+    }
 
     fun getDetailedParticipantForContest(
         contestId: Long,
@@ -80,7 +90,7 @@ class ParticipantService(
                 DetailedParticipantDto(
                     contest = contest,
                     participant = toUserParticipantDto(it),
-                    investments = it.investments.map { investment -> mapToInvestmentDto(investment) },
+                    investments = it.investments().map { investment -> mapToInvestmentDto(investment) },
                     completedOrders =
                         it
                             .getCompletedInvestmentOrders()
@@ -106,7 +116,9 @@ class ParticipantService(
     fun getParticipant(
         contestId: Long,
         userId: Long,
-    ): Participant = participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)!!
+    ): Participant =
+        participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
+            ?: throw NoSuchElementException("Participant for user $userId in contest $contestId was not found")
 
     fun getAllByContest(contestId: Long): List<Participant> = participantRepository.findAllByContestId(contestId)
 
@@ -117,10 +129,20 @@ class ParticipantService(
             .filter { contestService.isCompletedContest(it.contestId) }
     }
 
-    private fun getOptionalParticipant(
+    fun getParticipantByIdAndUserId(
+        participantId: Long,
+        userId: Long,
+    ): Participant =
+        participantRepository
+            .findByParticipantIdAndUserId(participantId = participantId, userId = userId)
+            ?: throw NoSuchElementException("Participant $participantId was not found for user $userId")
+
+    fun findOptionalParticipant(
         contestId: Long,
         userId: Long,
     ): Participant? = participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
 
-    private fun getParticipantCount(contestId: Long): Long = participantRepository.countByContestId(contestId)
+    fun getParticipantByIdLocked(participantId: Long): Participant = participantRepository.findByIdLocked(participantId)
+
+    fun saveParticipant(participant: Participant): Participant = participantRepository.save(participant)
 }

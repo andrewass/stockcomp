@@ -13,7 +13,8 @@ class InvestmentProcessingService(
 ) {
     fun maintainInvestments(participantId: Long) {
         val participant = participantRepository.findByIdLocked(participantId)
-        participant.investments
+        participant
+            .investments()
             .onEach {
                 val price = symbolService.getCurrentPrice(it.symbol)
                 it.maintainInvestment(price.currentPrice)
@@ -26,11 +27,13 @@ class InvestmentProcessingService(
         contestId: Long,
         userId: Long,
         symbol: String,
-    ): Investment? =
-        participantRepository
+    ): Investment? {
+        val normalizedSymbol = symbol.trim().uppercase()
+        return participantRepository
             .findByUserIdAndContestId(contestId = contestId, userId = userId)
-            ?.investments
-            ?.firstOrNull { it.symbol == symbol }
+            ?.investments()
+            ?.firstOrNull { it.symbol == normalizedSymbol }
+    }
 
     fun getInvestmentsForParticipant(
         contestId: Long,
@@ -38,5 +41,5 @@ class InvestmentProcessingService(
     ): List<Investment> =
         participantRepository
             .findByUserIdAndContestId(contestId = contestId, userId = userId)
-            ?.investments ?: emptyList()
+            ?.investments() ?: emptyList()
 }

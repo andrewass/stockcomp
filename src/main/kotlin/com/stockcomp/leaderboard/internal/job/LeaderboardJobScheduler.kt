@@ -19,12 +19,13 @@ class LeaderboardJobScheduler(
     @Scheduled(fixedDelay = 5000)
     @SchedulerLock(name = "lockForProcessLeaderboardJob")
     fun processLeaderboardJob() {
-        leaderboardJobRepository.findFirstByJobStatusInAndNextRunAtLessThanEqualOrderByNextRunAtAsc(
-            jobStatuses = openStatuses,
-            timeLimit = LocalDateTime.now(),
-        )?.also {
-            leaderboardJobProcessService.processJob(it)
-        }
+        leaderboardJobRepository
+            .findFirstByJobStatusInAndNextRunAtLessThanEqualOrderByNextRunAtAsc(
+                jobStatuses = openStatuses,
+                timeLimit = LocalDateTime.now(),
+            )?.also {
+                leaderboardJobProcessService.processJob(it)
+            }
     }
 
     @Transactional

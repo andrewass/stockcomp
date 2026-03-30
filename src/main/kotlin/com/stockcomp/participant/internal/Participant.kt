@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import kotlin.math.abs
 
 @Entity
 @Table(name = "T_PARTICIPANT")
@@ -24,20 +25,39 @@ class Participant(
     @Column(name = "CONTEST_ID", nullable = false)
     val contestId: Long,
 ) : BaseEntity() {
-    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val investmentOrders: MutableList<InvestmentOrder> = mutableListOf()
+    companion object {
+        private const val INITIAL_FUNDS = 20_000.00
+    }
 
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val investments: MutableList<Investment> = mutableListOf()
+    private val investmentOrders: MutableList<InvestmentOrder> = mutableListOf()
 
-    var totalValue: Double = 20000.00
+    @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val investments: MutableList<Investment> = mutableListOf()
 
-    var totalInvestmentValue: Double = 0.00
+    @Column(name = "TOTAL_VALUE", nullable = false)
+    private var totalValue: Double = INITIAL_FUNDS
 
-    var remainingFunds: Double = 20000.00
+    @Column(name = "TOTAL_INVESTMENT_VALUE", nullable = false)
+    private var totalInvestmentValue: Double = 0.00
+
+    @Column(name = "REMAINING_FUNDS", nullable = false)
+    private var remainingFunds: Double = INITIAL_FUNDS
 
     @Column(name = "PARTICIPANT_RANK")
-    var rank: Int? = null
+    private var rank: Int? = null
+
+    fun investmentOrders(): List<InvestmentOrder> = investmentOrders.toList()
+
+    fun investments(): List<Investment> = investments.toList()
+
+    fun totalValue(): Double = totalValue
+
+    fun totalInvestmentValue(): Double = totalInvestmentValue
+
+    fun remainingFunds(): Double = remainingFunds
+
+    fun rank(): Int? = rank
 
     fun getActiveInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isActive() }
 
@@ -56,13 +76,19 @@ class Participant(
         symbol: String,
         currentPrice: Double,
     ) {
+        require(amount > 0) { "Amount must be positive when buying for participant $participantId" }
+        require(currentPrice > 0.0) { "Current price must be positive when buying for participant $participantId" }
+
         val investment = getOrCreateInvestment(symbol)
         investment.updateWhenBuying(amount, currentPrice)
         remainingFunds -= currentPrice * amount
-        if (remainingFunds < 0) {
+        if (remainingFunds < -1e-6) {
             throw IllegalStateException(
                 "Remaining funds for $participantId is $remainingFunds. This value should never be negative",
             )
+        }
+        if (abs(remainingFunds) < 1e-6) {
+            remainingFunds = 0.0
         }
     }
 
@@ -71,8 +97,14 @@ class Participant(
         symbol: String,
         currentPrice: Double,
     ) {
+        require(amount > 0) { "Amount must be positive when selling for participant $participantId" }
+        require(currentPrice > 0.0) { "Current price must be positive when selling for participant $participantId" }
+
         val investment = getInvestment(symbol)
         investment.updateWhenSelling(amount)
+        if (investment.amount == 0) {
+            removeInvestment(investment)
+        }
         remainingFunds += currentPrice * amount
     }
 
@@ -83,7 +115,11 @@ class Participant(
             ?: Investment(symbol = symbol, participant = this)
                 .also { investments.add(it) }
 
-    private fun getInvestment(symbol: String): Investment = investments.first { it.symbol == symbol }
+    private fun getInvestment(symbol: String): Investment =
+        investments.firstOrNull { it.symbol == symbol }
+            ?: throw IllegalStateException(
+                "Participant $participantId does not own an investment for symbol $symbol",
+            )
 
     fun updateInvestmentValues() {
         val updatedTotalInvestmentsValue = investments.sumOf { it.totalValue }

@@ -29,7 +29,7 @@ class InvestmentTasks(
                         }
                 }
         } catch (e: Exception) {
-            logger.error("Failed maintain investments : ${e.message}")
+            logger.error("Failed maintain investments", e)
         }
     }
 }

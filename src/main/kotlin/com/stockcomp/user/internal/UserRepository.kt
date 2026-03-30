@@ -10,6 +10,15 @@ interface UserRepository : JpaRepository<User, Long> {
 
     fun existsByUsername(username: String): Boolean
 
-    @Query("SELECT U FROM User U JOIN UserSubject US ON US.externalSubjectId = :userSubject")
+    fun findByEmail(email: String): User?
+
+    @Query(
+        """
+        SELECT US.user
+        FROM UserSubject US
+        WHERE US.externalSubjectId = :userSubject
+        AND US.isValid = true
+        """,
+    )
     fun findByUserSubject(userSubject: String): User?
 }

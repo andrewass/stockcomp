@@ -13,7 +13,12 @@ import com.stockcomp.participant.mapToHistoricParticipant
 import com.stockcomp.participant.toParticipantPage
 import com.stockcomp.participant.toUserParticipantDto
 import com.stockcomp.user.UserServiceExternal
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
+import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+@Validated
 @RestController
 @RequestMapping("/participants")
 class ParticipantController(
@@ -33,7 +39,7 @@ class ParticipantController(
      */
     @PostMapping("/sign-up")
     fun signUpParticipant(
-        @RequestBody request: SignUpParticipantRequest,
+        @Valid @RequestBody request: SignUpParticipantRequest,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<UserParticipantDto> =
         participantService
@@ -64,7 +70,7 @@ class ParticipantController(
      */
     @GetMapping("/detailed/symbol/{symbol}")
     fun getDetailedParticipantsForSymbol(
-        @PathVariable symbol: String,
+        @PathVariable @NotBlank symbol: String,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<List<DetailedParticipantDto>> =
         ResponseEntity.ok(participantService.getDetailedParticipantsForSymbol(tokenClaims.userId, symbol))
@@ -74,7 +80,7 @@ class ParticipantController(
      */
     @GetMapping("/detailed/contest/{contestId}")
     fun getDetailedParticipantForContest(
-        @PathVariable contestId: Long,
+        @PathVariable @Positive contestId: Long,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<DetailedParticipantDto> =
         participantService
@@ -87,14 +93,14 @@ class ParticipantController(
      */
     @GetMapping("/sorted")
     fun getSortedParticipantWithUserDetailsForContest(
-        @RequestParam contestId: Long,
-        @RequestParam pageNumber: Int,
-        @RequestParam pageSize: Int,
+        @RequestParam @Positive contestId: Long,
+        @RequestParam @PositiveOrZero pageNumber: Int,
+        @RequestParam @Positive pageSize: Int,
     ): ResponseEntity<CommonParticipantPageDto> {
         val participantPage = participantService.getParticipantsSortedByRank(contestId, pageNumber, pageSize)
         val userDetails = userService.getUserDetails(participantPage.content.map { it.userId })
 
-        return ResponseEntity.ok(toParticipantPage(participantPage.content, userDetails))
+        return ResponseEntity.ok(toParticipantPage(participantPage.content, userDetails, participantPage.totalElements))
     }
 
     /**
@@ -102,7 +108,7 @@ class ParticipantController(
      */
     @GetMapping("/history")
     fun getDetailedParticipantHistoryForUser(
-        @RequestParam username: String,
+        @RequestParam @NotBlank username: String,
     ): ResponseEntity<List<HistoricParticipantDto>> =
         participantService
             .getParticipantHistory(username)

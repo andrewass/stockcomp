@@ -63,8 +63,10 @@ class InvestmentOrderOperationsIT
             val participant = signUpForContest(contest.contestId)
             placeInvestmentOrder(participant.participantId)
 
-            val persistedParticipant = participantRepository.findByParticipantId(participant.participantId)
-            val orderId = persistedParticipant.investmentOrders.first().orderId!!
+            val persistedParticipant =
+                participantRepository.findByParticipantId(participant.participantId)
+                    ?: throw NoSuchElementException("Participant ${participant.participantId} missing in test setup")
+            val orderId = persistedParticipant.investmentOrders().first().orderId!!
 
             mockMvc
                 .perform(
@@ -85,6 +87,32 @@ class InvestmentOrderOperationsIT
             assertTrue(orders.isEmpty())
         }
 
+        @Test
+        fun `should not place order for participant owned by another user`() {
+            createUser(userEmail)
+            createUser("other-user@mail.com")
+            val contest = createContest("OwnershipContest")
+            val participant = signUpForContest(contest.contestId)
+
+            mockMvc
+                .perform(
+                    mockMvcPostRequest(url = "$basePath/order", emailClaim = "other-user@mail.com")
+                        .content(
+                            mapper.writeValueAsString(
+                                PlaceInvestmentOrderRequest(
+                                    participantId = participant.participantId,
+                                    symbol = "AAPL",
+                                    amount = 10,
+                                    currency = "USD",
+                                    expirationTime = LocalDateTime.now().plusDays(10),
+                                    acceptedPrice = 100.0,
+                                    transactionType = TransactionType.BUY,
+                                ),
+                            ),
+                        ),
+                ).andExpect(status().isNotFound)
+        }
+
         private fun placeInvestmentOrder(participantId: Long) {
             mockMvc
                 .perform(
@@ -98,7 +126,7 @@ class InvestmentOrderOperationsIT
                                     currency = "USD",
                                     expirationTime = LocalDateTime.now().plusDays(10),
                                     acceptedPrice = 100.0,
-                                    transactionType = "BUY",
+                                    transactionType = TransactionType.BUY,
                                 ),
                             ),
                         ),

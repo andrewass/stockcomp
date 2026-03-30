@@ -24,9 +24,13 @@ class TokenArgumentResolver(
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any {
+        val claimAccessor =
+            SecurityContextHolder.getContext().authentication?.credentials as? ClaimAccessor
+                ?: throw IllegalStateException("JWT claims are missing from security context")
         val userSubject =
-            (SecurityContextHolder.getContext().authentication?.credentials as ClaimAccessor)
-                .getClaimAsString("sub")
+            claimAccessor.getClaimAsString("email")
+                ?: claimAccessor.getClaimAsString("sub")
+                ?: throw IllegalStateException("Neither email nor sub claim was present in token")
 
         return TokenClaims(userId = userService.getUserIdBySubject(userSubject))
     }

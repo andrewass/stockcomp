@@ -10,7 +10,12 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ParticipantRepository : JpaRepository<Participant, Long> {
-    fun findByParticipantId(participantId: Long): Participant
+    fun findByParticipantId(participantId: Long): Participant?
+
+    fun findByParticipantIdAndUserId(
+        participantId: Long,
+        userId: Long,
+    ): Participant?
 
     fun findByUserIdAndContestId(
         userId: Long,

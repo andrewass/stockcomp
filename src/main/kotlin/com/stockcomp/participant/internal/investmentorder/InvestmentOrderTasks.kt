@@ -29,7 +29,7 @@ class InvestmentOrderTasks(
                         }
                 }
         } catch (e: Exception) {
-            logger.error("Failed order processing : ${e.message}")
+            logger.error("Failed order processing", e)
         }
     }
 }

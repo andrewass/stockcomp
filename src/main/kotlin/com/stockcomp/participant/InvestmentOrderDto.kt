@@ -3,16 +3,27 @@ package com.stockcomp.participant
 import com.stockcomp.participant.internal.investmentorder.InvestmentOrder
 import com.stockcomp.participant.internal.investmentorder.OrderStatus
 import com.stockcomp.participant.internal.investmentorder.TransactionType
+import jakarta.validation.constraints.Future
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
+import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
 data class PlaceInvestmentOrderRequest(
+    @field:Positive
     val participantId: Long,
+    @field:NotBlank
     val symbol: String,
+    @field:Positive
     val amount: Int,
+    @field:NotBlank
+    @field:Size(min = 3, max = 3)
     val currency: String,
+    @field:Future
     val expirationTime: LocalDateTime,
+    @field:Positive
     val acceptedPrice: Double,
-    val transactionType: String,
+    val transactionType: TransactionType,
 )
 
 data class InvestmentOrderDto(

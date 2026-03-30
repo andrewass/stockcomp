@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.stockcomp.configuration.ControllerIntegrationTest
 import com.stockcomp.configuration.mockMvcGetRequest
+import com.stockcomp.configuration.mockMvcPatchRequest
 import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.CreateContestRequest
@@ -13,6 +14,7 @@ import com.stockcomp.participant.DetailedParticipantDto
 import com.stockcomp.participant.PlaceInvestmentOrderRequest
 import com.stockcomp.participant.SignUpParticipantRequest
 import com.stockcomp.participant.UserParticipantDto
+import com.stockcomp.participant.internal.investmentorder.TransactionType
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UserDto
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -28,7 +30,6 @@ class ParticipantOperationsIT
     @Autowired
     constructor(
         private val mockMvc: MockMvc,
-        private val participantService: ParticipantService,
     ) {
         private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
@@ -44,6 +45,30 @@ class ParticipantOperationsIT
             val participant = signUpForContest(contest.contestId)
 
             assertEquals(user.userId, participant.userId)
+        }
+
+        @Test
+        fun `should return conflict when user signs up twice for same contest`() {
+            createUser(userEmail)
+            val contest = createContest("firstContest")
+            signUpForContest(contest.contestId)
+
+            mockMvc
+                .perform(
+                    mockMvcPostRequest(url = "$basePath/sign-up", emailClaim = userEmail)
+                        .content(mapper.writeValueAsString(SignUpParticipantRequest(contest.contestId))),
+                ).andExpect(status().isConflict)
+        }
+
+        @Test
+        fun `should return bad request for invalid sign up request`() {
+            createUser(userEmail)
+
+            mockMvc
+                .perform(
+                    mockMvcPostRequest(url = "$basePath/sign-up", emailClaim = userEmail)
+                        .content(mapper.writeValueAsString(SignUpParticipantRequest(contestId = -1))),
+                ).andExpect(status().isBadRequest)
         }
 
         @Test
@@ -84,6 +109,7 @@ class ParticipantOperationsIT
         fun `should return all participants where there exists investmentsorders of a given symbol`() {
             createUser(userEmail)
             val contest = createContest("firstContest")
+            markContestAsRunning(contest.contestId)
             val participant = signUpForContest(contest.contestId)
             placeInvestmentOrder(participant)
 
@@ -110,7 +136,7 @@ class ParticipantOperationsIT
                                     currency = "USD",
                                     expirationTime = LocalDateTime.now().plusDays(10),
                                     acceptedPrice = 100.00,
-                                    transactionType = "BUY",
+                                    transactionType = TransactionType.BUY,
                                 ),
                             ),
                         ),
@@ -143,6 +169,21 @@ class ParticipantOperationsIT
                     .andReturn()
 
             return mapper.readValue(result.response.contentAsString)
+        }
+
+        private fun markContestAsRunning(contestId: Long) {
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest(url = "/contests/update", role = "ADMIN")
+                        .content(
+                            mapper.writeValueAsString(
+                                mapOf(
+                                    "contestId" to contestId,
+                                    "contestStatus" to "RUNNING",
+                                ),
+                            ),
+                        ),
+                ).andExpect(status().isOk)
         }
 
         private fun createUser(email: String): UserDto {

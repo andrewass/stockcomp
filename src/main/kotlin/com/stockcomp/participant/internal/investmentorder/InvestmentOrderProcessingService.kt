@@ -1,6 +1,6 @@
 package com.stockcomp.participant.internal.investmentorder
 
-import com.stockcomp.participant.internal.ParticipantRepository
+import com.stockcomp.participant.internal.ParticipantService
 import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -9,22 +9,24 @@ import java.time.LocalDateTime
 @Service
 class InvestmentOrderProcessingService(
     private val symbolService: SymbolServiceExternal,
-    private val participantRepository: ParticipantRepository,
+    private val participantService: ParticipantService,
 ) {
     @Transactional
     fun processInvestmentOrders(participantId: Long) {
-        val participant = participantRepository.findByIdLocked(participantId)
+        val participant = participantService.getParticipantByIdLocked(participantId)
         participant
             .getActiveInvestmentOrders()
             .forEach {
                 val currentPrice = symbolService.getCurrentPrice(it.symbol)
                 it.processOrder(currentPrice.currentPrice)
-                participantRepository.save(participant)
             }
+        participant.updateInvestmentValues()
+        participantService.saveParticipant(participant)
     }
 
     @Transactional
     fun placeInvestmentOrder(
+        userId: Long,
         participantId: Long,
         currency: String,
         acceptedPrice: Double,
@@ -33,16 +35,17 @@ class InvestmentOrderProcessingService(
         amount: Int,
         transactionType: TransactionType,
     ) {
-        val participant = participantRepository.findByParticipantId(participantId)
+        val participant = participantService.getParticipantByIdAndUserId(participantId, userId)
         InvestmentOrder(
             participant = participant,
             currency = currency,
             acceptedPrice = acceptedPrice,
             expirationTime = expirationTime,
-            symbol = symbol,
+            symbol = symbol.trim().uppercase(),
             totalAmount = amount,
             transactionType = transactionType,
         ).also { participant.addInvestmentOrder(it) }
+        participantService.saveParticipant(participant)
     }
 
     @Transactional
@@ -51,25 +54,25 @@ class InvestmentOrderProcessingService(
         orderId: Long,
         contestId: Long,
     ) {
-        participantRepository
-            .findByUserIdAndContestId(contestId = contestId, userId = userId)!!
-            .also { it.removeInvestmentOrder(orderId) }
+        val participant = participantService.getParticipant(contestId = contestId, userId = userId)
+        participant.removeInvestmentOrder(orderId)
+        participantService.saveParticipant(participant)
     }
 
     fun getActiveOrders(
         contestId: Long,
         userId: Long,
     ): List<InvestmentOrder> =
-        participantRepository
-            .findByUserIdAndContestId(contestId = contestId, userId = userId)
+        participantService
+            .findOptionalParticipant(contestId = contestId, userId = userId)
             ?.getActiveInvestmentOrders() ?: emptyList()
 
     fun getCompletedOrders(
         contestId: Long,
         userId: Long,
     ): List<InvestmentOrder> =
-        participantRepository
-            .findByUserIdAndContestId(contestId = contestId, userId = userId)
+        participantService
+            .findOptionalParticipant(contestId = contestId, userId = userId)
             ?.getCompletedInvestmentOrders() ?: emptyList()
 
     fun getActiveOrdersSymbol(
@@ -77,10 +80,9 @@ class InvestmentOrderProcessingService(
         contestId: Long,
         userId: Long,
     ): List<InvestmentOrder> =
-        participantRepository
-            .findByUserIdAndContestId(contestId = contestId, userId = userId)
-            ?.getActiveInvestmentOrders()
-            ?.filter { it.symbol == symbol }
+        participantService
+            .findOptionalParticipant(contestId = contestId, userId = userId)
+            ?.getActiveInvestmentOrdersForSymbol(symbol.trim().uppercase())
             ?: emptyList()
 
     fun getCompletedOrdersSymbol(
@@ -88,9 +90,8 @@ class InvestmentOrderProcessingService(
         contestId: Long,
         userId: Long,
     ): List<InvestmentOrder> =
-        participantRepository
-            .findByUserIdAndContestId(contestId = contestId, userId = userId)
-            ?.getCompletedInvestmentOrders()
-            ?.filter { it.symbol == symbol }
+        participantService
+            .findOptionalParticipant(contestId = contestId, userId = userId)
+            ?.getCompletedInvestmentOrdersForSymbol(symbol.trim().uppercase())
             ?: emptyList()
 }

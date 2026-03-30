@@ -31,11 +31,18 @@ class Investment(
         amount: Int,
         currentPrice: Double,
     ) {
+        require(amount > 0) { "Buy amount must be positive for symbol $symbol" }
+        require(currentPrice > 0.0) { "Current price must be positive for symbol $symbol" }
+
         averageUnitCost = calculateAverageUnitCost(currentPrice = currentPrice, amount = amount)
         this.amount += amount
     }
 
     fun updateWhenSelling(amount: Int) {
+        require(amount > 0) { "Sell amount must be positive for symbol $symbol" }
+        require(this.amount >= amount) {
+            "Cannot sell $amount units for $symbol when only ${this.amount} are available"
+        }
         this.amount -= amount
     }
 

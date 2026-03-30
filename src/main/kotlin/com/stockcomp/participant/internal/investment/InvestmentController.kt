@@ -4,13 +4,16 @@ import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.participant.InvestmentDto
 import com.stockcomp.participant.mapToInvestmentDto
-import org.springframework.http.HttpStatus
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+@Validated
 @RestController
 @RequestMapping("/participants/investments")
 class InvestmentController(
@@ -19,7 +22,7 @@ class InvestmentController(
     @GetMapping("/all")
     fun getAllFromContest(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam contestId: Long,
+        @RequestParam @Positive contestId: Long,
     ): ResponseEntity<List<InvestmentDto>> =
         investmentService
             .getInvestmentsForParticipant(
@@ -31,8 +34,8 @@ class InvestmentController(
     @GetMapping
     fun getInvestmentBySymbolAndContest(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam symbol: String,
-        @RequestParam contestId: Long,
+        @RequestParam @NotBlank symbol: String,
+        @RequestParam @Positive contestId: Long,
     ): ResponseEntity<InvestmentDto> =
         investmentService
             .getInvestmentForSymbol(
@@ -40,5 +43,5 @@ class InvestmentController(
                 symbol = symbol,
                 userId = tokenClaims.userId,
             )?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
-            ?: ResponseEntity(HttpStatus.NOT_FOUND)
+            ?: ResponseEntity.notFound().build()
 }

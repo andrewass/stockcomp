@@ -40,8 +40,20 @@ class InvestmentOrder(
 
     fun isCompleted(): Boolean = orderStatus == OrderStatus.COMPLETED
 
+    private fun isExpired(): Boolean = expirationTime.isBefore(LocalDateTime.now())
+
     fun processOrder(currentPrice: Double) {
-        if (transactionType == TransactionType.BUY && participant.remainingFunds >= currentPrice) {
+        if (!isActive()) {
+            return
+        }
+
+        if (isExpired()) {
+            orderStatus = OrderStatus.TERMINATED
+            errorMessage = "Order expired before execution"
+            return
+        }
+
+        if (transactionType == TransactionType.BUY && participant.remainingFunds() >= currentPrice) {
             processBuyOrder(currentPrice)
         } else if (transactionType == TransactionType.SELL) {
             processSellOrder(currentPrice)
@@ -59,6 +71,11 @@ class InvestmentOrder(
     private fun processSellOrder(currentPrice: Double) {
         if (currentPrice >= acceptedPrice) {
             val availableAmount = participant.getInvestmentAmount(symbol)
+            if (availableAmount <= 0) {
+                orderStatus = OrderStatus.FAILED
+                errorMessage = "Cannot sell $symbol because participant does not own any units"
+                return
+            }
             val amountToSell = Integer.min(availableAmount, remainingAmount)
             participant.updateParticipantWhenSelling(amountToSell, symbol, currentPrice)
             postProcessOrder(amountToSell)
@@ -66,7 +83,7 @@ class InvestmentOrder(
     }
 
     private fun getAvailableAmountToBuy(currentPrice: Double): Int {
-        val maxAvailAmount = participant.remainingFunds / currentPrice
+        val maxAvailAmount = participant.remainingFunds() / currentPrice
         return Integer.min(maxAvailAmount.toInt(), remainingAmount)
     }
 

@@ -5,8 +5,11 @@ import com.stockcomp.common.TokenData
 import com.stockcomp.participant.InvestmentOrderDto
 import com.stockcomp.participant.PlaceInvestmentOrderRequest
 import com.stockcomp.participant.mapToInvestmentOrderDto
-import org.springframework.http.HttpStatus
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+@Validated
 @RestController
 @RequestMapping("/participants/investmentorders")
 class InvestmentOrderController(
@@ -23,36 +27,37 @@ class InvestmentOrderController(
     @PostMapping("/order")
     fun placeInvestmentOrder(
         @TokenData tokenClaims: TokenClaims,
-        @RequestBody request: PlaceInvestmentOrderRequest,
-    ): ResponseEntity<HttpStatus> =
+        @Valid @RequestBody request: PlaceInvestmentOrderRequest,
+    ): ResponseEntity<Void> =
         investmentOrderProcessingService
             .placeInvestmentOrder(
+                userId = tokenClaims.userId,
                 participantId = request.participantId,
                 symbol = request.symbol,
                 acceptedPrice = request.acceptedPrice,
                 expirationTime = request.expirationTime,
                 amount = request.amount,
                 currency = request.currency,
-                transactionType = TransactionType.valueOf(request.transactionType),
-            ).let { ResponseEntity(HttpStatus.OK) }
+                transactionType = request.transactionType,
+            ).let { ResponseEntity.ok().build() }
 
     @DeleteMapping("/delete")
     fun deleteInvestmentOrder(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam orderId: Long,
-        @RequestParam contestId: Long,
-    ): ResponseEntity<HttpStatus> =
+        @RequestParam @Positive orderId: Long,
+        @RequestParam @Positive contestId: Long,
+    ): ResponseEntity<Void> =
         investmentOrderProcessingService
             .deleteInvestmentOrder(
                 userId = tokenClaims.userId,
                 orderId = orderId,
                 contestId = contestId,
-            ).let { ResponseEntity(HttpStatus.OK) }
+            ).let { ResponseEntity.ok().build() }
 
     @GetMapping("/all-active")
     fun getActiveInvestmentOrders(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam contestId: Long,
+        @RequestParam @Positive contestId: Long,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         investmentOrderProcessingService
             .getActiveOrders(contestId, tokenClaims.userId)
@@ -62,7 +67,7 @@ class InvestmentOrderController(
     @GetMapping("/all-completed")
     fun getCompletedInvestmentOrders(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam contestId: Long,
+        @RequestParam @Positive contestId: Long,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         investmentOrderProcessingService
             .getCompletedOrders(
@@ -74,8 +79,8 @@ class InvestmentOrderController(
     @GetMapping("/symbol-active")
     fun getActiveInvestmentOrdersSymbol(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam contestId: Long,
-        @RequestParam symbol: String,
+        @RequestParam @Positive contestId: Long,
+        @RequestParam @NotBlank symbol: String,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         investmentOrderProcessingService
             .getActiveOrdersSymbol(
@@ -88,8 +93,8 @@ class InvestmentOrderController(
     @GetMapping("/symbol-completed")
     fun getCompletedInvestmentOrdersSymbol(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam contestId: Long,
-        @RequestParam symbol: String,
+        @RequestParam @Positive contestId: Long,
+        @RequestParam @NotBlank symbol: String,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         investmentOrderProcessingService
             .getCompletedOrdersSymbol(
