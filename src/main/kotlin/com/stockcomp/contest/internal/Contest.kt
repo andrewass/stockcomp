@@ -19,37 +19,74 @@ class Contest(
     @Column(name = "CONTEST_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val contestId: Long? = null,
-    var startTime: LocalDateTime,
-    var endTime: LocalDateTime,
-    var contestName: String,
-) : BaseEntity() {
+    @Column(name = "START_TIME", nullable = false)
+    private var _startTime: LocalDateTime,
+    @Column(name = "END_TIME", nullable = false)
+    private var _endTime: LocalDateTime,
+    @Column(name = "CONTEST_NAME", nullable = false)
+    private var _contestName: String,
     @Enumerated(EnumType.STRING)
-    var contestStatus: ContestStatus = ContestStatus.AWAITING_START
+    @Column(name = "CONTEST_STATUS", nullable = false)
+    private var _contestStatus: ContestStatus = ContestStatus.AWAITING_START,
+) : BaseEntity() {
+    constructor(
+        contestName: String,
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
+        contestStatus: ContestStatus = ContestStatus.AWAITING_START,
+        contestId: Long? = null,
+    ) : this(
+        contestId = contestId,
+        _startTime = startTime,
+        _endTime = endTime,
+        _contestName = contestName,
+        _contestStatus = contestStatus,
+    )
 
-    fun isCompleted(): Boolean = contestStatus === ContestStatus.COMPLETED
+    val contestStatus: ContestStatus
+        get() = _contestStatus
 
-    fun shouldStartContest(now: LocalDateTime): Boolean = contestStatus == ContestStatus.AWAITING_START && startTime.isBefore(now)
+    val contestName: String
+        get() = _contestName
+
+    val startTime: LocalDateTime
+        get() = _startTime
+
+    val endTime: LocalDateTime
+        get() = _endTime
+
+    fun isCompleted(): Boolean = _contestStatus === ContestStatus.COMPLETED
+
+    fun shouldStartContest(now: LocalDateTime): Boolean = _contestStatus == ContestStatus.AWAITING_START && _startTime.isBefore(now)
 
     fun shouldStopFinishedContest(now: LocalDateTime): Boolean =
-        setOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START).contains(contestStatus) &&
-            endTime.isBefore(now)
+        setOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START).contains(_contestStatus) &&
+            _endTime.isBefore(now)
 
     fun startContest() {
-        contestStatus = ContestStatus.RUNNING
+        _contestStatus = ContestStatus.RUNNING
     }
 
     fun stopFinishedContest() {
-        contestStatus = ContestStatus.AWAITING_COMPLETION
+        _contestStatus = ContestStatus.AWAITING_COMPLETION
     }
 
     fun setContestAsCompleted() {
-        contestStatus = ContestStatus.COMPLETED
+        _contestStatus = ContestStatus.COMPLETED
+    }
+
+    fun updateContestStatus(newStatus: ContestStatus) {
+        _contestStatus = newStatus
+    }
+
+    fun renameContest(newContestName: String) {
+        _contestName = newContestName
     }
 
     fun updateStartTimePreservingDuration(newStartTime: LocalDateTime) {
-        val duration = Duration.between(startTime, endTime)
-        startTime = newStartTime
-        endTime = newStartTime.plus(duration)
+        val duration = Duration.between(_startTime, _endTime)
+        _startTime = newStartTime
+        _endTime = newStartTime.plus(duration)
     }
 
     override fun equals(other: Any?): Boolean {

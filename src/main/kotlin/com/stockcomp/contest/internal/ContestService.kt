@@ -49,8 +49,8 @@ class ContestService(
                     }
                     this.updateStartTimePreservingDuration(startTime)
                 }
-                this.contestStatus = contestStatus ?: this.contestStatus
-                this.contestName = contestName ?: this.contestName
+                contestStatus?.let { this.updateContestStatus(it) }
+                contestName?.let { this.renameContest(it) }
             }.also { contestRepository.save(it) }
 
     fun getActiveContests(): List<Contest> =
@@ -70,7 +70,7 @@ class ContestService(
     ): Page<Contest> = contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestId")))
 
     fun markContestAsCompleted(contestId: Long) {
-        findContestByIdOrThrow(contestId).also { it.contestStatus = COMPLETED }
+        findContestByIdOrThrow(contestId).also { it.setContestAsCompleted() }
     }
 
     private fun findContestByIdOrThrow(contestId: Long): Contest =

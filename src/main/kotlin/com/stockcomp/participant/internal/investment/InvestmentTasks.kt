@@ -25,7 +25,11 @@ class InvestmentTasks(
                     participantService
                         .getAllByContest(contest.contestId)
                         .forEach { participant ->
-                            investmentProcessingService.maintainInvestments(participant.participantId!!)
+                            val participantId =
+                                requireNotNull(participant.participantId) {
+                                    "Participant id is null while maintaining investments for contest ${contest.contestId}"
+                                }
+                            investmentProcessingService.maintainInvestments(participantId)
                         }
                 }
         } catch (e: Exception) {

@@ -23,22 +23,34 @@ class InvestmentOrder(
     val orderId: Long? = null,
     val symbol: String,
     val totalAmount: Int,
-    var remainingAmount: Int = totalAmount,
+    @Column(name = "REMAINING_AMOUNT", nullable = false)
+    private var _remainingAmount: Int = totalAmount,
     val acceptedPrice: Double,
     val currency: String,
     val expirationTime: LocalDateTime,
     @Enumerated(EnumType.STRING)
     val transactionType: TransactionType,
     @Enumerated(EnumType.STRING)
-    var orderStatus: OrderStatus = OrderStatus.ACTIVE,
-    var errorMessage: String? = null,
+    @Column(name = "ORDER_STATUS", nullable = false)
+    private var _orderStatus: OrderStatus = OrderStatus.ACTIVE,
+    @Column(name = "ERROR_MESSAGE")
+    private var _errorMessage: String? = null,
     @ManyToOne
     @JoinColumn(name = "PARTICIPANT_ID", nullable = false)
     val participant: Participant,
 ) : BaseEntity() {
-    fun isActive(): Boolean = orderStatus == OrderStatus.ACTIVE
+    val remainingAmount: Int
+        get() = _remainingAmount
 
-    fun isCompleted(): Boolean = orderStatus == OrderStatus.COMPLETED
+    val orderStatus: OrderStatus
+        get() = _orderStatus
+
+    val errorMessage: String?
+        get() = _errorMessage
+
+    fun isActive(): Boolean = _orderStatus == OrderStatus.ACTIVE
+
+    fun isCompleted(): Boolean = _orderStatus == OrderStatus.COMPLETED
 
     private fun isExpired(): Boolean = expirationTime.isBefore(LocalDateTime.now())
 
@@ -48,8 +60,8 @@ class InvestmentOrder(
         }
 
         if (isExpired()) {
-            orderStatus = OrderStatus.TERMINATED
-            errorMessage = "Order expired before execution"
+            _orderStatus = OrderStatus.TERMINATED
+            _errorMessage = "Order expired before execution"
             return
         }
 
@@ -72,11 +84,11 @@ class InvestmentOrder(
         if (currentPrice >= acceptedPrice) {
             val availableAmount = participant.getInvestmentAmount(symbol)
             if (availableAmount <= 0) {
-                orderStatus = OrderStatus.FAILED
-                errorMessage = "Cannot sell $symbol because participant does not own any units"
+                _orderStatus = OrderStatus.FAILED
+                _errorMessage = "Cannot sell $symbol because participant does not own any units"
                 return
             }
-            val amountToSell = Integer.min(availableAmount, remainingAmount)
+            val amountToSell = minOf(availableAmount, _remainingAmount)
             participant.updateParticipantWhenSelling(amountToSell, symbol, currentPrice)
             postProcessOrder(amountToSell)
         }
@@ -84,13 +96,13 @@ class InvestmentOrder(
 
     private fun getAvailableAmountToBuy(currentPrice: Double): Int {
         val maxAvailAmount = participant.remainingFunds() / currentPrice
-        return Integer.min(maxAvailAmount.toInt(), remainingAmount)
+        return minOf(maxAvailAmount.toInt(), _remainingAmount)
     }
 
     private fun postProcessOrder(amount: Int) {
-        remainingAmount -= amount
-        if (remainingAmount == 0) {
-            orderStatus = OrderStatus.COMPLETED
+        _remainingAmount -= amount
+        if (_remainingAmount == 0) {
+            _orderStatus = OrderStatus.COMPLETED
         }
     }
 }

@@ -27,17 +27,13 @@ class LeaderboardController(
         @RequestParam @PositiveOrZero pageNumber: Int,
         @RequestParam @Positive pageSize: Int,
     ): ResponseEntity<LeaderboardEntryPageDto> =
-        leaderboardQueryService
-            .getSortedLeaderboardEntries(pageNumber, pageSize)
-            .let { ResponseEntity.ok(mapToLeaderboardEntryPageDto(it)) }
+        ResponseEntity.ok(mapToLeaderboardEntryPageDto(leaderboardQueryService.getSortedLeaderboardEntries(pageNumber, pageSize)))
 
     @GetMapping("/user/{userId}")
     fun getLeaderboardEntryForUser(
         @PathVariable @Positive userId: Long,
     ): ResponseEntity<LeaderboardEntryDto> =
-        leaderboardQueryService
-            .getLeaderboardEntryForUser(userId)
-            .let { ResponseEntity.ok(mapToLeaderboardEntryDto(it)) }
+        ResponseEntity.ok(mapToLeaderboardEntryDto(leaderboardQueryService.getLeaderboardEntryForUser(userId)))
 
     @PostMapping("/update")
     fun updateLeaderboard(

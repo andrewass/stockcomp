@@ -42,9 +42,9 @@ class ParticipantController(
         @Valid @RequestBody request: SignUpParticipantRequest,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<UserParticipantDto> =
-        participantService
-            .signUpParticipant(userId = tokenClaims.userId, contestId = request.contestId)
-            .let { ResponseEntity.ok(toUserParticipantDto(it)) }
+        ResponseEntity.ok(
+            toUserParticipantDto(participantService.signUpParticipant(userId = tokenClaims.userId, contestId = request.contestId)),
+        )
 
     /**
      * Get all the signed up participants for a given user
@@ -52,10 +52,7 @@ class ParticipantController(
     @GetMapping("/registered")
     fun registeredParticipant(
         @TokenData tokenClaims: TokenClaims,
-    ): ResponseEntity<List<ContestParticipantDto>> =
-        participantService
-            .getParticipatingContests(tokenClaims.userId)
-            .let { ResponseEntity.ok(it) }
+    ): ResponseEntity<List<ContestParticipantDto>> = ResponseEntity.ok(participantService.getParticipatingContests(tokenClaims.userId))
 
     /**
      * Get all the contests the user has not signed up for
@@ -82,11 +79,14 @@ class ParticipantController(
     fun getDetailedParticipantForContest(
         @PathVariable @Positive contestId: Long,
         @TokenData tokenClaims: TokenClaims,
-    ): ResponseEntity<DetailedParticipantDto> =
-        participantService
-            .getDetailedParticipantForContest(contestId, tokenClaims.userId)
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
+    ): ResponseEntity<DetailedParticipantDto> {
+        val participant = participantService.getDetailedParticipantForContest(contestId, tokenClaims.userId)
+        return if (participant != null) {
+            ResponseEntity.ok(participant)
+        } else {
+            ResponseEntity.noContent().build()
+        }
+    }
 
     /**
      * Get sorted participants for a given contest
@@ -110,8 +110,5 @@ class ParticipantController(
     fun getDetailedParticipantHistoryForUser(
         @RequestParam @NotBlank username: String,
     ): ResponseEntity<List<HistoricParticipantDto>> =
-        participantService
-            .getParticipantHistory(username)
-            .map { mapToHistoricParticipant(it) }
-            .let { ResponseEntity.ok(it) }
+        ResponseEntity.ok(participantService.getParticipantHistory(username).map { mapToHistoricParticipant(it) })
 }

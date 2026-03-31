@@ -19,15 +19,45 @@ class User(
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val userId: Long? = null,
-    var username: String,
-    var fullName: String? = null,
+    @Column(name = "USERNAME")
+    private var _username: String,
+    @Column(name = "FULL_NAME")
+    private var _fullName: String? = null,
     val email: String,
-    var country: String? = null,
+    @Column(name = "COUNTRY")
+    private var _country: String? = null,
     @Enumerated(EnumType.STRING)
     val userRole: UserRole = UserRole.USER,
     @Enumerated(EnumType.STRING)
     val userStatus: UserStatus = UserStatus.ACTIVE,
 ) : BaseEntity() {
+    constructor(
+        email: String,
+        username: String,
+        fullName: String? = null,
+        country: String? = null,
+        userRole: UserRole = UserRole.USER,
+        userStatus: UserStatus = UserStatus.ACTIVE,
+        userId: Long? = null,
+    ) : this(
+        userId = userId,
+        _username = username,
+        _fullName = fullName,
+        email = email,
+        _country = country,
+        userRole = userRole,
+        userStatus = userStatus,
+    )
+
+    val username: String
+        get() = _username
+
+    val fullName: String?
+        get() = _fullName
+
+    val country: String?
+        get() = _country
+
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     private val _userSubjects: MutableList<UserSubject> = mutableListOf()
 
@@ -36,5 +66,15 @@ class User(
 
     fun addUserSubject(userSubject: UserSubject) {
         _userSubjects.add(userSubject)
+    }
+
+    fun updateUserDetails(
+        username: String,
+        fullName: String?,
+        country: String?,
+    ) {
+        this._username = username
+        this._fullName = fullName
+        this._country = country
     }
 }

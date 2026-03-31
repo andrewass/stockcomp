@@ -30,7 +30,7 @@ data class CreateContestRequest(
 
 fun toContestDto(source: Contest) =
     ContestDto(
-        contestId = source.contestId!!,
+        contestId = requireNotNull(source.contestId) { "Contest id is null while mapping ContestDto" },
         contestName = source.contestName,
         contestStatus = source.contestStatus,
         endTime = source.endTime,

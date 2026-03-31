@@ -30,36 +30,28 @@ class UserController(
     fun getAllUsersSortedByEmail(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
-    ): ResponseEntity<UserPageDto> =
-        userService
-            .getAllUsersSortedByEmail(pageNumber, pageSize)
-            .let { ResponseEntity.ok(mapToUserPageDto(it)) }
+    ): ResponseEntity<UserPageDto> = ResponseEntity.ok(mapToUserPageDto(userService.getAllUsersSortedByEmail(pageNumber, pageSize)))
 
     @GetMapping("/details")
     fun getUserDetails(
         @RequestParam userId: Long,
-    ): ResponseEntity<UserDetailsDto> =
-        toUserDetailsDto(userService.findUserById(userId))
-            .let { ResponseEntity.ok(it) }
+    ): ResponseEntity<UserDetailsDto> = ResponseEntity.ok(toUserDetailsDto(userService.findUserById(userId)))
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     fun createUser(
         @RequestBody request: CreateUserRequest,
-    ): ResponseEntity<UserDto> =
-        userService
-            .createUser(request.email)
-            .let { ResponseEntity.ok(mapToUserDto(it)) }
+    ): ResponseEntity<UserDto> = ResponseEntity.ok(mapToUserDto(userService.createUser(request.email)))
 
     @PatchMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateUserDetails(
         @TokenData tokenClaims: TokenClaims,
         @RequestBody userDetailsDto: UserDetailsDto,
-    ): ResponseEntity<HttpStatus> =
-        userService
-            .updateUser(tokenClaims.userId, userDetailsDto)
-            .let { ResponseEntity(HttpStatus.OK) }
+    ): ResponseEntity<HttpStatus> {
+        userService.updateUser(tokenClaims.userId, userDetailsDto)
+        return ResponseEntity(HttpStatus.OK)
+    }
 
     @GetMapping("/admin")
     fun isAdmin(

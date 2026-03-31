@@ -37,7 +37,7 @@ fun mapToUserPageDto(source: Page<User>) =
 
 fun mapToUserDto(src: User) =
     UserDto(
-        userId = src.userId!!,
+        userId = requireNotNull(src.userId) { "User id is null while mapping UserDto" },
         username = src.username,
         email = src.email,
         userRole = src.userRole,
@@ -46,7 +46,7 @@ fun mapToUserDto(src: User) =
 
 fun toUserDetailsDto(user: User) =
     UserDetailsDto(
-        userId = user.userId!!,
+        userId = requireNotNull(user.userId) { "User id is null while mapping UserDetailsDto" },
         fullName = user.fullName,
         username = user.username,
         country = user.country,

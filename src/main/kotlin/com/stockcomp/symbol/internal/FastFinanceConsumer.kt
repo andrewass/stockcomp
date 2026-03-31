@@ -15,21 +15,25 @@ class FastFinanceConsumer(
     private lateinit var baseUrl: String
 
     override fun getCurrentPrice(symbol: String): CurrentPriceSymbolDto =
-        webClient
-            .get()
-            .uri(URI("$baseUrl/price/current/$symbol"))
-            .retrieve()
-            .bodyToMono<CurrentPriceSymbolDto>()
-            .block()!!
+        requireNotNull(
+            webClient
+                .get()
+                .uri(URI("$baseUrl/price/current/$symbol"))
+                .retrieve()
+                .bodyToMono<CurrentPriceSymbolDto>()
+                .block(),
+        ) { "FastFinance returned empty current price for symbol=$symbol" }
 
     override fun getCurrentPriceTrendingSymbols(symbols: List<String>): List<CurrentPriceSymbolDto> =
-        webClient
-            .post()
-            .uri(URI("$baseUrl/price/symbols"))
-            .bodyValue(TrendingSymbolsRequest(symbols))
-            .retrieve()
-            .bodyToMono<List<CurrentPriceSymbolResponse>>()
-            .block()!!
+        requireNotNull(
+            webClient
+                .post()
+                .uri(URI("$baseUrl/price/symbols"))
+                .bodyValue(TrendingSymbolsRequest(symbols))
+                .retrieve()
+                .bodyToMono<List<CurrentPriceSymbolResponse>>()
+                .block(),
+        ) { "FastFinance returned empty trending symbols response for symbols=$symbols" }
             .map { it.toCurrentPriceSymbolDto() }
 
     private data class TrendingSymbolsRequest(

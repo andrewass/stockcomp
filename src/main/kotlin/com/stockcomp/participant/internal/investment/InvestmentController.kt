@@ -24,24 +24,30 @@ class InvestmentController(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam @Positive contestId: Long,
     ): ResponseEntity<List<InvestmentDto>> =
-        investmentService
-            .getInvestmentsForParticipant(
-                contestId = contestId,
-                userId = tokenClaims.userId,
-            ).map { mapToInvestmentDto(it) }
-            .let { ResponseEntity.ok(it) }
+        ResponseEntity.ok(
+            investmentService
+                .getInvestmentsForParticipant(
+                    contestId = contestId,
+                    userId = tokenClaims.userId,
+                ).map { mapToInvestmentDto(it) },
+        )
 
     @GetMapping
     fun getInvestmentBySymbolAndContest(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam @NotBlank symbol: String,
         @RequestParam @Positive contestId: Long,
-    ): ResponseEntity<InvestmentDto> =
-        investmentService
-            .getInvestmentForSymbol(
+    ): ResponseEntity<InvestmentDto> {
+        val investment =
+            investmentService.getInvestmentForSymbol(
                 contestId = contestId,
                 symbol = symbol,
                 userId = tokenClaims.userId,
-            )?.let { ResponseEntity.ok(mapToInvestmentDto(it)) }
-            ?: ResponseEntity.notFound().build()
+            )
+        return if (investment != null) {
+            ResponseEntity.ok(mapToInvestmentDto(investment))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 }

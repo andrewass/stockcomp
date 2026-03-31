@@ -22,11 +22,27 @@ class Investment(
     @ManyToOne
     @JoinColumn(name = "PARTICIPANT_ID", nullable = false)
     val participant: Participant,
-    var amount: Int = 0,
-    var averageUnitCost: Double = 0.00,
-    var totalProfit: Double = 0.00,
-    var totalValue: Double = 0.00,
+    @Column(name = "AMOUNT", nullable = false)
+    private var _amount: Int = 0,
+    @Column(name = "AVERAGE_UNIT_COST", nullable = false)
+    private var _averageUnitCost: Double = 0.00,
+    @Column(name = "TOTAL_PROFIT", nullable = false)
+    private var _totalProfit: Double = 0.00,
+    @Column(name = "TOTAL_VALUE", nullable = false)
+    private var _totalValue: Double = 0.00,
 ) : BaseEntity() {
+    val amount: Int
+        get() = _amount
+
+    val averageUnitCost: Double
+        get() = _averageUnitCost
+
+    val totalProfit: Double
+        get() = _totalProfit
+
+    val totalValue: Double
+        get() = _totalValue
+
     fun updateWhenBuying(
         amount: Int,
         currentPrice: Double,
@@ -34,30 +50,30 @@ class Investment(
         require(amount > 0) { "Buy amount must be positive for symbol $symbol" }
         require(currentPrice > 0.0) { "Current price must be positive for symbol $symbol" }
 
-        averageUnitCost = calculateAverageUnitCost(currentPrice = currentPrice, amount = amount)
-        this.amount += amount
+        _averageUnitCost = calculateAverageUnitCost(currentPrice = currentPrice, amount = amount)
+        _amount += amount
     }
 
     fun updateWhenSelling(amount: Int) {
         require(amount > 0) { "Sell amount must be positive for symbol $symbol" }
-        require(this.amount >= amount) {
-            "Cannot sell $amount units for $symbol when only ${this.amount} are available"
+        require(_amount >= amount) {
+            "Cannot sell $amount units for $symbol when only $_amount are available"
         }
-        this.amount -= amount
+        _amount -= amount
     }
 
     fun maintainInvestment(updatedPrice: Double) {
-        val newTotalValueInvestment = amount * updatedPrice
-        totalValue = newTotalValueInvestment
-        totalProfit = newTotalValueInvestment - (amount * averageUnitCost)
+        val newTotalValueInvestment = _amount * updatedPrice
+        _totalValue = newTotalValueInvestment
+        _totalProfit = newTotalValueInvestment - (_amount * _averageUnitCost)
     }
 
     private fun calculateAverageUnitCost(
         currentPrice: Double,
         amount: Int,
     ): Double {
-        val totalCost = (this.amount * averageUnitCost) + (amount * currentPrice)
-        val totalAmount = this.amount + amount
+        val totalCost = (_amount * _averageUnitCost) + (amount * currentPrice)
+        val totalAmount = _amount + amount
         return totalCost / totalAmount
     }
 }

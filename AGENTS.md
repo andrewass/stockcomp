@@ -38,6 +38,7 @@ This file gives short, practical instructions for working in this repository.
 - Keep Spring beans small and single-purpose; favor constructor injection.
 - Use Flyway migrations for schema changes.
 - For persistence work, keep entity mappings lean and avoid N+1 queries.
+- For mutable entity attributes, prefer private mutable backing fields with public read-only properties for query/mapping access.
 
 ## Quality & Checks
 - Kotlin formatting is enforced in CI via ktlint. Run the commands above before opening a PR.
@@ -66,7 +67,7 @@ This file gives short, practical instructions for working in this repository.
 ## Kotlin JPA entity rules
 - These rules apply to all JPA entities in this repository.
 - Prefer private mutable entity state (`private var`) and expose behavior through domain methods.
-- Expose read values via read-only methods/properties when needed by DTO mapping/query code.
+- Expose read values primarily via public read-only properties (`val` with getter) backed by private mutable fields.
 - Do not use `protected set`/`internal set` as a default mutation pattern for entity fields.
 - Keep immutable fields as `val` where possible.
 - For nullable entity IDs in Kotlin (`id: Long?`), avoid relying on smart-cast from open entities; extract once to a local non-null `val` (for example `val id = entity.id!!`) before reuse.

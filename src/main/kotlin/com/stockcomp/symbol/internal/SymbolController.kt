@@ -13,9 +13,7 @@ class SymbolController(
 ) {
     @GetMapping("/price/trending")
     fun getCurrentPriceTrendingSymbols(): ResponseEntity<TrendingSymbolsResponse> =
-        symbolService
-            .getCurrentPriceTrendingSymbols()
-            .let { ResponseEntity.ok(TrendingSymbolsResponse(it)) }
+        ResponseEntity.ok(TrendingSymbolsResponse(symbolService.getCurrentPriceTrendingSymbols()))
 
     data class TrendingSymbolsResponse(
         val symbols: List<CurrentPriceSymbolDto>,

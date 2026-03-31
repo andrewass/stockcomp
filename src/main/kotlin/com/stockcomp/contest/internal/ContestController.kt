@@ -30,10 +30,7 @@ class ContestController(
     fun getAllContestsSortedByContestId(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
-    ): ResponseEntity<ContestPageDto> =
-        contestService
-            .getAllContestsSorted(pageNumber, pageSize)
-            .let { ResponseEntity.ok(mapToContestPageDto(it)) }
+    ): ResponseEntity<ContestPageDto> = ResponseEntity.ok(mapToContestPageDto(contestService.getAllContestsSorted(pageNumber, pageSize)))
 
     @GetMapping("/exists-active")
     fun existsActiveContest(): ResponseEntity<ExistsActiveContestResponse> =
@@ -41,48 +38,45 @@ class ContestController(
 
     @GetMapping("/active")
     fun getActiveContests(): ResponseEntity<ContestsResponse> =
-        contestService
-            .getActiveContests()
-            .map { toContestDto(it) }
-            .let { ResponseEntity.ok(ContestsResponse(it)) }
+        ResponseEntity.ok(ContestsResponse(contestService.getActiveContests().map { toContestDto(it) }))
 
     @GetMapping("/{contestId}")
     fun getContest(
         @PathVariable contestId: Long,
-    ): ResponseEntity<ContestDto> =
-        contestService
-            .getContest(contestId)
-            .let { ResponseEntity.ok(toContestDto(it)) }
+    ): ResponseEntity<ContestDto> = ResponseEntity.ok(toContestDto(contestService.getContest(contestId)))
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     fun createContest(
         @Valid @RequestBody request: CreateContestRequest,
     ): ResponseEntity<ContestDto> =
-        contestService
-            .createContest(
-                contestName = request.contestName,
-                startTime = request.startTime,
-                durationDays = request.durationDays,
-            ).let { ResponseEntity.ok(toContestDto(it)) }
+        ResponseEntity.ok(
+            toContestDto(
+                contestService.createContest(
+                    contestName = request.contestName,
+                    startTime = request.startTime,
+                    durationDays = request.durationDays,
+                ),
+            ),
+        )
 
     @PatchMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateContest(
         @Valid @RequestBody request: UpdateContestRequest,
     ): ResponseEntity<ContestDto> =
-        contestService
-            .updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)
-            .let { ResponseEntity.ok(toContestDto(it)) }
+        ResponseEntity.ok(
+            toContestDto(contestService.updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)),
+        )
 
     @DeleteMapping("/{contestId}")
     @PreAuthorize("hasRole('ADMIN')")
     fun deleteContest(
         @PathVariable contestId: Long,
-    ): ResponseEntity<Void> =
-        contestService
-            .deleteContest(contestId)
-            .let { ResponseEntity.noContent().build() }
+    ): ResponseEntity<Void> {
+        contestService.deleteContest(contestId)
+        return ResponseEntity.noContent().build()
+    }
 }
 
 data class UpdateContestRequest(

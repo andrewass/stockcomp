@@ -54,13 +54,13 @@ class UserServiceInternal(
         userId: Long,
         userDetailsDto: UserDetailsDto,
     ) {
-        userRepository
-            .getReferenceById(userId)
-            .apply {
-                country = userDetailsDto.country
-                username = userDetailsDto.username
-                fullName = userDetailsDto.fullName
-            }.also { userRepository.save(it) }
+        val user = userRepository.getReferenceById(userId)
+        user.updateUserDetails(
+            username = userDetailsDto.username,
+            fullName = userDetailsDto.fullName,
+            country = userDetailsDto.country,
+        )
+        userRepository.save(user)
     }
 
     fun createUser(email: String): User {

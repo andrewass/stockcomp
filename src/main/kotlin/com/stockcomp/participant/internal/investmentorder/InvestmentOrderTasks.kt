@@ -25,7 +25,11 @@ class InvestmentOrderTasks(
                     participantService
                         .getAllByContest(it.contestId)
                         .forEach { participant ->
-                            investmentOrderProcessingService.processInvestmentOrders(participant.participantId!!)
+                            val participantId =
+                                requireNotNull(participant.participantId) {
+                                    "Participant id is null while processing investment orders for contest ${it.contestId}"
+                                }
+                            investmentOrderProcessingService.processInvestmentOrders(participantId)
                         }
                 }
         } catch (e: Exception) {
