@@ -27,7 +27,7 @@
         <jib.version>3.5.1</jib.version>
         <loki.logback.version>2.0.3</loki.logback.version>
         <shedlock.version>7.7.0</shedlock.version>
-        <spring.modulith.version>2.0.4</spring.modulith.version>
+        <spring.modulith.version>2.0.5</spring.modulith.version>
         <springmockk.version>5.0.1</springmockk.version>
         <skip.ut>false</skip.ut>
     </properties>
