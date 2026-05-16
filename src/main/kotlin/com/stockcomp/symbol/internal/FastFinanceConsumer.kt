@@ -18,10 +18,11 @@ class FastFinanceConsumer(
         requireNotNull(
             webClient
                 .get()
-                .uri(URI("$baseUrl/price/current/$symbol"))
+                .uri(URI("$baseUrl/price/current-price/$symbol"))
                 .retrieve()
-                .bodyToMono<CurrentPriceSymbolDto>()
-                .block(),
+                .bodyToMono<CurrentPriceSymbolResponse>()
+                .block()
+                ?.toCurrentPriceSymbolDto(),
         ) { "FastFinance returned empty current price for symbol=$symbol" }
 
     override fun getCurrentPriceTrendingSymbols(symbols: List<String>): List<CurrentPriceSymbolDto> =

@@ -66,11 +66,11 @@ This file gives short, practical instructions for working in this repository.
 
 ## Kotlin JPA entity rules
 - These rules apply to all JPA entities in this repository.
-- Prefer private mutable entity state (`private var`) and expose behavior through domain methods.
-- Expose read values primarily via public read-only properties (`val` with getter) backed by private mutable fields.
+- Prefer private mutable entity state (`private var`) backed by private fields.
+- Expose mutations through domain methods and expose reads via public read-only properties (`val` with getter).
 - Do not use `protected set`/`internal set` as a default mutation pattern for entity fields.
 - Keep immutable fields as `val` where possible.
-- For nullable entity IDs in Kotlin (`id: Long?`), avoid relying on smart-cast from open entities; extract once to a local non-null `val` (for example `val id = entity.id!!`) before reuse.
+- For nullable entity IDs in Kotlin (`id: Long?`), avoid relying on smart-cast from open entities; extract once to a local non-null `val` (for example `val id = requireNotNull(entity.id) { "Entity id must not be null" }`) before reuse.
 
 ## Skills
 - Skills under `.agents/skills/**` should be repo-agnostic by default so they can be reused across projects.
