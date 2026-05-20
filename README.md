@@ -85,6 +85,11 @@ Important properties (`application.properties` / `application-local.properties`)
 - `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`
 - `spring.security.oauth2.resourceserver.jwt.audience`
 - `scheduling.enabled` (default `true`)
+- `scheduling.tasks.contest.maintain-contests.fixed-rate-ms`
+- `scheduling.tasks.investment.maintain-investments.fixed-rate-ms`
+- `scheduling.tasks.investment-order.maintain-investment-orders.fixed-rate-ms`
+- `scheduling.tasks.leaderboard.create-jobs.fixed-delay-ms`
+- `scheduling.tasks.leaderboard.process-jobs.fixed-delay-ms`
 
 ## Security and Authentication
 

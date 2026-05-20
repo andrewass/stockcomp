@@ -15,7 +15,7 @@ class InvestmentTasks(
 ) {
     private val logger = LoggerFactory.getLogger(InvestmentTasks::class.java)
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRateString = "\${scheduling.tasks.investment.maintain-investments.fixed-rate-ms}")
     @SchedulerLock(name = "lockForMaintainInvestments")
     fun runMaintainInvestments() {
         try {

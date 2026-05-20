@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 class ContestTasksRunner(
     private val contestOperationService: ContestOperationService,
 ) {
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRateString = "\${scheduling.tasks.contest.maintain-contests.fixed-rate-ms}")
     @SchedulerLock(name = "lockForMaintainContests")
     fun runMaintainContests() {
         contestOperationService.maintainContestStatus()

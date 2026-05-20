@@ -16,7 +16,7 @@ class LeaderboardJobScheduler(
     private val openStatuses = listOf(JobStatus.CREATED, JobStatus.FAILED)
 
     @Transactional
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelayString = "\${scheduling.tasks.leaderboard.process-jobs.fixed-delay-ms}")
     @SchedulerLock(name = "lockForProcessLeaderboardJob")
     fun processLeaderboardJob() {
         leaderboardJobRepository
@@ -29,7 +29,7 @@ class LeaderboardJobScheduler(
     }
 
     @Transactional
-    @Scheduled(fixedDelay = 15000)
+    @Scheduled(fixedDelayString = "\${scheduling.tasks.leaderboard.create-jobs.fixed-delay-ms}")
     @SchedulerLock(name = "lockForCreateLeaderboardJob")
     fun createLeaderboardJobs() {
         contestService.getContestsAwaitingCompletion().forEach { contest ->
