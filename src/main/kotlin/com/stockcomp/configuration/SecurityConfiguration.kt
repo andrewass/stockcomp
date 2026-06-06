@@ -1,6 +1,6 @@
 package com.stockcomp.configuration
 
-import com.stockcomp.user.UserServiceExternal
+import com.stockcomp.token.JwtRoleAuthoritiesConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
 import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2TokenValidator
@@ -27,7 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfiguration(
-    private val userService: UserServiceExternal,
+    private val jwtRoleAuthoritiesConverter: JwtRoleAuthoritiesConverter,
     @param:Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private val jwkSetUri: String,
     @param:Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
@@ -123,11 +122,7 @@ class SecurityConfiguration(
 
     private fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
         val converter = JwtAuthenticationConverter()
-        converter.setJwtGrantedAuthoritiesConverter { jwt ->
-            val subjectClaim = jwt.claims["sub"] as String
-            val userRole = userService.getUserRole(subjectClaim)
-            listOf(SimpleGrantedAuthority("ROLE_$userRole"))
-        }
+        converter.setJwtGrantedAuthoritiesConverter(jwtRoleAuthoritiesConverter)
         return converter
     }
 }

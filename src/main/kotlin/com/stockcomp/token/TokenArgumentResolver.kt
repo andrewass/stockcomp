@@ -15,6 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 @Component
 class TokenArgumentResolver(
     private val userService: UserServiceExternal,
+    private val jwtSubjectResolver: JwtSubjectResolver,
 ) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.getParameterAnnotation(TokenData::class.java) != null
 
@@ -27,11 +28,8 @@ class TokenArgumentResolver(
         val claimAccessor =
             SecurityContextHolder.getContext().authentication?.credentials as? ClaimAccessor
                 ?: throw IllegalStateException("JWT claims are missing from security context")
-        val userSubject =
-            claimAccessor.getClaimAsString("email")
-                ?: claimAccessor.getClaimAsString("sub")
-                ?: throw IllegalStateException("Neither email nor sub claim was present in token")
+        val subject = jwtSubjectResolver.resolveSubject(claimAccessor)
 
-        return TokenClaims(userId = userService.getUserIdBySubject(userSubject))
+        return TokenClaims(userId = userService.getUserIdBySubject(subject))
     }
 }

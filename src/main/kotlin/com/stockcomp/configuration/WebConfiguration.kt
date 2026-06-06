@@ -1,7 +1,6 @@
 package com.stockcomp.configuration
 
 import com.stockcomp.token.TokenArgumentResolver
-import com.stockcomp.user.UserServiceExternal
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.codec.ClientCodecConfigurer
@@ -11,10 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class WebConfiguration(
-    private val userService: UserServiceExternal,
+    private val tokenArgumentResolver: TokenArgumentResolver,
 ) : WebMvcConfigurer {
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
-        resolvers.add(TokenArgumentResolver(userService))
+        resolvers.add(tokenArgumentResolver)
     }
 
     @Bean
