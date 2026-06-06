@@ -190,6 +190,14 @@ Key files:
 - `k8s/postgres/postgres-persistence.yaml`
 - `skaffold.yaml`
 
+Before applying the application and PostgreSQL manifests, create the database credential Secret:
+
+```bash
+kubectl create secret generic stockcomp-postgres-credentials \
+  --from-literal=username=user \
+  --from-literal=password='<password>'
+```
+
 Skaffold image build is configured through Jib (`stockcomp-server-image`).
 
 ## CI

@@ -20,10 +20,18 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: ADMIN_EMAIL
-              value: "admin@admin.com"
-            - name: ADMIN_PASSWORD
-              value: "admin"
+            - name: STOCKCOMP_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-service/stockdb"
+            - name: STOCKCOMP_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: stockcomp-postgres-credentials
+                  key: username
+            - name: STOCKCOMP_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: stockcomp-postgres-credentials
+                  key: password
 
 ---
 apiVersion: v1

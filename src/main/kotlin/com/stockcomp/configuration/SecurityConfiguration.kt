@@ -35,6 +35,14 @@ class SecurityConfiguration(
     @param:Value("\${spring.security.oauth2.resourceserver.jwt.audience}")
     private val audience: String,
 ) {
+    private val publicActuatorEndpoints =
+        arrayOf(
+            "/actuator/health",
+            "/actuator/health/**",
+            "/actuator/info",
+            "/actuator/prometheus",
+        )
+
     @Bean
     fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain =
         httpSecurity
@@ -42,9 +50,10 @@ class SecurityConfiguration(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
+                    .requestMatchers(*publicActuatorEndpoints)
+                    .permitAll()
                     .requestMatchers(
                         "/task/*",
-                        "/actuator/*",
                         "/user/*",
                         "/contest-operations/*",
                         "/swagger-ui/*",

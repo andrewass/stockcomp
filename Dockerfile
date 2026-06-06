@@ -21,7 +21,7 @@ USER appuser
 
 COPY --from=builder /app/target/stockcomp-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose app port and debug port
-EXPOSE 8080 5010
+# Expose app port. Configure debug options explicitly through the runtime environment when needed.
+EXPOSE 8080
 
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

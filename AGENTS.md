@@ -28,10 +28,11 @@ This file gives short, practical instructions for working in this repository.
 - Fall back to local `mvn` only if wrapper execution is not possible; explicitly report the fallback reason and `mvn -v`.
 - Prefer fixing wrapper issues instead of switching to local Maven.
 - After code changes, run this command flow via Maven Wrapper: `mvnw clean verify -DskipITs=false` then `mvnw exec:exec@ktlint-format`.
+- Before creating a commit after code changes, always run `mvnw exec:exec@ktlint-format` via Maven Wrapper and include its automatic formatting changes in the commit.
+- If ktlint cannot be run, do not create the commit unless the user explicitly confirms committing without ktlint.
 - If tests cannot run because a Testcontainers-compatible runtime is unavailable (for example Docker Desktop, Colima, or Podman), report that test execution is blocked and why.
 - Never claim tests passed if they were not executed.
 - If test execution is blocked by missing container runtime, still run `mvnw exec:exec@ktlint-format`.
-- Include formatting-only file changes in the same change set/commit.
 
 ## Conventions
 - Prefer Kotlin data classes for DTOs and use immutable collections where possible.
@@ -50,7 +51,12 @@ This file gives short, practical instructions for working in this repository.
 - Remove unused imports in all touched files before finishing.
 
 ## Commit conventions
-- Commit messages must start with a capital letter.
+- Use Conventional Commits for all commit messages.
+- Format: `<type>[optional scope]: <description>`.
+- Use lowercase commit types. Preferred types are `feat`, `fix`, `docs`, `test`, `refactor`, `perf`, `build`, `ci`, `chore`, and `style`.
+- Use an optional scope when it clarifies the affected area, for example `fix(security): restrict actuator endpoint access`.
+- Mark breaking changes with `!` after the type/scope or with a `BREAKING CHANGE:` footer.
+- Keep the description concise and imperative; add a body when the reason or migration context is not obvious from the subject.
 
 ## Working Notes
 - If you touch database code, scan for transaction boundaries and lazy-loading pitfalls.

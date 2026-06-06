@@ -19,11 +19,15 @@ spec:
             - name: POSTGRES_DB
               value: "stockdb"
             - name: POSTGRES_USER
-              value: "user"
+              valueFrom:
+                secretKeyRef:
+                  name: stockcomp-postgres-credentials
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: "password"
-            - name: POSTGRES_ROOT_PASSWORD
-              value: "rootpass"
+              valueFrom:
+                secretKeyRef:
+                  name: stockcomp-postgres-credentials
+                  key: password
           volumeMounts:
             - name: postgres-persistent-storage
               mountPath: /var/lib/postgresql/data

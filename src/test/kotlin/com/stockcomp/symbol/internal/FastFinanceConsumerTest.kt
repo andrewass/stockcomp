@@ -25,14 +25,14 @@ class FastFinanceConsumerTest {
                             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                             .body(
                                 """
-                                    {
-                                      "symbol": "AAPL",
-                                      "companyName": "Apple",
-                                      "currentPrice": 190.5,
-                                      "previousClose": 189.0,
-                                      "currency": "USD"
-                                    }
-                                    """.trimIndent(),
+                                {
+                                  "symbol": "AAPL",
+                                  "companyName": "Apple",
+                                  "currentPrice": 190.5,
+                                  "previousClose": 189.0,
+                                  "currency": "USD"
+                                }
+                                """.trimIndent(),
                             ).build(),
                     )
                 }.build()

@@ -38,3 +38,6 @@ build/
 /dockerwsl.sh
 /k8s/config.yaml
 /k8s/*-values.yaml
+
+### Local Notes ###
+/notes/**
