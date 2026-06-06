@@ -4,6 +4,7 @@ import com.stockcomp.participant.internal.ParticipantService
 import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -29,7 +30,7 @@ class InvestmentOrderProcessingService(
         userId: Long,
         participantId: Long,
         currency: String,
-        acceptedPrice: Double,
+        acceptedPrice: BigDecimal,
         symbol: String,
         expirationTime: LocalDateTime,
         amount: Int,

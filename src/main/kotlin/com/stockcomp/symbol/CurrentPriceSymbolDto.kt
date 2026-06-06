@@ -1,11 +1,13 @@
 package com.stockcomp.symbol
 
+import java.math.BigDecimal
+
 data class CurrentPriceSymbolDto(
     val symbol: String,
     val companyName: String,
-    val currentPrice: Double,
-    val previousClose: Double,
+    val currentPrice: BigDecimal,
+    val previousClose: BigDecimal,
     val currency: String,
-    val percentageChange: Double,
-    val usdPrice: Double,
+    val percentageChange: BigDecimal,
+    val usdPrice: BigDecimal,
 )

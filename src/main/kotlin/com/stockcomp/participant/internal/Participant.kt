@@ -11,7 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import kotlin.math.abs
+import java.math.BigDecimal
 
 @Entity
 @Table(name = "T_PARTICIPANT")
@@ -26,7 +26,7 @@ class Participant(
     val contestId: Long,
 ) : BaseEntity() {
     companion object {
-        private const val INITIAL_FUNDS = 20_000.00
+        private val INITIAL_FUNDS = BigDecimal("20000.00")
     }
 
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -35,14 +35,14 @@ class Participant(
     @OneToMany(mappedBy = "participant", cascade = [CascadeType.ALL], orphanRemoval = true)
     private val investments: MutableList<Investment> = mutableListOf()
 
-    @Column(name = "TOTAL_VALUE", nullable = false)
-    private var totalValue: Double = INITIAL_FUNDS
+    @Column(name = "TOTAL_VALUE", nullable = false, precision = 19, scale = 4)
+    private var totalValue: BigDecimal = INITIAL_FUNDS
 
-    @Column(name = "TOTAL_INVESTMENT_VALUE", nullable = false)
-    private var totalInvestmentValue: Double = 0.00
+    @Column(name = "TOTAL_INVESTMENT_VALUE", nullable = false, precision = 19, scale = 4)
+    private var totalInvestmentValue: BigDecimal = BigDecimal.ZERO
 
-    @Column(name = "REMAINING_FUNDS", nullable = false)
-    private var remainingFunds: Double = INITIAL_FUNDS
+    @Column(name = "REMAINING_FUNDS", nullable = false, precision = 19, scale = 4)
+    private var remainingFunds: BigDecimal = INITIAL_FUNDS
 
     @Column(name = "PARTICIPANT_RANK")
     private var rank: Int? = null
@@ -51,11 +51,11 @@ class Participant(
 
     fun investments(): List<Investment> = investments.toList()
 
-    fun totalValue(): Double = totalValue
+    fun totalValue(): BigDecimal = totalValue
 
-    fun totalInvestmentValue(): Double = totalInvestmentValue
+    fun totalInvestmentValue(): BigDecimal = totalInvestmentValue
 
-    fun remainingFunds(): Double = remainingFunds
+    fun remainingFunds(): BigDecimal = remainingFunds
 
     fun rank(): Int? = rank
 
@@ -74,38 +74,35 @@ class Participant(
     fun updateParticipantWhenBuying(
         amount: Int,
         symbol: String,
-        currentPrice: Double,
+        currentPrice: BigDecimal,
     ) {
         require(amount > 0) { "Amount must be positive when buying for participant $participantId" }
-        require(currentPrice > 0.0) { "Current price must be positive when buying for participant $participantId" }
+        require(currentPrice > BigDecimal.ZERO) { "Current price must be positive when buying for participant $participantId" }
 
         val investment = getOrCreateInvestment(symbol)
         investment.updateWhenBuying(amount, currentPrice)
-        remainingFunds -= currentPrice * amount
-        if (remainingFunds < -1e-6) {
+        remainingFunds = remainingFunds.subtract(currentPrice.multiply(BigDecimal.valueOf(amount.toLong())))
+        if (remainingFunds < BigDecimal.ZERO) {
             throw IllegalStateException(
                 "Remaining funds for $participantId is $remainingFunds. This value should never be negative",
             )
-        }
-        if (abs(remainingFunds) < 1e-6) {
-            remainingFunds = 0.0
         }
     }
 
     fun updateParticipantWhenSelling(
         amount: Int,
         symbol: String,
-        currentPrice: Double,
+        currentPrice: BigDecimal,
     ) {
         require(amount > 0) { "Amount must be positive when selling for participant $participantId" }
-        require(currentPrice > 0.0) { "Current price must be positive when selling for participant $participantId" }
+        require(currentPrice > BigDecimal.ZERO) { "Current price must be positive when selling for participant $participantId" }
 
         val investment = getInvestment(symbol)
         investment.updateWhenSelling(amount)
         if (investment.amount == 0) {
             removeInvestment(investment)
         }
-        remainingFunds += currentPrice * amount
+        remainingFunds = remainingFunds.add(currentPrice.multiply(BigDecimal.valueOf(amount.toLong())))
     }
 
     fun getInvestmentAmount(symbol: String): Int = investments.firstOrNull { it.symbol == symbol }?.amount ?: 0

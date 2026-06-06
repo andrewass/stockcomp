@@ -9,6 +9,7 @@ import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import java.math.BigDecimal
 
 class FastFinanceConsumerTest {
     @Test
@@ -43,10 +44,17 @@ class FastFinanceConsumerTest {
 
         assertEquals("AAPL", currentPrice.symbol)
         assertEquals("Apple", currentPrice.companyName)
-        assertEquals(190.5, currentPrice.currentPrice)
-        assertEquals(189.0, currentPrice.previousClose)
+        assertBigDecimalEquals("190.5", currentPrice.currentPrice)
+        assertBigDecimalEquals("189.0", currentPrice.previousClose)
         assertEquals("USD", currentPrice.currency)
-        assertEquals(0.7936507936507936, currentPrice.percentageChange)
-        assertEquals(190.5, currentPrice.usdPrice)
+        assertBigDecimalEquals("0.7936507937", currentPrice.percentageChange)
+        assertBigDecimalEquals("190.5", currentPrice.usdPrice)
+    }
+
+    private fun assertBigDecimalEquals(
+        expected: String,
+        actual: BigDecimal,
+    ) {
+        assertEquals(0, BigDecimal(expected).compareTo(actual))
     }
 }

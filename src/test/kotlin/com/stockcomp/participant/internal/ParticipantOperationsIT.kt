@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @ControllerIntegrationTest
@@ -135,7 +136,7 @@ class ParticipantOperationsIT
                                     amount = 100,
                                     currency = "USD",
                                     expirationTime = LocalDateTime.now().plusDays(10),
-                                    acceptedPrice = 100.00,
+                                    acceptedPrice = BigDecimal("100.00"),
                                     transactionType = TransactionType.BUY,
                                 ),
                             ),

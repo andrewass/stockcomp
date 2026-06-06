@@ -5,24 +5,25 @@ import com.stockcomp.participant.internal.Participant
 import com.stockcomp.participant.internal.investmentorder.OrderStatus
 import com.stockcomp.user.UserDetailsDto
 import jakarta.validation.constraints.Positive
+import java.math.BigDecimal
 
 data class CommonParticipantDto(
     val participantId: Long,
     val rank: Int? = null,
-    val totalValue: Double,
+    val totalValue: BigDecimal,
     val username: String,
     val country: String?,
-    val totalInvestmentValue: Double,
-    val remainingFunds: Double,
+    val totalInvestmentValue: BigDecimal,
+    val remainingFunds: BigDecimal,
 )
 
 data class UserParticipantDto(
     val participantId: Long,
     val userId: Long,
     val rank: Int? = null,
-    val totalValue: Double,
-    val totalInvestmentValue: Double,
-    val remainingFunds: Double,
+    val totalValue: BigDecimal,
+    val totalInvestmentValue: BigDecimal,
+    val remainingFunds: BigDecimal,
 )
 
 data class CommonParticipantPageDto(

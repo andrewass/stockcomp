@@ -12,6 +12,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDateTime
 
 @Entity
@@ -25,7 +27,8 @@ class InvestmentOrder(
     val totalAmount: Int,
     @Column(name = "REMAINING_AMOUNT", nullable = false)
     private var _remainingAmount: Int = totalAmount,
-    val acceptedPrice: Double,
+    @Column(name = "ACCEPTED_PRICE", nullable = false, precision = 19, scale = 4)
+    val acceptedPrice: BigDecimal,
     val currency: String,
     val expirationTime: LocalDateTime,
     @Enumerated(EnumType.STRING)
@@ -54,7 +57,7 @@ class InvestmentOrder(
 
     private fun isExpired(): Boolean = expirationTime.isBefore(LocalDateTime.now())
 
-    fun processOrder(currentPrice: Double) {
+    fun processOrder(currentPrice: BigDecimal) {
         if (!isActive()) {
             return
         }
@@ -72,7 +75,7 @@ class InvestmentOrder(
         }
     }
 
-    private fun processBuyOrder(currentPrice: Double) {
+    private fun processBuyOrder(currentPrice: BigDecimal) {
         if (currentPrice <= acceptedPrice) {
             val amountToBuy = getAvailableAmountToBuy(currentPrice)
             participant.updateParticipantWhenBuying(amountToBuy, symbol, currentPrice)
@@ -80,7 +83,7 @@ class InvestmentOrder(
         }
     }
 
-    private fun processSellOrder(currentPrice: Double) {
+    private fun processSellOrder(currentPrice: BigDecimal) {
         if (currentPrice >= acceptedPrice) {
             val availableAmount = participant.getInvestmentAmount(symbol)
             if (availableAmount <= 0) {
@@ -94,9 +97,13 @@ class InvestmentOrder(
         }
     }
 
-    private fun getAvailableAmountToBuy(currentPrice: Double): Int {
-        val maxAvailAmount = participant.remainingFunds() / currentPrice
-        return minOf(maxAvailAmount.toInt(), _remainingAmount)
+    private fun getAvailableAmountToBuy(currentPrice: BigDecimal): Int {
+        val maxAvailableAmount =
+            participant
+                .remainingFunds()
+                .divide(currentPrice, 0, RoundingMode.DOWN)
+                .toInt()
+        return minOf(maxAvailableAmount, _remainingAmount)
     }
 
     private fun postProcessOrder(amount: Int) {

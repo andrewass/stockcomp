@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
 
 @ControllerIntegrationTest
 class SymbolOperationsIT
@@ -34,11 +35,11 @@ class SymbolOperationsIT
                     CurrentPriceSymbolDto(
                         symbol = "AAPL",
                         companyName = "Apple",
-                        currentPrice = 190.5,
-                        previousClose = 189.0,
+                        currentPrice = BigDecimal("190.5"),
+                        previousClose = BigDecimal("189.0"),
                         currency = "USD",
-                        percentageChange = 0.8,
-                        usdPrice = 190.5,
+                        percentageChange = BigDecimal("0.8"),
+                        usdPrice = BigDecimal("190.5"),
                     ),
                 )
 

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.net.URI
 
 @Component("fastfinance.quote.consumer")
@@ -44,8 +46,8 @@ class FastFinanceConsumer(
     private data class CurrentPriceSymbolResponse(
         val symbol: String,
         val companyName: String,
-        val currentPrice: Double,
-        val previousClose: Double,
+        val currentPrice: BigDecimal,
+        val previousClose: BigDecimal,
         val currency: String,
     )
 
@@ -56,7 +58,11 @@ class FastFinanceConsumer(
             currentPrice = currentPrice,
             previousClose = previousClose,
             currency = currency,
-            percentageChange = (currentPrice - previousClose) / previousClose * 100.0,
+            percentageChange =
+                currentPrice
+                    .subtract(previousClose)
+                    .multiply(BigDecimal("100"))
+                    .divide(previousClose, 10, RoundingMode.HALF_UP),
             usdPrice = currentPrice,
         )
 }

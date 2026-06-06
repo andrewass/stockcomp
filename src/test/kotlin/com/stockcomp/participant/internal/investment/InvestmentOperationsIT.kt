@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @ControllerIntegrationTest
@@ -80,7 +81,7 @@ class InvestmentOperationsIT
             val participant =
                 participantRepository.findByParticipantId(participantId)
                     ?: throw NoSuchElementException("Participant $participantId was not found in test setup")
-            participant.updateParticipantWhenBuying(amount = 4, symbol = symbol, currentPrice = 100.0)
+            participant.updateParticipantWhenBuying(amount = 4, symbol = symbol, currentPrice = BigDecimal("100.0"))
             participant.updateInvestmentValues()
             participantRepository.save(participant)
         }
