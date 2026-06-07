@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
@@ -37,8 +36,7 @@ class FastFinanceConsumerTest {
                             ).build(),
                     )
                 }.build()
-        val consumer = FastFinanceConsumer(webClient)
-        ReflectionTestUtils.setField(consumer, "baseUrl", "http://fastfinance.test")
+        val consumer = FastFinanceConsumer(webClient, baseUrl = "http://fastfinance.test")
 
         val currentPrice = consumer.getCurrentPrice("AAPL")
 

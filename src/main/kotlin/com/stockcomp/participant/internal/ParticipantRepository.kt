@@ -35,6 +35,20 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
     @Query("SELECT p FROM Participant p where p.participantId = ?1")
     fun findByIdLocked(participantId: Long): Participant
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Participant p where p.participantId = ?1 and p.userId = ?2")
+    fun findByParticipantIdAndUserIdLocked(
+        participantId: Long,
+        userId: Long,
+    ): Participant?
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Participant p where p.userId = ?1 and p.contestId = ?2")
+    fun findByUserIdAndContestIdLocked(
+        userId: Long,
+        contestId: Long,
+    ): Participant?
+
     fun findAllByContestId(
         contestId: Long,
         pageable: Pageable,

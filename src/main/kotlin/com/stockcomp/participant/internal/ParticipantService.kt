@@ -120,6 +120,13 @@ class ParticipantService(
         participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
             ?: throw NoSuchElementException("Participant for user $userId in contest $contestId was not found")
 
+    fun getParticipantLocked(
+        contestId: Long,
+        userId: Long,
+    ): Participant =
+        participantRepository.findByUserIdAndContestIdLocked(userId = userId, contestId = contestId)
+            ?: throw NoSuchElementException("Participant for user $userId in contest $contestId was not found")
+
     fun getAllByContest(contestId: Long): List<Participant> = participantRepository.findAllByContestId(contestId)
 
     fun getParticipantHistory(username: String): List<Participant> {
@@ -135,6 +142,14 @@ class ParticipantService(
     ): Participant =
         participantRepository
             .findByParticipantIdAndUserId(participantId = participantId, userId = userId)
+            ?: throw NoSuchElementException("Participant $participantId was not found for user $userId")
+
+    fun getParticipantByIdAndUserIdLocked(
+        participantId: Long,
+        userId: Long,
+    ): Participant =
+        participantRepository
+            .findByParticipantIdAndUserIdLocked(participantId = participantId, userId = userId)
             ?: throw NoSuchElementException("Participant $participantId was not found for user $userId")
 
     fun findOptionalParticipant(

@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal.investmentorder
 
+import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.participant.internal.ParticipantService
 import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
@@ -11,18 +12,19 @@ import java.time.LocalDateTime
 class InvestmentOrderProcessingService(
     private val symbolService: SymbolServiceExternal,
     private val participantService: ParticipantService,
+    private val investmentOrderProcessingTransactions: InvestmentOrderProcessingTransactions,
 ) {
-    @Transactional
     fun processInvestmentOrders(participantId: Long) {
-        val participant = participantService.getParticipantByIdLocked(participantId)
-        participant
-            .getActiveInvestmentOrders()
-            .forEach {
-                val currentPrice = symbolService.getCurrentPrice(it.symbol)
-                it.processOrder(currentPrice.currentPrice)
+        val symbols = investmentOrderProcessingTransactions.getActiveInvestmentOrderSymbols(participantId)
+        if (symbols.isEmpty()) {
+            return
+        }
+
+        val pricesBySymbol =
+            symbols.associateWith { symbol ->
+                symbolService.getCurrentPrice(symbol).currentPrice
             }
-        participant.updateInvestmentValues()
-        participantService.saveParticipant(participant)
+        investmentOrderProcessingTransactions.processActiveInvestmentOrders(participantId, pricesBySymbol)
     }
 
     @Transactional
@@ -36,7 +38,7 @@ class InvestmentOrderProcessingService(
         amount: Int,
         transactionType: TransactionType,
     ) {
-        val participant = participantService.getParticipantByIdAndUserId(participantId, userId)
+        val participant = participantService.getParticipantByIdAndUserIdLocked(participantId, userId)
         InvestmentOrder(
             participant = participant,
             currency = currency,
@@ -55,11 +57,12 @@ class InvestmentOrderProcessingService(
         orderId: Long,
         contestId: Long,
     ) {
-        val participant = participantService.getParticipant(contestId = contestId, userId = userId)
+        val participant = participantService.getParticipantLocked(contestId = contestId, userId = userId)
         participant.removeInvestmentOrder(orderId)
         participantService.saveParticipant(participant)
     }
 
+    @Transactional(readOnly = true)
     fun getActiveOrders(
         contestId: Long,
         userId: Long,
@@ -68,6 +71,7 @@ class InvestmentOrderProcessingService(
             .findOptionalParticipant(contestId = contestId, userId = userId)
             ?.getActiveInvestmentOrders() ?: emptyList()
 
+    @Transactional(readOnly = true)
     fun getCompletedOrders(
         contestId: Long,
         userId: Long,
@@ -76,6 +80,7 @@ class InvestmentOrderProcessingService(
             .findOptionalParticipant(contestId = contestId, userId = userId)
             ?.getCompletedInvestmentOrders() ?: emptyList()
 
+    @Transactional(readOnly = true)
     fun getActiveOrdersSymbol(
         symbol: String,
         contestId: Long,
@@ -86,6 +91,7 @@ class InvestmentOrderProcessingService(
             ?.getActiveInvestmentOrdersForSymbol(symbol.trim().uppercase())
             ?: emptyList()
 
+    @Transactional(readOnly = true)
     fun getCompletedOrdersSymbol(
         symbol: String,
         contestId: Long,
@@ -95,4 +101,34 @@ class InvestmentOrderProcessingService(
             .findOptionalParticipant(contestId = contestId, userId = userId)
             ?.getCompletedInvestmentOrdersForSymbol(symbol.trim().uppercase())
             ?: emptyList()
+}
+
+@Service
+class InvestmentOrderProcessingTransactions(
+    private val participantRepository: ParticipantRepository,
+) {
+    @Transactional(readOnly = true)
+    fun getActiveInvestmentOrderSymbols(participantId: Long): Set<String> =
+        participantRepository
+            .findByParticipantId(participantId)
+            ?.getActiveInvestmentOrders()
+            ?.map { it.symbol }
+            ?.toSet() ?: emptySet()
+
+    @Transactional
+    fun processActiveInvestmentOrders(
+        participantId: Long,
+        pricesBySymbol: Map<String, BigDecimal>,
+    ) {
+        val participant = participantRepository.findByIdLocked(participantId)
+        participant
+            .getActiveInvestmentOrders()
+            .forEach { order ->
+                pricesBySymbol[order.symbol]?.let { price ->
+                    order.processOrder(price)
+                }
+            }
+        participant.updateInvestmentValues()
+        participantRepository.save(participant)
+    }
 }
