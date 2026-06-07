@@ -15,6 +15,7 @@ import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UserDto
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
@@ -74,14 +75,32 @@ class InvestmentOperationsIT
             assertEquals("MSFT", investment.symbol)
         }
 
+        @Test
+        fun `should remove investment when all units are sold`() {
+            createUser(userEmail)
+            val contest = createContest("SellAllContest")
+            val participant = signUpForContest(contest.contestId)
+            seedInvestment(participant.participantId, "MSFT", amount = 40)
+
+            val persistedParticipant =
+                participantRepository.findByParticipantId(participant.participantId)
+                    ?: throw NoSuchElementException("Participant ${participant.participantId} was not found in test setup")
+            persistedParticipant.updateParticipantWhenSelling(amount = 40, symbol = "MSFT", currentPrice = BigDecimal("125.0"))
+            persistedParticipant.updateInvestmentValues()
+            participantRepository.saveAndFlush(persistedParticipant)
+
+            assertTrue(persistedParticipant.investments().isEmpty())
+        }
+
         private fun seedInvestment(
             participantId: Long,
             symbol: String,
+            amount: Int = 4,
         ) {
             val participant =
                 participantRepository.findByParticipantId(participantId)
                     ?: throw NoSuchElementException("Participant $participantId was not found in test setup")
-            participant.updateParticipantWhenBuying(amount = 4, symbol = symbol, currentPrice = BigDecimal("100.0"))
+            participant.updateParticipantWhenBuying(amount = amount, symbol = symbol, currentPrice = BigDecimal("100.0"))
             participant.updateInvestmentValues()
             participantRepository.save(participant)
         }

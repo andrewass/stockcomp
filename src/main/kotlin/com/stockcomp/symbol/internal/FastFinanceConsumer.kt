@@ -16,9 +16,9 @@ import java.time.Duration
 class FastFinanceConsumer(
     private val webClient: WebClient,
     @param:Value("\${fastfinance.base.url}") private val baseUrl: String,
-    @param:Value("\${fastfinance.request-timeout:5s}") private val requestTimeout: Duration = Duration.ofSeconds(5),
-    @param:Value("\${fastfinance.retry.max-attempts:2}") private val retryMaxAttempts: Long = 2,
-    @param:Value("\${fastfinance.retry.backoff:200ms}") private val retryBackoff: Duration = Duration.ofMillis(200),
+    @param:Value("\${fastfinance.request-timeout:5s}") private val requestTimeout: Duration,
+    @param:Value("\${fastfinance.retry.max-attempts:2}") private val retryMaxAttempts: Long,
+    @param:Value("\${fastfinance.retry.backoff:200ms}") private val retryBackoff: Duration,
 ) : QuoteConsumer {
     override fun getCurrentPrice(symbol: String): CurrentPriceSymbolDto =
         requireNotNull(

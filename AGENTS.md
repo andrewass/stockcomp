@@ -62,6 +62,12 @@ This file gives short, practical instructions for working in this repository.
 - If you touch database code, scan for transaction boundaries and lazy-loading pitfalls.
 - When adding endpoints, consider both WebMVC and WebFlux usage; follow existing patterns.
 
+## Database migration rules
+- Use Flyway for schema changes and keep migrations forward-only.
+- Every child-side foreign key column or column set must be indexed unless it is already covered by an existing useful index where the foreign key columns are the leftmost prefix.
+- Prefer composite indexes that match actual query patterns over redundant single-column indexes, but do not leave foreign keys unindexed.
+- When adding constraints and indexes, consider lock impact and verify the migration with Testcontainers-backed integration tests when possible.
+
 ## Modulith architecture
 - This application is organized as a Spring Modulith modular monolith.
 - Respect module boundaries: avoid introducing direct dependencies on internal packages from other modules.
