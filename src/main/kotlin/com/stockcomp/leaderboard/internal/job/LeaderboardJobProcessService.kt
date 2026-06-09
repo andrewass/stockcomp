@@ -11,13 +11,14 @@ class LeaderboardJobProcessService(
 ) {
     private val logger = LoggerFactory.getLogger(LeaderboardJobProcessService::class.java)
 
-    fun processJob(job: LeaderboardJob) {
+    fun processJob(job: LeaderboardJob): JobStatus =
         try {
             leaderboardService.updateLeaderboard(job.contestId)
             leaderboardJobStateService.markAsCompleted(job)
+            JobStatus.COMPLETED
         } catch (e: Exception) {
             logger.error("Failed to process leaderboard job {}", job.leaderboardJobId, e)
             leaderboardJobStateService.markAsFailed(job)
+            JobStatus.FAILED
         }
-    }
 }

@@ -14,10 +14,10 @@ class ContestOperationService(
     private val logger = LoggerFactory.getLogger(ContestOperationService::class.java)
 
     @Transactional
-    fun maintainContestStatus() {
+    fun maintainContestStatus(): Int {
         val now = LocalDateTime.now(clock)
-        contestService
-            .getActiveContests()
+        val activeContests = contestService.getActiveContests()
+        activeContests
             .forEach {
                 if (it.shouldStartContest(now)) {
                     logger.info("Starting contest ${it.contestId}")
@@ -28,5 +28,6 @@ class ContestOperationService(
                     it.stopFinishedContest()
                 }
             }
+        return activeContests.size
     }
 }
