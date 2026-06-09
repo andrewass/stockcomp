@@ -20,14 +20,18 @@ class ContestOperationService(
         activeContests
             .forEach {
                 if (it.shouldStartContest(now)) {
-                    logger.info("Starting contest ${it.contestId}")
+                    logger.info("scheduled_job_item job={} action=start_contest contestId={}", JOB_NAME, it.contestId)
                     it.startContest()
                 }
                 if (it.shouldStopFinishedContest(now)) {
-                    logger.info("Stopping finished contest ${it.contestId}")
+                    logger.info("scheduled_job_item job={} action=stop_contest contestId={}", JOB_NAME, it.contestId)
                     it.stopFinishedContest()
                 }
             }
         return activeContests.size
+    }
+
+    private companion object {
+        const val JOB_NAME = "contest-maintain-contests"
     }
 }

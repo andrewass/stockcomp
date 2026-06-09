@@ -17,8 +17,19 @@ class LeaderboardJobProcessService(
             leaderboardJobStateService.markAsCompleted(job)
             JobStatus.COMPLETED
         } catch (e: Exception) {
-            logger.error("Failed to process leaderboard job {}", job.leaderboardJobId, e)
+            logger.error(
+                "scheduled_job_item_failure job={} action=process_leaderboard_job leaderboardJobId={} contestId={} attempts={}",
+                JOB_NAME,
+                job.leaderboardJobId,
+                job.contestId,
+                job.attempts(),
+                e,
+            )
             leaderboardJobStateService.markAsFailed(job)
             JobStatus.FAILED
         }
+
+    private companion object {
+        const val JOB_NAME = "leaderboard-process-jobs"
+    }
 }

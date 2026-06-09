@@ -3,24 +3,30 @@ package com.stockcomp.common
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.util.concurrent.TimeUnit
 
 @Component
 class ScheduledJobInstrumentation(
     private val meterRegistry: MeterRegistry,
 ) {
+    private val logger = LoggerFactory.getLogger(ScheduledJobInstrumentation::class.java)
+
     fun record(
         jobName: String,
         block: () -> ScheduledJobRunResult,
     ): ScheduledJobRunResult {
         val sample = Timer.start(meterRegistry)
         var result = ScheduledJobRunResult.success()
+        var thrown: Exception? = null
 
         try {
             result = block()
             return result
         } catch (e: Exception) {
             result = ScheduledJobRunResult.failure()
+            thrown = e
             throw e
         } finally {
             Counter
@@ -31,18 +37,26 @@ class ScheduledJobInstrumentation(
                 .register(meterRegistry)
                 .increment()
 
-            sample.stop(
-                Timer
-                    .builder(DURATION_METRIC)
-                    .description("Scheduled job run duration")
-                    .tag(JOB_TAG, jobName)
-                    .tag(OUTCOME_TAG, result.outcome.tagValue)
-                    .register(meterRegistry),
-            )
+            val durationNanos =
+                sample.stop(
+                    Timer
+                        .builder(DURATION_METRIC)
+                        .description("Scheduled job run duration")
+                        .tag(JOB_TAG, jobName)
+                        .tag(OUTCOME_TAG, result.outcome.tagValue)
+                        .register(meterRegistry),
+                )
+            val durationMs = TimeUnit.NANOSECONDS.toMillis(durationNanos)
 
             incrementItemCounter(jobName, "processed", result.processedItems)
             incrementItemCounter(jobName, "failed", result.failedItems)
             incrementItemCounter(jobName, "skipped", result.skippedItems)
+            logRun(
+                jobName = jobName,
+                result = result,
+                durationMs = durationMs,
+                thrown = thrown,
+            )
         }
     }
 
@@ -61,6 +75,77 @@ class ScheduledJobInstrumentation(
             .tag(ITEM_TAG, itemType)
             .register(meterRegistry)
             .increment(count.toDouble())
+    }
+
+    private fun logRun(
+        jobName: String,
+        result: ScheduledJobRunResult,
+        durationMs: Long,
+        thrown: Exception?,
+    ) {
+        val message = "scheduled_job_run job={} outcome={} processedItems={} failedItems={} skippedItems={} durationMs={}"
+        when (result.outcome) {
+            ScheduledJobRunOutcome.SUCCESS -> {
+                logger.info(
+                    message,
+                    jobName,
+                    result.outcome.tagValue,
+                    result.processedItems,
+                    result.failedItems,
+                    result.skippedItems,
+                    durationMs,
+                )
+            }
+
+            ScheduledJobRunOutcome.PARTIAL_FAILURE -> {
+                logger.warn(
+                    message,
+                    jobName,
+                    result.outcome.tagValue,
+                    result.processedItems,
+                    result.failedItems,
+                    result.skippedItems,
+                    durationMs,
+                )
+            }
+
+            ScheduledJobRunOutcome.FAILURE -> {
+                if (thrown == null) {
+                    logger.error(
+                        message,
+                        jobName,
+                        result.outcome.tagValue,
+                        result.processedItems,
+                        result.failedItems,
+                        result.skippedItems,
+                        durationMs,
+                    )
+                } else {
+                    logger.error(
+                        message,
+                        jobName,
+                        result.outcome.tagValue,
+                        result.processedItems,
+                        result.failedItems,
+                        result.skippedItems,
+                        durationMs,
+                        thrown,
+                    )
+                }
+            }
+
+            ScheduledJobRunOutcome.SKIPPED -> {
+                logger.debug(
+                    message,
+                    jobName,
+                    result.outcome.tagValue,
+                    result.processedItems,
+                    result.failedItems,
+                    result.skippedItems,
+                    durationMs,
+                )
+            }
+        }
     }
 
     companion object {

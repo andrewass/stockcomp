@@ -47,7 +47,8 @@ class InvestmentOrderMaintenanceService(
                     } catch (e: Exception) {
                         failedItems += 1
                         logger.error(
-                            "Failed order processing for contest {} participant {}",
+                            "scheduled_job_item_failure job={} action=process_investment_orders contestId={} participantId={}",
+                            JOB_NAME,
                             contest.contestId,
                             participant.participantId,
                             e,
@@ -61,12 +62,16 @@ class InvestmentOrderMaintenanceService(
                 skippedItems = skippedItems,
             )
         } catch (e: Exception) {
-            logger.error("Failed order processing", e)
+            logger.error("scheduled_job_failure job={} action=process_investment_orders", JOB_NAME, e)
             ScheduledJobRunResult.failure(
                 processedItems = processedItems,
                 failedItems = failedItems,
                 skippedItems = skippedItems,
             )
         }
+    }
+
+    private companion object {
+        const val JOB_NAME = "investment-order-maintain-orders"
     }
 }
