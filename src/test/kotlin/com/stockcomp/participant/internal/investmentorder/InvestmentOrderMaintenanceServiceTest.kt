@@ -40,6 +40,7 @@ class InvestmentOrderMaintenanceServiceTest {
 
         assertEquals(ScheduledJobRunOutcome.SUCCESS, result.outcome)
         assertEquals(2, result.processedItems)
+        assertEquals(0, result.failedItems)
         verify {
             investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
             investmentOrderProcessingService.processInvestmentOrders(SECOND_PARTICIPANT_ID)
@@ -54,26 +55,55 @@ class InvestmentOrderMaintenanceServiceTest {
 
         assertEquals(ScheduledJobRunOutcome.SKIPPED, result.outcome)
         assertEquals(0, result.processedItems)
+        assertEquals(0, result.failedItems)
         assertEquals(1, result.skippedItems)
     }
 
     @Test
-    fun `should return failure with processed count when order processing fails`() {
+    fun `should continue processing participants after order processing fails`() {
         every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
         every { participantService.getAllByContest(CONTEST_ID) } returns
             listOf(
                 participant(FIRST_PARTICIPANT_ID),
                 participant(SECOND_PARTICIPANT_ID),
             )
-        every { investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID) } just Runs
         every {
+            investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
+        } throws IllegalStateException("FastFinance failed")
+        every { investmentOrderProcessingService.processInvestmentOrders(SECOND_PARTICIPANT_ID) } just Runs
+
+        val result = service.maintainInvestmentOrders()
+
+        assertEquals(ScheduledJobRunOutcome.PARTIAL_FAILURE, result.outcome)
+        assertEquals(1, result.processedItems)
+        assertEquals(1, result.failedItems)
+        verify {
+            investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
             investmentOrderProcessingService.processInvestmentOrders(SECOND_PARTICIPANT_ID)
+        }
+    }
+
+    @Test
+    fun `should return failure when all participant order processing fails`() {
+        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { participantService.getAllByContest(CONTEST_ID) } returns
+            listOf(
+                participant(FIRST_PARTICIPANT_ID),
+                participant(SECOND_PARTICIPANT_ID),
+            )
+        every {
+            investmentOrderProcessingService.processInvestmentOrders(any())
         } throws IllegalStateException("FastFinance failed")
 
         val result = service.maintainInvestmentOrders()
 
         assertEquals(ScheduledJobRunOutcome.FAILURE, result.outcome)
-        assertEquals(1, result.processedItems)
+        assertEquals(0, result.processedItems)
+        assertEquals(2, result.failedItems)
+        verify {
+            investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
+            investmentOrderProcessingService.processInvestmentOrders(SECOND_PARTICIPANT_ID)
+        }
     }
 
     private fun participant(participantId: Long) =

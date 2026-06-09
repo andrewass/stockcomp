@@ -16,6 +16,7 @@ class InvestmentMaintenanceService(
 
     fun maintainInvestments(): ScheduledJobRunResult {
         var processedItems = 0
+        var failedItems = 0
         return try {
             contestService
                 .getActiveContests()
@@ -23,22 +24,34 @@ class InvestmentMaintenanceService(
                     participantService
                         .getAllByContest(contest.contestId)
                         .forEach { participant ->
-                            val participantId =
-                                requireNotNull(participant.participantId) {
-                                    "Participant id is null while maintaining investments for contest ${contest.contestId}"
-                                }
-                            investmentProcessingService.maintainInvestments(participantId)
-                            processedItems += 1
+                            try {
+                                val participantId =
+                                    requireNotNull(participant.participantId) {
+                                        "Participant id is null while maintaining investments for contest ${contest.contestId}"
+                                    }
+                                investmentProcessingService.maintainInvestments(participantId)
+                                processedItems += 1
+                            } catch (e: Exception) {
+                                failedItems += 1
+                                logger.error(
+                                    "Failed maintain investments for contest {} participant {}",
+                                    contest.contestId,
+                                    participant.participantId,
+                                    e,
+                                )
+                            }
                         }
                 }
-            if (processedItems == 0) {
-                ScheduledJobRunResult.skipped()
-            } else {
-                ScheduledJobRunResult.success(processedItems = processedItems)
-            }
+            ScheduledJobRunResult.fromItemCounts(
+                processedItems = processedItems,
+                failedItems = failedItems,
+            )
         } catch (e: Exception) {
             logger.error("Failed maintain investments", e)
-            ScheduledJobRunResult.failure(processedItems = processedItems)
+            ScheduledJobRunResult.failure(
+                processedItems = processedItems,
+                failedItems = failedItems,
+            )
         }
     }
 }

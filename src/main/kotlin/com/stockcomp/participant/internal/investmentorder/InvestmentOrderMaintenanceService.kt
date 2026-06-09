@@ -16,6 +16,7 @@ class InvestmentOrderMaintenanceService(
 
     fun maintainInvestmentOrders(): ScheduledJobRunResult {
         var processedItems = 0
+        var failedItems = 0
         return try {
             contestService
                 .getActiveContests()
@@ -23,22 +24,34 @@ class InvestmentOrderMaintenanceService(
                     participantService
                         .getAllByContest(it.contestId)
                         .forEach { participant ->
-                            val participantId =
-                                requireNotNull(participant.participantId) {
-                                    "Participant id is null while processing investment orders for contest ${it.contestId}"
-                                }
-                            investmentOrderProcessingService.processInvestmentOrders(participantId)
-                            processedItems += 1
+                            try {
+                                val participantId =
+                                    requireNotNull(participant.participantId) {
+                                        "Participant id is null while processing investment orders for contest ${it.contestId}"
+                                    }
+                                investmentOrderProcessingService.processInvestmentOrders(participantId)
+                                processedItems += 1
+                            } catch (e: Exception) {
+                                failedItems += 1
+                                logger.error(
+                                    "Failed order processing for contest {} participant {}",
+                                    it.contestId,
+                                    participant.participantId,
+                                    e,
+                                )
+                            }
                         }
                 }
-            if (processedItems == 0) {
-                ScheduledJobRunResult.skipped()
-            } else {
-                ScheduledJobRunResult.success(processedItems = processedItems)
-            }
+            ScheduledJobRunResult.fromItemCounts(
+                processedItems = processedItems,
+                failedItems = failedItems,
+            )
         } catch (e: Exception) {
             logger.error("Failed order processing", e)
-            ScheduledJobRunResult.failure(processedItems = processedItems)
+            ScheduledJobRunResult.failure(
+                processedItems = processedItems,
+                failedItems = failedItems,
+            )
         }
     }
 }

@@ -41,6 +41,7 @@ class ScheduledJobInstrumentation(
             )
 
             incrementItemCounter(jobName, "processed", result.processedItems)
+            incrementItemCounter(jobName, "failed", result.failedItems)
             incrementItemCounter(jobName, "skipped", result.skippedItems)
         }
     }
@@ -75,10 +76,12 @@ class ScheduledJobInstrumentation(
 data class ScheduledJobRunResult(
     val outcome: ScheduledJobRunOutcome,
     val processedItems: Int = 0,
+    val failedItems: Int = 0,
     val skippedItems: Int = 0,
 ) {
     init {
         require(processedItems >= 0) { "Processed item count cannot be negative" }
+        require(failedItems >= 0) { "Failed item count cannot be negative" }
         require(skippedItems >= 0) { "Skipped item count cannot be negative" }
     }
 
@@ -94,10 +97,23 @@ data class ScheduledJobRunResult(
 
         fun failure(
             processedItems: Int = 0,
+            failedItems: Int = 0,
             skippedItems: Int = 0,
         ) = ScheduledJobRunResult(
             outcome = ScheduledJobRunOutcome.FAILURE,
             processedItems = processedItems,
+            failedItems = failedItems,
+            skippedItems = skippedItems,
+        )
+
+        fun partialFailure(
+            processedItems: Int,
+            failedItems: Int,
+            skippedItems: Int = 0,
+        ) = ScheduledJobRunResult(
+            outcome = ScheduledJobRunOutcome.PARTIAL_FAILURE,
+            processedItems = processedItems,
+            failedItems = failedItems,
             skippedItems = skippedItems,
         )
 
@@ -106,6 +122,33 @@ data class ScheduledJobRunResult(
                 outcome = ScheduledJobRunOutcome.SKIPPED,
                 skippedItems = skippedItems,
             )
+
+        fun fromItemCounts(
+            processedItems: Int,
+            failedItems: Int,
+            skippedItems: Int = 0,
+        ): ScheduledJobRunResult =
+            when {
+                processedItems == 0 && failedItems == 0 -> {
+                    skipped(skippedItems = skippedItems.coerceAtLeast(1))
+                }
+
+                failedItems == 0 -> {
+                    success(processedItems = processedItems, skippedItems = skippedItems)
+                }
+
+                processedItems == 0 -> {
+                    failure(failedItems = failedItems, skippedItems = skippedItems)
+                }
+
+                else -> {
+                    partialFailure(
+                        processedItems = processedItems,
+                        failedItems = failedItems,
+                        skippedItems = skippedItems,
+                    )
+                }
+            }
     }
 }
 
@@ -114,5 +157,6 @@ enum class ScheduledJobRunOutcome(
 ) {
     SUCCESS("success"),
     FAILURE("failure"),
+    PARTIAL_FAILURE("partial_failure"),
     SKIPPED("skipped"),
 }

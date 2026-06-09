@@ -38,6 +38,23 @@ class ScheduledJobInstrumentationTest {
     }
 
     @Test
+    fun `should record partial failure job run metrics`() {
+        val result =
+            instrumentation.record(JOB_NAME) {
+                ScheduledJobRunResult.partialFailure(
+                    processedItems = 2,
+                    failedItems = 1,
+                )
+            }
+
+        assertEquals(ScheduledJobRunOutcome.PARTIAL_FAILURE, result.outcome)
+        assertEquals(1.0, runCounter("partial_failure"))
+        assertEquals(2.0, itemCounter("processed"))
+        assertEquals(1.0, itemCounter("failed"))
+        assertEquals(1L, timerCount("partial_failure"))
+    }
+
+    @Test
     fun `should record failed job run metrics when block throws`() {
         assertThrows(IllegalStateException::class.java) {
             instrumentation.record(JOB_NAME) {
