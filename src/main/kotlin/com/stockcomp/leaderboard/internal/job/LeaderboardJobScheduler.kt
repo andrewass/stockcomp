@@ -2,6 +2,7 @@ package com.stockcomp.leaderboard.internal.job
 
 import com.stockcomp.common.ScheduledJobInstrumentation
 import com.stockcomp.common.ScheduledJobRunResult
+import com.stockcomp.configuration.LeaderboardJobCreationProperties
 import com.stockcomp.contest.ContestServiceExternal
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.springframework.scheduling.annotation.Scheduled
@@ -15,6 +16,7 @@ class LeaderboardJobScheduler(
     private val leaderboardJobProcessService: LeaderboardJobProcessService,
     private val contestService: ContestServiceExternal,
     private val scheduledJobInstrumentation: ScheduledJobInstrumentation,
+    private val leaderboardJobCreationProperties: LeaderboardJobCreationProperties,
 ) {
     private val openStatuses = listOf(JobStatus.CREATED, JobStatus.FAILED)
 
@@ -44,10 +46,15 @@ class LeaderboardJobScheduler(
         scheduledJobInstrumentation.record(CREATE_JOB_NAME) {
             var createdItems = 0
             var skippedItems = 0
+            val maxContestsPerRun = leaderboardJobCreationProperties.maxContestsPerRun
             contestService.getContestsAwaitingCompletion().forEach { contest ->
                 if (!leaderboardJobRepository.existsByContestIdAndJobStatusIn(contest.contestId, openStatuses)) {
-                    leaderboardJobRepository.save(LeaderboardJob(contestId = contest.contestId))
-                    createdItems += 1
+                    if (createdItems >= maxContestsPerRun) {
+                        skippedItems += 1
+                    } else {
+                        leaderboardJobRepository.save(LeaderboardJob(contestId = contest.contestId))
+                        createdItems += 1
+                    }
                 } else {
                     skippedItems += 1
                 }

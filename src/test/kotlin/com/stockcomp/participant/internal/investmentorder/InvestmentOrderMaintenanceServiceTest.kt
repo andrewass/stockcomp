@@ -1,6 +1,7 @@
 package com.stockcomp.participant.internal.investmentorder
 
 import com.stockcomp.common.ScheduledJobRunOutcome
+import com.stockcomp.configuration.InvestmentOrderMaintenanceProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.contest.internal.ContestStatus
@@ -24,6 +25,7 @@ class InvestmentOrderMaintenanceServiceTest {
             investmentOrderProcessingService = investmentOrderProcessingService,
             participantService = participantService,
             contestService = contestService,
+            investmentOrderMaintenanceProperties = InvestmentOrderMaintenanceProperties(),
         )
 
     @Test
@@ -106,6 +108,38 @@ class InvestmentOrderMaintenanceServiceTest {
         }
     }
 
+    @Test
+    fun `should stop processing investment orders when participant batch limit is reached`() {
+        val limitedService =
+            InvestmentOrderMaintenanceService(
+                investmentOrderProcessingService = investmentOrderProcessingService,
+                participantService = participantService,
+                contestService = contestService,
+                investmentOrderMaintenanceProperties = InvestmentOrderMaintenanceProperties(maxParticipantsPerRun = 2),
+            )
+        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { participantService.getAllByContest(CONTEST_ID) } returns
+            listOf(
+                participant(FIRST_PARTICIPANT_ID),
+                participant(SECOND_PARTICIPANT_ID),
+                participant(THIRD_PARTICIPANT_ID),
+            )
+        every {
+            investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
+        } throws IllegalStateException("FastFinance failed")
+        every { investmentOrderProcessingService.processInvestmentOrders(SECOND_PARTICIPANT_ID) } just Runs
+
+        val result = limitedService.maintainInvestmentOrders()
+
+        assertEquals(ScheduledJobRunOutcome.PARTIAL_FAILURE, result.outcome)
+        assertEquals(1, result.processedItems)
+        assertEquals(1, result.failedItems)
+        assertEquals(1, result.skippedItems)
+        verify(exactly = 0) {
+            investmentOrderProcessingService.processInvestmentOrders(THIRD_PARTICIPANT_ID)
+        }
+    }
+
     private fun participant(participantId: Long) =
         Participant(
             participantId = participantId,
@@ -126,5 +160,6 @@ class InvestmentOrderMaintenanceServiceTest {
         const val CONTEST_ID = 10L
         const val FIRST_PARTICIPANT_ID = 101L
         const val SECOND_PARTICIPANT_ID = 102L
+        const val THIRD_PARTICIPANT_ID = 103L
     }
 }

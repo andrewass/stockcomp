@@ -1,6 +1,7 @@
 package com.stockcomp.participant.internal.investment
 
 import com.stockcomp.common.ScheduledJobRunOutcome
+import com.stockcomp.configuration.InvestmentMaintenanceProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.contest.internal.ContestStatus
@@ -24,6 +25,7 @@ class InvestmentMaintenanceServiceTest {
             participantService = participantService,
             contestService = contestService,
             investmentProcessingService = investmentProcessingService,
+            investmentMaintenanceProperties = InvestmentMaintenanceProperties(),
         )
 
     @Test
@@ -106,6 +108,38 @@ class InvestmentMaintenanceServiceTest {
         }
     }
 
+    @Test
+    fun `should stop maintaining investments when participant batch limit is reached`() {
+        val limitedService =
+            InvestmentMaintenanceService(
+                participantService = participantService,
+                contestService = contestService,
+                investmentProcessingService = investmentProcessingService,
+                investmentMaintenanceProperties = InvestmentMaintenanceProperties(maxParticipantsPerRun = 2),
+            )
+        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { participantService.getAllByContest(CONTEST_ID) } returns
+            listOf(
+                participant(FIRST_PARTICIPANT_ID),
+                participant(SECOND_PARTICIPANT_ID),
+                participant(THIRD_PARTICIPANT_ID),
+            )
+        every {
+            investmentProcessingService.maintainInvestments(FIRST_PARTICIPANT_ID)
+        } throws IllegalStateException("FastFinance failed")
+        every { investmentProcessingService.maintainInvestments(SECOND_PARTICIPANT_ID) } just Runs
+
+        val result = limitedService.maintainInvestments()
+
+        assertEquals(ScheduledJobRunOutcome.PARTIAL_FAILURE, result.outcome)
+        assertEquals(1, result.processedItems)
+        assertEquals(1, result.failedItems)
+        assertEquals(1, result.skippedItems)
+        verify(exactly = 0) {
+            investmentProcessingService.maintainInvestments(THIRD_PARTICIPANT_ID)
+        }
+    }
+
     private fun participant(participantId: Long) =
         Participant(
             participantId = participantId,
@@ -126,5 +160,6 @@ class InvestmentMaintenanceServiceTest {
         const val CONTEST_ID = 10L
         const val FIRST_PARTICIPANT_ID = 101L
         const val SECOND_PARTICIPANT_ID = 102L
+        const val THIRD_PARTICIPANT_ID = 103L
     }
 }
