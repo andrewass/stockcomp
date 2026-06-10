@@ -1,9 +1,6 @@
 package com.stockcomp.leaderboard.internal.medal
 
-data class MedalDto(
-    val medalValue: String,
-    val position: Int,
-)
+import com.stockcomp.leaderboard.MedalDto
 
 fun mapToMedalDto(src: Medal) =
     MedalDto(

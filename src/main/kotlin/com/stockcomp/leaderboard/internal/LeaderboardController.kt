@@ -2,8 +2,6 @@ package com.stockcomp.leaderboard.internal
 
 import com.stockcomp.leaderboard.LeaderboardEntryDto
 import com.stockcomp.leaderboard.LeaderboardEntryPageDto
-import com.stockcomp.leaderboard.mapToLeaderboardEntryDto
-import com.stockcomp.leaderboard.mapToLeaderboardEntryPageDto
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.ResponseEntity
