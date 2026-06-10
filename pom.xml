@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>25</java.version>
-        <kotlin.version>2.3.21</kotlin.version>
+        <kotlin.version>2.4.0</kotlin.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <mockk.version>1.14.11</mockk.version>
         <logstash.version>9.0</logstash.version>
