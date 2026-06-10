@@ -3,6 +3,8 @@ package com.stockcomp.user
 import com.stockcomp.user.internal.User
 import com.stockcomp.user.internal.UserRole
 import com.stockcomp.user.internal.UserStatus
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
 import org.springframework.data.domain.Page
 
 data class UserDto(
@@ -26,6 +28,8 @@ data class UserPageDto(
 )
 
 data class CreateUserRequest(
+    @field:NotBlank
+    @field:Email
     val email: String,
 )
 

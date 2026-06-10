@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -76,6 +77,68 @@ class UserOperationsIT
                     mockMvcPostRequest("$basePath/create", "USER")
                         .content(mapper.writeValueAsString(CreateUserRequest("non-admin-create@test.com"))),
                 ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return bad request for invalid create user payload`() {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                            .content(mapper.writeValueAsString(CreateUserRequest("not-an-email"))),
+                    ).andExpect(status().isBadRequest)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(400, response["status"].asInt())
+            assertEquals("Invalid user request", response["title"].asText())
+            assertEquals("/problems/user/validation", response["type"].asText())
+            assertTrue(response["errors"].isArray)
+        }
+
+        @Test
+        fun `should return bad request for invalid user pagination parameters`() {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcGetRequest("$basePath/sorted", "ADMIN")
+                            .queryParam("pageNumber", "-1")
+                            .queryParam("pageSize", "101"),
+                    ).andExpect(status().isBadRequest)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(400, response["status"].asInt())
+            assertEquals("Invalid user request", response["title"].asText())
+            assertEquals("/problems/user/validation", response["type"].asText())
+            assertTrue(response["errors"].isArray)
+        }
+
+        @Test
+        fun `should return bad request for invalid user id parameter`() {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcGetRequest("$basePath/details")
+                            .queryParam("userId", "0"),
+                    ).andExpect(status().isBadRequest)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(400, response["status"].asInt())
+            assertEquals("/problems/user/validation", response["type"].asText())
         }
 
         @Test

@@ -6,10 +6,13 @@ import com.stockcomp.contest.CreateContestRequest
 import com.stockcomp.contest.mapToContestPageDto
 import com.stockcomp.contest.toContestDto
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
+import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
+@Validated
 @RestController
 @RequestMapping("/contests")
 class ContestController(
@@ -28,8 +32,8 @@ class ContestController(
 ) {
     @GetMapping("/all")
     fun getAllContestsSortedByContestId(
-        @RequestParam pageNumber: Int,
-        @RequestParam pageSize: Int,
+        @RequestParam @PositiveOrZero pageNumber: Int,
+        @RequestParam @Positive @Max(100) pageSize: Int,
     ): ResponseEntity<ContestPageDto> = ResponseEntity.ok(mapToContestPageDto(contestService.getAllContestsSorted(pageNumber, pageSize)))
 
     @GetMapping("/exists-active")
@@ -42,7 +46,7 @@ class ContestController(
 
     @GetMapping("/{contestId}")
     fun getContest(
-        @PathVariable contestId: Long,
+        @PathVariable @Positive contestId: Long,
     ): ResponseEntity<ContestDto> = ResponseEntity.ok(toContestDto(contestService.getContest(contestId)))
 
     @PostMapping("/create")
@@ -72,7 +76,7 @@ class ContestController(
     @DeleteMapping("/{contestId}")
     @PreAuthorize("hasRole('ADMIN')")
     fun deleteContest(
-        @PathVariable contestId: Long,
+        @PathVariable @Positive contestId: Long,
     ): ResponseEntity<Void> {
         contestService.deleteContest(contestId)
         return ResponseEntity.noContent().build()

@@ -9,9 +9,14 @@ import com.stockcomp.user.UserPageDto
 import com.stockcomp.user.mapToUserDto
 import com.stockcomp.user.mapToUserPageDto
 import com.stockcomp.user.toUserDetailsDto
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Positive
+import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+@Validated
 @RestController
 @RequestMapping("/users")
 class UserController(
@@ -28,19 +34,19 @@ class UserController(
     @GetMapping("/sorted")
     @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsersSortedByEmail(
-        @RequestParam pageNumber: Int,
-        @RequestParam pageSize: Int,
+        @RequestParam @PositiveOrZero pageNumber: Int,
+        @RequestParam @Positive @Max(100) pageSize: Int,
     ): ResponseEntity<UserPageDto> = ResponseEntity.ok(mapToUserPageDto(userService.getAllUsersSortedByEmail(pageNumber, pageSize)))
 
     @GetMapping("/details")
     fun getUserDetails(
-        @RequestParam userId: Long,
+        @RequestParam @Positive userId: Long,
     ): ResponseEntity<UserDetailsDto> = ResponseEntity.ok(toUserDetailsDto(userService.findUserById(userId)))
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     fun createUser(
-        @RequestBody request: CreateUserRequest,
+        @Valid @RequestBody request: CreateUserRequest,
     ): ResponseEntity<UserDto> = ResponseEntity.ok(mapToUserDto(userService.createUser(request.email)))
 
     @PatchMapping("/update")

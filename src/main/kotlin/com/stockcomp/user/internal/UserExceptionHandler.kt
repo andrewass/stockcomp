@@ -1,4 +1,4 @@
-package com.stockcomp.contest.internal
+package com.stockcomp.user.internal
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -18,8 +19,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.net.URI
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = [ContestController::class])
-class ContestExceptionHandler : ResponseEntityExceptionHandler() {
+@RestControllerAdvice(assignableTypes = [UserController::class])
+class UserExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNoSuchElementException(
         exception: NoSuchElementException,
@@ -30,26 +31,9 @@ class ContestExceptionHandler : ResponseEntityExceptionHandler() {
             .body(
                 createProblemDetail(
                     status = HttpStatus.NOT_FOUND,
-                    title = "Contest not found",
-                    detail = exception.message ?: "Contest was not found",
-                    type = "/problems/contest/not-found",
-                    instancePath = request.requestURI,
-                ),
-            )
-
-    @ExceptionHandler(IllegalStateException::class)
-    fun handleIllegalStateException(
-        exception: IllegalStateException,
-        request: HttpServletRequest,
-    ): ResponseEntity<ProblemDetail> =
-        ResponseEntity
-            .status(HttpStatus.CONFLICT)
-            .body(
-                createProblemDetail(
-                    status = HttpStatus.CONFLICT,
-                    title = "Contest state conflict",
-                    detail = exception.message ?: "Contest state transition is not allowed",
-                    type = "/problems/contest/state-conflict",
+                    title = "User not found",
+                    detail = exception.message ?: "User was not found",
+                    type = "/problems/user/not-found",
                     instancePath = request.requestURI,
                 ),
             )
@@ -64,9 +48,9 @@ class ContestExceptionHandler : ResponseEntityExceptionHandler() {
             .body(
                 createProblemDetail(
                     status = HttpStatus.BAD_REQUEST,
-                    title = "Invalid contest request",
+                    title = "Invalid user request",
                     detail = "Request parameter validation failed",
-                    type = "/problems/contest/validation",
+                    type = "/problems/user/validation",
                     instancePath = request.requestURI,
                 ).also {
                     it.setProperty(
@@ -90,9 +74,9 @@ class ContestExceptionHandler : ResponseEntityExceptionHandler() {
         val problemDetail =
             createProblemDetail(
                 status = HttpStatus.BAD_REQUEST,
-                title = "Invalid contest request",
+                title = "Invalid user request",
                 detail = "Request body validation failed",
-                type = "/problems/contest/validation",
+                type = "/problems/user/validation",
                 instancePath = (request as? ServletWebRequest)?.request?.requestURI,
             ).also {
                 it.setProperty(
@@ -105,7 +89,23 @@ class ContestExceptionHandler : ResponseEntityExceptionHandler() {
                     },
                 )
             }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
+    }
 
+    override fun handleHttpMessageNotReadable(
+        ex: HttpMessageNotReadableException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
+        val problemDetail =
+            createProblemDetail(
+                status = HttpStatus.BAD_REQUEST,
+                title = "Invalid user request",
+                detail = "Request body could not be parsed",
+                type = "/problems/user/malformed-body",
+                instancePath = (request as? ServletWebRequest)?.request?.requestURI,
+            )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
 

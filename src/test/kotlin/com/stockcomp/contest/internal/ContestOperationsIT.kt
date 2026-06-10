@@ -328,6 +328,28 @@ class ContestOperationsIT
         }
 
         @Test
+        fun `should return bad request for invalid contest pagination parameters`() {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcGetRequest("$basePath/all")
+                            .queryParam("pageNumber", "-1")
+                            .queryParam("pageSize", "101"),
+                    ).andExpect(status().isBadRequest)
+                    .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                            .content()
+                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                    ).andReturn()
+
+            val response = mapper.readTree(result.response.contentAsString)
+            assertEquals(400, response["status"].asInt())
+            assertEquals("Invalid contest request", response["title"].asText())
+            assertEquals("/problems/contest/validation", response["type"].asText())
+            assertTrue(response["errors"].isArray)
+        }
+
+        @Test
         fun `should return bad request for invalid contest update payload`() {
             mockMvc
                 .perform(
