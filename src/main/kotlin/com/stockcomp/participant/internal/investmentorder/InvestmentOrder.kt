@@ -1,6 +1,8 @@
 package com.stockcomp.participant.internal.investmentorder
 
 import com.stockcomp.common.BaseEntity
+import com.stockcomp.participant.OrderStatus
+import com.stockcomp.participant.TransactionType
 import com.stockcomp.participant.internal.Participant
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

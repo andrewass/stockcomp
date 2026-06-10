@@ -12,6 +12,7 @@ import com.stockcomp.contest.CreateContestRequest
 import com.stockcomp.participant.InvestmentOrderDto
 import com.stockcomp.participant.PlaceInvestmentOrderRequest
 import com.stockcomp.participant.SignUpParticipantRequest
+import com.stockcomp.participant.TransactionType
 import com.stockcomp.participant.UserParticipantDto
 import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.user.CreateUserRequest

@@ -1,4 +1,4 @@
-package com.stockcomp.participant.internal.investmentorder
+package com.stockcomp.participant
 
 enum class OrderStatus(
     val decode: String,

@@ -1,8 +1,5 @@
 package com.stockcomp.participant
 
-import com.stockcomp.participant.internal.investmentorder.InvestmentOrder
-import com.stockcomp.participant.internal.investmentorder.OrderStatus
-import com.stockcomp.participant.internal.investmentorder.TransactionType
 import jakarta.validation.constraints.Future
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
@@ -38,16 +35,3 @@ data class InvestmentOrderDto(
     val transactionType: TransactionType,
     val orderStatus: OrderStatus,
 )
-
-fun mapToInvestmentOrderDto(source: InvestmentOrder) =
-    InvestmentOrderDto(
-        orderId = source.orderId,
-        symbol = source.symbol,
-        acceptedPrice = source.acceptedPrice,
-        currency = source.currency,
-        expirationTime = source.expirationTime,
-        orderStatus = source.orderStatus,
-        remainingAmount = source.remainingAmount,
-        totalAmount = source.totalAmount,
-        transactionType = source.transactionType,
-    )

@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal.investmentorder
 
+import com.stockcomp.participant.TransactionType
 import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.participant.internal.ParticipantService
 import com.stockcomp.symbol.SymbolServiceExternal

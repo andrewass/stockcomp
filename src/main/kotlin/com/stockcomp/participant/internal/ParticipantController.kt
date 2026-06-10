@@ -9,9 +9,6 @@ import com.stockcomp.participant.DetailedParticipantDto
 import com.stockcomp.participant.HistoricParticipantDto
 import com.stockcomp.participant.SignUpParticipantRequest
 import com.stockcomp.participant.UserParticipantDto
-import com.stockcomp.participant.mapToHistoricParticipant
-import com.stockcomp.participant.toParticipantPage
-import com.stockcomp.participant.toUserParticipantDto
 import com.stockcomp.user.UserServiceExternal
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank

@@ -13,8 +13,8 @@ import com.stockcomp.participant.ContestParticipantDto
 import com.stockcomp.participant.DetailedParticipantDto
 import com.stockcomp.participant.PlaceInvestmentOrderRequest
 import com.stockcomp.participant.SignUpParticipantRequest
+import com.stockcomp.participant.TransactionType
 import com.stockcomp.participant.UserParticipantDto
-import com.stockcomp.participant.internal.investmentorder.TransactionType
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UserDto
 import org.junit.jupiter.api.Assertions.assertEquals

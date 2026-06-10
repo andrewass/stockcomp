@@ -4,7 +4,6 @@ import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.participant.InvestmentOrderDto
 import com.stockcomp.participant.PlaceInvestmentOrderRequest
-import com.stockcomp.participant.mapToInvestmentOrderDto
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive

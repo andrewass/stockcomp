@@ -3,7 +3,6 @@ package com.stockcomp.participant.internal.investment
 import com.stockcomp.common.TokenClaims
 import com.stockcomp.common.TokenData
 import com.stockcomp.participant.InvestmentDto
-import com.stockcomp.participant.mapToInvestmentDto
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import org.springframework.http.ResponseEntity
