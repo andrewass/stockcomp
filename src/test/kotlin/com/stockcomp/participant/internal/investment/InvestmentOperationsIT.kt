@@ -76,6 +76,33 @@ class InvestmentOperationsIT
         }
 
         @Test
+        fun `should not expose investments owned by another user`() {
+            createUser(userEmail)
+            createUser("other-investor@mail.com")
+            val contest = createContest("OwnershipInvestContest")
+            val participant = signUpForContest(contest.contestId)
+            seedInvestment(participant.participantId, "AAPL")
+
+            val allResult =
+                mockMvc
+                    .perform(
+                        mockMvcGetRequest("$basePath/all", emailClaim = "other-investor@mail.com")
+                            .queryParam("contestId", contest.contestId.toString()),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            val investments: List<InvestmentDto> = mapper.readValue(allResult.response.contentAsString)
+            assertTrue(investments.isEmpty())
+
+            mockMvc
+                .perform(
+                    mockMvcGetRequest(basePath, emailClaim = "other-investor@mail.com")
+                        .queryParam("contestId", contest.contestId.toString())
+                        .queryParam("symbol", "AAPL"),
+                ).andExpect(status().isNotFound)
+        }
+
+        @Test
         fun `should remove investment when all units are sold`() {
             createUser(userEmail)
             val contest = createContest("SellAllContest")

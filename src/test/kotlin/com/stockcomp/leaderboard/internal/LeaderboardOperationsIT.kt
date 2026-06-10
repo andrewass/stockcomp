@@ -81,7 +81,7 @@ class LeaderboardOperationsIT
 
             mockMvc
                 .perform(
-                    mockMvcPostRequest("$basePath/update")
+                    mockMvcPostRequest("$basePath/update", "ADMIN")
                         .queryParam("contestId", contestId.toString()),
                 ).andExpect(status().isOk)
 
@@ -91,6 +91,15 @@ class LeaderboardOperationsIT
                     .andExpect(status().isOk)
                     .andReturn()
             assertEquals("COMPLETED", mapper.readTree(contestResult.response.contentAsString)["contestStatus"].asText())
+        }
+
+        @Test
+        fun `should return forbidden when non-admin updates leaderboard`() {
+            mockMvc
+                .perform(
+                    mockMvcPostRequest("$basePath/update", "USER")
+                        .queryParam("contestId", "1"),
+                ).andExpect(status().isForbidden)
         }
 
         @Test

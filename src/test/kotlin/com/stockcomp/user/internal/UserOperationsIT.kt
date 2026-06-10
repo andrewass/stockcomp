@@ -60,6 +60,25 @@ class UserOperationsIT
         }
 
         @Test
+        fun `should return forbidden when non-admin lists users`() {
+            mockMvc
+                .perform(
+                    mockMvcGetRequest("$basePath/sorted", "USER")
+                        .queryParam("pageNumber", "0")
+                        .queryParam("pageSize", "10"),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return forbidden when non-admin creates user`() {
+            mockMvc
+                .perform(
+                    mockMvcPostRequest("$basePath/create", "USER")
+                        .content(mapper.writeValueAsString(CreateUserRequest("non-admin-create@test.com"))),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
         fun `should update current user details`() {
             val subjectUser = userService.findOrCreateUserBySubject("user")
 
@@ -80,6 +99,24 @@ class UserOperationsIT
 
             val updated = userService.findUserById(subjectUser.userId!!)
             assertEquals("updated-user", updated.username)
+        }
+
+        @Test
+        fun `should return forbidden when non-admin updates user details`() {
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("$basePath/update", "USER")
+                        .content(
+                            mapper.writeValueAsString(
+                                UserDetailsDto(
+                                    userId = 1L,
+                                    username = "blocked-update",
+                                    fullName = "Blocked Update",
+                                    country = "NO",
+                                ),
+                            ),
+                        ),
+                ).andExpect(status().isForbidden)
         }
 
         @Test

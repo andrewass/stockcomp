@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ControllerIntegrationTest
@@ -31,5 +32,25 @@ class SecurityConfigurationIT
             mockMvc
                 .perform(get("/actuator/env"))
                 .andExpect(status().isUnauthorized)
+        }
+
+        @Test
+        fun `should require authentication for business endpoints`() {
+            mockMvc
+                .perform(
+                    get("/contests/all")
+                        .queryParam("pageNumber", "0")
+                        .queryParam("pageSize", "10"),
+                ).andExpect(status().isUnauthorized)
+
+            mockMvc
+                .perform(get("/participants/registered"))
+                .andExpect(status().isUnauthorized)
+
+            mockMvc
+                .perform(
+                    post("/leaderboard/update")
+                        .queryParam("contestId", "1"),
+                ).andExpect(status().isUnauthorized)
         }
     }
