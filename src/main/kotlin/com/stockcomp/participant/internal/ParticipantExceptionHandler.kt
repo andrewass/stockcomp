@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal
 
+import com.stockcomp.exception.ApiProblemDetails
 import com.stockcomp.participant.internal.investment.InvestmentController
 import com.stockcomp.participant.internal.investmentorder.InvestmentOrderController
 import jakarta.servlet.http.HttpServletRequest
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import java.net.URI
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(
@@ -37,7 +37,7 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(
-                createProblemDetail(
+                ApiProblemDetails.create(
                     status = HttpStatus.NOT_FOUND,
                     title = "Participant resource not found",
                     detail = exception.message ?: "Requested participant resource was not found",
@@ -54,7 +54,7 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.CONFLICT)
             .body(
-                createProblemDetail(
+                ApiProblemDetails.create(
                     status = HttpStatus.CONFLICT,
                     title = "Participant state conflict",
                     detail = exception.message ?: "Participant state transition is not allowed",
@@ -71,7 +71,7 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
-                createProblemDetail(
+                ApiProblemDetails.create(
                     status = HttpStatus.BAD_REQUEST,
                     title = "Invalid participant request",
                     detail = exception.message ?: "Request arguments are invalid",
@@ -88,23 +88,19 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
-                createProblemDetail(
-                    status = HttpStatus.BAD_REQUEST,
-                    title = "Invalid participant request",
-                    detail = "Request parameter validation failed",
-                    type = "/problems/participant/validation",
-                    instancePath = request.requestURI,
-                ).also {
-                    it.setProperty(
-                        "errors",
-                        exception.constraintViolations.map { violation ->
-                            mapOf(
-                                "path" to violation.propertyPath.toString(),
-                                "message" to violation.message,
-                            )
-                        },
-                    )
-                },
+                ApiProblemDetails
+                    .create(
+                        status = HttpStatus.BAD_REQUEST,
+                        title = "Invalid participant request",
+                        detail = "Request parameter validation failed",
+                        type = "/problems/participant/validation",
+                        instancePath = request.requestURI,
+                    ).also {
+                        it.setProperty(
+                            "errors",
+                            ApiProblemDetails.constraintViolationErrors(exception),
+                        )
+                    },
             )
 
     override fun handleMethodArgumentNotValid(
@@ -114,23 +110,19 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest,
     ): ResponseEntity<Any> {
         val problemDetail =
-            createProblemDetail(
-                status = HttpStatus.BAD_REQUEST,
-                title = "Invalid participant request",
-                detail = "Request body validation failed",
-                type = "/problems/participant/validation",
-                instancePath = (request as? ServletWebRequest)?.request?.requestURI,
-            ).also {
-                it.setProperty(
-                    "errors",
-                    ex.bindingResult.fieldErrors.map { fieldError ->
-                        mapOf(
-                            "field" to fieldError.field,
-                            "message" to (fieldError.defaultMessage ?: "Invalid value"),
-                        )
-                    },
-                )
-            }
+            ApiProblemDetails
+                .create(
+                    status = HttpStatus.BAD_REQUEST,
+                    title = "Invalid participant request",
+                    detail = "Request body validation failed",
+                    type = "/problems/participant/validation",
+                    instancePath = (request as? ServletWebRequest)?.request?.requestURI,
+                ).also {
+                    it.setProperty(
+                        "errors",
+                        ApiProblemDetails.fieldErrors(ex.bindingResult),
+                    )
+                }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
 
@@ -141,7 +133,7 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest,
     ): ResponseEntity<Any> {
         val problemDetail =
-            createProblemDetail(
+            ApiProblemDetails.create(
                 status = HttpStatus.BAD_REQUEST,
                 title = "Invalid participant request",
                 detail = "Request body could not be parsed",
@@ -150,21 +142,4 @@ class ParticipantExceptionHandler : ResponseEntityExceptionHandler() {
             )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
-
-    private fun createProblemDetail(
-        status: HttpStatus,
-        title: String,
-        detail: String,
-        type: String,
-        instancePath: String?,
-    ): ProblemDetail =
-        ProblemDetail
-            .forStatusAndDetail(status, detail)
-            .also {
-                it.title = title
-                it.type = URI.create(type)
-                if (instancePath != null) {
-                    it.instance = URI.create(instancePath)
-                }
-            }
 }

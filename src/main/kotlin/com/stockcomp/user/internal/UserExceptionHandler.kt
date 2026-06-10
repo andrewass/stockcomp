@@ -1,5 +1,6 @@
 package com.stockcomp.user.internal
 
+import com.stockcomp.exception.ApiProblemDetails
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.springframework.core.Ordered
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import java.net.URI
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = [UserController::class])
@@ -29,7 +29,7 @@ class UserExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(
-                createProblemDetail(
+                ApiProblemDetails.create(
                     status = HttpStatus.NOT_FOUND,
                     title = "User not found",
                     detail = exception.message ?: "User was not found",
@@ -46,23 +46,19 @@ class UserExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
-                createProblemDetail(
-                    status = HttpStatus.BAD_REQUEST,
-                    title = "Invalid user request",
-                    detail = "Request parameter validation failed",
-                    type = "/problems/user/validation",
-                    instancePath = request.requestURI,
-                ).also {
-                    it.setProperty(
-                        "errors",
-                        exception.constraintViolations.map { violation ->
-                            mapOf(
-                                "path" to violation.propertyPath.toString(),
-                                "message" to violation.message,
-                            )
-                        },
-                    )
-                },
+                ApiProblemDetails
+                    .create(
+                        status = HttpStatus.BAD_REQUEST,
+                        title = "Invalid user request",
+                        detail = "Request parameter validation failed",
+                        type = "/problems/user/validation",
+                        instancePath = request.requestURI,
+                    ).also {
+                        it.setProperty(
+                            "errors",
+                            ApiProblemDetails.constraintViolationErrors(exception),
+                        )
+                    },
             )
 
     override fun handleMethodArgumentNotValid(
@@ -72,23 +68,19 @@ class UserExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest,
     ): ResponseEntity<Any> {
         val problemDetail =
-            createProblemDetail(
-                status = HttpStatus.BAD_REQUEST,
-                title = "Invalid user request",
-                detail = "Request body validation failed",
-                type = "/problems/user/validation",
-                instancePath = (request as? ServletWebRequest)?.request?.requestURI,
-            ).also {
-                it.setProperty(
-                    "errors",
-                    ex.bindingResult.fieldErrors.map { fieldError ->
-                        mapOf(
-                            "field" to fieldError.field,
-                            "message" to (fieldError.defaultMessage ?: "Invalid value"),
-                        )
-                    },
-                )
-            }
+            ApiProblemDetails
+                .create(
+                    status = HttpStatus.BAD_REQUEST,
+                    title = "Invalid user request",
+                    detail = "Request body validation failed",
+                    type = "/problems/user/validation",
+                    instancePath = (request as? ServletWebRequest)?.request?.requestURI,
+                ).also {
+                    it.setProperty(
+                        "errors",
+                        ApiProblemDetails.fieldErrors(ex.bindingResult),
+                    )
+                }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
 
@@ -99,7 +91,7 @@ class UserExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest,
     ): ResponseEntity<Any> {
         val problemDetail =
-            createProblemDetail(
+            ApiProblemDetails.create(
                 status = HttpStatus.BAD_REQUEST,
                 title = "Invalid user request",
                 detail = "Request body could not be parsed",
@@ -108,21 +100,4 @@ class UserExceptionHandler : ResponseEntityExceptionHandler() {
             )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
-
-    private fun createProblemDetail(
-        status: HttpStatus,
-        title: String,
-        detail: String,
-        type: String,
-        instancePath: String?,
-    ): ProblemDetail =
-        ProblemDetail
-            .forStatusAndDetail(status, detail)
-            .also {
-                it.title = title
-                it.type = URI.create(type)
-                if (instancePath != null) {
-                    it.instance = URI.create(instancePath)
-                }
-            }
 }

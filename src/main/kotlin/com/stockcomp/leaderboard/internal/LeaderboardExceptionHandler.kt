@@ -1,5 +1,6 @@
 package com.stockcomp.leaderboard.internal
 
+import com.stockcomp.exception.ApiProblemDetails
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.springframework.core.Ordered
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import java.net.URI
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = [LeaderboardController::class])
@@ -23,7 +23,7 @@ class LeaderboardExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(
-                createProblemDetail(
+                ApiProblemDetails.create(
                     status = HttpStatus.NOT_FOUND,
                     title = "Leaderboard entry not found",
                     detail = exception.message ?: "Leaderboard entry was not found",
@@ -40,7 +40,7 @@ class LeaderboardExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.CONFLICT)
             .body(
-                createProblemDetail(
+                ApiProblemDetails.create(
                     status = HttpStatus.CONFLICT,
                     title = "Leaderboard state conflict",
                     detail = exception.message ?: "Leaderboard state is invalid",
@@ -57,39 +57,18 @@ class LeaderboardExceptionHandler : ResponseEntityExceptionHandler() {
         ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
-                createProblemDetail(
-                    status = HttpStatus.BAD_REQUEST,
-                    title = "Invalid leaderboard request",
-                    detail = "Request parameter validation failed",
-                    type = "/problems/leaderboard/validation",
-                    instancePath = request.requestURI,
-                ).also {
-                    it.setProperty(
-                        "errors",
-                        exception.constraintViolations.map { violation ->
-                            mapOf(
-                                "path" to violation.propertyPath.toString(),
-                                "message" to violation.message,
-                            )
-                        },
-                    )
-                },
+                ApiProblemDetails
+                    .create(
+                        status = HttpStatus.BAD_REQUEST,
+                        title = "Invalid leaderboard request",
+                        detail = "Request parameter validation failed",
+                        type = "/problems/leaderboard/validation",
+                        instancePath = request.requestURI,
+                    ).also {
+                        it.setProperty(
+                            "errors",
+                            ApiProblemDetails.constraintViolationErrors(exception),
+                        )
+                    },
             )
-
-    private fun createProblemDetail(
-        status: HttpStatus,
-        title: String,
-        detail: String,
-        type: String,
-        instancePath: String?,
-    ): ProblemDetail =
-        ProblemDetail
-            .forStatusAndDetail(status, detail)
-            .also {
-                it.title = title
-                it.type = URI.create(type)
-                if (instancePath != null) {
-                    it.instance = URI.create(instancePath)
-                }
-            }
 }
