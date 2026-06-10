@@ -1,6 +1,7 @@
 package com.stockcomp.contest.internal
 
 import com.stockcomp.common.BaseEntity
+import com.stockcomp.contest.ContestStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

@@ -1,10 +1,7 @@
 package com.stockcomp.contest
 
-import com.stockcomp.contest.internal.Contest
-import com.stockcomp.contest.internal.ContestStatus
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
-import org.springframework.data.domain.Page
 import java.time.LocalDateTime
 
 data class ContestDto(
@@ -27,18 +24,3 @@ data class CreateContestRequest(
     @field:Positive
     val durationDays: Long,
 )
-
-fun toContestDto(source: Contest) =
-    ContestDto(
-        contestId = requireNotNull(source.contestId) { "Contest id is null while mapping ContestDto" },
-        contestName = source.contestName,
-        contestStatus = source.contestStatus,
-        endTime = source.endTime,
-        startTime = source.startTime,
-    )
-
-fun mapToContestPageDto(source: Page<Contest>) =
-    ContestPageDto(
-        contests = source.get().map { toContestDto(it) }.toList(),
-        totalEntriesCount = source.totalElements,
-    )

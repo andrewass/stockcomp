@@ -10,6 +10,7 @@ import com.stockcomp.configuration.mockMvcPatchRequest
 import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
+import com.stockcomp.contest.ContestStatus
 import com.stockcomp.contest.CreateContestRequest
 import io.mockk.every
 import org.junit.jupiter.api.Assertions.assertEquals

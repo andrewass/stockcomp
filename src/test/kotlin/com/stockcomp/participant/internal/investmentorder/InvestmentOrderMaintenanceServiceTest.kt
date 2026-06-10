@@ -4,7 +4,7 @@ import com.stockcomp.common.ScheduledJobRunOutcome
 import com.stockcomp.configuration.InvestmentOrderMaintenanceProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.contest.internal.ContestStatus
+import com.stockcomp.contest.ContestStatus
 import com.stockcomp.participant.internal.Participant
 import com.stockcomp.participant.internal.ParticipantService
 import io.mockk.Runs

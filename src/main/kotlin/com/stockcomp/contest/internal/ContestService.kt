@@ -1,10 +1,10 @@
 package com.stockcomp.contest.internal
 
-import com.stockcomp.contest.internal.ContestStatus.AWAITING_COMPLETION
-import com.stockcomp.contest.internal.ContestStatus.AWAITING_START
-import com.stockcomp.contest.internal.ContestStatus.COMPLETED
-import com.stockcomp.contest.internal.ContestStatus.RUNNING
-import com.stockcomp.contest.internal.ContestStatus.STOPPED
+import com.stockcomp.contest.ContestStatus
+import com.stockcomp.contest.ContestStatus.AWAITING_COMPLETION
+import com.stockcomp.contest.ContestStatus.AWAITING_START
+import com.stockcomp.contest.ContestStatus.RUNNING
+import com.stockcomp.contest.ContestStatus.STOPPED
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort

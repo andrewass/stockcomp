@@ -4,7 +4,7 @@ import com.stockcomp.common.ScheduledJobInstrumentation
 import com.stockcomp.configuration.LeaderboardJobCreationProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.contest.internal.ContestStatus
+import com.stockcomp.contest.ContestStatus
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.every
 import io.mockk.mockk

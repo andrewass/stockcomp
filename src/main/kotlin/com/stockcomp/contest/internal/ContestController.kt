@@ -2,9 +2,8 @@ package com.stockcomp.contest.internal
 
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestPageDto
+import com.stockcomp.contest.ContestStatus
 import com.stockcomp.contest.CreateContestRequest
-import com.stockcomp.contest.mapToContestPageDto
-import com.stockcomp.contest.toContestDto
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Pattern

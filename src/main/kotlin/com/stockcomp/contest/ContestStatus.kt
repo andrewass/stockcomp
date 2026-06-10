@@ -1,4 +1,4 @@
-package com.stockcomp.contest.internal
+package com.stockcomp.contest
 
 enum class ContestStatus(
     val decode: String,
@@ -11,7 +11,7 @@ enum class ContestStatus(
     ;
 
     companion object {
-        private val map = values().associateBy(ContestStatus::decode)
+        private val map = entries.associateBy(ContestStatus::decode)
 
         fun fromDecode(decode: String) = map[decode]
     }
