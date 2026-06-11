@@ -26,13 +26,12 @@ class LeaderboardController(
         @RequestParam @PositiveOrZero pageNumber: Int,
         @RequestParam @Positive pageSize: Int,
     ): ResponseEntity<LeaderboardEntryPageDto> =
-        ResponseEntity.ok(mapToLeaderboardEntryPageDto(leaderboardQueryService.getSortedLeaderboardEntries(pageNumber, pageSize)))
+        ResponseEntity.ok(leaderboardQueryService.getSortedLeaderboardEntryPage(pageNumber, pageSize))
 
     @GetMapping("/user/{userId}")
     fun getLeaderboardEntryForUser(
         @PathVariable @Positive userId: Long,
-    ): ResponseEntity<LeaderboardEntryDto> =
-        ResponseEntity.ok(mapToLeaderboardEntryDto(leaderboardQueryService.getLeaderboardEntryForUser(userId)))
+    ): ResponseEntity<LeaderboardEntryDto> = ResponseEntity.ok(leaderboardQueryService.getLeaderboardEntryDtoForUser(userId))
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")

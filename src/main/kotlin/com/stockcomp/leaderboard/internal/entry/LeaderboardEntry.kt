@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.hibernate.annotations.BatchSize
 
 @Entity
 @Table(name = "T_LEADERBOARD_ENTRY")
@@ -28,6 +29,7 @@ class LeaderboardEntry(
     val userId: Long,
 ) : BaseEntity() {
     @OneToMany(mappedBy = "leaderboardEntry", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @BatchSize(size = 50)
     private val _medals: MutableList<Medal> = mutableListOf()
 
     val medals: List<Medal>
