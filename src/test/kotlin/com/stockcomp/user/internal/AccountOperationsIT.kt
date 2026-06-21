@@ -10,9 +10,8 @@ import com.stockcomp.configuration.mockMvcPutRequest
 import com.stockcomp.user.AccountSettingsDto
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UpdateAccountSettingsRequest
-import com.stockcomp.user.UserPageDto
+import com.stockcomp.user.UserDto
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -21,14 +20,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ControllerIntegrationTest
-class UserOperationsIT
+class AccountOperationsIT
     @Autowired
     constructor(
         private val mockMvc: MockMvc,
-        private val userService: UserServiceInternal,
+        private val accountService: AccountService,
+        private val userIdentityService: UserIdentityService,
     ) {
         private val mapper = jacksonObjectMapper()
-        private val basePath = "/users"
 
         @Test
         fun `should return signed in account settings including private email`() {
@@ -44,85 +43,6 @@ class UserOperationsIT
             val account: AccountSettingsDto = mapper.readValue(result.response.contentAsString)
             assertEquals(userId, account.userId)
             assertEquals(email, account.email)
-        }
-
-        @Test
-        fun `should return users sorted by email`() {
-            createUser("alpha@test.com")
-
-            val result =
-                mockMvc
-                    .perform(
-                        mockMvcGetRequest("$basePath/sorted", "ADMIN")
-                            .queryParam("pageNumber", "0")
-                            .queryParam("pageSize", "10"),
-                    ).andExpect(status().isOk)
-                    .andReturn()
-
-            val page: UserPageDto = mapper.readValue(result.response.contentAsString)
-            assertTrue(page.totalEntriesCount >= 1)
-        }
-
-        @Test
-        fun `should return forbidden when non-admin lists users`() {
-            mockMvc
-                .perform(
-                    mockMvcGetRequest("$basePath/sorted", "USER")
-                        .queryParam("pageNumber", "0")
-                        .queryParam("pageSize", "10"),
-                ).andExpect(status().isForbidden)
-        }
-
-        @Test
-        fun `should return forbidden when non-admin creates user`() {
-            mockMvc
-                .perform(
-                    mockMvcPostRequest("$basePath/create", "USER")
-                        .content(mapper.writeValueAsString(CreateUserRequest("non-admin-create@test.com"))),
-                ).andExpect(status().isForbidden)
-        }
-
-        @Test
-        fun `should return bad request for invalid create user payload`() {
-            val result =
-                mockMvc
-                    .perform(
-                        mockMvcPostRequest("$basePath/create", "ADMIN")
-                            .content(mapper.writeValueAsString(CreateUserRequest("not-an-email"))),
-                    ).andExpect(status().isBadRequest)
-                    .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
-                            .content()
-                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
-                    ).andReturn()
-
-            val response = mapper.readTree(result.response.contentAsString)
-            assertEquals(400, response["status"].asInt())
-            assertEquals("Invalid user request", response["title"].asText())
-            assertEquals("/problems/user/validation", response["type"].asText())
-            assertTrue(response["errors"].isArray)
-        }
-
-        @Test
-        fun `should return bad request for invalid user pagination parameters`() {
-            val result =
-                mockMvc
-                    .perform(
-                        mockMvcGetRequest("$basePath/sorted", "ADMIN")
-                            .queryParam("pageNumber", "-1")
-                            .queryParam("pageSize", "101"),
-                    ).andExpect(status().isBadRequest)
-                    .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
-                            .content()
-                            .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
-                    ).andReturn()
-
-            val response = mapper.readTree(result.response.contentAsString)
-            assertEquals(400, response["status"].asInt())
-            assertEquals("Invalid user request", response["title"].asText())
-            assertEquals("/problems/user/validation", response["type"].asText())
-            assertTrue(response["errors"].isArray)
         }
 
         @Test
@@ -147,7 +67,7 @@ class UserOperationsIT
                     .andReturn()
 
             val response: AccountSettingsDto = mapper.readValue(result.response.contentAsString)
-            val updated = userService.findUserById(userId)
+            val updated = userIdentityService.findUserById(userId)
             assertEquals("updated-user", updated.username)
             assertEquals(email, response.email)
         }
@@ -157,7 +77,7 @@ class UserOperationsIT
             val firstEmail = "first-account@test.com"
             val firstUserId = createUser(firstEmail)
             val secondUserId = createUser("second-account@test.com")
-            val secondUsername = userService.findUserById(secondUserId).username
+            val secondUsername = userIdentityService.findUserById(secondUserId).username
 
             mockMvc
                 .perform(
@@ -173,8 +93,8 @@ class UserOperationsIT
                         ),
                 ).andExpect(status().isOk)
 
-            assertEquals("first-updated", userService.findUserById(firstUserId).username)
-            assertEquals(secondUsername, userService.findUserById(secondUserId).username)
+            assertEquals("first-updated", userIdentityService.findUserById(firstUserId).username)
+            assertEquals(secondUsername, userIdentityService.findUserById(secondUserId).username)
         }
 
         @Test
@@ -182,7 +102,7 @@ class UserOperationsIT
             val firstEmail = "username-owner@test.com"
             createUser(firstEmail)
             val secondUserId = createUser("username-conflict@test.com")
-            val conflictingUsername = userService.findUserById(secondUserId).username
+            val conflictingUsername = userIdentityService.findUserById(secondUserId).username
 
             mockMvc
                 .perform(
@@ -226,7 +146,7 @@ class UserOperationsIT
 
         @Test
         fun `should return admin flag`() {
-            val subjectUser = userService.findOrCreateUserBySubject("user")
+            val subjectUser = userIdentityService.findOrCreateUserBySubject("user")
 
             val result =
                 mockMvc
@@ -235,7 +155,7 @@ class UserOperationsIT
                     .andReturn()
 
             val isAdmin: Boolean = mapper.readValue(result.response.contentAsString)
-            assertEquals(userService.isAdmin(subjectUser.userId!!), isAdmin)
+            assertEquals(accountService.isAdmin(subjectUser.userId!!), isAdmin)
         }
 
         @Test
@@ -248,13 +168,13 @@ class UserOperationsIT
         @Test
         fun `should remove legacy signed in user routes`() {
             mockMvc
-                .perform(mockMvcGetRequest("$basePath/details").queryParam("userId", "1"))
+                .perform(mockMvcGetRequest("/users/details").queryParam("userId", "1"))
                 .andExpect(status().isNotFound)
             mockMvc
-                .perform(mockMvcGetRequest("$basePath/admin"))
+                .perform(mockMvcGetRequest("/users/admin"))
                 .andExpect(status().isNotFound)
             mockMvc
-                .perform(mockMvcPatchRequest("$basePath/update").content("{}"))
+                .perform(mockMvcPatchRequest("/users/update").content("{}"))
                 .andExpect(status().isNotFound)
         }
 
@@ -262,12 +182,12 @@ class UserOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                        mockMvcPostRequest("/users/create", "ADMIN")
                             .content(mapper.writeValueAsString(CreateUserRequest(email))),
                     ).andExpect(status().isOk)
                     .andReturn()
 
-            val response: com.stockcomp.user.UserDto = mapper.readValue(result.response.contentAsString)
+            val response: UserDto = mapper.readValue(result.response.contentAsString)
             return response.userId
         }
     }

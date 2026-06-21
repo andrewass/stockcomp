@@ -18,21 +18,22 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/account")
 class AccountController(
-    private val userService: UserServiceInternal,
+    private val accountService: AccountService,
 ) {
     @GetMapping
     fun getAccountSettings(
         @TokenData tokenClaims: TokenClaims,
-    ): ResponseEntity<AccountSettingsDto> = ResponseEntity.ok(toAccountSettingsDto(userService.findUserById(tokenClaims.userId)))
+    ): ResponseEntity<AccountSettingsDto> = ResponseEntity.ok(toAccountSettingsDto(accountService.getAccount(tokenClaims.userId)))
 
     @PutMapping
     fun updateAccountSettings(
         @TokenData tokenClaims: TokenClaims,
         @Valid @RequestBody request: UpdateAccountSettingsRequest,
-    ): ResponseEntity<AccountSettingsDto> = ResponseEntity.ok(toAccountSettingsDto(userService.updateUser(tokenClaims.userId, request)))
+    ): ResponseEntity<AccountSettingsDto> =
+        ResponseEntity.ok(toAccountSettingsDto(accountService.updateAccount(tokenClaims.userId, request)))
 
     @GetMapping("/admin")
     fun isAdmin(
         @TokenData tokenClaims: TokenClaims,
-    ): ResponseEntity<Boolean> = ResponseEntity.ok(userService.isAdmin(tokenClaims.userId))
+    ): ResponseEntity<Boolean> = ResponseEntity.ok(accountService.isAdmin(tokenClaims.userId))
 }

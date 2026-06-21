@@ -67,7 +67,9 @@ This file gives short, practical instructions for working in this repository.
 - `/account` endpoints are private self-service operations for the authenticated user resolved from `@TokenData`; they must not accept a target user ID.
 - `/users/{userId}/profile` represents the platform-visible profile for any registered user, including the signed-in user.
 - Account responses may include private fields such as email. Public profile responses must never expose email, role, status, authentication subjects, or other account-only data.
-- Keep account persistence and mutation in the `user` module.
+- Keep account persistence and mutation in the `user` module through `AccountController` and `AccountService`.
+- Keep administrative user listing and creation in `UserAdministrationController` and `UserAdministrationService`.
+- Keep subject resolution and cross-module user lookup in `UserIdentityService`; do not turn it into a general-purpose account or administration service.
 - Keep cross-module public profile composition in the read-only `profile` module. Do not import another module's `internal` packages; use public contracts or bounded read-only projections.
 - Contest completion is the authoritative path for participant ranks, medals, scores, and leaderboard positions. It must remain transactional, concurrency-safe, and idempotent under retries.
 

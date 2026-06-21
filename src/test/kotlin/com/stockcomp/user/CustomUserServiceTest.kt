@@ -1,12 +1,11 @@
 package com.stockcomp.user
 
 import com.stockcomp.user.internal.User
+import com.stockcomp.user.internal.UserCreationService
+import com.stockcomp.user.internal.UserIdentityService
 import com.stockcomp.user.internal.UserRepository
-import com.stockcomp.user.internal.UserServiceInternal
-import com.stockcomp.user.internal.UserSubject
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -18,8 +17,10 @@ internal class CustomUserServiceTest {
     @MockK
     private lateinit var userRepository: UserRepository
 
-    @InjectMockKs
-    private lateinit var userServiceInternal: UserServiceInternal
+    @MockK
+    private lateinit var userCreationService: UserCreationService
+
+    private lateinit var userIdentityService: UserIdentityService
 
     private val username = "testUser"
     private val email = "testEmail"
@@ -29,6 +30,7 @@ internal class CustomUserServiceTest {
     @BeforeAll
     fun setUp() {
         MockKAnnotations.init(this)
+        userIdentityService = UserIdentityService(userRepository, userCreationService)
         every {
             userRepository.findByUserSubject(userSubject)
         } returns user
@@ -36,7 +38,7 @@ internal class CustomUserServiceTest {
 
     @Test
     fun `should get peristed user`() {
-        val user = userServiceInternal.findOrCreateUserBySubject(userSubject)
+        val user = userIdentityService.findOrCreateUserBySubject(userSubject)
 
         Assertions.assertEquals(username, user.username)
         Assertions.assertEquals(email, user.email)

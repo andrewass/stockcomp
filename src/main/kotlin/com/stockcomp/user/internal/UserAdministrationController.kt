@@ -22,19 +22,20 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RestController
 @RequestMapping("/users")
-class UserController(
-    private val userService: UserServiceInternal,
+class UserAdministrationController(
+    private val userAdministrationService: UserAdministrationService,
 ) {
     @GetMapping("/sorted")
     @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsersSortedByEmail(
         @RequestParam @PositiveOrZero pageNumber: Int,
         @RequestParam @Positive @Max(100) pageSize: Int,
-    ): ResponseEntity<UserPageDto> = ResponseEntity.ok(mapToUserPageDto(userService.getAllUsersSortedByEmail(pageNumber, pageSize)))
+    ): ResponseEntity<UserPageDto> =
+        ResponseEntity.ok(mapToUserPageDto(userAdministrationService.getAllUsersSortedByEmail(pageNumber, pageSize)))
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     fun createUser(
         @Valid @RequestBody request: CreateUserRequest,
-    ): ResponseEntity<UserDto> = ResponseEntity.ok(mapToUserDto(userService.createUser(request.email)))
+    ): ResponseEntity<UserDto> = ResponseEntity.ok(mapToUserDto(userAdministrationService.createUser(request.email)))
 }

@@ -19,8 +19,8 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = [UserController::class])
-class UserExceptionHandler : ResponseEntityExceptionHandler() {
+@RestControllerAdvice(assignableTypes = [UserAdministrationController::class])
+class UserAdministrationExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNoSuchElementException(
         exception: NoSuchElementException,

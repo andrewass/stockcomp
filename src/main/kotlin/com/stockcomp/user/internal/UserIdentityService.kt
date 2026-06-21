@@ -1,25 +1,14 @@
 package com.stockcomp.user.internal
 
-import com.stockcomp.user.UpdateAccountSettingsRequest
-import com.stockcomp.user.UserDetailsDto
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UserServiceInternal(
+class UserIdentityService(
     private val userRepository: UserRepository,
+    private val userCreationService: UserCreationService,
 ) {
-    private val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-
-    fun getAllUsersSortedByEmail(
-        pageNumber: Int,
-        pageSize: Int,
-    ): Page<User> = userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("email")))
-
     @Transactional
     fun findOrCreateUserBySubject(userSubject: String): User {
         val existingBySubject = userRepository.findByUserSubject(userSubject)
@@ -34,7 +23,7 @@ class UserServiceInternal(
 
         val createdUser =
             try {
-                createUser(userSubject)
+                userCreationService.createUser(userSubject)
             } catch (_: DataIntegrityViolationException) {
                 userRepository.findByEmail(userSubject)
                     ?: throw IllegalStateException("Unable to resolve user for subject $userSubject after constraint violation")
@@ -52,39 +41,6 @@ class UserServiceInternal(
         userRepository
             .findById(userId)
             .orElseThrow { NoSuchElementException("User with id $userId not found") }
-
-    @Transactional
-    fun updateUser(
-        userId: Long,
-        request: UpdateAccountSettingsRequest,
-    ): User {
-        if (userRepository.existsByUsernameAndUserIdNot(request.username, userId)) {
-            throw UsernameAlreadyExistsException(request.username)
-        }
-        val user = findUserById(userId)
-        user.updateUserDetails(
-            username = request.username,
-            fullName = request.fullName,
-            country = request.country,
-        )
-        return try {
-            userRepository.saveAndFlush(user)
-        } catch (_: DataIntegrityViolationException) {
-            throw UsernameAlreadyExistsException(request.username)
-        }
-    }
-
-    fun createUser(email: String): User {
-        var username: String
-        do {
-            username = generateRandomUsername()
-        } while (userRepository.existsByUsername(username))
-
-        return User(email = email, username = username)
-            .let { userRepository.save(it) }
-    }
-
-    fun isAdmin(userId: Long): Boolean = userId == 1L
 
     private fun ensureUserSubjectMapping(
         user: User,
@@ -108,9 +64,4 @@ class UserServiceInternal(
         )
         return userRepository.save(user)
     }
-
-    private fun generateRandomUsername(): String =
-        (1..15)
-            .map { allowedChars.random() }
-            .joinToString("")
 }

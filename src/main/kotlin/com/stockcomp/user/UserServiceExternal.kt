@@ -1,22 +1,22 @@
 package com.stockcomp.user
 
+import com.stockcomp.user.internal.UserIdentityService
 import com.stockcomp.user.internal.UserRole
-import com.stockcomp.user.internal.UserServiceInternal
 import org.springframework.stereotype.Service
 
 @Service
 class UserServiceExternal(
-    private val userService: UserServiceInternal,
+    private val userIdentityService: UserIdentityService,
 ) {
     fun getUserIdBySubject(userSubject: String): Long =
-        userService.findOrCreateUserBySubject(userSubject).userId
+        userIdentityService.findOrCreateUserBySubject(userSubject).userId
             ?: throw IllegalArgumentException("No user found for subject $userSubject")
 
     fun getUserIdByUsername(username: String): Long =
-        userService.findUserByUsername(username).userId
+        userIdentityService.findUserByUsername(username).userId
             ?: throw IllegalArgumentException("No user found for username $username")
 
-    fun getUserRole(userSubject: String): UserRole = userService.findOrCreateUserBySubject(userSubject).userRole
+    fun getUserRole(userSubject: String): UserRole = userIdentityService.findOrCreateUserBySubject(userSubject).userRole
 
-    fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> = userService.findUsersById(userIds).map { toUserDetailsDto(it) }
+    fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> = userIdentityService.findUsersById(userIds).map { toUserDetailsDto(it) }
 }
