@@ -14,7 +14,8 @@ StockComp is a Spring Boot backend for stock competitions. It manages users, con
 
 ## Main Modules
 
-- `user`: user profile, JWT subject mapping, role resolution
+- `user`: account settings, user identity, JWT subject mapping, role resolution
+- `profile`: public user profiles and performance read models
 - `contest`: create/update/delete contests and status transitions
 - `participant`: signup, history, investment and order views
 - `symbol`: market data through FastFinance (`fastfinance.base.url`)
@@ -106,11 +107,12 @@ Main endpoints (base URL `http://localhost:8080`):
 
 ### Users
 
-- `GET /users/details?userId=...`
-- `GET /users/admin`
+- `GET /account`
+- `PUT /account`
+- `GET /account/admin`
+- `GET /users/{userId}/profile?pageNumber=...&pageSize=...`
 - `GET /users/sorted?pageNumber=...&pageSize=...` (ADMIN)
 - `POST /users/create` (ADMIN)
-- `PATCH /users/update` (ADMIN)
 
 ### Contests
 
@@ -144,7 +146,7 @@ Main endpoints (base URL `http://localhost:8080`):
 
 - `GET /symbols/price/trending`
 - `GET /leaderboard/sorted?pageNumber=...&pageSize=...`
-- `GET /leaderboard/user/{userId}`
+- `GET /leaderboard/user`
 - `POST /leaderboard/update?contestId=...`
 
 ## Scheduled Jobs

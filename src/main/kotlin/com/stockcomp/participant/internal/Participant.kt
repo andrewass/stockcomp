@@ -59,6 +59,11 @@ class Participant(
 
     fun rank(): Int? = rank
 
+    fun assignRank(rank: Int) {
+        require(rank > 0) { "Participant rank must be positive" }
+        this.rank = rank
+    }
+
     fun getActiveInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isActive() }
 
     fun getCompletedInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isCompleted() }

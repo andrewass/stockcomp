@@ -21,4 +21,6 @@ class ContestServiceExternal(
     fun markContestAsCompleted(contestId: Long) {
         contestService.markContestAsCompleted(contestId)
     }
+
+    fun lockContestForCompletion(contestId: Long): Boolean = contestService.lockContestForCompletion(contestId)
 }

@@ -27,11 +27,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfiguration(
     private val jwtRoleAuthoritiesConverter: JwtRoleAuthoritiesConverter,
-    @param:Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    @param:Value($$"${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private val jwkSetUri: String,
     @param:Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private val issuerUri: String,
-    @param:Value("\${spring.security.oauth2.resourceserver.jwt.audience}")
+    @param:Value($$"${spring.security.oauth2.resourceserver.jwt.audience}")
     private val audience: String,
 ) {
     private val publicActuatorEndpoints =
@@ -77,7 +77,7 @@ class SecurityConfiguration(
 
     private fun audienceValidator(): OAuth2TokenValidator<Jwt> =
         OAuth2TokenValidator { jwt ->
-            if (jwt.audience.contains(audience)) {
+            if (jwt.audience!!.contains(audience)) {
                 OAuth2TokenValidatorResult.success()
             } else {
                 OAuth2TokenValidatorResult.failure(

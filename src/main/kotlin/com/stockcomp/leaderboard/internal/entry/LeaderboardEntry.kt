@@ -3,6 +3,7 @@ package com.stockcomp.leaderboard.internal.entry
 import com.stockcomp.common.BaseEntity
 import com.stockcomp.leaderboard.internal.Leaderboard
 import com.stockcomp.leaderboard.internal.medal.Medal
+import com.stockcomp.leaderboard.internal.medal.MedalValue
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -46,6 +47,37 @@ class LeaderboardEntry(
 
     fun incrementContestCount() {
         contestCount += 1
+    }
+
+    fun recordContestResult(
+        contestId: Long,
+        position: Int,
+    ) {
+        require(position > 0) { "Contest position must be positive" }
+        incrementContestCount()
+        val medalValue =
+            when (position) {
+                1 -> MedalValue.GOLD
+                2 -> MedalValue.SILVER
+                3 -> MedalValue.BRONZE
+                else -> null
+            }
+        if (medalValue != null) {
+            _medals.add(
+                Medal(
+                    medalValue = medalValue,
+                    position = position,
+                    contestId = contestId,
+                    leaderboardEntry = this,
+                ),
+            )
+            score += medalValue.points
+        }
+    }
+
+    fun assignRanking(ranking: Int) {
+        require(ranking > 0) { "Leaderboard ranking must be positive" }
+        this.ranking = ranking
     }
 
     fun contestCount(): Int = contestCount

@@ -70,7 +70,22 @@ class ContestService(
     ): Page<Contest> = contestRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("contestId")))
 
     fun markContestAsCompleted(contestId: Long) {
-        findContestByIdOrThrow(contestId).also { it.setContestAsCompleted() }
+        findContestByIdOrThrow(contestId)
+            .also { it.setContestAsCompleted() }
+            .also { contestRepository.saveAndFlush(it) }
+    }
+
+    fun lockContestForCompletion(contestId: Long): Boolean {
+        val contest =
+            contestRepository.findByIdForUpdate(contestId)
+                ?: throw NoSuchElementException("Contest with id $contestId does not exist")
+        if (contest.isCompleted()) {
+            return false
+        }
+        check(contest.contestStatus == AWAITING_COMPLETION) {
+            "Contest $contestId must be awaiting completion before leaderboard processing"
+        }
+        return true
     }
 
     private fun findContestByIdOrThrow(contestId: Long): Contest =

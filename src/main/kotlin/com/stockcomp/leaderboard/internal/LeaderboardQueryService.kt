@@ -2,7 +2,6 @@ package com.stockcomp.leaderboard.internal
 
 import com.stockcomp.leaderboard.LeaderboardEntryDto
 import com.stockcomp.leaderboard.LeaderboardEntryPageDto
-import com.stockcomp.leaderboard.internal.entry.LeaderboardEntry
 import com.stockcomp.leaderboard.internal.entry.LeaderboardEntryRepository
 import com.stockcomp.user.UserDetailsDto
 import com.stockcomp.user.UserServiceExternal
@@ -37,8 +36,6 @@ class LeaderboardQueryService(
 
         return mapToLeaderboardEntryDto(entry, userDetails)
     }
-
-    fun getLeaderboardentriesByOrderByScore(): List<LeaderboardEntry> = leaderboardEntryRepository.findAllByOrderByScore()
 
     private fun getUserDetailsById(userIds: List<Long>): Map<Long, UserDetailsDto> {
         if (userIds.isEmpty()) {

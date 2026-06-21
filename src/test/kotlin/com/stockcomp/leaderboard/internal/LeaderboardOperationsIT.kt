@@ -19,10 +19,12 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -35,6 +37,7 @@ class LeaderboardOperationsIT
         private val leaderboardEntryRepository: LeaderboardEntryRepository,
         private val leaderboardJobRepository: LeaderboardJobRepository,
         private val leaderboardJobScheduler: LeaderboardJobScheduler,
+        private val jdbcTemplate: JdbcTemplate,
     ) {
         private val mapper = jacksonObjectMapper()
         private val basePath = "/leaderboard"
@@ -42,8 +45,8 @@ class LeaderboardOperationsIT
         @Test
         fun `should return sorted leaderboard entries`() {
             val leaderboard = getOrCreateDefaultLeaderboard()
-            val userId = createUser()
-            leaderboardEntryRepository.save(LeaderboardEntry(leaderboard = leaderboard, userId = userId))
+            val user = createUser()
+            leaderboardEntryRepository.save(LeaderboardEntry(leaderboard = leaderboard, userId = user.userId))
 
             val result =
                 mockMvc
@@ -62,12 +65,12 @@ class LeaderboardOperationsIT
         @Test
         fun `should return leaderboard entry for user`() {
             val leaderboard = getOrCreateDefaultLeaderboard()
-            val userId = createUser()
-            leaderboardEntryRepository.save(LeaderboardEntry(leaderboard = leaderboard, userId = userId))
+            val user = createUser()
+            leaderboardEntryRepository.save(LeaderboardEntry(leaderboard = leaderboard, userId = user.userId))
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest("$basePath/user/$userId"))
+                    .perform(mockMvcGetRequest("$basePath/user", emailClaim = user.email))
                     .andExpect(status().isOk)
                     .andReturn()
 
@@ -91,6 +94,44 @@ class LeaderboardOperationsIT
                     .andExpect(status().isOk)
                     .andReturn()
             assertEquals("COMPLETED", mapper.readTree(contestResult.response.contentAsString)["contestStatus"].asText())
+        }
+
+        @Test
+        fun `should rank ties award medals and remain idempotent`() {
+            val contestId = createContestAwaitingCompletion("ContestWithRankings")
+            val first = createUser()
+            val second = createUser()
+            val third = createUser()
+            val fourth = createUser()
+            insertParticipant(first.userId, contestId, BigDecimal("25000.00"))
+            insertParticipant(second.userId, contestId, BigDecimal("25000.00"))
+            insertParticipant(third.userId, contestId, BigDecimal("23000.00"))
+            insertParticipant(fourth.userId, contestId, BigDecimal("21000.00"))
+
+            repeat(2) {
+                mockMvc
+                    .perform(
+                        mockMvcPostRequest("$basePath/update", "ADMIN")
+                            .queryParam("contestId", contestId.toString()),
+                    ).andExpect(status().isOk)
+            }
+
+            assertEquals(1, participantRank(first.userId, contestId))
+            assertEquals(1, participantRank(second.userId, contestId))
+            assertEquals(3, participantRank(third.userId, contestId))
+            assertEquals(4, participantRank(fourth.userId, contestId))
+            assertLeaderboard(first.userId, ranking = 1, score = 3, contestCount = 1)
+            assertLeaderboard(second.userId, ranking = 1, score = 3, contestCount = 1)
+            assertLeaderboard(third.userId, ranking = 3, score = 1, contestCount = 1)
+            assertLeaderboard(fourth.userId, ranking = 4, score = 0, contestCount = 1)
+            assertEquals(
+                3,
+                jdbcTemplate.queryForObject(
+                    "select count(*) from t_medal where contest_id = ?",
+                    Int::class.java,
+                    contestId,
+                ),
+            )
         }
 
         @Test
@@ -144,9 +185,10 @@ class LeaderboardOperationsIT
 
         @Test
         fun `should return not found when leaderboard entry for user does not exist`() {
+            val email = "missing-${UUID.randomUUID().toString().take(12)}@test.com"
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest("$basePath/user/999999"))
+                    .perform(mockMvcGetRequest("$basePath/user", emailClaim = email))
                     .andExpect(status().isNotFound)
                     .andExpect(
                         org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -221,7 +263,7 @@ class LeaderboardOperationsIT
                 .findById(1L)
                 .orElseGet { leaderboardRepository.save(Leaderboard(leaderboardId = 1L)) }
 
-        private fun createUser(): Long {
+        private fun createUser(): CreatedUser {
             val email = "leaderboard-${UUID.randomUUID()}@test.com"
             val result =
                 mockMvc
@@ -231,6 +273,72 @@ class LeaderboardOperationsIT
                     ).andExpect(status().isOk)
                     .andReturn()
 
-            return mapper.readTree(result.response.contentAsString)["userId"].asLong()
+            return CreatedUser(
+                userId = mapper.readTree(result.response.contentAsString)["userId"].asLong(),
+                email = email,
+            )
         }
+
+        private fun insertParticipant(
+            userId: Long,
+            contestId: Long,
+            totalValue: BigDecimal,
+        ) {
+            jdbcTemplate.update(
+                """
+                insert into t_participant (
+                    contest_id,
+                    user_id,
+                    remaining_funds,
+                    participant_rank,
+                    total_value,
+                    total_investment_value,
+                    date_created,
+                    date_updated,
+                    version
+                )
+                values (?, ?, ?, null, ?, 0, current_timestamp, current_timestamp, 0)
+                """.trimIndent(),
+                contestId,
+                userId,
+                totalValue,
+                totalValue,
+            )
+        }
+
+        private fun participantRank(
+            userId: Long,
+            contestId: Long,
+        ): Int =
+            jdbcTemplate.queryForObject(
+                "select participant_rank from t_participant where user_id = ? and contest_id = ?",
+                Int::class.java,
+                userId,
+                contestId,
+            )!!
+
+        private fun assertLeaderboard(
+            userId: Long,
+            ranking: Int,
+            score: Int,
+            contestCount: Int,
+        ) {
+            val values =
+                jdbcTemplate.queryForMap(
+                    """
+                    select ranking, score, contest_count
+                    from t_leaderboard_entry
+                    where user_id = ?
+                    """.trimIndent(),
+                    userId,
+                )
+            assertEquals(ranking, values["ranking"])
+            assertEquals(score, values["score"])
+            assertEquals(contestCount, values["contest_count"])
+        }
+
+        private data class CreatedUser(
+            val userId: Long,
+            val email: String,
+        )
     }

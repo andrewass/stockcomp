@@ -24,6 +24,16 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
 
     fun findAllByContestId(contestId: Long): List<Participant>
 
+    @Query(
+        """
+        SELECT p
+        FROM Participant p
+        WHERE p.contestId = :contestId
+        ORDER BY p.totalValue DESC, p.userId ASC
+        """,
+    )
+    fun findAllByContestIdOrderByTotalValueDesc(contestId: Long): List<Participant>
+
     fun existsByUserIdAndContestId(
         userId: Long,
         contestId: Long,

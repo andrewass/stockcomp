@@ -27,4 +27,8 @@ class Leaderboard(
     }
 
     fun contestCount(): Int = contestCount
+
+    fun incrementContestCount() {
+        contestCount += 1
+    }
 }

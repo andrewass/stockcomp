@@ -62,6 +62,15 @@ This file gives short, practical instructions for working in this repository.
 - If you touch database code, scan for transaction boundaries and lazy-loading pitfalls.
 - When adding endpoints, consider both WebMVC and WebFlux usage; follow existing patterns.
 
+## Account and user profile boundaries
+- Treat account settings and public user profiles as separate concepts.
+- `/account` endpoints are private self-service operations for the authenticated user resolved from `@TokenData`; they must not accept a target user ID.
+- `/users/{userId}/profile` represents the platform-visible profile for any registered user, including the signed-in user.
+- Account responses may include private fields such as email. Public profile responses must never expose email, role, status, authentication subjects, or other account-only data.
+- Keep account persistence and mutation in the `user` module.
+- Keep cross-module public profile composition in the read-only `profile` module. Do not import another module's `internal` packages; use public contracts or bounded read-only projections.
+- Contest completion is the authoritative path for participant ranks, medals, scores, and leaderboard positions. It must remain transactional, concurrency-safe, and idempotent under retries.
+
 ## Database migration rules
 - Use Flyway for schema changes and keep migrations forward-only.
 - Every child-side foreign key column or column set must be indexed unless it is already covered by an existing useful index where the foreign key columns are the leftmost prefix.

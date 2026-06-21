@@ -56,10 +56,13 @@ class DatabaseInvariantIT
         fun `should include indexes for foreign keys and common scheduler lookups`() {
             assertIndex("uq_t_participant_user_contest", "(user_id, contest_id)")
             assertIndex("idx_t_participant_contest_rank", "(contest_id, participant_rank)")
+            assertIndex("idx_t_participant_contest_total_value", "(contest_id, total_value desc)")
             assertIndex("idx_t_leaderboard_entry_user_id", "(user_id)")
+            assertIndex("uq_t_leaderboard_entry_user", "(user_id)")
             assertIndex("idx_t_leaderboard_entry_leaderboard_id", "(leaderboard_id)")
             assertIndex("idx_t_medal_contest_id", "(contest_id)")
             assertIndex("idx_t_medal_leaderboard_entry_id", "(leaderboard_entry_id)")
+            assertIndex("uq_t_medal_entry_contest", "(leaderboard_entry_id, contest_id)")
             assertIndex("idx_t_investment_participant_symbol", "(participant_id, symbol)")
             assertIndex("idx_t_investment_order_participant_status_symbol", "(participant_id, order_status, symbol)")
             assertIndex("idx_t_refresh_token_user_id", "(user_id)")

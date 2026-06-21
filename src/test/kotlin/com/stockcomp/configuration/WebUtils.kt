@@ -33,6 +33,15 @@ fun mockMvcPatchRequest(
     .with(getJwtRequestPostProcessor(role, emailClaim))
     .contentType(MediaType.APPLICATION_JSON)
 
+fun mockMvcPutRequest(
+    url: String,
+    role: String = "USER",
+    emailClaim: String? = null,
+) = MockMvcRequestBuilders
+    .put(url)
+    .with(getJwtRequestPostProcessor(role, emailClaim))
+    .contentType(MediaType.APPLICATION_JSON)
+
 fun mockMvcDeleteRequest(
     url: String,
     role: String = "USER",

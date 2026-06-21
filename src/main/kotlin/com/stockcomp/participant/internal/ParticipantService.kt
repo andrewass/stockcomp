@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal
 
+import com.stockcomp.common.competitionRanksForSortedValues
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.ContestParticipantDto
@@ -127,6 +128,13 @@ class ParticipantService(
             ?: throw NoSuchElementException("Participant for user $userId in contest $contestId was not found")
 
     fun getAllByContest(contestId: Long): List<Participant> = participantRepository.findAllByContestId(contestId)
+
+    fun rankParticipantsForContest(contestId: Long): List<Participant> {
+        val participants = participantRepository.findAllByContestIdOrderByTotalValueDesc(contestId)
+        val ranks = competitionRanksForSortedValues(participants.map { it.totalValue() })
+        participants.zip(ranks).forEach { (participant, rank) -> participant.assignRank(rank) }
+        return participants
+    }
 
     fun getParticipantHistory(username: String): List<Participant> {
         val userId = userService.getUserIdByUsername(username)

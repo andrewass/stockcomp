@@ -12,4 +12,9 @@ class ParticipantServiceExternal(
         participantServiceInternal
             .getAllByContest(contestId)
             .map { toUserParticipantDto(it) }
+
+    fun rankParticipantsForContest(contestId: Long): List<UserParticipantDto> =
+        participantServiceInternal
+            .rankParticipantsForContest(contestId)
+            .map { toUserParticipantDto(it) }
 }

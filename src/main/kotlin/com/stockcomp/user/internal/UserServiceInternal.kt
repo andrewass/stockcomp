@@ -1,5 +1,6 @@
 package com.stockcomp.user.internal
 
+import com.stockcomp.user.UpdateAccountSettingsRequest
 import com.stockcomp.user.UserDetailsDto
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Page
@@ -41,26 +42,36 @@ class UserServiceInternal(
         return ensureUserSubjectMapping(createdUser, userSubject)
     }
 
-    fun findUserByUsername(username: String): User = userRepository.findByUsername(username)
+    fun findUserByUsername(username: String): User =
+        userRepository.findByUsername(username)
+            ?: throw NoSuchElementException("User with username $username not found")
 
     fun findUsersById(userIds: List<Long>): List<User> = userRepository.findAllById(userIds)
 
     fun findUserById(userId: Long): User =
         userRepository
             .findById(userId)
-            .orElseThrow { IllegalArgumentException("User with id $userId not found") }
+            .orElseThrow { NoSuchElementException("User with id $userId not found") }
 
+    @Transactional
     fun updateUser(
         userId: Long,
-        userDetailsDto: UserDetailsDto,
-    ) {
-        val user = userRepository.getReferenceById(userId)
+        request: UpdateAccountSettingsRequest,
+    ): User {
+        if (userRepository.existsByUsernameAndUserIdNot(request.username, userId)) {
+            throw UsernameAlreadyExistsException(request.username)
+        }
+        val user = findUserById(userId)
         user.updateUserDetails(
-            username = userDetailsDto.username,
-            fullName = userDetailsDto.fullName,
-            country = userDetailsDto.country,
+            username = request.username,
+            fullName = request.fullName,
+            country = request.country,
         )
-        userRepository.save(user)
+        return try {
+            userRepository.saveAndFlush(user)
+        } catch (_: DataIntegrityViolationException) {
+            throw UsernameAlreadyExistsException(request.username)
+        }
     }
 
     fun createUser(email: String): User {

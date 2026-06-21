@@ -1,5 +1,7 @@
 package com.stockcomp.leaderboard.internal
 
+import com.stockcomp.common.TokenClaims
+import com.stockcomp.common.TokenData
 import com.stockcomp.leaderboard.LeaderboardEntryDto
 import com.stockcomp.leaderboard.LeaderboardEntryPageDto
 import jakarta.validation.constraints.Positive
@@ -8,7 +10,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -28,10 +29,10 @@ class LeaderboardController(
     ): ResponseEntity<LeaderboardEntryPageDto> =
         ResponseEntity.ok(leaderboardQueryService.getSortedLeaderboardEntryPage(pageNumber, pageSize))
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     fun getLeaderboardEntryForUser(
-        @PathVariable @Positive userId: Long,
-    ): ResponseEntity<LeaderboardEntryDto> = ResponseEntity.ok(leaderboardQueryService.getLeaderboardEntryDtoForUser(userId))
+        @TokenData tokenClaims: TokenClaims,
+    ): ResponseEntity<LeaderboardEntryDto> = ResponseEntity.ok(leaderboardQueryService.getLeaderboardEntryDtoForUser(tokenClaims.userId))
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
