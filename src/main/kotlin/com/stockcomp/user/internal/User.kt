@@ -28,8 +28,9 @@ class User(
     private var _country: String? = null,
     @Enumerated(EnumType.STRING)
     val userRole: UserRole = UserRole.USER,
+    @Column(name = "USER_STATUS")
     @Enumerated(EnumType.STRING)
-    val userStatus: UserStatus = UserStatus.ACTIVE,
+    private var _userStatus: UserStatus = UserStatus.ACTIVE,
 ) : BaseEntity() {
     constructor(
         email: String,
@@ -46,7 +47,7 @@ class User(
         email = email,
         _country = country,
         userRole = userRole,
-        userStatus = userStatus,
+        _userStatus = userStatus,
     )
 
     val username: String
@@ -57,6 +58,9 @@ class User(
 
     val country: String?
         get() = _country
+
+    val userStatus: UserStatus
+        get() = _userStatus
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     private val _userSubjects: MutableList<UserSubject> = mutableListOf()
@@ -76,5 +80,9 @@ class User(
         this._username = username
         this._fullName = fullName
         this._country = country
+    }
+
+    fun updateStatus(userStatus: UserStatus) {
+        this._userStatus = userStatus
     }
 }

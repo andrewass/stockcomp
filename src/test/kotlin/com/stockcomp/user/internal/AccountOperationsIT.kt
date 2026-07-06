@@ -10,6 +10,7 @@ import com.stockcomp.configuration.mockMvcPutRequest
 import com.stockcomp.user.AccountSettingsDto
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UpdateAccountSettingsRequest
+import com.stockcomp.user.UpdateAccountStatusRequest
 import com.stockcomp.user.UserDto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -95,6 +96,46 @@ class AccountOperationsIT
 
             assertEquals("first-updated", userIdentityService.findUserById(firstUserId).username)
             assertEquals(secondUsername, userIdentityService.findUserById(secondUserId).username)
+        }
+
+        @Test
+        fun `should update current user status`() {
+            val email = "account-status@test.com"
+            val userId = createUser(email)
+
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcPatchRequest("/account/status", emailClaim = email)
+                            .content(
+                                mapper.writeValueAsString(
+                                    UpdateAccountStatusRequest(newStatus = UserStatus.INACTIVE),
+                                ),
+                            ),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            val response: AccountSettingsDto = mapper.readValue(result.response.contentAsString)
+            val updated = userIdentityService.findUserById(userId)
+            assertEquals(UserStatus.INACTIVE, updated.userStatus)
+            assertEquals(UserStatus.INACTIVE, response.userStatus)
+        }
+
+        @Test
+        fun `should reject unknown account status`() {
+            val email = "invalid-account-status@test.com"
+            createUser(email)
+
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("/account/status", emailClaim = email)
+                        .content("""{"newStatus":"UNKNOWN"}"""),
+                ).andExpect(status().isBadRequest)
+                .andExpect(
+                    org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                        .content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                )
         }
 
         @Test

@@ -34,6 +34,16 @@ class AccountService(
 
     fun isAdmin(userId: Long): Boolean = userId == 1L
 
+    @Transactional
+    fun updateAccountStatus(
+        userId: Long,
+        newStatus: UserStatus,
+    ): User {
+        val user = findUserById(userId)
+        user.updateStatus(newStatus)
+        return userRepository.save(user)
+    }
+
     private fun findUserById(userId: Long): User =
         userRepository
             .findById(userId)
