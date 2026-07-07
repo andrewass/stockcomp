@@ -4,7 +4,7 @@ StockComp is a Spring Boot backend for stock competitions. It manages users, con
 
 ## Tech Stack
 
-- Kotlin + Spring Boot `4.0.4`
+- Kotlin + Spring Boot `4.1.0`
 - Java `25`
 - Spring WebMVC, Spring Security (OAuth2 Resource Server), Spring Data JPA
 - PostgreSQL + Flyway migrations
@@ -73,6 +73,12 @@ mvnw exec:exec@ktlint-format
 ```
 
 Note: Integration tests use Testcontainers (PostgreSQL), so a compatible container runtime must be available.
+
+## Container Images
+
+The production image path is the repository `Dockerfile`, which builds and runs the application on Eclipse Temurin Java 25. GitHub Actions builds and pushes that Dockerfile image to GHCR on pushes to `main`.
+
+The Maven Jib configuration is kept as an optional Maven image build path and uses the same Java 25 runtime target.
 
 ## Configuration
 
@@ -200,7 +206,7 @@ kubectl create secret generic stockcomp-postgres-credentials \
   --from-literal=password='<password>'
 ```
 
-Skaffold image build is configured through Jib (`stockcomp-server-image`).
+Skaffold image build is configured through Jib (`stockcomp-server-image`) for Kubernetes development workflows. It uses the same Java 25 runtime target as the Dockerfile image path.
 
 ## CI
 
