@@ -212,8 +212,7 @@ Skaffold image build is configured through Jib (`stockcomp-server-image`) for Ku
 
 GitHub Actions workflows:
 
-- `build.yml`: unit tests, integration tests, Docker build/push
-- `ktlint.yml`: formatting checks
+- `build.yml`: ktlint, unit tests, integration tests, Docker image build on pull requests, and Docker image push on `main`
 
 ## Practical Notes
 
