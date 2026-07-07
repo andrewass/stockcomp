@@ -1,7 +1,5 @@
 package com.stockcomp.user
 
-import com.stockcomp.user.internal.User
-import com.stockcomp.user.internal.UserStatus
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
@@ -27,13 +25,3 @@ data class UpdateAccountSettingsRequest(
 data class UpdateAccountStatusRequest(
     val newStatus: UserStatus,
 )
-
-fun toAccountSettingsDto(user: User) =
-    AccountSettingsDto(
-        userId = requireNotNull(user.userId) { "User id is null while mapping AccountSettingsDto" },
-        username = user.username,
-        fullName = user.fullName,
-        country = user.country,
-        email = user.email,
-        userStatus = user.userStatus,
-    )

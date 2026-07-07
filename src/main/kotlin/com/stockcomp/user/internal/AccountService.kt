@@ -1,6 +1,7 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.user.UpdateAccountSettingsRequest
+import com.stockcomp.user.UserStatus
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

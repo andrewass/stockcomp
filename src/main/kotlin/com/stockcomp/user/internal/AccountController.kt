@@ -5,7 +5,6 @@ import com.stockcomp.common.TokenData
 import com.stockcomp.user.AccountSettingsDto
 import com.stockcomp.user.UpdateAccountSettingsRequest
 import com.stockcomp.user.UpdateAccountStatusRequest
-import com.stockcomp.user.toAccountSettingsDto
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated

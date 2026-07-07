@@ -1,6 +1,8 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.common.BaseEntity
+import com.stockcomp.user.UserRole
+import com.stockcomp.user.UserStatus
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

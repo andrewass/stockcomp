@@ -3,8 +3,6 @@ package com.stockcomp.user.internal
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UserDto
 import com.stockcomp.user.UserPageDto
-import com.stockcomp.user.mapToUserDto
-import com.stockcomp.user.mapToUserPageDto
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Positive

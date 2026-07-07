@@ -1,4 +1,4 @@
-package com.stockcomp.user.internal
+package com.stockcomp.user
 
 enum class UserStatus {
     ACTIVE,

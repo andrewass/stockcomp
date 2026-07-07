@@ -12,6 +12,7 @@ import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UpdateAccountSettingsRequest
 import com.stockcomp.user.UpdateAccountStatusRequest
 import com.stockcomp.user.UserDto
+import com.stockcomp.user.UserStatus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

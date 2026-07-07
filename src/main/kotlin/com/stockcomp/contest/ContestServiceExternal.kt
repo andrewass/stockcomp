@@ -1,26 +1,17 @@
 package com.stockcomp.contest
 
-import com.stockcomp.contest.internal.ContestService
-import com.stockcomp.contest.internal.toContestDto
-import org.springframework.stereotype.Service
+interface ContestServiceExternal {
+    fun getContest(contestId: Long): ContestDto
 
-@Service
-class ContestServiceExternal(
-    private val contestService: ContestService,
-) {
-    fun getContest(contestId: Long): ContestDto = toContestDto(contestService.getContest(contestId))
+    fun getRunningContests(): List<ContestDto>
 
-    fun getRunningContests(): List<ContestDto> = contestService.getRunningContests().map { toContestDto(it) }
+    fun getActiveContests(): List<ContestDto>
 
-    fun getActiveContests(): List<ContestDto> = contestService.getActiveContests().map { toContestDto(it) }
+    fun getContestsAwaitingCompletion(): List<ContestDto>
 
-    fun getContestsAwaitingCompletion(): List<ContestDto> = contestService.getContestsAwaitingCompletion().map { toContestDto(it) }
+    fun isCompletedContest(contestId: Long): Boolean
 
-    fun isCompletedContest(contestId: Long): Boolean = contestService.getContest(contestId).isCompleted()
+    fun markContestAsCompleted(contestId: Long)
 
-    fun markContestAsCompleted(contestId: Long) {
-        contestService.markContestAsCompleted(contestId)
-    }
-
-    fun lockContestForCompletion(contestId: Long): Boolean = contestService.lockContestForCompletion(contestId)
+    fun lockContestForCompletion(contestId: Long): Boolean
 }

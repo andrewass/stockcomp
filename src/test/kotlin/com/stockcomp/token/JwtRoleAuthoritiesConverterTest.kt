@@ -1,7 +1,7 @@
 package com.stockcomp.token
 
+import com.stockcomp.user.UserRole
 import com.stockcomp.user.UserServiceExternal
-import com.stockcomp.user.internal.UserRole
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
