@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserAdministrationController(
     private val userAdministrationService: UserAdministrationService,
 ) {
-    @GetMapping("/sorted")
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsersSortedByEmail(
         @RequestParam @PositiveOrZero pageNumber: Int,
@@ -31,9 +32,12 @@ class UserAdministrationController(
     ): ResponseEntity<UserPageDto> =
         ResponseEntity.ok(mapToUserPageDto(userAdministrationService.getAllUsersSortedByEmail(pageNumber, pageSize)))
 
-    @PostMapping("/create")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     fun createUser(
         @Valid @RequestBody request: CreateUserRequest,
-    ): ResponseEntity<UserDto> = ResponseEntity.ok(mapToUserDto(userAdministrationService.createUser(request.email)))
+    ): ResponseEntity<UserDto> =
+        ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(mapToUserDto(userAdministrationService.createUser(request.email)))
 }

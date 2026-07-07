@@ -56,7 +56,7 @@ class ParticipantOperationsIT
 
             mockMvc
                 .perform(
-                    mockMvcPostRequest(url = "$basePath/sign-up", emailClaim = userEmail)
+                    mockMvcPostRequest(url = basePath, emailClaim = userEmail)
                         .content(mapper.writeValueAsString(SignUpParticipantRequest(contest.contestId))),
                 ).andExpect(status().isConflict)
         }
@@ -67,7 +67,7 @@ class ParticipantOperationsIT
 
             mockMvc
                 .perform(
-                    mockMvcPostRequest(url = "$basePath/sign-up", emailClaim = userEmail)
+                    mockMvcPostRequest(url = basePath, emailClaim = userEmail)
                         .content(mapper.writeValueAsString(SignUpParticipantRequest(contestId = -1))),
                 ).andExpect(status().isBadRequest)
         }
@@ -80,7 +80,7 @@ class ParticipantOperationsIT
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest(url = "$basePath/registered", emailClaim = userEmail))
+                    .perform(mockMvcGetRequest(url = "$basePath/contests", emailClaim = userEmail))
                     .andExpect(status().isOk)
                     .andReturn()
 
@@ -97,7 +97,7 @@ class ParticipantOperationsIT
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest(url = "$basePath/unregistered", emailClaim = userEmail))
+                    .perform(mockMvcGetRequest(url = "$basePath/available-contests", emailClaim = userEmail))
                     .andExpect(status().isOk)
                     .andReturn()
 
@@ -116,8 +116,10 @@ class ParticipantOperationsIT
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest(url = "$basePath/detailed/symbol/AAPL", emailClaim = userEmail))
-                    .andExpect(status().isOk)
+                    .perform(
+                        mockMvcGetRequest(url = "$basePath/details", emailClaim = userEmail)
+                            .queryParam("symbol", "AAPL"),
+                    ).andExpect(status().isOk)
                     .andReturn()
 
             val detailedParticipants: List<DetailedParticipantDto> = mapper.readValue(result.response.contentAsString)
@@ -127,7 +129,7 @@ class ParticipantOperationsIT
         private fun placeInvestmentOrder(participant: UserParticipantDto) {
             mockMvc
                 .perform(
-                    mockMvcPostRequest(url = "$basePath/investmentorders/order", emailClaim = userEmail)
+                    mockMvcPostRequest(url = "$basePath/investment-orders", emailClaim = userEmail)
                         .content(
                             mapper.writeValueAsString(
                                 PlaceInvestmentOrderRequest(
@@ -141,16 +143,16 @@ class ParticipantOperationsIT
                                 ),
                             ),
                         ),
-                ).andExpect(status().isOk)
+                ).andExpect(status().isCreated)
         }
 
         private fun signUpForContest(contestId: Long): UserParticipantDto {
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest(url = "$basePath/sign-up", emailClaim = userEmail)
+                        mockMvcPostRequest(url = basePath, emailClaim = userEmail)
                             .content(mapper.writeValueAsString(SignUpParticipantRequest(contestId))),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             return mapper.readValue(result.response.contentAsString)
@@ -160,13 +162,13 @@ class ParticipantOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("/contests/create", "ADMIN")
+                        mockMvcPostRequest("/contests", "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     CreateContestRequest(contestName, contestStartTime, 30L),
                                 ),
                             ),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             return mapper.readValue(result.response.contentAsString)
@@ -175,11 +177,10 @@ class ParticipantOperationsIT
         private fun markContestAsRunning(contestId: Long) {
             mockMvc
                 .perform(
-                    mockMvcPatchRequest(url = "/contests/update", role = "ADMIN")
+                    mockMvcPatchRequest(url = "/contests/$contestId", role = "ADMIN")
                         .content(
                             mapper.writeValueAsString(
                                 mapOf(
-                                    "contestId" to contestId,
                                     "contestStatus" to "RUNNING",
                                 ),
                             ),
@@ -191,13 +192,13 @@ class ParticipantOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("/users/create", "ADMIN")
+                        mockMvcPostRequest("/users", "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     CreateUserRequest(email),
                                 ),
                             ),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             return mapper.readValue(result.response.contentAsString)

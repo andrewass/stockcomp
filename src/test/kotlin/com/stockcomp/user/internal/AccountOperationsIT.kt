@@ -224,9 +224,9 @@ class AccountOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("/users/create", "ADMIN")
+                        mockMvcPostRequest("/users", "ADMIN")
                             .content(mapper.writeValueAsString(CreateUserRequest(email))),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             val response: UserDto = mapper.readValue(result.response.contentAsString)

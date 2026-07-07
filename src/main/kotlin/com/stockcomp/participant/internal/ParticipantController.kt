@@ -14,10 +14,10 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -34,37 +34,39 @@ class ParticipantController(
     /**
      * Sign up a participant for a given contest
      */
-    @PostMapping("/sign-up")
+    @PostMapping
     fun signUpParticipant(
         @Valid @RequestBody request: SignUpParticipantRequest,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<UserParticipantDto> =
-        ResponseEntity.ok(
-            toUserParticipantDto(participantService.signUpParticipant(userId = tokenClaims.userId, contestId = request.contestId)),
-        )
+        ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                toUserParticipantDto(participantService.signUpParticipant(userId = tokenClaims.userId, contestId = request.contestId)),
+            )
 
     /**
      * Get all the signed up participants for a given user
      */
-    @GetMapping("/registered")
-    fun registeredParticipant(
+    @GetMapping("/contests")
+    fun getParticipatingContests(
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<List<ContestParticipantDto>> = ResponseEntity.ok(participantService.getParticipatingContests(tokenClaims.userId))
 
     /**
      * Get all the contests the user has not signed up for
      */
-    @GetMapping("/unregistered")
-    fun unregisteredParticipant(
+    @GetMapping("/available-contests")
+    fun getAvailableContests(
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<List<ContestDto>> = ResponseEntity.ok(participantService.getNonParticipatingContests(tokenClaims.userId))
 
     /**
      * Get all the active participants for a given user, including investment and orders for the given symbol
      */
-    @GetMapping("/detailed/symbol/{symbol}")
+    @GetMapping("/details", params = ["symbol"])
     fun getDetailedParticipantsForSymbol(
-        @PathVariable @NotBlank symbol: String,
+        @RequestParam @NotBlank symbol: String,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<List<DetailedParticipantDto>> =
         ResponseEntity.ok(participantService.getDetailedParticipantsForSymbol(tokenClaims.userId, symbol))
@@ -72,9 +74,9 @@ class ParticipantController(
     /**
      * Get a given participant, including investment and orders
      */
-    @GetMapping("/detailed/contest/{contestId}")
+    @GetMapping("/details", params = ["contestId"])
     fun getDetailedParticipantForContest(
-        @PathVariable @Positive contestId: Long,
+        @RequestParam @Positive contestId: Long,
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<DetailedParticipantDto> {
         val participant = participantService.getDetailedParticipantForContest(contestId, tokenClaims.userId)
@@ -88,7 +90,7 @@ class ParticipantController(
     /**
      * Get sorted participants for a given contest
      */
-    @GetMapping("/sorted")
+    @GetMapping
     fun getSortedParticipantWithUserDetailsForContest(
         @RequestParam @Positive contestId: Long,
         @RequestParam @PositiveOrZero pageNumber: Int,

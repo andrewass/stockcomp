@@ -91,7 +91,7 @@ class SecurityConfiguration(
         }
 
     private fun createCorsConfiguration(): CorsConfigurationSource {
-        val courseConfiguration =
+        val corsConfiguration =
             CorsConfiguration().apply {
                 addAllowedOrigin("http://localhost:8000")
                 addAllowedOrigin("http://localhost:3000")
@@ -116,7 +116,7 @@ class SecurityConfiguration(
                 exposedHeaders = listOf("Content-Range")
             }
         return UrlBasedCorsConfigurationSource().also {
-            it.registerCorsConfiguration("/**", courseConfiguration)
+            it.registerCorsConfiguration("/**", corsConfiguration)
         }
     }
 

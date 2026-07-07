@@ -38,18 +38,18 @@ class SecurityConfigurationIT
         fun `should require authentication for business endpoints`() {
             mockMvc
                 .perform(
-                    get("/contests/all")
+                    get("/contests")
                         .queryParam("pageNumber", "0")
                         .queryParam("pageSize", "10"),
                 ).andExpect(status().isUnauthorized)
 
             mockMvc
-                .perform(get("/participants/registered"))
+                .perform(get("/participants/contests"))
                 .andExpect(status().isUnauthorized)
 
             mockMvc
                 .perform(
-                    post("/leaderboard/update")
+                    post("/leaderboard/recalculations")
                         .queryParam("contestId", "1"),
                 ).andExpect(status().isUnauthorized)
         }

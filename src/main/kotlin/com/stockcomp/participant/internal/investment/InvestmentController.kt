@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController
 class InvestmentController(
     private val investmentService: InvestmentProcessingService,
 ) {
-    @GetMapping("/all")
-    fun getAllFromContest(
+    @GetMapping(params = ["contestId", "!symbol"])
+    fun getInvestmentsForContest(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam @Positive contestId: Long,
     ): ResponseEntity<List<InvestmentDto>> =
@@ -31,7 +31,7 @@ class InvestmentController(
                 ).map { mapToInvestmentDto(it) },
         )
 
-    @GetMapping
+    @GetMapping(params = ["contestId", "symbol"])
     fun getInvestmentBySymbolAndContest(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam @NotBlank symbol: String,

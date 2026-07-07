@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -29,13 +30,13 @@ import java.time.LocalDateTime
 class ContestController(
     private val contestService: ContestService,
 ) {
-    @GetMapping("/all")
+    @GetMapping
     fun getAllContestsSortedByContestId(
         @RequestParam @PositiveOrZero pageNumber: Int,
         @RequestParam @Positive @Max(100) pageSize: Int,
     ): ResponseEntity<ContestPageDto> = ResponseEntity.ok(mapToContestPageDto(contestService.getAllContestsSorted(pageNumber, pageSize)))
 
-    @GetMapping("/exists-active")
+    @GetMapping("/active/exists")
     fun existsActiveContest(): ResponseEntity<ExistsActiveContestResponse> =
         ResponseEntity.ok(ExistsActiveContestResponse(contestService.existsActiveContest()))
 
@@ -48,28 +49,31 @@ class ContestController(
         @PathVariable @Positive contestId: Long,
     ): ResponseEntity<ContestDto> = ResponseEntity.ok(toContestDto(contestService.getContest(contestId)))
 
-    @PostMapping("/create")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     fun createContest(
         @Valid @RequestBody request: CreateContestRequest,
     ): ResponseEntity<ContestDto> =
-        ResponseEntity.ok(
-            toContestDto(
-                contestService.createContest(
-                    contestName = request.contestName,
-                    startTime = request.startTime,
-                    durationDays = request.durationDays,
+        ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                toContestDto(
+                    contestService.createContest(
+                        contestName = request.contestName,
+                        startTime = request.startTime,
+                        durationDays = request.durationDays,
+                    ),
                 ),
-            ),
-        )
+            )
 
-    @PatchMapping("/update")
+    @PatchMapping("/{contestId}")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateContest(
+        @PathVariable @Positive contestId: Long,
         @Valid @RequestBody request: UpdateContestRequest,
     ): ResponseEntity<ContestDto> =
         ResponseEntity.ok(
-            toContestDto(contestService.updateContest(request.contestId, request.contestName, request.contestStatus, request.startTime)),
+            toContestDto(contestService.updateContest(contestId, request.contestName, request.contestStatus, request.startTime)),
         )
 
     @DeleteMapping("/{contestId}")
@@ -83,8 +87,6 @@ class ContestController(
 }
 
 data class UpdateContestRequest(
-    @field:Positive
-    val contestId: Long,
     val startTime: LocalDateTime? = null,
     @field:Pattern(regexp = ".*\\S.*", message = "contestName must not be blank")
     val contestName: String? = null,

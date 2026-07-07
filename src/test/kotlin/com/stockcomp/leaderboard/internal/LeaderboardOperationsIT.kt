@@ -51,7 +51,7 @@ class LeaderboardOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcGetRequest("$basePath/sorted")
+                        mockMvcGetRequest(basePath)
                             .queryParam("pageNumber", "0")
                             .queryParam("pageSize", "5"),
                     ).andExpect(status().isOk)
@@ -70,7 +70,7 @@ class LeaderboardOperationsIT
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest("$basePath/user", emailClaim = user.email))
+                    .perform(mockMvcGetRequest("$basePath/me", emailClaim = user.email))
                     .andExpect(status().isOk)
                     .andReturn()
 
@@ -84,9 +84,9 @@ class LeaderboardOperationsIT
 
             mockMvc
                 .perform(
-                    mockMvcPostRequest("$basePath/update", "ADMIN")
+                    mockMvcPostRequest("$basePath/recalculations", "ADMIN")
                         .queryParam("contestId", contestId.toString()),
-                ).andExpect(status().isOk)
+                ).andExpect(status().isNoContent)
 
             val contestResult =
                 mockMvc
@@ -111,9 +111,9 @@ class LeaderboardOperationsIT
             repeat(2) {
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("$basePath/update", "ADMIN")
+                        mockMvcPostRequest("$basePath/recalculations", "ADMIN")
                             .queryParam("contestId", contestId.toString()),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isNoContent)
             }
 
             assertEquals(1, participantRank(first.userId, contestId))
@@ -138,7 +138,7 @@ class LeaderboardOperationsIT
         fun `should return forbidden when non-admin updates leaderboard`() {
             mockMvc
                 .perform(
-                    mockMvcPostRequest("$basePath/update", "USER")
+                    mockMvcPostRequest("$basePath/recalculations", "USER")
                         .queryParam("contestId", "1"),
                 ).andExpect(status().isForbidden)
         }
@@ -188,7 +188,7 @@ class LeaderboardOperationsIT
             val email = "missing-${UUID.randomUUID().toString().take(12)}@test.com"
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest("$basePath/user", emailClaim = email))
+                    .perform(mockMvcGetRequest("$basePath/me", emailClaim = email))
                     .andExpect(status().isNotFound)
                     .andExpect(
                         org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -207,7 +207,7 @@ class LeaderboardOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcGetRequest("$basePath/sorted")
+                        mockMvcGetRequest(basePath)
                             .queryParam("pageNumber", "-1")
                             .queryParam("pageSize", "0"),
                     ).andExpect(status().isBadRequest)
@@ -235,20 +235,19 @@ class LeaderboardOperationsIT
             val createResult =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("/contests/create", "ADMIN")
+                        mockMvcPostRequest("/contests", "ADMIN")
                             .content(createPayload),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             val contestId = mapper.readTree(createResult.response.contentAsString)["contestId"].asLong()
 
             mockMvc
                 .perform(
-                    mockMvcPatchRequest("/contests/update", "ADMIN")
+                    mockMvcPatchRequest("/contests/$contestId", "ADMIN")
                         .content(
                             """
                             {
-                              "contestId": $contestId,
                               "contestStatus": "AWAITING_COMPLETION"
                             }
                             """.trimIndent(),
@@ -268,9 +267,9 @@ class LeaderboardOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("/users/create", "ADMIN")
+                        mockMvcPostRequest("/users", "ADMIN")
                             .content("""{"email":"$email"}"""),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             return CreatedUser(

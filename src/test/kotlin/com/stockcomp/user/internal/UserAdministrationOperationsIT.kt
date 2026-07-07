@@ -32,7 +32,7 @@ class UserAdministrationOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcGetRequest("$basePath/sorted", "ADMIN")
+                        mockMvcGetRequest(basePath, "ADMIN")
                             .queryParam("pageNumber", "0")
                             .queryParam("pageSize", "10"),
                     ).andExpect(status().isOk)
@@ -46,7 +46,7 @@ class UserAdministrationOperationsIT
         fun `should return forbidden when non-admin lists users`() {
             mockMvc
                 .perform(
-                    mockMvcGetRequest("$basePath/sorted", "USER")
+                    mockMvcGetRequest(basePath, "USER")
                         .queryParam("pageNumber", "0")
                         .queryParam("pageSize", "10"),
                 ).andExpect(status().isForbidden)
@@ -56,7 +56,7 @@ class UserAdministrationOperationsIT
         fun `should return forbidden when non-admin creates user`() {
             mockMvc
                 .perform(
-                    mockMvcPostRequest("$basePath/create", "USER")
+                    mockMvcPostRequest(basePath, "USER")
                         .content(mapper.writeValueAsString(CreateUserRequest("non-admin-create@test.com"))),
                 ).andExpect(status().isForbidden)
         }
@@ -66,7 +66,7 @@ class UserAdministrationOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                        mockMvcPostRequest(basePath, "ADMIN")
                             .content(mapper.writeValueAsString(CreateUserRequest("not-an-email"))),
                     ).andExpect(status().isBadRequest)
                     .andExpect(
@@ -87,7 +87,7 @@ class UserAdministrationOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcGetRequest("$basePath/sorted", "ADMIN")
+                        mockMvcGetRequest(basePath, "ADMIN")
                             .queryParam("pageNumber", "-1")
                             .queryParam("pageSize", "101"),
                     ).andExpect(status().isBadRequest)
@@ -108,9 +108,9 @@ class UserAdministrationOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                        mockMvcPostRequest(basePath, "ADMIN")
                             .content(mapper.writeValueAsString(CreateUserRequest(email))),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             val response: UserDto = mapper.readValue(result.response.contentAsString)

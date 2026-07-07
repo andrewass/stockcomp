@@ -117,43 +117,43 @@ Main endpoints (base URL `http://localhost:8080`):
 - `PUT /account`
 - `GET /account/admin`
 - `GET /users/{userId}/profile?pageNumber=...&pageSize=...`
-- `GET /users/sorted?pageNumber=...&pageSize=...` (ADMIN)
-- `POST /users/create` (ADMIN)
+- `GET /users?pageNumber=...&pageSize=...` (ADMIN)
+- `POST /users` (ADMIN)
 
 ### Contests
 
-- `GET /contests/all?pageNumber=...&pageSize=...`
-- `GET /contests/exists-active`
+- `GET /contests?pageNumber=...&pageSize=...`
+- `GET /contests/active/exists`
 - `GET /contests/active`
 - `GET /contests/{contestId}`
-- `POST /contests/create` (ADMIN)
-- `PATCH /contests/update` (ADMIN)
+- `POST /contests` (ADMIN)
+- `PATCH /contests/{contestId}` (ADMIN)
 - `DELETE /contests/{contestId}` (ADMIN)
 
 ### Participants / Investments / Orders
 
-- `POST /participants/sign-up`
-- `GET /participants/registered`
-- `GET /participants/unregistered`
-- `GET /participants/detailed/symbol/{symbol}`
-- `GET /participants/detailed/contest/{contestId}`
-- `GET /participants/sorted?contestId=...&pageNumber=...&pageSize=...`
+- `POST /participants`
+- `GET /participants/contests`
+- `GET /participants/available-contests`
+- `GET /participants/details?symbol=...`
+- `GET /participants/details?contestId=...`
+- `GET /participants?contestId=...&pageNumber=...&pageSize=...`
 - `GET /participants/history?username=...`
-- `GET /participants/investments/all?contestId=...`
+- `GET /participants/investments?contestId=...`
 - `GET /participants/investments?contestId=...&symbol=...`
-- `POST /participants/investmentorders/order`
-- `DELETE /participants/investmentorders/delete?orderId=...&contestId=...`
-- `GET /participants/investmentorders/all-active?contestId=...`
-- `GET /participants/investmentorders/all-completed?contestId=...`
-- `GET /participants/investmentorders/symbol-active?contestId=...&symbol=...`
-- `GET /participants/investmentorders/symbol-completed?contestId=...&symbol=...`
+- `POST /participants/investment-orders`
+- `DELETE /participants/investment-orders/{orderId}?contestId=...`
+- `GET /participants/investment-orders/active?contestId=...`
+- `GET /participants/investment-orders/completed?contestId=...`
+- `GET /participants/investment-orders/active?contestId=...&symbol=...`
+- `GET /participants/investment-orders/completed?contestId=...&symbol=...`
 
 ### Symbols / Leaderboard
 
 - `GET /symbols/price/trending`
-- `GET /leaderboard/sorted?pageNumber=...&pageSize=...`
-- `GET /leaderboard/user`
-- `POST /leaderboard/update?contestId=...`
+- `GET /leaderboard?pageNumber=...&pageSize=...`
+- `GET /leaderboard/me`
+- `POST /leaderboard/recalculations?contestId=...` (ADMIN)
 
 ## Scheduled Jobs
 

@@ -44,13 +44,13 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                        mockMvcPostRequest(basePath, "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     CreateContestRequest("TestContest", contestStartTime, 30L),
                                 ),
                             ),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
 
             val contest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
@@ -66,7 +66,7 @@ class ContestOperationsIT
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest("$basePath/exists-active"))
+                    .perform(mockMvcGetRequest("$basePath/active/exists"))
                     .andExpect(status().isOk)
                     .andReturn()
 
@@ -158,11 +158,10 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPatchRequest("$basePath/update", "ADMIN")
+                        mockMvcPatchRequest("$basePath/${existingContest.contestId!!}", "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     UpdateContestRequest(
-                                        contestId = existingContest.contestId!!,
                                         contestStatus = ContestStatus.RUNNING,
                                     ),
                                 ),
@@ -185,11 +184,10 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPatchRequest("$basePath/update", "ADMIN")
+                        mockMvcPatchRequest("$basePath/${contest.contestId!!}", "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     UpdateContestRequest(
-                                        contestId = contest.contestId!!,
                                         startTime = updatedStart,
                                     ),
                                 ),
@@ -216,11 +214,10 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPatchRequest("$basePath/update", "ADMIN")
+                        mockMvcPatchRequest("$basePath/$contestId", "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     UpdateContestRequest(
-                                        contestId = contestId,
                                         startTime = LocalDateTime.now().plusDays(2),
                                     ),
                                 ),
@@ -263,7 +260,7 @@ class ContestOperationsIT
         fun `should return forbidden when non-admin tries to create contest`() {
             mockMvc
                 .perform(
-                    mockMvcPostRequest("$basePath/create", "USER")
+                    mockMvcPostRequest(basePath, "USER")
                         .content(
                             mapper.writeValueAsString(
                                 CreateContestRequest("ForbiddenContest", contestStartTime, 5L),
@@ -278,11 +275,10 @@ class ContestOperationsIT
 
             mockMvc
                 .perform(
-                    mockMvcPatchRequest("$basePath/update", "USER")
+                    mockMvcPatchRequest("$basePath/${contest.contestId!!}", "USER")
                         .content(
                             mapper.writeValueAsString(
                                 UpdateContestRequest(
-                                    contestId = contest.contestId!!,
                                     contestName = "RenamedByUser",
                                 ),
                             ),
@@ -304,7 +300,7 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("$basePath/create", "ADMIN")
+                        mockMvcPostRequest(basePath, "ADMIN")
                             .content(
                                 mapper.writeValueAsString(
                                     CreateContestRequest(
@@ -333,7 +329,7 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcGetRequest("$basePath/all")
+                        mockMvcGetRequest(basePath)
                             .queryParam("pageNumber", "-1")
                             .queryParam("pageSize", "101"),
                     ).andExpect(status().isBadRequest)
@@ -354,11 +350,10 @@ class ContestOperationsIT
         fun `should return bad request for invalid contest update payload`() {
             mockMvc
                 .perform(
-                    mockMvcPatchRequest("$basePath/update", "ADMIN")
+                    mockMvcPatchRequest("$basePath/1", "ADMIN")
                         .content(
                             mapper.writeValueAsString(
                                 UpdateContestRequest(
-                                    contestId = 0L,
                                     contestName = "   ",
                                 ),
                             ),
@@ -409,7 +404,7 @@ class ContestOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcGetRequest("$basePath/all")
+                        mockMvcGetRequest(basePath)
                             .queryParam("pageNumber", pageNumber.toString())
                             .queryParam("pageSize", pageSize.toString()),
                     ).andExpect(status().isOk)

@@ -22,23 +22,24 @@ class LeaderboardController(
     private val leaderboardService: LeaderboardService,
     private val leaderboardQueryService: LeaderboardQueryService,
 ) {
-    @GetMapping("/sorted")
+    @GetMapping
     fun getAllLeaderboardEntries(
         @RequestParam @PositiveOrZero pageNumber: Int,
         @RequestParam @Positive pageSize: Int,
     ): ResponseEntity<LeaderboardEntryPageDto> =
         ResponseEntity.ok(leaderboardQueryService.getSortedLeaderboardEntryPage(pageNumber, pageSize))
 
-    @GetMapping("/user")
+    @GetMapping("/me")
     fun getLeaderboardEntryForUser(
         @TokenData tokenClaims: TokenClaims,
     ): ResponseEntity<LeaderboardEntryDto> = ResponseEntity.ok(leaderboardQueryService.getLeaderboardEntryDtoForUser(tokenClaims.userId))
 
-    @PostMapping("/update")
+    @PostMapping("/recalculations")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateLeaderboard(
         @RequestParam @Positive contestId: Long,
-    ) {
+    ): ResponseEntity<Void> {
         leaderboardService.updateLeaderboard(contestId)
+        return ResponseEntity.noContent().build()
     }
 }

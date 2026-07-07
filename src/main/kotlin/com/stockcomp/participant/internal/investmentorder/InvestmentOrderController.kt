@@ -5,12 +5,13 @@ import com.stockcomp.common.TokenData
 import com.stockcomp.participant.InvestmentOrderDto
 import com.stockcomp.participant.PlaceInvestmentOrderRequest
 import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @Validated
 @RestController
-@RequestMapping("/participants/investmentorders")
+@RequestMapping("/participants/investment-orders")
 class InvestmentOrderController(
     private val investmentOrderProcessingService: InvestmentOrderProcessingService,
 ) {
-    @PostMapping("/order")
+    @PostMapping
     fun placeInvestmentOrder(
         @TokenData tokenClaims: TokenClaims,
         @Valid @RequestBody request: PlaceInvestmentOrderRequest,
@@ -38,13 +39,13 @@ class InvestmentOrderController(
             currency = request.currency,
             transactionType = request.transactionType,
         )
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{orderId}")
     fun deleteInvestmentOrder(
         @TokenData tokenClaims: TokenClaims,
-        @RequestParam @Positive orderId: Long,
+        @PathVariable @Positive orderId: Long,
         @RequestParam @Positive contestId: Long,
     ): ResponseEntity<Void> {
         investmentOrderProcessingService.deleteInvestmentOrder(
@@ -52,56 +53,42 @@ class InvestmentOrderController(
             orderId = orderId,
             contestId = contestId,
         )
-        return ResponseEntity.ok().build()
+        return ResponseEntity.noContent().build()
     }
 
-    @GetMapping("/all-active")
+    @GetMapping("/active")
     fun getActiveInvestmentOrders(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam @Positive contestId: Long,
+        @RequestParam(required = false) symbol: String?,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         ResponseEntity.ok(
-            investmentOrderProcessingService.getActiveOrders(contestId, tokenClaims.userId).map { mapToInvestmentOrderDto(it) },
+            if (symbol == null) {
+                investmentOrderProcessingService.getActiveOrders(contestId, tokenClaims.userId)
+            } else {
+                investmentOrderProcessingService.getActiveOrdersSymbol(
+                    symbol = symbol,
+                    contestId = contestId,
+                    userId = tokenClaims.userId,
+                )
+            }.map { mapToInvestmentOrderDto(it) },
         )
 
-    @GetMapping("/all-completed")
+    @GetMapping("/completed")
     fun getCompletedInvestmentOrders(
         @TokenData tokenClaims: TokenClaims,
         @RequestParam @Positive contestId: Long,
+        @RequestParam(required = false) symbol: String?,
     ): ResponseEntity<List<InvestmentOrderDto>> =
         ResponseEntity.ok(
-            investmentOrderProcessingService
-                .getCompletedOrders(contestId = contestId, userId = tokenClaims.userId)
-                .map { mapToInvestmentOrderDto(it) },
-        )
-
-    @GetMapping("/symbol-active")
-    fun getActiveInvestmentOrdersSymbol(
-        @TokenData tokenClaims: TokenClaims,
-        @RequestParam @Positive contestId: Long,
-        @RequestParam @NotBlank symbol: String,
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        ResponseEntity.ok(
-            investmentOrderProcessingService
-                .getActiveOrdersSymbol(
+            if (symbol == null) {
+                investmentOrderProcessingService.getCompletedOrders(contestId = contestId, userId = tokenClaims.userId)
+            } else {
+                investmentOrderProcessingService.getCompletedOrdersSymbol(
                     symbol = symbol,
                     contestId = contestId,
                     userId = tokenClaims.userId,
-                ).map { mapToInvestmentOrderDto(it) },
-        )
-
-    @GetMapping("/symbol-completed")
-    fun getCompletedInvestmentOrdersSymbol(
-        @TokenData tokenClaims: TokenClaims,
-        @RequestParam @Positive contestId: Long,
-        @RequestParam @NotBlank symbol: String,
-    ): ResponseEntity<List<InvestmentOrderDto>> =
-        ResponseEntity.ok(
-            investmentOrderProcessingService
-                .getCompletedOrdersSymbol(
-                    symbol = symbol,
-                    contestId = contestId,
-                    userId = tokenClaims.userId,
-                ).map { mapToInvestmentOrderDto(it) },
+                )
+            }.map { mapToInvestmentOrderDto(it) },
         )
 }

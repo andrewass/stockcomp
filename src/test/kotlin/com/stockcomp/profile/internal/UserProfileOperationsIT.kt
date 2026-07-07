@@ -47,9 +47,9 @@ class UserProfileOperationsIT
 
             mockMvc
                 .perform(
-                    mockMvcPostRequest("/leaderboard/update", "ADMIN")
+                    mockMvcPostRequest("/leaderboard/recalculations", "ADMIN")
                         .queryParam("contestId", contestId.toString()),
-                ).andExpect(status().isOk)
+                ).andExpect(status().isNoContent)
 
             val result =
                 mockMvc
@@ -178,9 +178,9 @@ class UserProfileOperationsIT
             val result =
                 mockMvc
                     .perform(
-                        mockMvcPostRequest("/users/create", "ADMIN")
+                        mockMvcPostRequest("/users", "ADMIN")
                             .content("""{"email":"$email"}"""),
-                    ).andExpect(status().isOk)
+                    ).andExpect(status().isCreated)
                     .andReturn()
             return CreatedUser(
                 userId = mapper.readTree(result.response.contentAsString)["userId"].asLong(),
