@@ -1,9 +1,11 @@
 package com.stockcomp.configuration
 
 import com.stockcomp.token.JwtRoleAuthoritiesConverter
+import com.stockcomp.user.AccountStatusAuthority
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -59,8 +61,10 @@ class SecurityConfiguration(
                         "/swagger-resources/**",
                         "/v2/api-docs",
                     ).permitAll()
-                    .anyRequest()
+                    .requestMatchers(HttpMethod.PATCH, "/account/status")
                     .authenticated()
+                    .anyRequest()
+                    .hasAuthority(AccountStatusAuthority.ACTIVE)
             }.oauth2ResourceServer { oauth2 ->
                 oauth2.jwt { jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()) }
             }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -98,7 +102,7 @@ class SecurityConfiguration(
                 addAllowedOrigin("http://stockclient-service:80")
                 addAllowedOrigin("http://localhost:80")
                 allowCredentials = true
-                allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 allowedHeaders =
                     listOf(
                         "Origin",

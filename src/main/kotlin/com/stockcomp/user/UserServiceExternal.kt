@@ -5,7 +5,7 @@ interface UserServiceExternal {
 
     fun getUserIdByUsername(username: String): Long
 
-    fun getUserRole(userSubject: String): UserRole
+    fun getUserAuthenticationDetails(userSubject: String): UserAuthenticationDetails
 
     fun getUserDetails(userIds: List<Long>): List<UserDetailsDto>
 }

@@ -1,7 +1,10 @@
 package com.stockcomp.token
 
+import com.stockcomp.user.AccountStatusAuthority
 import com.stockcomp.user.UserServiceExternal
+import com.stockcomp.user.UserStatus
 import org.springframework.core.convert.converter.Converter
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.jwt.Jwt
@@ -14,7 +17,22 @@ class JwtRoleAuthoritiesConverter(
 ) : Converter<Jwt, Collection<GrantedAuthority>> {
     override fun convert(source: Jwt): Collection<GrantedAuthority> {
         val subject = jwtSubjectResolver.resolveSubject(source)
-        val userRole = userService.getUserRole(subject)
-        return listOf(SimpleGrantedAuthority("ROLE_$userRole"))
+        val authenticationDetails = userService.getUserAuthenticationDetails(subject)
+        return when (authenticationDetails.status) {
+            UserStatus.ACTIVE -> {
+                listOf(
+                    SimpleGrantedAuthority(AccountStatusAuthority.ACTIVE),
+                    SimpleGrantedAuthority("ROLE_${authenticationDetails.role}"),
+                )
+            }
+
+            UserStatus.INACTIVE -> {
+                listOf(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE))
+            }
+
+            UserStatus.SUSPENDED -> {
+                throw DisabledException("Account is suspended")
+            }
+        }
     }
 }

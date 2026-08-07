@@ -21,6 +21,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = [AccountController::class])
 class AccountExceptionHandler : ResponseEntityExceptionHandler() {
+    @ExceptionHandler(AccountStatusTransitionNotAllowedException::class)
+    fun handleAccountStatusTransitionNotAllowedException(
+        exception: AccountStatusTransitionNotAllowedException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ProblemDetail> =
+        ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(
+                ApiProblemDetails.create(
+                    status = HttpStatus.CONFLICT,
+                    title = "Account status transition is not allowed",
+                    detail = exception.message ?: "Account status transition is not allowed",
+                    type = "/problems/account/status-transition-not-allowed",
+                    instancePath = request.requestURI,
+                ),
+            )
+
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNoSuchElementException(
         exception: NoSuchElementException,

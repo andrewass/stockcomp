@@ -1,5 +1,6 @@
 package com.stockcomp.configuration
 
+import com.stockcomp.user.AccountStatusAuthority
 import org.springframework.http.MediaType
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
@@ -59,8 +60,8 @@ private fun getJwtRequestPostProcessor(
     emailClaim?.also {
         postProcessor.jwt { jwt -> jwt.claim("email", emailClaim) }
     }
-    if (role == "ADMIN") {
-        postProcessor.authorities(SimpleGrantedAuthority("ROLE_ADMIN"))
-    }
+    val authorities = mutableListOf(SimpleGrantedAuthority(AccountStatusAuthority.ACTIVE))
+    if (role == "ADMIN") authorities += SimpleGrantedAuthority("ROLE_ADMIN")
+    postProcessor.authorities(*authorities.toTypedArray())
     return postProcessor
 }

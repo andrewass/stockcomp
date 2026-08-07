@@ -1,6 +1,7 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.user.UpdateAccountSettingsRequest
+import com.stockcomp.user.UserRole
 import com.stockcomp.user.UserStatus
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
@@ -33,14 +34,30 @@ class AccountService(
         }
     }
 
-    fun isAdmin(userId: Long): Boolean = userId == 1L
+    fun isAdmin(userId: Long): Boolean = findUserById(userId).userRole == UserRole.ADMIN
 
     @Transactional
     fun updateAccountStatus(
         userId: Long,
         newStatus: UserStatus,
     ): User {
+        if (newStatus == UserStatus.SUSPENDED) {
+            throw AccountStatusTransitionNotAllowedException(
+                "Accounts cannot suspend themselves",
+            )
+        }
+
         val user = findUserById(userId)
+        if (user.userStatus == UserStatus.SUSPENDED) {
+            throw AccountStatusTransitionNotAllowedException(
+                "Suspended accounts can only be reactivated by an administrator",
+            )
+        }
+
+        if (user.userStatus == newStatus) {
+            return user
+        }
+
         user.updateStatus(newStatus)
         return userRepository.save(user)
     }

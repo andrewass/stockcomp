@@ -8,15 +8,20 @@ import com.stockcomp.configuration.mockMvcPatchRequest
 import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.configuration.mockMvcPutRequest
 import com.stockcomp.user.AccountSettingsDto
+import com.stockcomp.user.AccountStatusAuthority
 import com.stockcomp.user.CreateUserRequest
 import com.stockcomp.user.UpdateAccountSettingsRequest
 import com.stockcomp.user.UpdateAccountStatusRequest
 import com.stockcomp.user.UserDto
+import com.stockcomp.user.UserRole
 import com.stockcomp.user.UserStatus
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -26,8 +31,8 @@ class AccountOperationsIT
     @Autowired
     constructor(
         private val mockMvc: MockMvc,
-        private val accountService: AccountService,
         private val userIdentityService: UserIdentityService,
+        private val userRepository: UserRepository,
     ) {
         private val mapper = jacksonObjectMapper()
 
@@ -140,6 +145,64 @@ class AccountOperationsIT
         }
 
         @Test
+        fun `should reject self-service suspension and allow inactive accounts to reactivate`() {
+            val email = "restricted-account-status@test.com"
+            createUser(email)
+
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("/account/status", emailClaim = email)
+                        .content(
+                            mapper.writeValueAsString(
+                                UpdateAccountStatusRequest(newStatus = UserStatus.SUSPENDED),
+                            ),
+                        ),
+                ).andExpect(status().isConflict)
+
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("/account/status", emailClaim = email)
+                        .content(
+                            mapper.writeValueAsString(
+                                UpdateAccountStatusRequest(newStatus = UserStatus.INACTIVE),
+                            ),
+                        ),
+                ).andExpect(status().isOk)
+
+            val reactivatedResult =
+                mockMvc
+                    .perform(
+                        MockMvcRequestBuilders
+                            .patch("/account/status")
+                            .with(
+                                jwt()
+                                    .jwt { jwt -> jwt.claim("email", email) }
+                                    .authorities(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE)),
+                            ).contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                mapper.writeValueAsString(
+                                    UpdateAccountStatusRequest(newStatus = UserStatus.ACTIVE),
+                                ),
+                            ),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            val reactivated: AccountSettingsDto = mapper.readValue(reactivatedResult.response.contentAsString)
+            assertEquals(UserStatus.ACTIVE, reactivated.userStatus)
+
+            mockMvc
+                .perform(
+                    MockMvcRequestBuilders
+                        .get("/account")
+                        .with(
+                            jwt()
+                                .jwt { jwt -> jwt.claim("email", email) }
+                                .authorities(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE)),
+                        ),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
         fun `should return conflict when username is already in use`() {
             val firstEmail = "username-owner@test.com"
             createUser(firstEmail)
@@ -187,17 +250,24 @@ class AccountOperationsIT
         }
 
         @Test
-        fun `should return admin flag`() {
-            val subjectUser = userIdentityService.findOrCreateUserBySubject("user")
+        fun `should return admin flag from stored role`() {
+            val adminEmail = "stored-admin@test.com"
+            userRepository.save(
+                User(
+                    email = adminEmail,
+                    username = "stored-admin",
+                    userRole = UserRole.ADMIN,
+                ),
+            )
 
             val result =
                 mockMvc
-                    .perform(mockMvcGetRequest("/account/admin"))
+                    .perform(mockMvcGetRequest("/account/admin", emailClaim = adminEmail))
                     .andExpect(status().isOk)
                     .andReturn()
 
             val isAdmin: Boolean = mapper.readValue(result.response.contentAsString)
-            assertEquals(accountService.isAdmin(subjectUser.userId!!), isAdmin)
+            assertTrue(isAdmin)
         }
 
         @Test

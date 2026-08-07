@@ -21,3 +21,7 @@ data class CreateUserRequest(
     @field:Email
     val email: String,
 )
+
+data class UpdateUserStatusRequest(
+    val newStatus: UserStatus,
+)

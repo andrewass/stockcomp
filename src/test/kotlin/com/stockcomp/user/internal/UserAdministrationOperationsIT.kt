@@ -4,10 +4,13 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.stockcomp.configuration.ControllerIntegrationTest
 import com.stockcomp.configuration.mockMvcGetRequest
+import com.stockcomp.configuration.mockMvcPatchRequest
 import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.user.CreateUserRequest
+import com.stockcomp.user.UpdateUserStatusRequest
 import com.stockcomp.user.UserDto
 import com.stockcomp.user.UserPageDto
+import com.stockcomp.user.UserStatus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -59,6 +62,44 @@ class UserAdministrationOperationsIT
                     mockMvcPostRequest(basePath, "USER")
                         .content(mapper.writeValueAsString(CreateUserRequest("non-admin-create@test.com"))),
                 ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return forbidden when non-admin updates user status`() {
+            val userId = createUser("non-admin-status@test.com")
+
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("$basePath/$userId/status", "USER")
+                        .content(mapper.writeValueAsString(UpdateUserStatusRequest(UserStatus.SUSPENDED))),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should allow admin to update user status`() {
+            val userId = createUser("admin-status-update@test.com")
+
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcPatchRequest("$basePath/$userId/status", "ADMIN")
+                            .content(mapper.writeValueAsString(UpdateUserStatusRequest(UserStatus.SUSPENDED))),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            val response: UserDto = mapper.readValue(result.response.contentAsString)
+            assertEquals(UserStatus.SUSPENDED, response.userStatus)
+
+            val reactivatedResult =
+                mockMvc
+                    .perform(
+                        mockMvcPatchRequest("$basePath/$userId/status", "ADMIN")
+                            .content(mapper.writeValueAsString(UpdateUserStatusRequest(UserStatus.ACTIVE))),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+
+            val reactivatedResponse: UserDto = mapper.readValue(reactivatedResult.response.contentAsString)
+            assertEquals(UserStatus.ACTIVE, reactivatedResponse.userStatus)
         }
 
         @Test

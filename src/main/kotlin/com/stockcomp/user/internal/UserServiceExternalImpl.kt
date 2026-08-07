@@ -1,7 +1,7 @@
 package com.stockcomp.user.internal
 
+import com.stockcomp.user.UserAuthenticationDetails
 import com.stockcomp.user.UserDetailsDto
-import com.stockcomp.user.UserRole
 import com.stockcomp.user.UserServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +20,15 @@ class UserServiceExternalImpl(
             ?: throw IllegalArgumentException("No user found for username $username")
 
     @Transactional
-    override fun getUserRole(userSubject: String): UserRole = userIdentityService.findOrCreateUserBySubject(userSubject).userRole
+    override fun getUserAuthenticationDetails(userSubject: String): UserAuthenticationDetails =
+        userIdentityService
+            .findOrCreateUserBySubject(userSubject)
+            .let { user ->
+                UserAuthenticationDetails(
+                    role = user.userRole,
+                    status = user.userStatus,
+                )
+            }
 
     override fun getUserDetails(userIds: List<Long>): List<UserDetailsDto> =
         userIdentityService.findUsersById(userIds).map {

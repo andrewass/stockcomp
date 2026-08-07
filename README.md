@@ -115,10 +115,12 @@ Main endpoints (base URL `http://localhost:8080`):
 
 - `GET /account`
 - `PUT /account`
+- `PATCH /account/status` (self-service activation/deactivation; suspended accounts require an administrator)
 - `GET /account/admin`
 - `GET /users/{userId}/profile?pageNumber=...&pageSize=...`
 - `GET /users?pageNumber=...&pageSize=...` (ADMIN)
 - `POST /users` (ADMIN)
+- `PATCH /users/{userId}/status` (ADMIN)
 
 ### Contests
 
