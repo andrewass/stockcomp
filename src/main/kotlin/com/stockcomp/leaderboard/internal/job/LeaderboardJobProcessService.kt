@@ -11,10 +11,10 @@ class LeaderboardJobProcessService(
 ) {
     private val logger = LoggerFactory.getLogger(LeaderboardJobProcessService::class.java)
 
-    fun processJob(job: LeaderboardJob): JobStatus =
+    fun processJob(job: LeaderboardJobProcessingRequest): JobStatus =
         try {
             leaderboardService.updateLeaderboard(job.contestId)
-            leaderboardJobStateService.markAsCompleted(job)
+            leaderboardJobStateService.markAsCompleted(job.leaderboardJobId)
             JobStatus.COMPLETED
         } catch (e: Exception) {
             logger.error(
@@ -22,10 +22,10 @@ class LeaderboardJobProcessService(
                 JOB_NAME,
                 job.leaderboardJobId,
                 job.contestId,
-                job.attempts(),
+                job.attempts,
                 e,
             )
-            leaderboardJobStateService.markAsFailed(job)
+            leaderboardJobStateService.markAsFailed(job.leaderboardJobId)
             JobStatus.FAILED
         }
 

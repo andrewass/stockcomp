@@ -16,12 +16,14 @@ import java.time.LocalDateTime
 class LeaderboardJobSchedulerTest {
     private val leaderboardJobRepository = mockk<LeaderboardJobRepository>()
     private val leaderboardJobProcessService = mockk<LeaderboardJobProcessService>()
+    private val leaderboardJobStateService = mockk<LeaderboardJobStateService>()
     private val contestService = mockk<ContestServiceExternal>()
     private val meterRegistry = SimpleMeterRegistry()
     private val scheduler =
         LeaderboardJobScheduler(
             leaderboardJobRepository = leaderboardJobRepository,
             leaderboardJobProcessService = leaderboardJobProcessService,
+            leaderboardJobStateService = leaderboardJobStateService,
             contestService = contestService,
             scheduledJobInstrumentation = ScheduledJobInstrumentation(meterRegistry),
             leaderboardJobCreationProperties = LeaderboardJobCreationProperties(maxContestsPerRun = 1),

@@ -14,19 +14,19 @@ import java.time.LocalDateTime
 class LeaderboardJobScheduler(
     private val leaderboardJobRepository: LeaderboardJobRepository,
     private val leaderboardJobProcessService: LeaderboardJobProcessService,
+    private val leaderboardJobStateService: LeaderboardJobStateService,
     private val contestService: ContestServiceExternal,
     private val scheduledJobInstrumentation: ScheduledJobInstrumentation,
     private val leaderboardJobCreationProperties: LeaderboardJobCreationProperties,
 ) {
     private val openStatuses = listOf(JobStatus.CREATED, JobStatus.FAILED)
 
-    @Transactional
     @Scheduled(fixedDelayString = "\${scheduling.tasks.leaderboard.process-jobs.fixed-delay-ms}")
     @SchedulerLock(name = "lockForProcessLeaderboardJob")
     fun processLeaderboardJob() {
         scheduledJobInstrumentation.record(PROCESS_JOB_NAME) {
-            leaderboardJobRepository
-                .findFirstByJobStatusInAndNextRunAtLessThanEqualOrderByNextRunAtAsc(
+            leaderboardJobStateService
+                .claimNextDueJob(
                     jobStatuses = openStatuses,
                     timeLimit = LocalDateTime.now(),
                 )?.let {
