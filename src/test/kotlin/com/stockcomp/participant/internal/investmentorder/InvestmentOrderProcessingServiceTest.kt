@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal.investmentorder
 
+import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.internal.ParticipantService
 import com.stockcomp.symbol.CurrentPriceSymbolDto
 import com.stockcomp.symbol.SymbolServiceExternal
@@ -17,11 +18,13 @@ import java.math.BigDecimal
 class InvestmentOrderProcessingServiceTest {
     private val symbolService = mockk<SymbolServiceExternal>()
     private val participantService = mockk<ParticipantService>()
+    private val contestService = mockk<ContestServiceExternal>()
     private val investmentOrderProcessingTransactions = mockk<InvestmentOrderProcessingTransactions>()
     private val service =
         InvestmentOrderProcessingService(
             symbolService = symbolService,
             participantService = participantService,
+            contestService = contestService,
             investmentOrderProcessingTransactions = investmentOrderProcessingTransactions,
         )
 

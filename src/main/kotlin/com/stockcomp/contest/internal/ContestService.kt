@@ -64,6 +64,14 @@ class ContestService(
 
     fun getContestsAwaitingCompletion(): List<Contest> = contestRepository.findAllByContestStatusIn(listOf(AWAITING_COMPLETION))
 
+    fun requireContestAllowsSignUp(contestId: Long) {
+        requireContestStatus(contestId, setOf(AWAITING_START, RUNNING), "sign up")
+    }
+
+    fun requireContestIsRunning(contestId: Long) {
+        requireContestStatus(contestId, setOf(RUNNING), "trade")
+    }
+
     fun getAllContestsSorted(
         pageNumber: Int,
         pageSize: Int,
@@ -86,6 +94,19 @@ class ContestService(
             "Contest $contestId must be awaiting completion before leaderboard processing"
         }
         return true
+    }
+
+    private fun requireContestStatus(
+        contestId: Long,
+        allowedStatuses: Set<ContestStatus>,
+        action: String,
+    ) {
+        val contest =
+            contestRepository.findByIdForUpdate(contestId)
+                ?: throw NoSuchElementException("Contest with id $contestId does not exist")
+        check(contest.contestStatus in allowedStatuses) {
+            "Contest $contestId must be ${allowedStatuses.joinToString(" or ")} to $action"
+        }
     }
 
     private fun findContestByIdOrThrow(contestId: Long): Contest =

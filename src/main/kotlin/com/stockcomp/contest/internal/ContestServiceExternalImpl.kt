@@ -16,6 +16,14 @@ class ContestServiceExternalImpl(
 
     override fun getContestsAwaitingCompletion(): List<ContestDto> = contestService.getContestsAwaitingCompletion().map { toContestDto(it) }
 
+    override fun requireContestAllowsSignUp(contestId: Long) {
+        contestService.requireContestAllowsSignUp(contestId)
+    }
+
+    override fun requireContestIsRunning(contestId: Long) {
+        contestService.requireContestIsRunning(contestId)
+    }
+
     override fun isCompletedContest(contestId: Long): Boolean = contestService.getContest(contestId).isCompleted()
 
     override fun markContestAsCompleted(contestId: Long) {

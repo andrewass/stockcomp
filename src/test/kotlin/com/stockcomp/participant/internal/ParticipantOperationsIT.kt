@@ -62,6 +62,31 @@ class ParticipantOperationsIT
         }
 
         @Test
+        fun `should allow signup for awaiting or running contests but not stopped contests`() {
+            val user = createUser(userEmail)
+            val contest = createContest("LifecycleContest")
+
+            updateContestStatus(contest.contestId, "STOPPED")
+            val stoppedAvailableContests =
+                mockMvc
+                    .perform(mockMvcGetRequest(url = "$basePath/available-contests", emailClaim = userEmail))
+                    .andExpect(status().isOk)
+                    .andReturn()
+            assertTrue(mapper.readValue<List<ContestDto>>(stoppedAvailableContests.response.contentAsString).isEmpty())
+
+            mockMvc
+                .perform(
+                    mockMvcPostRequest(url = basePath, emailClaim = userEmail)
+                        .content(mapper.writeValueAsString(SignUpParticipantRequest(contest.contestId))),
+                ).andExpect(status().isConflict)
+
+            updateContestStatus(contest.contestId, "RUNNING")
+            val participant = signUpForContest(contest.contestId)
+
+            assertEquals(user.userId, participant.userId)
+        }
+
+        @Test
         fun `should return bad request for invalid sign up request`() {
             createUser(userEmail)
 
@@ -175,13 +200,20 @@ class ParticipantOperationsIT
         }
 
         private fun markContestAsRunning(contestId: Long) {
+            updateContestStatus(contestId, "RUNNING")
+        }
+
+        private fun updateContestStatus(
+            contestId: Long,
+            contestStatus: String,
+        ) {
             mockMvc
                 .perform(
                     mockMvcPatchRequest(url = "/contests/$contestId", role = "ADMIN")
                         .content(
                             mapper.writeValueAsString(
                                 mapOf(
-                                    "contestStatus" to "RUNNING",
+                                    "contestStatus" to contestStatus,
                                 ),
                             ),
                         ),

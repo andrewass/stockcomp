@@ -3,6 +3,8 @@ package com.stockcomp.participant.internal
 import com.stockcomp.common.competitionRanksForSortedValues
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
+import com.stockcomp.contest.ContestStatus.AWAITING_START
+import com.stockcomp.contest.ContestStatus.RUNNING
 import com.stockcomp.participant.ContestParticipantDto
 import com.stockcomp.participant.DetailedParticipantDto
 import com.stockcomp.participant.internal.investment.mapToInvestmentDto
@@ -25,7 +27,7 @@ class ParticipantService(
         userId: Long,
         contestId: Long,
     ): Participant {
-        contestService.getContest(contestId)
+        contestService.requireContestAllowsSignUp(contestId)
         if (participantRepository.existsByUserIdAndContestId(userId, contestId)) {
             throw IllegalStateException("User $userId is already signed up for contest $contestId")
         }
@@ -49,7 +51,10 @@ class ParticipantService(
     fun getNonParticipatingContests(userId: Long): List<ContestDto> =
         contestService
             .getActiveContests()
-            .filter { !participantRepository.existsByUserIdAndContestId(userId, it.contestId) }
+            .filter { contest ->
+                contest.contestStatus in SIGN_UP_ALLOWED_STATUSES &&
+                    !participantRepository.existsByUserIdAndContestId(userId, contest.contestId)
+            }
 
     fun getDetailedParticipantsForSymbol(
         userId: Long,
@@ -167,4 +172,8 @@ class ParticipantService(
     fun getParticipantByIdLocked(participantId: Long): Participant = participantRepository.findByIdLocked(participantId)
 
     fun saveParticipant(participant: Participant): Participant = participantRepository.save(participant)
+
+    private companion object {
+        val SIGN_UP_ALLOWED_STATUSES = setOf(AWAITING_START, RUNNING)
+    }
 }

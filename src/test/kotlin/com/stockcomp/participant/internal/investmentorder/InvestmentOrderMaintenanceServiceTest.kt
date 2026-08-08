@@ -30,7 +30,7 @@ class InvestmentOrderMaintenanceServiceTest {
 
     @Test
     fun `should process investment orders for active contest participants`() {
-        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
         every { participantService.getAllByContest(CONTEST_ID) } returns
             listOf(
                 participant(FIRST_PARTICIPANT_ID),
@@ -51,7 +51,7 @@ class InvestmentOrderMaintenanceServiceTest {
 
     @Test
     fun `should return skipped when no participants are processed`() {
-        every { contestService.getActiveContests() } returns emptyList()
+        every { contestService.getRunningContests() } returns emptyList()
 
         val result = service.maintainInvestmentOrders()
 
@@ -63,7 +63,7 @@ class InvestmentOrderMaintenanceServiceTest {
 
     @Test
     fun `should continue processing participants after order processing fails`() {
-        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
         every { participantService.getAllByContest(CONTEST_ID) } returns
             listOf(
                 participant(FIRST_PARTICIPANT_ID),
@@ -87,7 +87,7 @@ class InvestmentOrderMaintenanceServiceTest {
 
     @Test
     fun `should return failure when all participant order processing fails`() {
-        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
         every { participantService.getAllByContest(CONTEST_ID) } returns
             listOf(
                 participant(FIRST_PARTICIPANT_ID),
@@ -117,7 +117,7 @@ class InvestmentOrderMaintenanceServiceTest {
                 contestService = contestService,
                 investmentOrderMaintenanceProperties = InvestmentOrderMaintenanceProperties(maxParticipantsPerRun = 2),
             )
-        every { contestService.getActiveContests() } returns listOf(contest(CONTEST_ID))
+        every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
         every { participantService.getAllByContest(CONTEST_ID) } returns
             listOf(
                 participant(FIRST_PARTICIPANT_ID),

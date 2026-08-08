@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal.investment
 
+import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
@@ -51,6 +52,7 @@ class InvestmentProcessingService(
 @Service
 class InvestmentProcessingTransactions(
     private val participantRepository: ParticipantRepository,
+    private val contestService: ContestServiceExternal,
 ) {
     @Transactional(readOnly = true)
     fun getInvestmentSymbols(participantId: Long): Set<String> =
@@ -66,6 +68,7 @@ class InvestmentProcessingTransactions(
         pricesBySymbol: Map<String, BigDecimal>,
     ) {
         val participant = participantRepository.findByIdLocked(participantId)
+        contestService.requireContestIsRunning(participant.contestId)
         participant
             .investments()
             .forEach { investment ->

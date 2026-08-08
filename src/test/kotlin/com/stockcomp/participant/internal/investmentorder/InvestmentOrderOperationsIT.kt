@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.stockcomp.configuration.ControllerIntegrationTest
 import com.stockcomp.configuration.mockMvcDeleteRequest
 import com.stockcomp.configuration.mockMvcGetRequest
+import com.stockcomp.configuration.mockMvcPatchRequest
 import com.stockcomp.configuration.mockMvcPostRequest
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.CreateContestRequest
@@ -43,6 +44,7 @@ class InvestmentOrderOperationsIT
             createUser(userEmail)
             val contest = createContest("OrdersContest")
             val participant = signUpForContest(contest.contestId)
+            updateContestStatus(contest.contestId, "RUNNING")
             placeInvestmentOrder(participant.participantId)
 
             val result =
@@ -63,6 +65,7 @@ class InvestmentOrderOperationsIT
             createUser(userEmail)
             val contest = createContest("DeleteOrdersContest")
             val participant = signUpForContest(contest.contestId)
+            updateContestStatus(contest.contestId, "RUNNING")
             placeInvestmentOrder(participant.participantId)
 
             val persistedParticipant =
@@ -114,7 +117,30 @@ class InvestmentOrderOperationsIT
                 ).andExpect(status().isNotFound)
         }
 
-        private fun placeInvestmentOrder(participantId: Long) {
+        @Test
+        fun `should pause orders without cancelling them and resume trading when contest restarts`() {
+            createUser(userEmail)
+            val contest = createContest("PausedOrdersContest")
+            val participant = signUpForContest(contest.contestId)
+            updateContestStatus(contest.contestId, "RUNNING")
+            placeInvestmentOrder(participant.participantId)
+
+            updateContestStatus(contest.contestId, "STOPPED")
+            placeInvestmentOrder(participant.participantId, status().isConflict)
+
+            val pausedOrders = getActiveOrders(contest.contestId)
+            assertEquals(1, pausedOrders.size)
+
+            updateContestStatus(contest.contestId, "RUNNING")
+            placeInvestmentOrder(participant.participantId)
+
+            assertEquals(2, getActiveOrders(contest.contestId).size)
+        }
+
+        private fun placeInvestmentOrder(
+            participantId: Long,
+            expectedStatus: org.springframework.test.web.servlet.ResultMatcher = status().isCreated,
+        ) {
             mockMvc
                 .perform(
                     mockMvcPostRequest(url = basePath, emailClaim = userEmail)
@@ -131,7 +157,18 @@ class InvestmentOrderOperationsIT
                                 ),
                             ),
                         ),
-                ).andExpect(status().isCreated)
+                ).andExpect(expectedStatus)
+        }
+
+        private fun getActiveOrders(contestId: Long): List<InvestmentOrderDto> {
+            val result =
+                mockMvc
+                    .perform(
+                        mockMvcGetRequest("$basePath/active", emailClaim = userEmail)
+                            .queryParam("contestId", contestId.toString()),
+                    ).andExpect(status().isOk)
+                    .andReturn()
+            return mapper.readValue(result.response.contentAsString)
         }
 
         private fun signUpForContest(contestId: Long): UserParticipantDto {
@@ -156,6 +193,17 @@ class InvestmentOrderOperationsIT
                     .andReturn()
 
             return mapper.readValue(result.response.contentAsString)
+        }
+
+        private fun updateContestStatus(
+            contestId: Long,
+            contestStatus: String,
+        ) {
+            mockMvc
+                .perform(
+                    mockMvcPatchRequest("/contests/$contestId", "ADMIN")
+                        .content(mapper.writeValueAsString(mapOf("contestStatus" to contestStatus))),
+                ).andExpect(status().isOk)
         }
 
         private fun createUser(email: String): UserDto {

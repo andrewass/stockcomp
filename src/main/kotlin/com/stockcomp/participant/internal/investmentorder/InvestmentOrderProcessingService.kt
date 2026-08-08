@@ -1,5 +1,6 @@
 package com.stockcomp.participant.internal.investmentorder
 
+import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.participant.TransactionType
 import com.stockcomp.participant.internal.ParticipantRepository
 import com.stockcomp.participant.internal.ParticipantService
@@ -13,6 +14,7 @@ import java.time.LocalDateTime
 class InvestmentOrderProcessingService(
     private val symbolService: SymbolServiceExternal,
     private val participantService: ParticipantService,
+    private val contestService: ContestServiceExternal,
     private val investmentOrderProcessingTransactions: InvestmentOrderProcessingTransactions,
 ) {
     fun processInvestmentOrders(participantId: Long) {
@@ -40,6 +42,7 @@ class InvestmentOrderProcessingService(
         transactionType: TransactionType,
     ) {
         val participant = participantService.getParticipantByIdAndUserIdLocked(participantId, userId)
+        contestService.requireContestIsRunning(participant.contestId)
         InvestmentOrder(
             participant = participant,
             currency = currency,
@@ -107,6 +110,7 @@ class InvestmentOrderProcessingService(
 @Service
 class InvestmentOrderProcessingTransactions(
     private val participantRepository: ParticipantRepository,
+    private val contestService: ContestServiceExternal,
 ) {
     @Transactional(readOnly = true)
     fun getActiveInvestmentOrderSymbols(participantId: Long): Set<String> =
@@ -122,6 +126,7 @@ class InvestmentOrderProcessingTransactions(
         pricesBySymbol: Map<String, BigDecimal>,
     ) {
         val participant = participantRepository.findByIdLocked(participantId)
+        contestService.requireContestIsRunning(participant.contestId)
         participant
             .getActiveInvestmentOrders()
             .forEach { order ->

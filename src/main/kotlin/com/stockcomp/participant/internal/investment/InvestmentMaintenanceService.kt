@@ -24,7 +24,7 @@ class InvestmentMaintenanceService(
             val maxParticipantsPerRun = investmentMaintenanceProperties.maxParticipantsPerRun
             var attemptedItems = 0
 
-            contestService.getActiveContests().forEach contestLoop@{ contest ->
+            contestService.getRunningContests().forEach contestLoop@{ contest ->
                 val participants = participantService.getAllByContest(contest.contestId)
                 if (attemptedItems >= maxParticipantsPerRun) {
                     skippedItems += participants.size

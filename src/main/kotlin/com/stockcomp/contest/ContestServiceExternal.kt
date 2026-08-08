@@ -9,6 +9,10 @@ interface ContestServiceExternal {
 
     fun getContestsAwaitingCompletion(): List<ContestDto>
 
+    fun requireContestAllowsSignUp(contestId: Long)
+
+    fun requireContestIsRunning(contestId: Long)
+
     fun isCompletedContest(contestId: Long): Boolean
 
     fun markContestAsCompleted(contestId: Long)
