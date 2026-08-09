@@ -5,8 +5,7 @@ import com.stockcomp.configuration.InvestmentOrderMaintenanceProperties
 import com.stockcomp.contest.ContestDto
 import com.stockcomp.contest.ContestServiceExternal
 import com.stockcomp.contest.ContestStatus
-import com.stockcomp.participant.internal.Participant
-import com.stockcomp.participant.internal.ParticipantService
+import com.stockcomp.participant.internal.ParticipantMaintenanceBatchService
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -18,12 +17,12 @@ import java.time.LocalDateTime
 
 class InvestmentOrderMaintenanceServiceTest {
     private val investmentOrderProcessingService = mockk<InvestmentOrderProcessingService>()
-    private val participantService = mockk<ParticipantService>()
+    private val participantMaintenanceBatchService = mockk<ParticipantMaintenanceBatchService>()
     private val contestService = mockk<ContestServiceExternal>()
     private val service =
         InvestmentOrderMaintenanceService(
             investmentOrderProcessingService = investmentOrderProcessingService,
-            participantService = participantService,
+            participantMaintenanceBatchService = participantMaintenanceBatchService,
             contestService = contestService,
             investmentOrderMaintenanceProperties = InvestmentOrderMaintenanceProperties(),
         )
@@ -31,11 +30,9 @@ class InvestmentOrderMaintenanceServiceTest {
     @Test
     fun `should process investment orders for active contest participants`() {
         every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
-        every { participantService.getAllByContest(CONTEST_ID) } returns
-            listOf(
-                participant(FIRST_PARTICIPANT_ID),
-                participant(SECOND_PARTICIPANT_ID),
-            )
+        every { participantMaintenanceBatchService.getNextParticipantIds(any(), any(), any()) } returns
+            listOf(FIRST_PARTICIPANT_ID, SECOND_PARTICIPANT_ID)
+        every { participantMaintenanceBatchService.advanceCursor(any(), any()) } just Runs
         every { investmentOrderProcessingService.processInvestmentOrders(any()) } just Runs
 
         val result = service.maintainInvestmentOrders()
@@ -52,6 +49,7 @@ class InvestmentOrderMaintenanceServiceTest {
     @Test
     fun `should return skipped when no participants are processed`() {
         every { contestService.getRunningContests() } returns emptyList()
+        every { participantMaintenanceBatchService.getNextParticipantIds(any(), any(), any()) } returns emptyList()
 
         val result = service.maintainInvestmentOrders()
 
@@ -64,11 +62,9 @@ class InvestmentOrderMaintenanceServiceTest {
     @Test
     fun `should continue processing participants after order processing fails`() {
         every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
-        every { participantService.getAllByContest(CONTEST_ID) } returns
-            listOf(
-                participant(FIRST_PARTICIPANT_ID),
-                participant(SECOND_PARTICIPANT_ID),
-            )
+        every { participantMaintenanceBatchService.getNextParticipantIds(any(), any(), any()) } returns
+            listOf(FIRST_PARTICIPANT_ID, SECOND_PARTICIPANT_ID)
+        every { participantMaintenanceBatchService.advanceCursor(any(), any()) } just Runs
         every {
             investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
         } throws IllegalStateException("FastFinance failed")
@@ -88,11 +84,9 @@ class InvestmentOrderMaintenanceServiceTest {
     @Test
     fun `should return failure when all participant order processing fails`() {
         every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
-        every { participantService.getAllByContest(CONTEST_ID) } returns
-            listOf(
-                participant(FIRST_PARTICIPANT_ID),
-                participant(SECOND_PARTICIPANT_ID),
-            )
+        every { participantMaintenanceBatchService.getNextParticipantIds(any(), any(), any()) } returns
+            listOf(FIRST_PARTICIPANT_ID, SECOND_PARTICIPANT_ID)
+        every { participantMaintenanceBatchService.advanceCursor(any(), any()) } just Runs
         every {
             investmentOrderProcessingService.processInvestmentOrders(any())
         } throws IllegalStateException("FastFinance failed")
@@ -109,21 +103,18 @@ class InvestmentOrderMaintenanceServiceTest {
     }
 
     @Test
-    fun `should stop processing investment orders when participant batch limit is reached`() {
+    fun `should process only the participant IDs selected for this run`() {
         val limitedService =
             InvestmentOrderMaintenanceService(
                 investmentOrderProcessingService = investmentOrderProcessingService,
-                participantService = participantService,
+                participantMaintenanceBatchService = participantMaintenanceBatchService,
                 contestService = contestService,
                 investmentOrderMaintenanceProperties = InvestmentOrderMaintenanceProperties(maxParticipantsPerRun = 2),
             )
         every { contestService.getRunningContests() } returns listOf(contest(CONTEST_ID))
-        every { participantService.getAllByContest(CONTEST_ID) } returns
-            listOf(
-                participant(FIRST_PARTICIPANT_ID),
-                participant(SECOND_PARTICIPANT_ID),
-                participant(THIRD_PARTICIPANT_ID),
-            )
+        every { participantMaintenanceBatchService.getNextParticipantIds(any(), any(), any()) } returns
+            listOf(FIRST_PARTICIPANT_ID, SECOND_PARTICIPANT_ID)
+        every { participantMaintenanceBatchService.advanceCursor(any(), any()) } just Runs
         every {
             investmentOrderProcessingService.processInvestmentOrders(FIRST_PARTICIPANT_ID)
         } throws IllegalStateException("FastFinance failed")
@@ -134,18 +125,11 @@ class InvestmentOrderMaintenanceServiceTest {
         assertEquals(ScheduledJobRunOutcome.PARTIAL_FAILURE, result.outcome)
         assertEquals(1, result.processedItems)
         assertEquals(1, result.failedItems)
-        assertEquals(1, result.skippedItems)
+        assertEquals(0, result.skippedItems)
         verify(exactly = 0) {
             investmentOrderProcessingService.processInvestmentOrders(THIRD_PARTICIPANT_ID)
         }
     }
-
-    private fun participant(participantId: Long) =
-        Participant(
-            participantId = participantId,
-            userId = participantId,
-            contestId = CONTEST_ID,
-        )
 
     private fun contest(contestId: Long) =
         ContestDto(

@@ -26,6 +26,36 @@ interface ParticipantRepository : JpaRepository<Participant, Long> {
 
     @Query(
         """
+        SELECT p.participantId
+        FROM Participant p
+        WHERE p.contestId IN :contestIds
+        AND p.participantId > :afterParticipantId
+        ORDER BY p.participantId ASC
+        """,
+    )
+    fun findParticipantIdsAfter(
+        contestIds: List<Long>,
+        afterParticipantId: Long,
+        pageable: Pageable,
+    ): List<Long>
+
+    @Query(
+        """
+        SELECT p.participantId
+        FROM Participant p
+        WHERE p.contestId IN :contestIds
+        AND p.participantId <= :upToParticipantId
+        ORDER BY p.participantId ASC
+        """,
+    )
+    fun findParticipantIdsUpTo(
+        contestIds: List<Long>,
+        upToParticipantId: Long,
+        pageable: Pageable,
+    ): List<Long>
+
+    @Query(
+        """
         SELECT p
         FROM Participant p
         WHERE p.contestId = :contestId

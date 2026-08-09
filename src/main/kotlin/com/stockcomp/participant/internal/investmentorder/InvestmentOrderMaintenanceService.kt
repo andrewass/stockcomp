@@ -3,14 +3,14 @@ package com.stockcomp.participant.internal.investmentorder
 import com.stockcomp.common.ScheduledJobRunResult
 import com.stockcomp.configuration.InvestmentOrderMaintenanceProperties
 import com.stockcomp.contest.ContestServiceExternal
-import com.stockcomp.participant.internal.ParticipantService
+import com.stockcomp.participant.internal.ParticipantMaintenanceBatchService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class InvestmentOrderMaintenanceService(
     private val investmentOrderProcessingService: InvestmentOrderProcessingService,
-    private val participantService: ParticipantService,
+    private val participantMaintenanceBatchService: ParticipantMaintenanceBatchService,
     private val contestService: ContestServiceExternal,
     private val investmentOrderMaintenanceProperties: InvestmentOrderMaintenanceProperties,
 ) {
@@ -22,40 +22,28 @@ class InvestmentOrderMaintenanceService(
         var skippedItems = 0
         return try {
             val maxParticipantsPerRun = investmentOrderMaintenanceProperties.maxParticipantsPerRun
-            var attemptedItems = 0
+            val participantIds =
+                participantMaintenanceBatchService.getNextParticipantIds(
+                    jobName = JOB_NAME,
+                    contestIds = contestService.getRunningContests().map { it.contestId },
+                    maxParticipants = maxParticipantsPerRun,
+                )
 
-            contestService.getRunningContests().forEach contestLoop@{ contest ->
-                val participants = participantService.getAllByContest(contest.contestId)
-                if (attemptedItems >= maxParticipantsPerRun) {
-                    skippedItems += participants.size
-                    return@contestLoop
-                }
-                participants.forEachIndexed { index, participant ->
-                    if (attemptedItems >= maxParticipantsPerRun) {
-                        skippedItems += participants.size - index
-                        return@contestLoop
-                    }
-
-                    attemptedItems += 1
-                    try {
-                        val participantId =
-                            requireNotNull(participant.participantId) {
-                                "Participant id is null while processing investment orders for contest ${contest.contestId}"
-                            }
-                        investmentOrderProcessingService.processInvestmentOrders(participantId)
-                        processedItems += 1
-                    } catch (e: Exception) {
-                        failedItems += 1
-                        logger.error(
-                            "scheduled_job_item_failure job={} action=process_investment_orders contestId={} participantId={}",
-                            JOB_NAME,
-                            contest.contestId,
-                            participant.participantId,
-                            e,
-                        )
-                    }
+            participantIds.forEach { participantId ->
+                try {
+                    investmentOrderProcessingService.processInvestmentOrders(participantId)
+                    processedItems += 1
+                } catch (e: Exception) {
+                    failedItems += 1
+                    logger.error(
+                        "scheduled_job_item_failure job={} action=process_investment_orders participantId={}",
+                        JOB_NAME,
+                        participantId,
+                        e,
+                    )
                 }
             }
+            participantIds.lastOrNull()?.let { participantMaintenanceBatchService.advanceCursor(JOB_NAME, it) }
             ScheduledJobRunResult.fromItemCounts(
                 processedItems = processedItems,
                 failedItems = failedItems,
