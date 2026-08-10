@@ -1,5 +1,6 @@
 package com.stockcomp.user.internal
 
+import com.stockcomp.user.ExternalIdentity
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,25 +11,29 @@ class UserIdentityService(
     private val userCreationService: UserCreationService,
 ) {
     @Transactional
-    fun findOrCreateUserBySubject(userSubject: String): User {
-        val existingBySubject = userRepository.findByUserSubject(userSubject)
-        if (existingBySubject != null) {
-            return existingBySubject
-        }
+    fun findOrCreateUserByExternalIdentity(externalIdentity: ExternalIdentity): User {
+        userRepository
+            .findByExternalIdentity(externalIdentity.provider, externalIdentity.externalSubjectId)
+            ?.let { return it }
 
-        val existingByEmail = userRepository.findByEmail(userSubject)
+        val verifiedEmail =
+            requireNotNull(externalIdentity.verifiedEmail) {
+                "A verified email claim is required when creating or linking an account"
+            }
+        // Supports the staged migration of existing accounts whose only external mapping is their email.
+        val existingByEmail = userRepository.findByEmail(verifiedEmail)
         if (existingByEmail != null) {
-            return ensureUserSubjectMapping(existingByEmail, userSubject)
+            return ensureUserSubjectMapping(existingByEmail, externalIdentity)
         }
 
         val createdUser =
             try {
-                userCreationService.createUser(userSubject)
+                userCreationService.createUser(verifiedEmail)
             } catch (_: DataIntegrityViolationException) {
-                userRepository.findByEmail(userSubject)
-                    ?: throw IllegalStateException("Unable to resolve user for subject $userSubject after constraint violation")
+                userRepository.findByEmail(verifiedEmail)
+                    ?: throw IllegalStateException("Unable to resolve user for verified email $verifiedEmail after constraint violation")
             }
-        return ensureUserSubjectMapping(createdUser, userSubject)
+        return ensureUserSubjectMapping(createdUser, externalIdentity)
     }
 
     fun findUserByUsername(username: String): User =
@@ -44,11 +49,11 @@ class UserIdentityService(
 
     private fun ensureUserSubjectMapping(
         user: User,
-        userSubject: String,
+        externalIdentity: ExternalIdentity,
     ): User {
         val alreadyMapped =
             user.userSubjects.any {
-                it.externalSubjectId == userSubject && it.subjectProvider == SubjectProvider.GOOGLE
+                it.externalSubjectId == externalIdentity.externalSubjectId && it.subjectProvider == externalIdentity.provider
             }
         if (alreadyMapped) {
             return user
@@ -56,10 +61,10 @@ class UserIdentityService(
 
         user.addUserSubject(
             UserSubject(
-                subjectProvider = SubjectProvider.GOOGLE,
+                subjectProvider = externalIdentity.provider,
                 user = user,
                 isValid = true,
-                externalSubjectId = userSubject,
+                externalSubjectId = externalIdentity.externalSubjectId,
             ),
         )
         return userRepository.save(user)

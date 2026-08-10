@@ -1,5 +1,6 @@
 package com.stockcomp.user.internal
 
+import com.stockcomp.user.IdentityProvider
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -24,9 +25,13 @@ interface UserRepository : JpaRepository<User, Long> {
         """
         SELECT US.user
         FROM UserSubject US
-        WHERE US.externalSubjectId = :userSubject
+        WHERE US.subjectProvider = :provider
+        AND US.externalSubjectId = :externalSubjectId
         AND US.isValid = true
         """,
     )
-    fun findByUserSubject(userSubject: String): User?
+    fun findByExternalIdentity(
+        provider: IdentityProvider,
+        externalSubjectId: String,
+    ): User?
 }

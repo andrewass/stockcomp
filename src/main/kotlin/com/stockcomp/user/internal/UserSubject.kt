@@ -1,6 +1,7 @@
 package com.stockcomp.user.internal
 
 import com.stockcomp.common.BaseEntity
+import com.stockcomp.user.IdentityProvider
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -20,7 +21,7 @@ class UserSubject(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val userSubjectId: Long? = null,
     @Enumerated(EnumType.STRING)
-    val subjectProvider: SubjectProvider,
+    val subjectProvider: IdentityProvider,
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     val user: User,

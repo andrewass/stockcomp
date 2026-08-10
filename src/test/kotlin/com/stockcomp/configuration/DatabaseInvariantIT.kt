@@ -53,6 +53,17 @@ class DatabaseInvariantIT
         }
 
         @Test
+        fun `should reject an active external identity linked to multiple users`() {
+            val firstUserId = insertUser("first-identity@mail.com")
+            val secondUserId = insertUser("second-identity@mail.com")
+            insertUserSubject(firstUserId, "GOOGLE", "google-subject")
+
+            assertThrows(DataIntegrityViolationException::class.java) {
+                insertUserSubject(secondUserId, "GOOGLE", "google-subject")
+            }
+        }
+
+        @Test
         fun `should include indexes for foreign keys and common scheduler lookups`() {
             assertIndex("uq_t_participant_user_contest", "(user_id, contest_id)")
             assertIndex("idx_t_participant_contest_rank", "(contest_id, participant_rank)")
@@ -67,7 +78,7 @@ class DatabaseInvariantIT
             assertIndex("idx_t_investment_order_participant_status_symbol", "(participant_id, order_status, symbol)")
             assertIndex("idx_t_refresh_token_user_id", "(user_id)")
             assertIndex("uk_user_subject", "(user_id, subject_provider, external_subject_id)")
-            assertIndex("idx_t_user_subject_external_subject_valid", "(external_subject_id, is_valid)")
+            assertIndex("uq_t_user_subject_active_external_identity", "(subject_provider, external_subject_id)")
             assertIndex("idx_t_leaderboard_job_status_next_run_at", "(job_status, next_run_at)")
             assertIndex("idx_t_leaderboard_job_contest_id", "(contest_id)")
         }
@@ -117,6 +128,30 @@ class DatabaseInvariantIT
                 Long::class.java,
                 contestName,
             )!!
+
+        private fun insertUserSubject(
+            userId: Long,
+            provider: String,
+            externalSubjectId: String,
+        ) {
+            jdbcTemplate.update(
+                """
+                insert into t_user_subject (
+                    user_id,
+                    subject_provider,
+                    external_subject_id,
+                    is_valid,
+                    date_created,
+                    date_updated,
+                    version
+                )
+                values (?, ?, ?, true, current_timestamp, current_timestamp, 0)
+                """.trimIndent(),
+                userId,
+                provider,
+                externalSubjectId,
+            )
+        }
 
         private fun insertParticipant(
             userId: Long,

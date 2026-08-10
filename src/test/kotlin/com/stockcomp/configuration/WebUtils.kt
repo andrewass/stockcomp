@@ -58,7 +58,12 @@ private fun getJwtRequestPostProcessor(
 ): JwtRequestPostProcessor {
     val postProcessor = SecurityMockMvcRequestPostProcessors.jwt()
     emailClaim?.also {
-        postProcessor.jwt { jwt -> jwt.claim("email", emailClaim) }
+        postProcessor.jwt { jwt ->
+            jwt
+                .claim("sub", "google-subject-$emailClaim")
+                .claim("email", emailClaim)
+                .claim("email_verified", true)
+        }
     }
     val authorities = mutableListOf(SimpleGrantedAuthority(AccountStatusAuthority.ACTIVE))
     if (role == "ADMIN") authorities += SimpleGrantedAuthority("ROLE_ADMIN")

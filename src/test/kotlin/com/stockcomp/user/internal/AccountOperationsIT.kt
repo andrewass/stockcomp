@@ -176,8 +176,12 @@ class AccountOperationsIT
                             .patch("/account/status")
                             .with(
                                 jwt()
-                                    .jwt { jwt -> jwt.claim("email", email) }
-                                    .authorities(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE)),
+                                    .jwt { jwt ->
+                                        jwt
+                                            .claim("sub", "google-subject-$email")
+                                            .claim("email", email)
+                                            .claim("email_verified", true)
+                                    }.authorities(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE)),
                             ).contentType(MediaType.APPLICATION_JSON)
                             .content(
                                 mapper.writeValueAsString(
@@ -196,8 +200,12 @@ class AccountOperationsIT
                         .get("/account")
                         .with(
                             jwt()
-                                .jwt { jwt -> jwt.claim("email", email) }
-                                .authorities(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE)),
+                                .jwt { jwt ->
+                                    jwt
+                                        .claim("sub", "google-subject-$email")
+                                        .claim("email", email)
+                                        .claim("email_verified", true)
+                                }.authorities(SimpleGrantedAuthority(AccountStatusAuthority.INACTIVE)),
                         ),
                 ).andExpect(status().isForbidden)
         }

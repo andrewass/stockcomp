@@ -1,5 +1,6 @@
 package com.stockcomp.user.internal
 
+import com.stockcomp.user.ExternalIdentity
 import com.stockcomp.user.UserAuthenticationDetails
 import com.stockcomp.user.UserDetailsDto
 import com.stockcomp.user.UserServiceExternal
@@ -11,18 +12,18 @@ class UserServiceExternalImpl(
     private val userIdentityService: UserIdentityService,
 ) : UserServiceExternal {
     @Transactional
-    override fun getUserIdBySubject(userSubject: String): Long =
-        userIdentityService.findOrCreateUserBySubject(userSubject).userId
-            ?: throw IllegalArgumentException("No user found for subject $userSubject")
+    override fun getUserIdByExternalIdentity(externalIdentity: ExternalIdentity): Long =
+        userIdentityService.findOrCreateUserByExternalIdentity(externalIdentity).userId
+            ?: throw IllegalArgumentException("No user found for external identity $externalIdentity")
 
     override fun getUserIdByUsername(username: String): Long =
         userIdentityService.findUserByUsername(username).userId
             ?: throw IllegalArgumentException("No user found for username $username")
 
     @Transactional
-    override fun getUserAuthenticationDetails(userSubject: String): UserAuthenticationDetails =
+    override fun getUserAuthenticationDetails(externalIdentity: ExternalIdentity): UserAuthenticationDetails =
         userIdentityService
-            .findOrCreateUserBySubject(userSubject)
+            .findOrCreateUserByExternalIdentity(externalIdentity)
             .let { user ->
                 UserAuthenticationDetails(
                     role = user.userRole,

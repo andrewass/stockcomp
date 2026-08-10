@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class JwtRoleAuthoritiesConverter(
-    private val jwtSubjectResolver: JwtSubjectResolver,
+    private val jwtExternalIdentityResolver: JwtExternalIdentityResolver,
     private val userService: UserServiceExternal,
 ) : Converter<Jwt, Collection<GrantedAuthority>> {
     override fun convert(source: Jwt): Collection<GrantedAuthority> {
-        val subject = jwtSubjectResolver.resolveSubject(source)
-        val authenticationDetails = userService.getUserAuthenticationDetails(subject)
+        val externalIdentity = jwtExternalIdentityResolver.resolve(source)
+        val authenticationDetails = userService.getUserAuthenticationDetails(externalIdentity)
         return when (authenticationDetails.status) {
             UserStatus.ACTIVE -> {
                 listOf(

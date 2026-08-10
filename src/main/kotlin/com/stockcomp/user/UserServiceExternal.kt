@@ -1,11 +1,11 @@
 package com.stockcomp.user
 
 interface UserServiceExternal {
-    fun getUserIdBySubject(userSubject: String): Long
+    fun getUserIdByExternalIdentity(externalIdentity: ExternalIdentity): Long
 
     fun getUserIdByUsername(username: String): Long
 
-    fun getUserAuthenticationDetails(userSubject: String): UserAuthenticationDetails
+    fun getUserAuthenticationDetails(externalIdentity: ExternalIdentity): UserAuthenticationDetails
 
     fun getUserDetails(userIds: List<Long>): List<UserDetailsDto>
 }
