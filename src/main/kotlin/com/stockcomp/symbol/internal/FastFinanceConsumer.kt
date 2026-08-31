@@ -1,7 +1,7 @@
 package com.stockcomp.symbol.internal
 
 import com.stockcomp.symbol.CurrentPriceSymbolDto
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -9,22 +9,17 @@ import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.net.URI
-import java.time.Duration
 
 @Component("fastfinance.quote.consumer")
 class FastFinanceConsumer(
-    private val webClient: WebClient,
-    @param:Value("\${fastfinance.base.url}") private val baseUrl: String,
-    @param:Value("\${fastfinance.request-timeout:5s}") private val requestTimeout: Duration,
-    @param:Value("\${fastfinance.retry.max-attempts:2}") private val retryMaxAttempts: Long,
-    @param:Value("\${fastfinance.retry.backoff:200ms}") private val retryBackoff: Duration,
+    @param:Qualifier("fastfinanceWebClient") private val webClient: WebClient,
+    private val properties: FastFinanceProperties,
 ) : QuoteConsumer {
     override fun getCurrentPrice(symbol: String): CurrentPriceSymbolDto =
         requireNotNull(
             webClient
                 .get()
-                .uri(URI("$baseUrl/price/current-price/$symbol"))
+                .uri("/price/current-price/{symbol}", symbol)
                 .retrieve()
                 .bodyToMono<CurrentPriceSymbolResponse>()
                 .withFastFinanceHandling("current price request for symbol=$symbol")
@@ -36,7 +31,7 @@ class FastFinanceConsumer(
         requireNotNull(
             webClient
                 .post()
-                .uri(URI("$baseUrl/price/symbols"))
+                .uri("/price/symbols")
                 .bodyValue(TrendingSymbolsRequest(symbols))
                 .retrieve()
                 .bodyToMono<List<CurrentPriceSymbolResponse>>()
@@ -46,8 +41,7 @@ class FastFinanceConsumer(
             .map { it.toCurrentPriceSymbolDto() }
 
     private fun <T : Any> Mono<T>.withFastFinanceHandling(operation: String): Mono<T> =
-        timeout(requestTimeout)
-            .retryWhen(Retry.backoff(retryMaxAttempts, retryBackoff))
+        retryWhen(Retry.backoff(properties.retry.maxRetries, properties.retry.backoff))
             .onErrorMap { cause ->
                 cause as? FastFinanceClientException ?: FastFinanceClientException("FastFinance $operation failed", cause)
             }

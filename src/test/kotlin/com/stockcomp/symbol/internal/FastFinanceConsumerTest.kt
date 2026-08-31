@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import java.math.BigDecimal
+import java.net.URI
 import java.time.Duration
 
 class FastFinanceConsumerTest {
@@ -17,6 +18,7 @@ class FastFinanceConsumerTest {
         val webClient =
             WebClient
                 .builder()
+                .baseUrl("http://fastfinance.test")
                 .exchangeFunction { request ->
                     assertEquals("/price/current-price/AAPL", request.url().path)
 
@@ -40,10 +42,17 @@ class FastFinanceConsumerTest {
         val consumer =
             FastFinanceConsumer(
                 webClient = webClient,
-                baseUrl = "http://fastfinance.test",
-                requestTimeout = Duration.ofSeconds(5),
-                retryMaxAttempts = 0,
-                retryBackoff = Duration.ofMillis(1),
+                properties =
+                    FastFinanceProperties(
+                        baseUrl = URI("http://fastfinance.test"),
+                        connectTimeout = Duration.ofSeconds(1),
+                        responseTimeout = Duration.ofSeconds(5),
+                        retry =
+                            FastFinanceProperties.RetryProperties(
+                                maxRetries = 0,
+                                backoff = Duration.ofMillis(1),
+                            ),
+                    ),
             )
 
         val currentPrice = consumer.getCurrentPrice("AAPL")
