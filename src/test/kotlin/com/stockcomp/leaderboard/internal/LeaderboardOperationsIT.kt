@@ -25,7 +25,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.Instant
 import java.util.UUID
 
 @ControllerIntegrationTest
@@ -227,7 +228,7 @@ class LeaderboardOperationsIT
                 """
                 {
                   "contestName": "$contestName",
-                  "startTime": "${LocalDateTime.now().plusDays(2)}",
+                  "startTime": "${Instant.now().plus(Duration.ofDays(2))}",
                   "durationDays": 7
                 }
                 """.trimIndent()

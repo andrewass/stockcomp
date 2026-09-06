@@ -21,8 +21,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.Clock
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.Duration
+import java.time.Instant
 
 @ControllerIntegrationTest
 class ContestOperationsIT
@@ -36,7 +36,7 @@ class ContestOperationsIT
         private lateinit var clock: Clock
 
         private val basePath = "/contests"
-        private val contestStartTime = LocalDateTime.now()
+        private val contestStartTime = Instant.now()
         private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
         @Test
@@ -56,7 +56,7 @@ class ContestOperationsIT
             val contest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
             assertEquals("TestContest", contest.contestName)
             assertEquals(contestStartTime, contest.startTime)
-            assertEquals(contestStartTime.plusDays(30), contest.endTime)
+            assertEquals(contestStartTime.plus(Duration.ofDays(30)), contest.endTime)
             assertEquals(ContestStatus.AWAITING_START, contest.contestStatus)
         }
 
@@ -176,10 +176,10 @@ class ContestOperationsIT
 
         @Test
         fun `should update start time and preserve contest duration before contest starts`() {
-            val initialStart = LocalDateTime.now().plusDays(7)
+            val initialStart = Instant.now().plus(Duration.ofDays(7))
             val durationDays = 12L
             val contest = contestService.createContest("FutureContest", initialStart, durationDays)
-            val updatedStart = initialStart.plusDays(5)
+            val updatedStart = initialStart.plus(Duration.ofDays(5))
 
             val result =
                 mockMvc
@@ -197,12 +197,12 @@ class ContestOperationsIT
 
             val updatedContest = mapper.readValue(result.response.contentAsString, ContestDto::class.java)
             assertEquals(updatedStart, updatedContest.startTime)
-            assertEquals(updatedStart.plusDays(durationDays), updatedContest.endTime)
+            assertEquals(updatedStart.plus(Duration.ofDays(durationDays)), updatedContest.endTime)
         }
 
         @Test
         fun `should reject start time update when contest status is not awaiting start`() {
-            val contest = contestService.createContest("StartedContest", LocalDateTime.now().plusDays(5), 10L)
+            val contest = contestService.createContest("StartedContest", Instant.now().plus(Duration.ofDays(5)), 10L)
             val contestId = contest.contestId!!
             contestService.updateContest(
                 contestId = contestId,
@@ -218,7 +218,7 @@ class ContestOperationsIT
                             .content(
                                 mapper.writeValueAsString(
                                     UpdateContestRequest(
-                                        startTime = LocalDateTime.now().plusDays(2),
+                                        startTime = Instant.now().plus(Duration.ofDays(2)),
                                     ),
                                 ),
                             ),
@@ -271,7 +271,7 @@ class ContestOperationsIT
 
         @Test
         fun `should return forbidden when non-admin tries to update contest`() {
-            val contest = contestService.createContest("UpdatableContest", contestStartTime.plusDays(2), 10L)
+            val contest = contestService.createContest("UpdatableContest", contestStartTime.plus(Duration.ofDays(2)), 10L)
 
             mockMvc
                 .perform(
@@ -288,7 +288,7 @@ class ContestOperationsIT
 
         @Test
         fun `should return forbidden when non-admin tries to delete contest`() {
-            val contest = contestService.createContest("DeletableContest", contestStartTime.plusDays(2), 10L)
+            val contest = contestService.createContest("DeletableContest", contestStartTime.plus(Duration.ofDays(2)), 10L)
 
             mockMvc
                 .perform(mockMvcDeleteRequest("$basePath/${contest.contestId}", "USER"))
@@ -363,8 +363,8 @@ class ContestOperationsIT
 
         @Test
         fun `should set contest to running when maintain status runs past start time`() {
-            val now = LocalDateTime.of(2030, 1, 10, 12, 0)
-            val contest = contestService.createContest("AwaitingContest", now.minusHours(1), 2L)
+            val now = Instant.parse("2030-01-10T12:00:00Z")
+            val contest = contestService.createContest("AwaitingContest", now.minus(Duration.ofHours(1)), 2L)
 
             stubClock(now)
             contestOperationService.maintainContestStatus()
@@ -375,8 +375,8 @@ class ContestOperationsIT
 
         @Test
         fun `should set contest to awaiting completion when maintain status runs past end time`() {
-            val now = LocalDateTime.of(2030, 1, 10, 12, 0)
-            val contest = contestService.createContest("RunningContest", now.minusDays(2), 1L)
+            val now = Instant.parse("2030-01-10T12:00:00Z")
+            val contest = contestService.createContest("RunningContest", now.minus(Duration.ofDays(2)), 1L)
             val contestId = contest.contestId!!
             contestService.updateContest(
                 contestId = contestId,
@@ -392,9 +392,8 @@ class ContestOperationsIT
             assertEquals(ContestStatus.AWAITING_COMPLETION, persistedContest.contestStatus)
         }
 
-        private fun stubClock(now: LocalDateTime) {
-            every { clock.instant() } returns now.toInstant(ZoneOffset.UTC)
-            every { clock.zone } returns ZoneOffset.UTC
+        private fun stubClock(now: Instant) {
+            every { clock.instant() } returns now
         }
 
         private fun fetchContestsPage(

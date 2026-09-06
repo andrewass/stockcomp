@@ -1,7 +1,7 @@
 package com.stockcomp.profile
 
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class UserProfileDto(
     val userId: Long,
@@ -37,8 +37,8 @@ data class ContestHistoryPageDto(
 data class ContestPerformanceDto(
     val contestId: Long,
     val contestName: String,
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime,
+    val startTime: Instant,
+    val endTime: Instant,
     val rank: Int,
     val finalPortfolioValue: BigDecimal,
     val gainLoss: BigDecimal,

@@ -13,7 +13,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.Instant
 
 class InvestmentOrderMaintenanceServiceTest {
     private val investmentOrderProcessingService = mockk<InvestmentOrderProcessingService>()
@@ -134,8 +135,8 @@ class InvestmentOrderMaintenanceServiceTest {
     private fun contest(contestId: Long) =
         ContestDto(
             contestId = contestId,
-            startTime = LocalDateTime.now().minusDays(1),
-            endTime = LocalDateTime.now().plusDays(1),
+            startTime = Instant.now().minus(Duration.ofDays(1)),
+            endTime = Instant.now().plus(Duration.ofDays(1)),
             contestName = "Contest $contestId",
             contestStatus = ContestStatus.RUNNING,
         )

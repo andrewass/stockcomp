@@ -8,7 +8,7 @@ import com.stockcomp.symbol.SymbolServiceExternal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Service
 class InvestmentOrderProcessingService(
@@ -37,7 +37,7 @@ class InvestmentOrderProcessingService(
         currency: String,
         acceptedPrice: BigDecimal,
         symbol: String,
-        expirationTime: LocalDateTime,
+        expirationTime: Instant,
         amount: Int,
         transactionType: TransactionType,
     ) {

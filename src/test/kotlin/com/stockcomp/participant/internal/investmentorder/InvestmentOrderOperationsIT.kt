@@ -25,7 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.Instant
 
 @ControllerIntegrationTest
 class InvestmentOrderOperationsIT
@@ -36,7 +37,7 @@ class InvestmentOrderOperationsIT
     ) {
         private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
         private val basePath = "/participants/investment-orders"
-        private val contestStartTime = LocalDateTime.now()
+        private val contestStartTime = Instant.now()
         private val userEmail = "orders@mail.com"
 
         @Test
@@ -108,7 +109,7 @@ class InvestmentOrderOperationsIT
                                     symbol = "AAPL",
                                     amount = 10,
                                     currency = "USD",
-                                    expirationTime = LocalDateTime.now().plusDays(10),
+                                    expirationTime = Instant.now().plus(Duration.ofDays(10)),
                                     acceptedPrice = BigDecimal("100.0"),
                                     transactionType = TransactionType.BUY,
                                 ),
@@ -151,7 +152,7 @@ class InvestmentOrderOperationsIT
                                     symbol = "AAPL",
                                     amount = 10,
                                     currency = "USD",
-                                    expirationTime = LocalDateTime.now().plusDays(10),
+                                    expirationTime = Instant.now().plus(Duration.ofDays(10)),
                                     acceptedPrice = BigDecimal("100.0"),
                                     transactionType = TransactionType.BUY,
                                 ),

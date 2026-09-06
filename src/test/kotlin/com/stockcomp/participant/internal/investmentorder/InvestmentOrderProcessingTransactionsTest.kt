@@ -14,7 +14,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.Instant
 
 class InvestmentOrderProcessingTransactionsTest {
     private val participantRepository = mockk<ParticipantRepository>()
@@ -29,7 +30,7 @@ class InvestmentOrderProcessingTransactionsTest {
                 participant = participant,
                 currency = "USD",
                 acceptedPrice = BigDecimal("100.00"),
-                expirationTime = LocalDateTime.now().plusDays(1),
+                expirationTime = Instant.now().plus(Duration.ofDays(1)),
                 symbol = SYMBOL,
                 totalAmount = 2,
                 transactionType = TransactionType.BUY,

@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Entity
 @Table(name = "T_INVESTMENT_ORDER")
@@ -32,7 +32,7 @@ class InvestmentOrder(
     @Column(name = "ACCEPTED_PRICE", nullable = false, precision = 19, scale = 4)
     val acceptedPrice: BigDecimal,
     val currency: String,
-    val expirationTime: LocalDateTime,
+    val expirationTime: Instant,
     @Enumerated(EnumType.STRING)
     val transactionType: TransactionType,
     @Enumerated(EnumType.STRING)
@@ -57,7 +57,7 @@ class InvestmentOrder(
 
     fun isCompleted(): Boolean = _orderStatus == OrderStatus.COMPLETED
 
-    private fun isExpired(): Boolean = expirationTime.isBefore(LocalDateTime.now())
+    private fun isExpired(): Boolean = expirationTime.isBefore(Instant.now())
 
     fun processOrder(currentPrice: BigDecimal) {
         if (!isActive()) {

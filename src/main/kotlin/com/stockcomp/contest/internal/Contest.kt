@@ -11,7 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.Duration
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Entity
 @Table(name = "T_CONTEST")
@@ -21,9 +21,9 @@ class Contest(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val contestId: Long? = null,
     @Column(name = "START_TIME", nullable = false)
-    private var _startTime: LocalDateTime,
+    private var _startTime: Instant,
     @Column(name = "END_TIME", nullable = false)
-    private var _endTime: LocalDateTime,
+    private var _endTime: Instant,
     @Column(name = "CONTEST_NAME", nullable = false)
     private var _contestName: String,
     @Enumerated(EnumType.STRING)
@@ -32,8 +32,8 @@ class Contest(
 ) : BaseEntity() {
     constructor(
         contestName: String,
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
+        startTime: Instant,
+        endTime: Instant,
         contestStatus: ContestStatus = ContestStatus.AWAITING_START,
         contestId: Long? = null,
     ) : this(
@@ -50,17 +50,17 @@ class Contest(
     val contestName: String
         get() = _contestName
 
-    val startTime: LocalDateTime
+    val startTime: Instant
         get() = _startTime
 
-    val endTime: LocalDateTime
+    val endTime: Instant
         get() = _endTime
 
     fun isCompleted(): Boolean = _contestStatus === ContestStatus.COMPLETED
 
-    fun shouldStartContest(now: LocalDateTime): Boolean = _contestStatus == ContestStatus.AWAITING_START && _startTime.isBefore(now)
+    fun shouldStartContest(now: Instant): Boolean = _contestStatus == ContestStatus.AWAITING_START && _startTime.isBefore(now)
 
-    fun shouldStopFinishedContest(now: LocalDateTime): Boolean =
+    fun shouldStopFinishedContest(now: Instant): Boolean =
         setOf(ContestStatus.RUNNING, ContestStatus.STOPPED, ContestStatus.AWAITING_START).contains(_contestStatus) &&
             _endTime.isBefore(now)
 
@@ -84,7 +84,7 @@ class Contest(
         _contestName = newContestName
     }
 
-    fun updateStartTimePreservingDuration(newStartTime: LocalDateTime) {
+    fun updateStartTimePreservingDuration(newStartTime: Instant) {
         val duration = Duration.between(_startTime, _endTime)
         _startTime = newStartTime
         _endTime = newStartTime.plus(duration)

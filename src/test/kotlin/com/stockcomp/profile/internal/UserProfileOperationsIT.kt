@@ -20,7 +20,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.UUID
 
 @ControllerIntegrationTest
@@ -205,8 +206,8 @@ class UserProfileOperationsIT
                 """.trimIndent(),
                 Long::class.java,
                 contestName,
-                LocalDateTime.now().minusDays(7),
-                LocalDateTime.now().minusDays(1),
+                OffsetDateTime.now(ZoneOffset.UTC).minusDays(7),
+                OffsetDateTime.now(ZoneOffset.UTC).minusDays(1),
             )!!
 
         private fun insertParticipant(

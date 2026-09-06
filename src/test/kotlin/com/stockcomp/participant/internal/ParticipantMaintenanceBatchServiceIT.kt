@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @ControllerIntegrationTest
 class ParticipantMaintenanceBatchServiceIT
@@ -51,8 +52,8 @@ class ParticipantMaintenanceBatchServiceIT
                 """.trimIndent(),
                 Long::class.java,
                 "Maintenance cursor contest",
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now().plusDays(1),
+                OffsetDateTime.now(ZoneOffset.UTC).minusDays(1),
+                OffsetDateTime.now(ZoneOffset.UTC).plusDays(1),
             )!!
 
         private fun insertParticipant(

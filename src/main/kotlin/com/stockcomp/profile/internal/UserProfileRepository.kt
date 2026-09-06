@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Repository
 class UserProfileRepository(
@@ -143,8 +143,8 @@ class UserProfileRepository(
                     ContestPerformanceDto(
                         contestId = resultSet.getLong("contest_id"),
                         contestName = resultSet.getString("contest_name"),
-                        startTime = resultSet.getObject("start_time", LocalDateTime::class.java),
-                        endTime = resultSet.getObject("end_time", LocalDateTime::class.java),
+                        startTime = resultSet.getObject("start_time", OffsetDateTime::class.java).toInstant(),
+                        endTime = resultSet.getObject("end_time", OffsetDateTime::class.java).toInstant(),
                         rank =
                             requireNotNull(resultSet.getObject("participant_rank", Int::class.javaObjectType)) {
                                 "Completed contest participant rank must not be null"

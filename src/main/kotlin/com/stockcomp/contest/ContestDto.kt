@@ -2,12 +2,12 @@ package com.stockcomp.contest
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class ContestDto(
     val contestId: Long,
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime,
+    val startTime: Instant,
+    val endTime: Instant,
     val contestName: String,
     val contestStatus: ContestStatus,
 )
@@ -20,7 +20,7 @@ data class ContestPageDto(
 data class CreateContestRequest(
     @field:NotBlank
     val contestName: String,
-    val startTime: LocalDateTime,
+    val startTime: Instant,
     @field:Positive
     val durationDays: Long,
 )

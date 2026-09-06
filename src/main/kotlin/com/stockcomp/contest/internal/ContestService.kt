@@ -10,7 +10,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.Instant
 
 @Service
 @Transactional
@@ -19,13 +20,13 @@ class ContestService(
 ) {
     fun createContest(
         contestName: String,
-        startTime: LocalDateTime,
+        startTime: Instant,
         durationDays: Long,
     ): Contest =
         Contest(
             contestName = contestName,
             startTime = startTime,
-            endTime = startTime.plusDays(durationDays),
+            endTime = startTime.plus(Duration.ofDays(durationDays)),
         ).also { contestRepository.save(it) }
 
     fun getContest(contestId: Long): Contest = findContestByIdOrThrow(contestId)
@@ -39,7 +40,7 @@ class ContestService(
         contestId: Long,
         contestName: String?,
         contestStatus: ContestStatus?,
-        startTime: LocalDateTime?,
+        startTime: Instant?,
     ): Contest =
         findContestByIdOrThrow(contestId)
             .apply {

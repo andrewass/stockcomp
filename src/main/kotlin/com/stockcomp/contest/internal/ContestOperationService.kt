@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
-import java.time.LocalDateTime
 
 @Service
 class ContestOperationService(
@@ -15,7 +14,7 @@ class ContestOperationService(
 
     @Transactional
     fun maintainContestStatus(): Int {
-        val now = LocalDateTime.now(clock)
+        val now = clock.instant()
         val activeContests = contestService.getActiveContests()
         activeContests
             .forEach {

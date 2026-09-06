@@ -11,7 +11,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
+import java.time.Duration
+import java.time.Instant
 
 class LeaderboardJobSchedulerTest {
     private val leaderboardJobRepository = mockk<LeaderboardJobRepository>()
@@ -71,8 +72,8 @@ class LeaderboardJobSchedulerTest {
     private fun contest(contestId: Long) =
         ContestDto(
             contestId = contestId,
-            startTime = LocalDateTime.now().minusDays(2),
-            endTime = LocalDateTime.now().minusDays(1),
+            startTime = Instant.now().minus(Duration.ofDays(2)),
+            endTime = Instant.now().minus(Duration.ofDays(1)),
             contestName = "Contest $contestId",
             contestStatus = ContestStatus.AWAITING_COMPLETION,
         )

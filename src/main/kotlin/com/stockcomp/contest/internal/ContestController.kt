@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Validated
 @RestController
@@ -87,7 +87,7 @@ class ContestController(
 }
 
 data class UpdateContestRequest(
-    val startTime: LocalDateTime? = null,
+    val startTime: Instant? = null,
     @field:Pattern(regexp = ".*\\S.*", message = "contestName must not be blank")
     val contestName: String? = null,
     val contestStatus: ContestStatus? = null,

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 @ControllerIntegrationTest
 class InvestmentOperationsIT
@@ -32,7 +32,7 @@ class InvestmentOperationsIT
     ) {
         private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
         private val basePath = "/participants/investments"
-        private val contestStartTime = LocalDateTime.now()
+        private val contestStartTime = Instant.now()
         private val userEmail = "investor@mail.com"
 
         @Test

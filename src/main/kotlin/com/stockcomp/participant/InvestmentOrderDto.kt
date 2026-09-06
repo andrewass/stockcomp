@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class PlaceInvestmentOrderRequest(
     @field:Positive
@@ -18,7 +18,7 @@ data class PlaceInvestmentOrderRequest(
     @field:Size(min = 3, max = 3)
     val currency: String,
     @field:Future
-    val expirationTime: LocalDateTime,
+    val expirationTime: Instant,
     @field:Positive
     val acceptedPrice: BigDecimal,
     val transactionType: TransactionType,
@@ -31,7 +31,7 @@ data class InvestmentOrderDto(
     val remainingAmount: Int,
     val acceptedPrice: BigDecimal,
     val currency: String,
-    val expirationTime: LocalDateTime,
+    val expirationTime: Instant,
     val transactionType: TransactionType,
     val orderStatus: OrderStatus,
 )
