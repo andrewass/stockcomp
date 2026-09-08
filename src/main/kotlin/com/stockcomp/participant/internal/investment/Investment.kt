@@ -54,14 +54,19 @@ class Investment(
 
         _averageUnitCost = calculateAverageUnitCost(currentPrice = currentPrice, amount = amount)
         _amount += amount
+        maintainInvestment(currentPrice)
     }
 
-    fun updateWhenSelling(amount: Int) {
+    fun updateWhenSelling(
+        amount: Int,
+        currentPrice: BigDecimal,
+    ) {
         require(amount > 0) { "Sell amount must be positive for symbol $symbol" }
         require(_amount >= amount) {
             "Cannot sell $amount units for $symbol when only $_amount are available"
         }
         _amount -= amount
+        maintainInvestment(currentPrice)
     }
 
     fun maintainInvestment(updatedPrice: BigDecimal) {

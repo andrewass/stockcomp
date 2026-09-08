@@ -103,7 +103,7 @@ class Participant(
         require(currentPrice > BigDecimal.ZERO) { "Current price must be positive when selling for participant $participantId" }
 
         val investment = getInvestment(symbol)
-        investment.updateWhenSelling(amount)
+        investment.updateWhenSelling(amount, currentPrice)
         if (investment.amount == 0) {
             removeInvestment(investment)
         }
