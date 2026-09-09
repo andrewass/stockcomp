@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
@@ -34,6 +35,8 @@ class InvestmentOrderOperationsIT
     constructor(
         private val mockMvc: MockMvc,
         private val participantRepository: ParticipantRepository,
+        private val investmentOrderProcessingTransactions: InvestmentOrderProcessingTransactions,
+        private val jdbcTemplate: JdbcTemplate,
     ) {
         private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
         private val basePath = "/participants/investment-orders"
@@ -90,6 +93,47 @@ class InvestmentOrderOperationsIT
 
             val orders: List<InvestmentOrderDto> = mapper.readValue(result.response.contentAsString)
             assertTrue(orders.isEmpty())
+        }
+
+        @Test
+        fun `should persist executions for completed investment orders`() {
+            createUser(userEmail)
+            val contest = createContest("OrderExecutionsContest")
+            val participant = signUpForContest(contest.contestId)
+            updateContestStatus(contest.contestId, "RUNNING")
+            placeInvestmentOrder(participant.participantId)
+
+            investmentOrderProcessingTransactions.processActiveInvestmentOrders(
+                participantId = participant.participantId,
+                pricesBySymbol = mapOf("AAPL" to BigDecimal("90.00")),
+            )
+
+            val orderId =
+                participantRepository
+                    .findByParticipantId(participant.participantId)
+                    ?.investmentOrders()
+                    ?.single()
+                    ?.orderId ?: throw NoSuchElementException("Investment order missing in test setup")
+            participantRepository.flush()
+
+            assertEquals(
+                10,
+                jdbcTemplate.queryForObject(
+                    "select amount from t_investment_order_execution where investment_order_id = ?",
+                    Int::class.java,
+                    orderId,
+                ),
+            )
+            assertEquals(
+                0,
+                BigDecimal("90.00").compareTo(
+                    jdbcTemplate.queryForObject(
+                        "select execution_price from t_investment_order_execution where investment_order_id = ?",
+                        BigDecimal::class.java,
+                        orderId,
+                    ),
+                ),
+            )
         }
 
         @Test

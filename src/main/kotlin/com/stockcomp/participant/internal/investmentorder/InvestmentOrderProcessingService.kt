@@ -73,7 +73,8 @@ class InvestmentOrderProcessingService(
     ): List<InvestmentOrder> =
         participantService
             .findOptionalParticipant(contestId = contestId, userId = userId)
-            ?.getActiveInvestmentOrders() ?: emptyList()
+            ?.getActiveInvestmentOrdersSorted()
+            ?: emptyList()
 
     @Transactional(readOnly = true)
     fun getCompletedOrders(
@@ -82,7 +83,8 @@ class InvestmentOrderProcessingService(
     ): List<InvestmentOrder> =
         participantService
             .findOptionalParticipant(contestId = contestId, userId = userId)
-            ?.getCompletedInvestmentOrders() ?: emptyList()
+            ?.getCompletedInvestmentOrders()
+            ?: emptyList()
 
     @Transactional(readOnly = true)
     fun getActiveOrdersSymbol(
@@ -92,7 +94,7 @@ class InvestmentOrderProcessingService(
     ): List<InvestmentOrder> =
         participantService
             .findOptionalParticipant(contestId = contestId, userId = userId)
-            ?.getActiveInvestmentOrdersForSymbol(symbol.trim().uppercase())
+            ?.getActiveInvestmentOrdersForSymbolSorted(symbol.trim().uppercase())
             ?: emptyList()
 
     @Transactional(readOnly = true)
@@ -116,7 +118,7 @@ class InvestmentOrderProcessingTransactions(
     fun getActiveInvestmentOrderSymbols(participantId: Long): Set<String> =
         participantRepository
             .findByParticipantId(participantId)
-            ?.getActiveInvestmentOrders()
+            ?.getActiveInvestmentOrdersSorted()
             ?.map { it.symbol }
             ?.toSet() ?: emptySet()
 
@@ -128,7 +130,7 @@ class InvestmentOrderProcessingTransactions(
         val participant = participantRepository.findByIdLocked(participantId)
         contestService.requireContestIsRunning(participant.contestId)
         participant
-            .getActiveInvestmentOrders()
+            .getActiveInvestmentOrdersSorted()
             .forEach { order ->
                 pricesBySymbol[order.symbol]?.let { price ->
                     order.processOrder(price)

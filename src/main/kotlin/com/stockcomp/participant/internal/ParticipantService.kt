@@ -77,7 +77,7 @@ class ParticipantService(
                                     .map { mapToInvestmentOrderDto(it) },
                             activeOrders =
                                 participant
-                                    .getActiveInvestmentOrdersForSymbol(normalizedSymbol)
+                                    .getActiveInvestmentOrdersForSymbolSorted(normalizedSymbol)
                                     .map { mapToInvestmentOrderDto(it) },
                         )
                     }
@@ -102,7 +102,7 @@ class ParticipantService(
                             .map { investmentOrder -> mapToInvestmentOrderDto(investmentOrder) },
                     activeOrders =
                         it
-                            .getActiveInvestmentOrders()
+                            .getActiveInvestmentOrdersSorted()
                             .map { investmentOrder -> mapToInvestmentOrderDto(investmentOrder) },
                 )
             }
@@ -168,8 +168,6 @@ class ParticipantService(
         contestId: Long,
         userId: Long,
     ): Participant? = participantRepository.findByUserIdAndContestId(userId = userId, contestId = contestId)
-
-    fun getParticipantByIdLocked(participantId: Long): Participant = participantRepository.findByIdLocked(participantId)
 
     fun saveParticipant(participant: Participant): Participant = participantRepository.save(participant)
 

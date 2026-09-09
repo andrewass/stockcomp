@@ -64,15 +64,18 @@ class Participant(
         this.rank = rank
     }
 
-    fun getActiveInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isActive() }
+    fun getActiveInvestmentOrdersSorted(): List<InvestmentOrder> =
+        investmentOrders
+            .filter { it.isActive() }
+            .sortedBy { it.expirationTime }
 
     fun getCompletedInvestmentOrders(): List<InvestmentOrder> = investmentOrders.filter { it.isCompleted() }
 
     fun getCompletedInvestmentOrdersForSymbol(symbol: String): List<InvestmentOrder> =
         getCompletedInvestmentOrders().filter { it.symbol == symbol }
 
-    fun getActiveInvestmentOrdersForSymbol(symbol: String): List<InvestmentOrder> =
-        getActiveInvestmentOrders().filter { it.symbol == symbol }
+    fun getActiveInvestmentOrdersForSymbolSorted(symbol: String): List<InvestmentOrder> =
+        getActiveInvestmentOrdersSorted().filter { it.symbol == symbol }
 
     fun getInvestmentsForSymbol(symbol: String): List<Investment> = investments.filter { it.symbol == symbol }
 

@@ -4,6 +4,7 @@ import com.stockcomp.common.BaseEntity
 import com.stockcomp.participant.OrderStatus
 import com.stockcomp.participant.TransactionType
 import com.stockcomp.participant.internal.Participant
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -13,6 +14,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -44,6 +46,9 @@ class InvestmentOrder(
     @JoinColumn(name = "PARTICIPANT_ID", nullable = false)
     val participant: Participant,
 ) : BaseEntity() {
+    @OneToMany(mappedBy = "investmentOrder", cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val executions: MutableList<InvestmentOrderExecution> = mutableListOf()
+
     val remainingAmount: Int
         get() = _remainingAmount
 
@@ -52,6 +57,8 @@ class InvestmentOrder(
 
     val errorMessage: String?
         get() = _errorMessage
+
+    fun executions(): List<InvestmentOrderExecution> = executions.toList()
 
     fun isActive(): Boolean = _orderStatus == OrderStatus.ACTIVE
 
@@ -81,6 +88,7 @@ class InvestmentOrder(
         if (currentPrice <= acceptedPrice) {
             val amountToBuy = getAvailableAmountToBuy(currentPrice)
             participant.updateParticipantWhenBuying(amountToBuy, symbol, currentPrice)
+            recordExecution(amountToBuy, currentPrice)
             postProcessOrder(amountToBuy)
         }
     }
@@ -95,6 +103,7 @@ class InvestmentOrder(
             }
             val amountToSell = minOf(availableAmount, _remainingAmount)
             participant.updateParticipantWhenSelling(amountToSell, symbol, currentPrice)
+            recordExecution(amountToSell, currentPrice)
             postProcessOrder(amountToSell)
         }
     }
@@ -113,5 +122,19 @@ class InvestmentOrder(
         if (_remainingAmount == 0) {
             _orderStatus = OrderStatus.COMPLETED
         }
+    }
+
+    private fun recordExecution(
+        amount: Int,
+        executionPrice: BigDecimal,
+    ) {
+        executions.add(
+            InvestmentOrderExecution(
+                investmentOrder = this,
+                amount = amount,
+                executionPrice = executionPrice,
+                executedAt = Instant.now(),
+            ),
+        )
     }
 }
