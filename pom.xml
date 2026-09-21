@@ -23,7 +23,7 @@
         <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
         <maven.failsafe.version>3.6.0</maven.failsafe.version>
         <maven.surefire.version>3.6.0</maven.surefire.version>
-        <maven.exec.version>3.6.3</maven.exec.version>
+        <maven.exec.version>3.6.4</maven.exec.version>
         <jib.version>3.5.2</jib.version>
         <loki.logback.version>2.1.0</loki.logback.version>
         <shedlock.version>7.10.1</shedlock.version>
