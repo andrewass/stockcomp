@@ -18,7 +18,7 @@
         <java.version>25</java.version>
         <kotlin.version>2.4.21</kotlin.version>
         <testcontainers.version>1.21.4</testcontainers.version>
-        <mockk.version>1.14.11</mockk.version>
+        <mockk.version>1.14.12</mockk.version>
         <logstash.version>9.0</logstash.version>
         <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
         <maven.failsafe.version>3.6.1</maven.failsafe.version>
